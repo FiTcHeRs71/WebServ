@@ -71,6 +71,56 @@ Le champ qui compte, c'est la **DoD** : une condition **binaire**, qui teste la 
 5. Un autre équipier relit, teste la DoD lui-même, approuve.
 6. Merge → `Closes #NN` → colonne `Done`. **Jamais de merge sans relecture.**
 
+> 🔒 `main` est **protégée** : push direct interdit, et une PR ne se merge qu'après **1 approbation** d'un équipier (on ne peut pas approuver sa propre PR). Tout passe donc par une branche + PR.
+
+### Ouvrir une PR — depuis le terminal (`gh`)
+
+Prérequis une seule fois : `gh auth login`.
+
+```bash
+# 1. Partir d'un main à jour
+git checkout main && git pull
+
+# 2. Créer sa branche de ticket
+git checkout -b feat/b-03-connection-buffers
+
+# 3. Coder, puis commiter
+git add -A
+git commit -m "B-03: buffers de connexion (recv/send partiel)"
+
+# 4. Pousser la branche
+git push -u origin feat/b-03-connection-buffers
+
+# 5. Ouvrir la PR (le mot-clé Closes lie l'issue #NN)
+gh pr create --base main \
+  --title "[B-03] Connection inBuf/outBuf, recv/send partiel" \
+  --body "Implémente les buffers de connexion.
+
+Closes #15"
+```
+
+Commandes utiles ensuite :
+
+```bash
+gh pr view --web      # ouvrir la PR dans le navigateur
+gh pr status          # voir l'état de mes PR / reviews
+gh pr checks          # état des vérifs
+# (le MERGE se fait par un autre : il relit puis)  gh pr review --approve  &&  gh pr merge --squash
+```
+
+### Ouvrir une PR — depuis VS Code
+
+Le plus simple avec l'extension **GitHub Pull Requests** (Microsoft) :
+
+1. Installer l'extension **« GitHub Pull Requests »** (onglet Extensions, chercher `GitHub Pull Requests`), puis se connecter à GitHub quand VS Code le propose.
+2. Créer/basculer sur sa branche : clic sur le nom de branche en **bas à gauche** → *Create new branch* → `feat/b-03-...`.
+3. Commiter : onglet **Source Control** (`Ctrl+Shift+G`) → message → **✓ Commit** → **Publish/Push** la branche.
+4. Une bulle **« Create Pull Request »** apparaît → cliquer. Sinon : icône **GitHub** dans la barre d'activité → **Create Pull Request**.
+5. Vérifier **base = `main`**, remplir titre + description (mettre **`Closes #15`** dans la description), puis **Create**.
+6. La review et le merge se font dans le même panneau (l'onglet de la PR) — mais rappel : c'est **un autre équipier** qui approuve et merge.
+
+> Sans l'extension, VS Code sait pousser la branche (Source Control) mais pas ouvrir la PR : il affiche alors un lien « Create a Pull Request on GitHub » qui ouvre le navigateur sur le formulaire pré-rempli.
+
 ### Règle des dépendances
 
 Un ticket avec une dépendance non satisfaite ne se prend pas → label `blocked`.
