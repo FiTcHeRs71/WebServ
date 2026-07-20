@@ -226,3 +226,19 @@ YoupiBanane/
 - [ ] Chacun sait expliquer les **3** modules, pas seulement le sien.
 - [ ] Chaque feature du sujet démontrable en **une commande**.
 - [ ] Le tester officiel (`tester/tester`) passe (voir §4).
+
+
+## 6. Notes
+
+Le flux complet, concret
+
+1. Je prends l'issue #23 → je m'assigne → colonne "In progress"
+2. git checkout -b feat/b-03-connection-buffers
+3. ... code + commits ...
+4. git push -u origin feat/b-03-connection-buffers
+5. J'ouvre la PR. Dans la DESCRIPTION j'écris :
+        Implémente les buffers de connexion.
+        Closes #23
+6. Un équipier relit, teste la DoD, approuve
+7. Il MERGE la PR  →  #23 se ferme automatiquement
+                   →  (si workflow activé) la carte passe en "Done"
