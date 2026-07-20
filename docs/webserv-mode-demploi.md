@@ -8,17 +8,19 @@
 ## 1. La méthode en 5 règles
 
 1. **On découpe le long des frontières faibles, pas par fichiers.**
-   4 modules qui se parlent le moins possible, 1 responsable chacun :
+   4 modules **obligatoires** + 1 module **bonus**, 1 responsable chacun :
 
    ```
-   Config ──(structs)──► Réseau ──(octets)──► HTTP        + CGI (bonus, à cheval B/C)
+   Config ──(structs)──► Réseau ──(octets)──► HTTP        + CGI (à cheval B/C)
      A(dev1)              B(dev2)              C(dev3)         D(à 2, plus tard)
+                                                              + Bonus E (après le mandatory à 100%)
    ```
 
    - **A – Config** : lit le `.conf`, produit des structs. Ignore sockets et HTTP.
    - **B – Réseau** : `poll()`, sockets, buffers, timeouts. Transporte des octets, ne connaît rien au HTTP.
    - **C – HTTP** : parse la requête, route, construit la réponse. Ne touche jamais un socket.
-   - **D – CGI** : `fork`+`execve`+pipes non-bloquants dans le même `poll`. Démarré tard, validé à 2.
+   - **D – CGI** : `fork`+`execve`+pipes non-bloquants dans le même `poll`. **⚠️ OBLIGATOIRE** (au moins 1 CGI, sujet p.13) — démarré tard, validé à 2.
+   - **E – Bonus** (facultatif) : cookies + sessions, et plusieurs types de CGI. **Ne se code QUE si tout l'obligatoire est parfait** — le sujet n'évalue le bonus que si le mandatory est 100 % OK.
 
 2. **On fige les interfaces AVANT de coder** (le point qui fait ou défait le projet à plusieurs).
    Tant que ces signatures ne bougent pas, les 3 codent en parallèle sans se marcher dessus.
@@ -155,11 +157,17 @@ assert(p.state() == COMPLETE);
 - **Chunked** : `curl -H "Transfer-Encoding: chunked" --data-binary @big`.
 - Une fois B mergé : test navigateur réel + comparaison **nginx** (`curl -I` sur `/dir` sans slash, codes, headers).
 
-### D – CGI (à 2)
+### D – CGI (à 2) — OBLIGATOIRE
 
 - `hello.py` renvoie du texte → `D-01` OK.
 - Script qui **dump son env** → comparé à la spec des meta-variables (`D-02`).
 - `while True: pass` → doit finir en `504` + `ps` propre (zéro zombie, `D-05`).
+
+### E – Bonus (uniquement si le mandatory est 100 % OK)
+
+- **Cookies** (`E-01`) : une route pose un `Set-Cookie`, le navigateur (ou `curl -c/-b`) le renvoie au tour suivant.
+- **Sessions** (`E-02`) : 2 clients → 2 sessions distinctes ; exemple simple (compteur de visites ou mini-login) démontrable.
+- **Plusieurs CGI** (`E-03`) : un `.php` ET un `.py` servis par le même serveur selon la config.
 
 ### Transverse — la vraie suite de tests
 

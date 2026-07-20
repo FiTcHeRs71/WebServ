@@ -106,7 +106,9 @@ Convention : `[MOD-NN] titre — dépend de — DoD`
 | C-10 | POST upload : `multipart/form-data` + raw body → `upload_store` | C-02 | Upload depuis un `<form>` navigateur, fichier identique (`diff`) |
 | C-11 | DELETE | C-06 | 204/200, 404 si absent, 403 si pas les droits |
 
-### Module D — CGI (le premier qui se libère, à valider à 2)
+### Module D — CGI (OBLIGATOIRE — au moins 1 CGI, sujet p.13 ; le premier qui se libère, à valider à 2)
+
+> ⚠️ Le CGI de base n'est **pas** un bonus : le sujet exige au moins un CGI (php-cgi, Python…) dans la partie obligatoire. Les bonus CGI (plusieurs types) sont dans le Module E.
 
 | ID | Titre | Dépend | DoD |
 |---|---|---|---|
@@ -115,6 +117,16 @@ Convention : `[MOD-NN] titre — dépend de — DoD`
 | D-03 | Écriture du body dé-chunké dans stdin du CGI, puis close → EOF | D-01, C-03 | POST vers un script qui lit stdin |
 | D-04 | Parse sortie CGI : headers CGI → headers HTTP, `Status:`, body jusqu'à EOF si pas de Content-Length | D-01 | Script sans Content-Length OK |
 | D-05 | `waitpid(WNOHANG)`, timeout CGI + `kill`, zéro zombie | D-01 | Script `while True: pass` → 504, `ps` propre |
+
+### Module E — BONUS (⚠️ à ne commencer QUE si tout le mandatory est parfait)
+
+> Le sujet (p.13) : *« The bonus part will only be assessed if the mandatory part is fully completed without issues. »* Les deux seuls bonus autorisés : cookies/sessions et plusieurs types de CGI.
+
+| ID | Titre | Dépend | DoD |
+|---|---|---|---|
+| E-01 | Cookies : parser le header `Cookie:`, émettre `Set-Cookie` | C-05 | Une route pose un cookie, le client (`curl -c/-b` ou navigateur) le renvoie au tour suivant |
+| E-02 | Sessions : store en mémoire `sessionid → data` + exemple simple (compteur de visites ou mini-login) | E-01 | 2 clients = 2 sessions distinctes, exemple démontrable en une commande |
+| E-03 | Plusieurs types de CGI : config `extension → interpréteur` (`.php`→php-cgi, `.py`→python), généralise le Module D | D-02, A-03 | Un `.php` ET un `.py` servis par le même serveur |
 
 ### Transverse
 
@@ -146,16 +158,19 @@ gantt
     section Dev 3 — HTTP
     C-01 → C-05                :c1, after s0, 5
     C-06 → C-11                :c2, after c1, 5
-    section CGI + tests
+    section CGI (obligatoire) + tests
     D-01 → D-05                :d1, after c2, 4
     T-01 T-03 T-05 T-06        :t1, after d1, 3
+    section Bonus (si mandatory parfait)
+    E-01 → E-03                :e1, after t1, 3
 ```
 
 **Points de synchro obligatoires :**
 1. Fin S0 — les headers sont gelés, toute modif = accord des 3.
 2. B-03 + C-05 → premier « hello world » de bout en bout dans le navigateur. Merge sur `main` ici, c'est le vrai début.
 3. C-06 → site statique servi. Deuxième merge.
-4. D-05 → feature complete, plus que les tests et le README.
+4. D-05 → **mandatory feature complete** (CGI inclus, c'est obligatoire). Plus que les tests et le README.
+5. Mandatory 100 % validé (tester officiel + valgrind + relecture) → **seulement là** on ouvre le Module E (bonus). Jamais avant.
 
 ## 4. Outils tickets
 
