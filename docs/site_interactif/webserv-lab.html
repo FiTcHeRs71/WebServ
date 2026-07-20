@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Webserv — le labo des octets</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#DDE0DA;
+    --paper-2:#E9EBE6;
+    --paper-3:#F2F3F0;
+    --ink:#12161A;
+    --ink-2:#4E565C;
+    --ink-3:#79817F;
+    --rule:#A9AFA8;
+    --rule-soft:#C4C9C2;
+
+    --z-line:#7A4FB5;   /* request line */
+    --z-head:#1D6FA3;   /* headers */
+    --z-crlf:#B02E5A;   /* CR / LF + ligne vide */
+    --z-body:#5F7A33;   /* body */
+
+    --mono:'IBM Plex Mono', ui-monospace, Menlo, monospace;
+    --sans:'IBM Plex Sans', system-ui, sans-serif;
+    --cond:'IBM Plex Sans Condensed', 'IBM Plex Sans', sans-serif;
+
+    --gutter:88px;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--sans); font-size:16px; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important; transition:none !important}
+    html{scroll-behavior:auto}
+  }
+
+  .wrap{max-width:1080px; margin:0 auto; padding:0 20px}
+
+  /* ---------- gutter layout ---------- */
+  .band{
+    display:grid; grid-template-columns:var(--gutter) 1fr;
+    border-top:1px solid var(--rule);
+  }
+  .band:first-of-type{border-top:none}
+  .off{
+    font-family:var(--mono); font-size:11px; letter-spacing:.06em;
+    color:var(--ink-3); padding:34px 0 0 0; text-align:right; padding-right:18px;
+    border-right:1px solid var(--rule-soft);
+    position:relative;
+  }
+  .off b{display:block; color:var(--z-crlf); font-weight:600}
+  .off span{display:block; margin-top:4px}
+  .band-body{padding:32px 0 56px 28px; min-width:0}
+
+  @media (max-width:760px){
+    :root{--gutter:52px}
+    .off{padding-right:10px; font-size:10px}
+    .band-body{padding-left:14px}
+  }
+
+  /* ---------- type ---------- */
+  .eyebrow{
+    font-family:var(--cond); font-weight:700; text-transform:uppercase;
+    letter-spacing:.18em; font-size:12px; color:var(--ink-3); margin:0 0 10px;
+  }
+  h1{
+    font-family:var(--cond); font-weight:700; text-transform:uppercase;
+    letter-spacing:-.01em; line-height:.92;
+    font-size:clamp(44px,9vw,104px); margin:0;
+  }
+  h2{
+    font-family:var(--cond); font-weight:700; text-transform:uppercase;
+    letter-spacing:.01em; font-size:clamp(24px,3.4vw,34px); line-height:1.05;
+    margin:0 0 6px;
+  }
+  h3{font-family:var(--cond); font-weight:700; text-transform:uppercase; letter-spacing:.08em; font-size:13px; color:var(--ink-2); margin:26px 0 8px}
+  p{margin:0 0 14px; max-width:66ch}
+  .lede{font-size:17px; color:var(--ink-2); max-width:60ch}
+  code{font-family:var(--mono); font-size:.9em; background:var(--paper-3); padding:1px 5px; border:1px solid var(--rule-soft)}
+  .note{font-size:14px; color:var(--ink-2)}
+
+  /* ---------- hero ---------- */
+  .hero{padding:64px 0 8px}
+  .hero .sub{
+    font-family:var(--cond); text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; font-size:clamp(13px,1.6vw,17px); color:var(--z-crlf);
+    margin:14px 0 22px;
+  }
+
+  /* ---------- panels ---------- */
+  .panel{background:var(--paper-2); border:1px solid var(--rule); padding:16px}
+  .panel + .panel{margin-top:14px}
+
+  /* ---------- byte view ---------- */
+  .bytes{font-family:var(--mono); font-size:14px; line-height:1.9; overflow-x:auto; white-space:nowrap}
+  .brow{display:flex; align-items:baseline}
+  .bofs{color:var(--ink-3); font-size:11px; width:52px; flex:none; user-select:none}
+  .ch{position:relative; cursor:default; padding:1px 0}
+  .ch:hover{background:var(--ink); color:var(--paper-2)}
+  .sp{color:var(--ink-3)}
+  .ctrl{
+    color:var(--paper-2); background:var(--z-crlf); font-size:11px;
+    padding:2px 3px; border-radius:2px; margin:0 1px; letter-spacing:.04em;
+  }
+  .ctrl.hide{display:none}
+  .z-line{color:var(--z-line)}
+  .z-head-n{color:var(--z-head); font-weight:600}
+  .z-head-v{color:var(--ink-2)}
+  .z-body{color:var(--z-body)}
+  .zoneband{border-left:3px solid transparent; padding-left:9px; margin-left:-12px}
+  .zoneband.on-line{border-color:var(--z-line); background:rgba(122,79,181,.09)}
+  .zoneband.on-head{border-color:var(--z-head); background:rgba(29,111,163,.09)}
+  .zoneband.on-crlf{border-color:var(--z-crlf); background:rgba(176,46,90,.11)}
+  .zoneband.on-body{border-color:var(--z-body); background:rgba(95,122,51,.10)}
+
+  .readout{
+    font-family:var(--mono); font-size:12px; color:var(--ink-2);
+    border-top:1px dashed var(--rule); margin-top:12px; padding-top:10px; min-height:34px;
+  }
+  .readout b{color:var(--ink)}
+
+  /* ---------- controls ---------- */
+  .row{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+  button{
+    font-family:var(--cond); font-weight:700; text-transform:uppercase; letter-spacing:.1em;
+    font-size:12px; padding:9px 14px; background:var(--ink); color:var(--paper-2);
+    border:1px solid var(--ink); cursor:pointer;
+  }
+  button:hover{background:var(--z-crlf); border-color:var(--z-crlf)}
+  button.ghost{background:transparent; color:var(--ink)}
+  button.ghost:hover{background:var(--ink); color:var(--paper-2); border-color:var(--ink)}
+  button:disabled{opacity:.35; cursor:not-allowed}
+  button:focus-visible, input:focus-visible, .zbtn:focus-visible{outline:2px solid var(--z-crlf); outline-offset:2px}
+
+  .zbtn{
+    font-family:var(--mono); font-size:12px; padding:6px 10px; cursor:pointer;
+    background:transparent; border:1px solid var(--rule); color:var(--ink-2);
+    text-transform:none; letter-spacing:0; font-weight:500;
+  }
+  .zbtn:hover{background:var(--paper-3); border-color:var(--ink-2); color:var(--ink)}
+  .zbtn[aria-pressed="true"]{background:var(--ink); color:var(--paper-2); border-color:var(--ink)}
+  .zbtn[data-z="line"][aria-pressed="true"]{background:var(--z-line); border-color:var(--z-line)}
+  .zbtn[data-z="head"][aria-pressed="true"]{background:var(--z-head); border-color:var(--z-head)}
+  .zbtn[data-z="crlf"][aria-pressed="true"]{background:var(--z-crlf); border-color:var(--z-crlf)}
+  .zbtn[data-z="body"][aria-pressed="true"]{background:var(--z-body); border-color:var(--z-body)}
+
+  label.chk{display:flex; gap:9px; align-items:flex-start; font-size:14px; cursor:pointer; padding:5px 0; max-width:60ch}
+  label.chk input{margin-top:5px; accent-color:var(--z-crlf); flex:none}
+  input[type=range]{width:100%; accent-color:var(--z-crlf)}
+  input[type=text]{
+    font-family:var(--mono); font-size:13px; padding:7px 9px;
+    border:1px solid var(--rule); background:var(--paper-3); color:var(--ink); min-width:0;
+  }
+
+  .verdict{font-family:var(--mono); font-size:13px; padding:10px 12px; border-left:3px solid var(--ink-3); background:var(--paper-3)}
+  .verdict.ok{border-color:var(--z-body)}
+  .verdict.warn{border-color:#B0692E}
+  .verdict.bad{border-color:var(--z-crlf)}
+  .verdict b{font-weight:600}
+
+  .term{font-family:var(--mono); font-size:12.5px; background:var(--ink); color:#D6DBD4; padding:12px 14px; overflow-x:auto; line-height:1.65}
+  .term .g{color:#79817F}
+  .term .out{color:#9AB0C4}
+  .term .in{color:#C9A6D6}
+  .term .er{color:#E0708F}
+  .term .ok{color:#9CBF6E}
+
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+  @media (max-width:760px){.grid2{grid-template-columns:1fr}}
+
+  table{border-collapse:collapse; width:100%; font-size:13px}
+  th,td{text-align:left; padding:6px 9px; border-bottom:1px solid var(--rule-soft)}
+  th{font-family:var(--cond); text-transform:uppercase; letter-spacing:.1em; font-size:11px; color:var(--ink-3); font-weight:700}
+  td.k{font-family:var(--mono); color:var(--z-head); white-space:nowrap}
+  td.v{font-family:var(--mono); color:var(--ink-2); word-break:break-all}
+  tr.new td{background:rgba(176,46,90,.10)}
+
+  .fdmap{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
+  .fd{
+    font-family:var(--mono); font-size:12px; border:1px solid var(--rule);
+    background:var(--paper-3); padding:8px 10px; min-width:92px;
+  }
+  .fd .n{font-weight:600; color:var(--ink)}
+  .fd .s{display:block; font-size:10.5px; color:var(--ink-3); margin-top:2px}
+  .fd.listen{border-color:var(--z-line); background:rgba(122,79,181,.10)}
+  .fd.ready{border-color:var(--z-crlf); background:rgba(176,46,90,.12)}
+  .fd.std{opacity:.5}
+
+  footer{border-top:1px solid var(--rule); padding:28px 0 60px; color:var(--ink-3); font-size:13px}
+  footer .wrap{max-width:1080px}
+  hr.hair{border:0; border-top:1px dashed var(--rule); margin:26px 0}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- ================= HERO ================= -->
+  <div class="band">
+    <div class="off"><b>0000</b><span>début</span></div>
+    <div class="band-body hero">
+      <p class="eyebrow">42 · webserv · labo</p>
+      <h1>Les octets<br>que tu ne<br>vois pas</h1>
+      <p class="sub">Une requête HTTP n'est rien d'autre qu'un texte. Voici le texte.</p>
+      <p class="lede">Tout ce que ton serveur reçoit, c'est ça. Survole un caractère pour voir son octet. Puis affiche les deux qui décident de tout.</p>
+
+      <div class="panel" style="margin-top:22px">
+        <div class="row" style="margin-bottom:12px">
+          <button id="btnInvis" class="ghost" aria-pressed="false">Afficher les octets invisibles</button>
+          <span class="note" id="hintInvis">Ils sont là. Ils font 2 octets chacun.</span>
+        </div>
+        <div class="bytes" id="heroBytes"></div>
+        <div class="readout" id="heroRead">Survole un caractère.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 1. ANATOMIE ================= -->
+  <div class="band">
+    <div class="off"><b>0000</b><span>anatomie</span></div>
+    <div class="band-body">
+      <p class="eyebrow">01</p>
+      <h2>Les quatre zones</h2>
+      <p class="lede">Une requête, c'est toujours la même structure. Clique une zone pour l'isoler.</p>
+
+      <div class="panel" style="margin-top:18px">
+        <div class="row" style="margin-bottom:14px">
+          <button class="zbtn" data-z="line" aria-pressed="false">request line</button>
+          <button class="zbtn" data-z="head" aria-pressed="false">headers</button>
+          <button class="zbtn" data-z="crlf" aria-pressed="false">ligne vide</button>
+          <button class="zbtn" data-z="body" aria-pressed="false">body</button>
+        </div>
+        <div class="bytes" id="anaBytes"></div>
+        <div class="readout" id="anaRead">Choisis une zone.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 2. LE PARSEUR ================= -->
+  <div class="band">
+    <div class="off"><b>0083</b><span>\r\n\r\n</span></div>
+    <div class="band-body">
+      <p class="eyebrow">02</p>
+      <h2>recv() ne te donne pas une requête</h2>
+      <p class="lede">TCP est un flux d'octets. Pas de messages, pas de frontières, jamais de « voilà, c'est tout ». Appelle <code>recv()</code> et regarde ce qui arrive vraiment.</p>
+
+      <div class="panel" style="margin-top:18px">
+        <div class="row" style="margin-bottom:12px">
+          <button id="btnRecv">recv()</button>
+          <button id="btnRecvAll" class="ghost">Jusqu'au bout</button>
+          <button id="btnRecvReset" class="ghost">Reset</button>
+          <span class="note" id="recvCount">0 appel · 0 octet</span>
+        </div>
+        <div class="term" id="recvBuf" style="min-height:120px"></div>
+        <div style="margin-top:12px" class="verdict" id="recvVerdict">Buffer vide. On attend le premier <b>recv()</b>.</div>
+      </div>
+
+      <h3>Le code que ça implique</h3>
+      <div class="term">
+<span class="g">// à chaque recv(), on accumule — on ne parse rien avant d'être sûr</span>
+buf.append(tmp, n);
+
+size_t p = buf.find(<span class="ok">"\r\n\r\n"</span>);
+<span class="in">if</span> (p == std::string::npos)
+    <span class="in">return</span>;              <span class="g">// en-têtes incomplets → on attend</span>
+
+<span class="g">// headers = buf[0, p)   ·   body commence à p + 4  (pas +2 !)</span>
+      </div>
+      <p class="note" style="margin-top:12px">C'est le seul moyen de savoir que les en-têtes sont finis. Sans <code>\r\n\r\n</code>, tu ne peux pas distinguer « requête terminée » de « réseau lent ».</p>
+    </div>
+  </div>
+
+  <!-- ================= 3. CONTENT-LENGTH ================= -->
+  <div class="band">
+    <div class="off"><b>0064</b><span>Content-Length</span></div>
+    <div class="band-body">
+      <p class="eyebrow">03</p>
+      <h2>Content-Length ment, le client souffre</h2>
+      <p class="lede">Le body fait réellement <b>25 octets</b>. Annonce autre chose et regarde ce que le client comprend.</p>
+
+      <div class="panel" style="margin-top:18px">
+        <div style="font-family:var(--mono); font-size:13px; margin-bottom:6px">Content-Length: <b id="clVal">25</b></div>
+        <input type="range" id="clRange" min="0" max="45" value="25" aria-label="Valeur de Content-Length annoncée">
+        <div class="term" style="margin-top:14px" id="clTerm"></div>
+        <div style="margin-top:12px" class="verdict ok" id="clVerdict"></div>
+      </div>
+      <p class="note" style="margin-top:12px">Des <b>octets</b>, jamais des caractères. <code>héllo</code> = 5 caractères mais 6 octets. <code>std::string::size()</code> te donne bien des octets — tant mieux.</p>
+    </div>
+  </div>
+
+  <!-- ================= 4. CASSE LA RÉPONSE ================= -->
+  <div class="band">
+    <div class="off"><b>&mdash;&mdash;</b><span>réponse</span></div>
+    <div class="band-body">
+      <p class="eyebrow">04</p>
+      <h2>Casse ta réponse, exprès</h2>
+      <p class="lede">« Ça marche avec curl » n'est pas un critère. curl est tolérant : il compense en silence, et tu ne vois rien. Coche une erreur et lis ce qu'il dit vraiment.</p>
+
+      <div class="grid2" style="margin-top:18px">
+        <div class="panel">
+          <h3 style="margin-top:0">Erreurs</h3>
+          <label class="chk"><input type="checkbox" id="e1"> <span><code>http/1.1</code> en minuscules</span></label>
+          <label class="chk"><input type="checkbox" id="e2"> <span>Pas de ligne vide avant le body</span></label>
+          <label class="chk"><input type="checkbox" id="e3"> <span>Pas de status line du tout</span></label>
+          <label class="chk"><input type="checkbox" id="e4"> <span>Reason phrase = <code>Banane</code></span></label>
+          <label class="chk"><input type="checkbox" id="e5"> <span><code>Content-Type :</code> avec un espace avant le <code>:</code></span></label>
+          <hr class="hair">
+          <div id="respRaw" class="bytes" style="font-size:13px"></div>
+        </div>
+        <div class="panel">
+          <h3 style="margin-top:0">Ce que curl -v affiche</h3>
+          <div class="term" id="curlOut" style="min-height:180px"></div>
+          <div style="margin-top:12px" class="verdict ok" id="curlVerdict"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 5. SOCKETS ================= -->
+  <div class="band">
+    <div class="off"><b>&mdash;&mdash;</b><span>sockets</span></div>
+    <div class="band-body">
+      <p class="eyebrow">05</p>
+      <h2>Un fd n'est pas un octet</h2>
+      <p class="lede">Le file descriptor ne traverse pas le réseau. C'est un <code>int</code> local, un index dans ta table. Ce qui traverse, ce sont des octets anonymes. Chaque côté a sa propre poignée.</p>
+
+      <div class="panel" style="margin-top:18px">
+        <div class="row" style="margin-bottom:6px">
+          <button id="btnAccept">Un client frappe → accept()</button>
+          <button id="btnPoll" class="ghost">poll()</button>
+          <button id="btnClose" class="ghost">Le plus vieux client se déconnecte</button>
+        </div>
+        <div class="fdmap" id="fdmap"></div>
+        <div style="margin-top:14px" class="verdict" id="fdVerdict">La socket d'écoute ne transporte aucune donnée. Elle ne fait qu'annoncer des arrivées.</div>
+      </div>
+
+      <p class="note" style="margin-top:12px"><b>Le piège :</b> les fd se recyclent. Le client sur le fd 5 part, tu fais <code>close(5)</code> — le suivant récupère 5. Si une référence traîne encore, tu écris au mauvais client. <code>close()</code> et nettoyage de tes structures : même instant, toujours.</p>
+    </div>
+  </div>
+
+  <!-- ================= 6. CGI ================= -->
+  <div class="band">
+    <div class="off"><b>&mdash;&mdash;</b><span>cgi</span></div>
+    <div class="band-body">
+      <p class="eyebrow">06</p>
+      <h2>Le CGI ne connaît pas HTTP</h2>
+      <p class="lede">Le script croit tourner dans un terminal. Il lit <code>stdin</code>, il écrit sur <code>stdout</code>. C'est <b>toi</b> qui traduis la requête en variables d'environnement. Ajoute un header et regarde.</p>
+
+      <div class="panel" style="margin-top:18px">
+        <div class="row" style="margin-bottom:12px">
+          <input type="text" id="hName" placeholder="Cookie" aria-label="Nom du header" style="flex:1 1 160px">
+          <input type="text" id="hVal" placeholder="session=abc123" aria-label="Valeur du header" style="flex:2 1 220px">
+          <button id="btnAddHdr">Ajouter le header</button>
+        </div>
+        <table>
+          <thead><tr><th style="width:38%">Variable d'env</th><th>Valeur</th></tr></thead>
+          <tbody id="envTable"></tbody>
+        </table>
+      </div>
+
+      <h3>La règle des HTTP_*</h3>
+      <p><b>Chaque</b> header devient une variable : majuscules, tirets remplacés par des underscores, préfixe <code>HTTP_</code>. <code>User-Agent</code> → <code>HTTP_USER_AGENT</code>. Le sujet l'exige : <em>« The full request must be available to the CGI »</em>. Oublie ça, et le script ne voit ni les cookies ni rien.</p>
+
+      <h3>Le plan de câblage</h3>
+      <div class="term">
+<span class="g">// PARENT — tout est construit AVANT le fork</span>
+pipe(in); pipe(out);
+pid = fork();
+
+<span class="in">if</span> (pid == 0) {                     <span class="g">// ENFANT : rien que des syscalls</span>
+    dup2(in[0],  STDIN_FILENO);      <span class="g">// 0 → le pipe. Comme minishell.</span>
+    dup2(out[1], STDOUT_FILENO);     <span class="g">// 1 → le pipe</span>
+    <span class="g">// fermer TOUS les autres fd (sockets, epoll...) sinon le port reste pris</span>
+    chdir(dir);                      <span class="g">// chemins relatifs du script</span>
+    execve(<span class="ok">"/usr/bin/python3"</span>, argv, envp);   <span class="g">// chemin ABSOLU, pas de PATH</span>
+    _exit(1);
+}
+<span class="g">// PARENT : les 2 pipes entrent dans poll(), comme n'importe quelle socket.</span>
+<span class="g">// Jamais de write() bloquant : le buffer pipe fait ~64 Ko → deadlock garanti.</span>
+      </div>
+
+      <div class="grid2" style="margin-top:16px">
+        <div class="panel">
+          <h3 style="margin-top:0">Ce que le CGI renvoie</h3>
+          <div class="term">Content-Type: text/html
+
+&lt;html&gt;...</div>
+          <p class="note" style="margin-top:10px">Pas de <code>HTTP/1.1 200 OK</code> ! La status line, c'est toi qui la fabriques. Si le script envoie <code>Status: 404</code>, tu utilises ce code. S'il envoie <code>Location:</code>, tu rediriges. Sinon, <code>200</code>.</p>
+        </div>
+        <div class="panel">
+          <h3 style="margin-top:0">Deux pièges du sujet</h3>
+          <p class="note"><b>Chunked.</b> Le CGI n'y comprend rien. C'est ton serveur qui dé-chunke, reconstitue le body, et fixe <code>CONTENT_LENGTH</code> à la vraie taille. Le script lit jusqu'à EOF — c'est-à-dire jusqu'à ce que tu fermes ton bout du pipe.</p>
+          <p class="note" style="margin-bottom:0"><b>Timeout.</b> <code>waitpid</code> avec <code>WNOHANG</code>, toujours. Un script en <code>while(1)</code> doit être tué et donner un <code>504</code>. Sinon « a request should never hang indefinitely » saute.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= FIN ================= -->
+  <div class="band">
+    <div class="off"><b>FFFF</b><span>fin</span></div>
+    <div class="band-body">
+      <p class="eyebrow">Le cycle, en entier</p>
+      <h2>De accept() à la réponse</h2>
+      <div class="term" style="margin-top:14px">
+<span class="out">poll()</span> dit : fd 3 est lisible        <span class="g">→ accept() → nouveau fd 5</span>
+<span class="out">poll()</span> dit : fd 5 est lisible        <span class="g">→ recv() → on accumule dans buf[5]</span>
+                                     <span class="g">→ find("\r\n\r\n") ? non → on repart dans poll()</span>
+<span class="out">poll()</span> dit : fd 5 est lisible        <span class="g">→ recv() → find() trouve → on parse</span>
+                                     <span class="g">→ body complet selon Content-Length ? oui</span>
+                                     <span class="g">→ fichier statique ? on lit. CGI ? on fork.</span>
+                                     <span class="g">→ on prépare la réponse (du TEXTE) dans out[5]</span>
+<span class="out">poll()</span> dit : fd 5 est inscriptible  <span class="g">→ send() ce qu'on peut, on garde le reste</span>
+                                     <span class="g">→ tout envoyé ? keep-alive : on recommence.</span>
+                                     <span class="g">→ sinon close(5) + on efface buf[5] et out[5]</span>
+      </div>
+      <p style="margin-top:18px">Tout webserv tient là-dedans. Le CGI n'ajoute rien de neuf : deux pipes de plus dans le même <code>poll()</code>, avec les mêmes règles.</p>
+    </div>
+  </div>
+
+</div>
+
+<footer><div class="wrap">
+  <p style="margin:0">Aucune de ces pages ne remplace <code>nc -l 8080 | xxd</code> dans un terminal. Vas-y voir toi-même.</p>
+</div></footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* =========================================================
+     LE MODÈLE : une vraie requête, une seule source de vérité
+     ========================================================= */
+  const HEADERS = [
+    ["Host", "localhost:8080"],
+    ["User-Agent", "curl/7.81.0"],
+    ["Content-Type", "application/x-www-form-urlencoded"],
+    ["Content-Length", "25"]
+  ];
+  const REQLINE = "POST /cgi-bin/form.py?id=42 HTTP/1.1";
+  const BODY    = "name=Toto&message=bonjour";   // 25 octets
+
+  function rawRequest(){
+    let s = REQLINE + "\r\n";
+    for (const [k,v] of HEADERS) s += k + ": " + v + "\r\n";
+    s += "\r\n" + BODY;
+    return s;
+  }
+
+  const hex2 = n => n.toString(16).toUpperCase().padStart(2,"0");
+  const hex4 = n => n.toString(16).padStart(4,"0");
+
+  const CHARNAME = {
+    " ":"SP (espace)", ":":"deux-points", "/":"slash", "?":"point d'interrogation",
+    "&":"esperluette", "=":"égal", ".":"point", "-":"tiret", "_":"underscore"
+  };
+
+  /* =========================================================
+     RENDU DE LA VUE OCTETS
+     ========================================================= */
+  function buildByteView(container, opts){
+    opts = opts || {};
+    container.innerHTML = "";
+    let offset = 0;
+
+    const lines = [];
+    lines.push({zone:"line", text:REQLINE});
+    for (const [k,v] of HEADERS) lines.push({zone:"head", text:k + ": " + v, k:k, v:v});
+    lines.push({zone:"crlf", text:""});
+    lines.push({zone:"body", text:BODY, noCrlf:true});
+
+    for (const L of lines){
+      const row = document.createElement("div");
+      row.className = "brow zoneband";
+      row.dataset.zone = L.zone;
+
+      const ofs = document.createElement("span");
+      ofs.className = "bofs";
+      ofs.textContent = hex4(offset);
+      row.appendChild(ofs);
+
+      const content = document.createElement("span");
+
+      // découpe colorée de la ligne
+      const segs = [];
+      if (L.zone === "line"){
+        const parts = L.text.split(" ");
+        segs.push({t:parts[0], c:"z-line"});
+        segs.push({t:" ", c:"sp"});
+        segs.push({t:parts[1], c:"z-line"});
+        segs.push({t:" ", c:"sp"});
+        segs.push({t:parts[2], c:"z-line"});
+      } else if (L.zone === "head"){
+        segs.push({t:L.k, c:"z-head-n"});
+        segs.push({t:":", c:"sp"});
+        segs.push({t:" ", c:"sp"});
+        segs.push({t:L.v, c:"z-head-v"});
+      } else if (L.zone === "body"){
+        segs.push({t:L.text, c:"z-body"});
+      }
+
+      for (const seg of segs){
+        for (const ch of seg.t){
+          const s = document.createElement("span");
+          s.className = "ch " + seg.c;
+          s.textContent = ch === " " ? "\u00B7" : ch;
+          s.dataset.ofs = offset;
+          s.dataset.ch = ch;
+          content.appendChild(s);
+          offset++;
+        }
+      }
+
+      if (!L.noCrlf){
+        for (const [glyph, name, code] of [["CR","Carriage Return",13],["LF","Line Feed",10]]){
+          const c = document.createElement("span");
+          c.className = "ctrl hide";
+          c.textContent = glyph;
+          c.dataset.ofs = offset;
+          c.dataset.ctrl = name + " · 0x" + hex2(code) + " · " + code;
+          content.appendChild(c);
+          offset++;
+        }
+      }
+
+      row.appendChild(content);
+      container.appendChild(row);
+    }
+    return container;
+  }
+
+  function wireReadout(container, readout, defaultMsg){
+    container.addEventListener("mouseover", e => {
+      const t = e.target;
+      if (t.classList.contains("ch")){
+        const ch = t.dataset.ch;
+        const code = ch.charCodeAt(0);
+        const label = CHARNAME[ch] || ("« " + ch + " »");
+        readout.innerHTML = "offset <b>0x" + hex4(+t.dataset.ofs) + "</b> &nbsp;·&nbsp; octet <b>0x" +
+          hex2(code) + "</b> (" + code + ") &nbsp;·&nbsp; " + label;
+      } else if (t.classList.contains("ctrl")){
+        readout.innerHTML = "offset <b>0x" + hex4(+t.dataset.ofs) + "</b> &nbsp;·&nbsp; <b>" +
+          t.dataset.ctrl + "</b> &nbsp;·&nbsp; invisible, mais bien là";
+      }
+    });
+    container.addEventListener("mouseleave", () => { readout.innerHTML = defaultMsg; });
+  }
+
+  /* ---------- HERO ---------- */
+  const heroBytes = document.getElementById("heroBytes");
+  buildByteView(heroBytes);
+  wireReadout(heroBytes, document.getElementById("heroRead"), "Survole un caractère.");
+
+  let invisOn = false;
+  const btnInvis = document.getElementById("btnInvis");
+  btnInvis.addEventListener("click", () => {
+    invisOn = !invisOn;
+    document.querySelectorAll("#heroBytes .ctrl").forEach(c => c.classList.toggle("hide", !invisOn));
+    btnInvis.setAttribute("aria-pressed", String(invisOn));
+    btnInvis.textContent = invisOn ? "Masquer les octets invisibles" : "Afficher les octets invisibles";
+    document.getElementById("hintInvis").textContent = invisOn
+      ? "CR + LF = une fin de ligne. Deux d'affilée = une ligne vide."
+      : "Ils sont là. Ils font 2 octets chacun.";
+  });
+
+  /* ---------- 1. ANATOMIE ---------- */
+  const anaBytes = document.getElementById("anaBytes");
+  buildByteView(anaBytes);
+  anaBytes.querySelectorAll(".ctrl").forEach(c => c.classList.remove("hide"));
+  const anaRead = document.getElementById("anaRead");
+
+  const ZONE_TXT = {
+    line: "<b>Request line</b> — méthode, cible, version. Trois champs, un espace entre chaque. La méthode est sensible à la casse : <code>get</code> → 501, pas 400. Quatre champs (un espace non encodé dans le chemin) → 400.",
+    head: "<b>Headers</b> — le <em>nom</em> est insensible à la casse (compare en insensible !), la <em>valeur</em> ne l'est pas. Ordre libre. Espace avant le <code>:</code> → 400 strict. En HTTP/1.1, <code>Host</code> est obligatoire.",
+    crlf: "<b>La ligne vide</b> — une ligne dont le contenu fait zéro octet, mais qui se termine quand même par CRLF. D'où <code>\\r\\n\\r\\n</code> : 4 octets. C'est le SEUL séparateur en-têtes/body.",
+    body: "<b>Body</b> — il n'existe que si un header le dit. <code>Content-Length</code> ou <code>Transfer-Encoding: chunked</code>. Ni l'un ni l'autre → pas de body. Tu ne devines pas, tu ne lis pas « jusqu'à ce que ça s'arrête »."
+  };
+
+  let activeZone = null;
+  document.querySelectorAll(".zbtn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const z = btn.dataset.z;
+      activeZone = (activeZone === z) ? null : z;
+      document.querySelectorAll(".zbtn").forEach(b =>
+        b.setAttribute("aria-pressed", String(b.dataset.z === activeZone)));
+      anaBytes.querySelectorAll(".brow").forEach(r => {
+        r.classList.remove("on-line","on-head","on-crlf","on-body");
+        if (activeZone && r.dataset.zone === activeZone) r.classList.add("on-" + activeZone);
+      });
+      anaRead.innerHTML = activeZone ? ZONE_TXT[activeZone] : "Choisis une zone.";
+    });
+  });
+
+  /* ---------- 2. LE PARSEUR ---------- */
+  const FULL = rawRequest();
+  const vis = s => s.replace(/\r/g,"\u240D").replace(/\n/g,"\u240A\n");
+  let recvBuf = "", recvPos = 0, recvCalls = 0;
+
+  const elBuf = document.getElementById("recvBuf");
+  const elVer = document.getElementById("recvVerdict");
+  const elCnt = document.getElementById("recvCount");
+  const bRecv = document.getElementById("btnRecv");
+
+  function doRecv(){
+    if (recvPos >= FULL.length) return false;
+    const n = Math.min(4 + Math.floor(Math.random()*38), FULL.length - recvPos);
+    recvBuf += FULL.slice(recvPos, recvPos + n);
+    recvPos += n;
+    recvCalls++;
+    return true;
+  }
+
+  function renderRecv(){
+    elBuf.textContent = recvBuf.length ? vis(recvBuf) : "(vide)";
+    elCnt.textContent = recvCalls + " appel" + (recvCalls>1?"s":"") + " · " + recvBuf.length + " octet" + (recvBuf.length>1?"s":"");
+    bRecv.disabled = recvPos >= FULL.length;
+
+    const p = recvBuf.indexOf("\r\n\r\n");
+    if (recvBuf.length === 0){
+      elVer.className = "verdict";
+      elVer.innerHTML = "Buffer vide. On attend le premier <b>recv()</b>.";
+    } else if (p === -1){
+      elVer.className = "verdict bad";
+      elVer.innerHTML = "<b>find(\"\\r\\n\\r\\n\") → npos.</b> En-têtes incomplets. On ne parse RIEN, on retourne dans poll().";
+    } else {
+      const got = recvBuf.length - (p + 4);
+      if (got < 25){
+        elVer.className = "verdict warn";
+        elVer.innerHTML = "<b>En-têtes complets</b> à l'offset 0x" + hex4(p) + ". Body : " + got +
+          "/25 octets d'après Content-Length. On attend encore.";
+      } else {
+        elVer.className = "verdict ok";
+        elVer.innerHTML = "<b>Requête complète.</b> En-têtes [0, 0x" + hex4(p) + "), body à partir de 0x" +
+          hex4(p+4) + " — le <b>+4</b>, pas +2. Maintenant on parse.";
+      }
+    }
+  }
+
+  bRecv.addEventListener("click", () => { doRecv(); renderRecv(); });
+  document.getElementById("btnRecvAll").addEventListener("click", () => { while(doRecv()); renderRecv(); });
+  document.getElementById("btnRecvReset").addEventListener("click", () => {
+    recvBuf = ""; recvPos = 0; recvCalls = 0; renderRecv();
+  });
+  renderRecv();
+
+  /* ---------- 3. CONTENT-LENGTH ---------- */
+  const clRange = document.getElementById("clRange");
+  const clVal   = document.getElementById("clVal");
+  const clTerm  = document.getElementById("clTerm");
+  const clVerd  = document.getElementById("clVerdict");
+  const RESP_BODY = "Bonjour, tu viens de lire des octets.".slice(0,25); // 25 octets
+
+  function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+
+  function renderCL(){
+    const cl = +clRange.value;
+    clVal.textContent = cl;
+    let out, cls, msg;
+    if (cl === 25){
+      out = esc(RESP_BODY);
+      cls = "verdict ok";
+      msg = "<b>Exact.</b> Le client lit 25 octets, rend la main, la connexion peut être réutilisée.";
+    } else if (cl < 25){
+      out = esc(RESP_BODY.slice(0, cl)) + '<span class="er">▮</span>';
+      cls = "verdict warn";
+      msg = "<b>Tronqué.</b> Le client lit " + cl + " octets et s'arrête net. Les " + (25-cl) +
+            " restants polluent la requête suivante sur une connexion keep-alive — c'est comme ça qu'on fabrique du request smuggling.";
+    } else {
+      out = esc(RESP_BODY) + '<span class="g"> ▁ ▁ ▁ curl attend ' + (cl-25) + ' octets qui ne viendront jamais ▁ ▁ ▁</span>';
+      cls = "verdict bad";
+      msg = "<b>Bloqué.</b> Le client attend " + (cl-25) + " octets de plus. Indéfiniment. Le sujet : <em>« a request should never hang indefinitely »</em> — perdu.";
+    }
+    clTerm.innerHTML =
+      '<span class="g">HTTP/1.1 200 OK</span>\n' +
+      '<span class="g">Content-Length: </span><span class="in">' + cl + '</span>\n' +
+      '<span class="g">(ligne vide)</span>\n\n' +
+      '<span class="ok">' + out + '</span>';
+    clVerd.className = cls;
+    clVerd.innerHTML = msg;
+  }
+  clRange.addEventListener("input", renderCL);
+  renderCL();
+
+  /* ---------- 4. CASSE LA RÉPONSE ---------- */
+  const errs = ["e1","e2","e3","e4","e5"].map(id => document.getElementById(id));
+  const respRaw = document.getElementById("respRaw");
+  const curlOut = document.getElementById("curlOut");
+  const curlVer = document.getElementById("curlVerdict");
+
+  function renderResp(){
+    const [lower, noBlank, noStatus, banane, spaceColon] = errs.map(e => e.checked);
+
+    // la réponse brute
+    let L = [];
+    if (!noStatus){
+      const ver = lower ? "http/1.1" : "HTTP/1.1";
+      const reason = banane ? "Banane" : "OK";
+      L.push('<span class="' + (lower ? "z-head-v" : "z-line") + '">' + ver + " 200 " + reason + "</span>");
+    }
+    L.push('<span class="z-head-n">Content-Type' + (spaceColon ? '<span class="ctrl">SP</span>' : "") + ":</span> text/plain");
+    L.push('<span class="z-head-n">Content-Length:</span> 8');
+    if (!noBlank) L.push('<span style="color:var(--z-crlf)">(ligne vide)</span>');
+    L.push('<span class="z-body">Bonjour</span>');
+    respRaw.innerHTML = L.join("<br>");
+
+    // ce que curl en dit
+    let out = [], v, cls;
+    out.push('<span class="g">*   Trying 127.0.0.1:8080...</span>');
+    out.push('<span class="g">* Connected to localhost (127.0.0.1) port 8080 (#0)</span>');
+    out.push('<span class="in">&gt; GET / HTTP/1.1</span>');
+    out.push('<span class="in">&gt; Host: localhost:8080</span>');
+    out.push('<span class="in">&gt; </span>');
+
+    if (noStatus){
+      out.push('<span class="er">curl: (1) Received HTTP/0.9 when not allowed</span>');
+      cls = "verdict bad";
+      v = "<b>Refus net.</b> Ça ne commence pas par <code>HTTP/</code> → curl suppose un serveur de 1991 qui crache du contenu brut sans headers. Il refuse. C'est la seule erreur que curl te signale franchement.";
+    } else {
+      if (lower){
+        out.push('<span class="er">* HTTP 1.0, assume close after body</span>');
+      }
+      const ver = lower ? "http/1.1" : "HTTP/1.1";
+      out.push('<span class="out">&lt; ' + ver + " 200 " + (banane ? "Banane" : "OK") + "</span>");
+      if (spaceColon){
+        out.push('<span class="out">&lt; Content-Type : text/plain</span>');
+      } else {
+        out.push('<span class="out">&lt; Content-Type: text/plain</span>');
+      }
+      out.push('<span class="out">&lt; Content-Length: 8</span>');
+      if (noBlank){
+        out.push('<span class="out">&lt; Bonjour</span>');
+        out.push('<span class="g">* (rien à afficher — pas de body)</span>');
+      } else {
+        out.push('<span class="out">&lt; </span>');
+        out.push('<span class="ok">Bonjour</span>');
+      }
+      out.push(lower
+        ? '<span class="er">* Closing connection 0</span>'
+        : '<span class="g">* Connection #0 to host localhost left intact</span>');
+
+      // verdict par priorité
+      if (noBlank){
+        cls = "verdict bad";
+        v = "<b>Aucune erreur affichée. Et pourtant tout est cassé.</b> Sans ligne vide, <code>Bonjour</code> est parsé comme un header malformé. Il n'y a plus de body du tout. curl ne dit rien.";
+      } else if (lower){
+        cls = "verdict bad";
+        v = "<b>Ça n'a pas marché — ça a dégradé en silence.</b> curl n'a pas su lire la version, donc il retombe en HTTP/1.0 : plus de keep-alive, connexion fermée après chaque réponse. Compare : <code>Closing connection</code> vs <code>left intact</code>. Une minuscule coûte la persistance des connexions.";
+      } else if (spaceColon){
+        cls = "verdict warn";
+        v = "<b>Invalide, mais curl encaisse.</b> Un espace avant le <code>:</code> est strictement interdit — c'est un vecteur de request smuggling. Un proxy en amont pourrait le découper autrement que toi. Ton serveur doit répondre 400 quand il reçoit ça.";
+      } else if (banane){
+        cls = "verdict ok";
+        v = "<b>Parfaitement valide.</b> La reason phrase est purement décorative : curl et Firefox ne lisent que le nombre. Elle peut même être vide. Reste conventionnel quand même — le correcteur, lui, la lira.";
+      } else {
+        cls = "verdict ok";
+        v = "<b>Conforme.</b> <code>left intact</code> : la connexion est réutilisable. C'est ce que tu dois viser.";
+      }
+    }
+    curlOut.innerHTML = out.join("\n");
+    curlVer.className = cls;
+    curlVer.innerHTML = v;
+  }
+  errs.forEach(e => e.addEventListener("change", renderResp));
+  renderResp();
+
+  /* ---------- 5. SOCKETS ---------- */
+  let fds = [
+    {n:0, label:"stdin",  std:true},
+    {n:1, label:"stdout", std:true},
+    {n:2, label:"stderr", std:true},
+    {n:3, label:"listen :8080", listen:true}
+  ];
+  let clientSeq = 0;
+  const fdmap = document.getElementById("fdmap");
+  const fdVer = document.getElementById("fdVerdict");
+
+  function lowestFree(){
+    const used = new Set(fds.map(f => f.n));
+    let i = 0; while (used.has(i)) i++;
+    return i;
+  }
+
+  function renderFds(ready){
+    ready = ready || [];
+    fdmap.innerHTML = "";
+    fds.sort((a,b) => a.n - b.n).forEach(f => {
+      const d = document.createElement("div");
+      d.className = "fd" + (f.std ? " std" : "") + (f.listen ? " listen" : "") +
+                    (ready.includes(f.n) ? " ready" : "");
+      d.innerHTML = '<span class="n">fd ' + f.n + '</span><span class="s">' + f.label + "</span>";
+      fdmap.appendChild(d);
+    });
+  }
+
+  document.getElementById("btnAccept").addEventListener("click", () => {
+    const n = lowestFree();
+    clientSeq++;
+    fds.push({n:n, label:"client " + String.fromCharCode(64 + ((clientSeq-1)%26+1))});
+    renderFds([3]);
+    fdVer.className = "verdict warn";
+    fdVer.innerHTML = "<b>poll() a signalé fd 3 lisible</b> → quelqu'un frappe. <code>accept(3)</code> <b>crée</b> un fd tout neuf : <b>fd " +
+      n + "</b>. C'est lui qui transportera les octets. Le fd 3 continue d'écouter à côté.";
+  });
+
+  document.getElementById("btnPoll").addEventListener("click", () => {
+    const clients = fds.filter(f => !f.std && !f.listen);
+    if (!clients.length){
+      renderFds([3]);
+      fdVer.className = "verdict";
+      fdVer.innerHTML = "Un seul fd surveillé : le fd 3. Rien à lire. <code>poll()</code> dort jusqu'à la prochaine arrivée.";
+      return;
+    }
+    const ready = clients.filter(() => Math.random() > .4).map(f => f.n);
+    renderFds(ready);
+    fdVer.className = ready.length ? "verdict warn" : "verdict";
+    fdVer.innerHTML = ready.length
+      ? "<b>UN SEUL poll()</b> surveille tout : le fd 3 et les " + clients.length + " clients ensemble. Prêts cette fois : <b>fd " +
+        ready.join(", fd ") + "</b> → <code>recv()</code> uniquement sur ceux-là. Jamais de read/write sans passer par poll() : c'est un 0 direct."
+      : "Aucun fd prêt. <code>poll()</code> bloque et rend la main dès que quelque chose bouge. C'est ça, le non-bloquant : on n'attend jamais un fd en particulier.";
+  });
+
+  document.getElementById("btnClose").addEventListener("click", () => {
+    const clients = fds.filter(f => !f.std && !f.listen).sort((a,b) => a.n - b.n);
+    if (!clients.length){
+      fdVer.className = "verdict";
+      fdVer.innerHTML = "Aucun client connecté.";
+      return;
+    }
+    const gone = clients[0];
+    fds = fds.filter(f => f.n !== gone.n);
+    renderFds();
+    fdVer.className = "verdict bad";
+    fdVer.innerHTML = "<code>close(" + gone.n + ")</code> — et <b>le fd " + gone.n +
+      " est immédiatement libre</b>. Le prochain <code>accept()</code> le récupérera. Fais « accept » maintenant pour le voir. Si une référence vers l'ancien client traîne encore dans tes structures, tu écriras au nouveau. D'où la règle : <code>close()</code> et nettoyage au même instant.";
+  });
+  renderFds();
+
+  /* ---------- 6. CGI ---------- */
+  const envTable = document.getElementById("envTable");
+  let extraHeaders = [];
+  let lastAdded = null;
+
+  function envFromRequest(){
+    const rows = [];
+    rows.push(["REQUEST_METHOD", "POST"]);
+    rows.push(["SCRIPT_NAME", "/cgi-bin/form.py"]);
+    rows.push(["PATH_INFO", ""]);
+    rows.push(["QUERY_STRING", "id=42"]);
+    rows.push(["SERVER_PROTOCOL", "HTTP/1.1"]);
+    rows.push(["GATEWAY_INTERFACE", "CGI/1.1"]);
+    rows.push(["SERVER_NAME", "localhost"]);
+    rows.push(["SERVER_PORT", "8080"]);
+    rows.push(["REMOTE_ADDR", "127.0.0.1"]);
+    rows.push(["CONTENT_TYPE", "application/x-www-form-urlencoded"]);
+    rows.push(["CONTENT_LENGTH", "25"]);
+    const all = HEADERS.concat(extraHeaders);
+    for (const [k,v] of all){
+      if (k.toLowerCase() === "content-type" || k.toLowerCase() === "content-length") continue;
+      rows.push(["HTTP_" + k.toUpperCase().replace(/-/g,"_"), v]);
+    }
+    return rows;
+  }
+
+  function renderEnv(){
+    envTable.innerHTML = "";
+    for (const [k,v] of envFromRequest()){
+      const tr = document.createElement("tr");
+      if (lastAdded && k === lastAdded) tr.className = "new";
+      const a = document.createElement("td"); a.className = "k"; a.textContent = k;
+      const b = document.createElement("td"); b.className = "v"; b.textContent = v || "(vide)";
+      tr.appendChild(a); tr.appendChild(b);
+      envTable.appendChild(tr);
+    }
+  }
+
+  document.getElementById("btnAddHdr").addEventListener("click", () => {
+    const nIn = document.getElementById("hName"), vIn = document.getElementById("hVal");
+    const n = (nIn.value.trim() || "Cookie").replace(/[^A-Za-z0-9\-]/g,"");
+    const v = vIn.value.trim() || "session=abc123";
+    if (!n) return;
+    extraHeaders.push([n, v]);
+    lastAdded = "HTTP_" + n.toUpperCase().replace(/-/g,"_");
+    nIn.value = ""; vIn.value = "";
+    renderEnv();
+  });
+  renderEnv();
+
+})();
+</script>
+</body>
+</html>
