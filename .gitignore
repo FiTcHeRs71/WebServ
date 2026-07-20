@@ -5,6 +5,7 @@ tests/testeur/cgi_tester
 # Build
 *.o
 *.d
+objs/
 webserv
 
 # Éditeurs / OS
