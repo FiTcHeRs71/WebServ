@@ -1,6 +1,6 @@
 # Binaires du tester officiel 42 (~10 Mo) — à télécharger depuis le sujet, pas versionnés
-tester/tester
-tester/cgi_tester
+testeur/tester
+testeur/cgi_tester
 
 # Build
 *.o
