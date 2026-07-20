@@ -6,23 +6,25 @@ SRC_DIR = srcs
 INC_DIR = includes
 OBJ_DIR = objs
 
+# >>> SRCS AUTO-GENERATED >>>
 SRCS_MAIN = $(addprefix $(SRC_DIR)/, \
 	main.cpp)
-
-SRCS_CONFIG = $(addprefix $(SRC_DIR)/config/, \
-	config.cpp)
-
-SRCS_NETWORK = $(addprefix $(SRC_DIR)/network/, \
-	network.cpp)
-
-SRCS_HTTP = $(addprefix $(SRC_DIR)/http/, \
-	http.cpp)
 
 SRCS_CGI = $(addprefix $(SRC_DIR)/cgi/, \
 	cgi.cpp)
 
+SRCS_CONFIG = $(addprefix $(SRC_DIR)/config/, \
+	config.cpp)
+
+SRCS_HTTP = $(addprefix $(SRC_DIR)/http/, \
+	http.cpp)
+
+SRCS_NETWORK = $(addprefix $(SRC_DIR)/network/, \
+	network.cpp)
+
 # Source files
-SRCS = $(SRCS_MAIN) $(SRCS_CONFIG) $(SRCS_NETWORK) $(SRCS_HTTP) $(SRCS_CGI)
+SRCS = $(SRCS_MAIN) $(SRCS_CGI) $(SRCS_CONFIG) $(SRCS_HTTP) $(SRCS_NETWORK)
+# <<< SRCS AUTO-GENERATED <<<
 
 # Object files
 OBJS = $(SRCS:%.cpp=$(OBJ_DIR)/%.o)
