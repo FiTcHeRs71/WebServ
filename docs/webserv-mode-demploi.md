@@ -29,10 +29,10 @@
    | Frontière | Contrat |
    |---|---|
    | A → B | `const std::vector<ServerConfig>&` |
-   | A → C | `const LocationConfig* resolve(host, port, uri)` |
-   | B → C | `RequestParser::feed(data, n)` → `INCOMPLETE / COMPLETE / ERROR` |
-   | C → B | `bool Response::serialize(std::string& out)` |
-   | C → D | `CgiProcess::start(req, loc)` → expose `read_fd` / `write_fd` que B ajoute au poll |
+   | A → C | `const LocationConfig* Resolve(host, port, uri)` |
+   | B → C | `RequestParser::Feed(data, n)` → `INCOMPLETE / COMPLETE / ERROR` |
+   | C → B | `bool Response::Serialize(std::string& out)` |
+   | C → D | `CgiProcess::Start(req, loc)` → expose `GetReadFd()` / `GetWriteFd()` que B ajoute au poll |
 
 3. **Tickets à DoD binaire.** Chaque ticket a une *Definition of Done* vérifiable objectivement,
    pas « ça marche ». La DoD teste la vraie difficulté (voir §2).
@@ -170,7 +170,7 @@ int main(int ac, char** av) {
 
 - Confs **valides** → le dump doit correspondre à ce qu'on attend.
 - 10 confs **invalides** dans `conf/bad/` → chacune doit sortir un message clair + `exit(1)`, **aucune acceptée**.
-- `resolve()` → tests unitaires du match de préfixe : `/kapouet/pouic/toto/pouet` → `/tmp/www/pouic/toto/pouet`.
+- `Resolve()` → tests unitaires du match de préfixe : `/kapouet/pouic/toto/pouet` → `/tmp/www/pouic/toto/pouet`.
 
 ### B – Réseau (sans le vrai HTTP : on renvoie une réponse hardcodée)
 
@@ -188,7 +188,7 @@ std::string out = "HTTP/1.1 200 OK\r\nContent-Length: 3\r\n\r\nhi\n";
 - **Timeout** : ouvrir une connexion et ne rien envoyer → doit se fermer (408), jamais de hang.
 - ⚠️ **La règle qui donne le 0** : aucun `read`/`recv`/`send` sans que `poll` ait signalé le fd prêt, et **zéro lecture d'`errno`** après. À vérifier à la relecture.
 
-### C – HTTP (sans le vrai réseau : on `feed()` depuis une string)
+### C – HTTP (sans le vrai réseau : on `Feed()` depuis une string)
 
 C ne dépend pas d'un socket. On lui donne des octets directement.
 
@@ -197,7 +197,7 @@ C ne dépend pas d'un socket. On lui donne des octets directement.
 RequestParser p;
 std::string raw = "GET /index.html HTTP/1.1\r\nHost: x\r\n\r\n";
 for (size_t i = 0; i < raw.size(); ++i)      // octet par octet !
-    p.feed(&raw[i], 1);
+    p.Feed(&raw[i], 1);
 assert(p.state() == COMPLETE);
 ```
 

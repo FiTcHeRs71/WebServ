@@ -47,10 +47,10 @@ flowchart TD
 | Frontière | Signature |
 |---|---|
 | A → B | `const std::vector<ServerConfig>&` |
-| A → C | `const LocationConfig* resolve(const std::string& host, int port, const std::string& uri)` |
-| B → C | `RequestParser::feed(const char* data, size_t n)` → `enum {INCOMPLETE, COMPLETE, ERROR}` |
-| C → B | `bool Response::serialize(std::string& out)` |
-| C → D | `CgiProcess::start(req, loc)` → expose `read_fd` / `write_fd` que B ajoute au poll |
+| A → C | `const LocationConfig* Resolve(const std::string& host, int port, const std::string& uri)` |
+| B → C | `RequestParser::Feed(const char* data, size_t n)` → `enum {INCOMPLETE, COMPLETE, ERROR}` |
+| C → B | `bool Response::Serialize(std::string& out)` |
+| C → D | `CgiProcess::Start(req, loc)` → expose `GetReadFd()` / `GetWriteFd()` que B ajoute au poll |
 
 ## 2. Tickets
 
@@ -73,7 +73,7 @@ Convention : `[MOD-NN] titre — dépend de — DoD`
 | A-02 | Parse bloc `server` : `listen`, `server_name`, `error_page`, `client_max_body_size` | A-01 | Struct remplie, affichable |
 | A-03 | Parse bloc `location` : `allow_methods`, `root`, `index`, `autoindex`, `return`, `upload_store`, `cgi_pass`/`cgi_ext` | A-02 | Struct remplie |
 | A-04 | Validation + erreurs explicites (port 0-65535, duplicat de listen, root inexistant, méthode inconnue, taille mal formée) | A-03 | Les 10 confs invalides sortent un message clair + exit 1, aucune n'est acceptée |
-| A-05 | `resolve()` : match du préfixe le plus long, fallback location `/` | A-03 | Tests unitaires : `/`, `/kapouet/pouic/toto/pouet` → `/tmp/www/pouic/toto/pouet` |
+| A-05 | `Resolve()` : match du préfixe le plus long, fallback location `/` | A-03 | Tests unitaires : `/`, `/kapouet/pouic/toto/pouet` → `/tmp/www/pouic/toto/pouet` |
 | A-06 | Valeurs par défaut si directive absente (index, autoindex off, body size, error pages built-in) | A-04 | Conf minimale (juste `listen`) démarre |
 
 ### Module B — Réseau (dev 2)
