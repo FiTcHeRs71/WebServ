@@ -1,0 +1,38 @@
+#ifndef REQUEST_HPP
+# define REQUEST_HPP
+
+# include <iostream>
+# include <cstddef>
+
+/**
+ * @brief Represente une requete HTTP recue par le serveur.
+ *
+ * Accumule les octets recus sur le socket et les parse
+ * progressivement (ligne de requete, en-tetes, corps).
+ */
+class Request
+{
+	private:
+
+
+
+	protected:
+
+
+
+	public:
+
+	/*===Canonical Form===*/
+	Request(void);
+	~Request(void);
+	Request(const Request& to_copy);
+	Request &operator=(const Request& src);
+
+	/*===Getters & Setters===*/
+
+
+	/*===Member Function===*/
+	int	Feed(const char *data, size_t n);
+};
+
+#endif /*REQUEST_HPP*/
