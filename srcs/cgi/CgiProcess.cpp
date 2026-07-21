@@ -28,6 +28,14 @@ CgiProcess	&CgiProcess::operator=(const CgiProcess& src)
 }
 
 	/*===Getters & Setters===*/
+int	CgiProcess::GetReadFd(void) const
+{
+	return (-1);
+}
 
+int	CgiProcess::GetWriteFd(void) const
+{
+	return (-1);
+}
 
 	/*===Member Function===*/

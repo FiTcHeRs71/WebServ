@@ -3,6 +3,9 @@
 
 # include <iostream>
 
+class Request;
+class LocationConfig;
+
 class CgiProcess
 {
 	private:
@@ -22,10 +25,11 @@ class CgiProcess
 	CgiProcess &operator=(const CgiProcess& src);
 
 	/*===Getters & Setters===*/
-
+	int		GetReadFd(void) const;
+	int		GetWriteFd(void) const;
 
 	/*===Member Function===*/
-	
+	void	Start(const Request &request, const LocationConfig &location);
 };
 
 #endif /*CGI_PROCESS_HPP*/
