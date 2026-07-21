@@ -5,6 +5,12 @@
 # include <iostream>
 # include <vector>
 
+/**
+ * @brief Gere l'ensemble des sockets d'ecoute du serveur.
+ *
+ * Cree et configure un socket en ecoute pour chaque couple
+ * host/port defini par les ServerConfig fournies.
+ */
 class ListenSockets
 {
 	private:

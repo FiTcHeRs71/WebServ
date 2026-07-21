@@ -3,6 +3,12 @@
 
 # include <iostream>
 
+/**
+ * @brief Represente la configuration d'une location (bloc "location") d'un serveur.
+ *
+ * Definit les regles applicables a un chemin donne : racine, index,
+ * methodes autorisees, redirection, configuration CGI, etc.
+ */
 class LocationConfig
 {
 	private:

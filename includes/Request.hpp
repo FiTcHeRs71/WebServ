@@ -4,6 +4,12 @@
 # include <iostream>
 # include <cstddef>
 
+/**
+ * @brief Represente une requete HTTP recue par le serveur.
+ *
+ * Accumule les octets recus sur le socket et les parse
+ * progressivement (ligne de requete, en-tetes, corps).
+ */
 class Request
 {
 	private:

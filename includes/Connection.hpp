@@ -3,6 +3,12 @@
 
 # include <iostream>
 
+/**
+ * @brief Represente une connexion client acceptee sur un socket d'ecoute.
+ *
+ * Porte le socket du client ainsi que l'etat necessaire pour
+ * recevoir sa requete, la faire traiter et lui renvoyer la reponse.
+ */
 class Connection
 {
 	private:
