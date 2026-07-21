@@ -14,7 +14,7 @@ web_serv/
 ├── conf/
 │   ├── default.conf
 │   ├── tester.conf            # déjà présent
-│   └── bad/                   # 10 confs invalides (S0-03)
+│   └── bad/                   # 20 confs invalides (S0-03)
 ├── www/                        # site statique de démo (T-04)
 ├── tests/
 │   └── run.py                  # suite Python 30+ cas (T-01)

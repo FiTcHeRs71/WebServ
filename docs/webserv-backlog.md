@@ -62,7 +62,7 @@ Convention : `[MOD-NN] titre — dépend de — DoD`
 |---|---|---|
 | S0-01 | Squelette repo : Makefile (`all clean fclean re`, `-Wall -Wextra -Werror -std=c++98`), arbo `src/ inc/ conf/ www/ tests/` | `make` compile un `main` vide sans relink inutile |
 | S0-02 | Figer les headers d'interface (`ServerConfig.hpp`, `Request.hpp`, `Response.hpp`, `Connection.hpp`) — corps vides | Les 3 modules compilent contre ces headers |
-| S0-03 | Écrire `conf/default.conf` cible + `conf/bad/*.conf` (10 cas invalides) | Sert de spec au module A |
+| S0-03 | Écrire `conf/default.conf` cible + `conf/bad/*.conf` (20 cas invalides) | Sert de spec au module A |
 | S0-04 | Convention Git : branches `feat/a-*`, `feat/b-*`, `feat/c-*`, PR + relecture croisée obligatoire | Écrit dans le README |
 
 ### Module A — Config (dev 1)
