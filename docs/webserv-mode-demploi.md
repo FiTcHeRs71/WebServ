@@ -28,7 +28,7 @@
 
    | Frontière | Contrat |
    |---|---|
-   | A → B | `const std::vector<ServerConfig>&` |
+   | A → B | `ListenSockets(const std::vector<ServerConfig>& servers)` |
    | A → C | `const LocationConfig* Resolve(host, port, uri)` |
    | B → C | `RequestParser::Feed(data, n)` → `INCOMPLETE / COMPLETE / ERROR` |
    | C → B | `bool Response::Serialize(std::string& out)` |

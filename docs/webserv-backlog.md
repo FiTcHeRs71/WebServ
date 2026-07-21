@@ -46,7 +46,7 @@ flowchart TD
 
 | Frontière | Signature |
 |---|---|
-| A → B | `const std::vector<ServerConfig>&` |
+| A → B | `ListenSockets(const std::vector<ServerConfig>& servers)` |
 | A → C | `const LocationConfig* Resolve(const std::string& host, int port, const std::string& uri)` |
 | B → C | `RequestParser::Feed(const char* data, size_t n)` → `enum {INCOMPLETE, COMPLETE, ERROR}` |
 | C → B | `bool Response::Serialize(std::string& out)` |
