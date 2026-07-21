@@ -1,6 +1,7 @@
 # Build
 *.o
 *.d
+objs/
 webserv
 
 # Éditeurs / OS
