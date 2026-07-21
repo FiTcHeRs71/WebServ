@@ -32,6 +32,13 @@ Request	&Request::operator=(const Request& src)
 
 
 	/*===Member Function===*/
+
+	/**
+	 * @brief Alimente le parseur de requete avec un nouveau bloc de donnees.
+	 * @param data Pointeur vers les octets recus (non necessairement termines par un caractere nul).
+	 * @param n    Nombre d'octets valides dans data.
+	 * @return Le statut du parsing (a definir : ex. -1 erreur, 0 incomplet, 1 termine).
+	 */
 	int	Request::Feed(const char *data, size_t n)
 	{
 		(void)data;

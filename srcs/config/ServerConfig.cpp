@@ -32,6 +32,14 @@ ServerConfig	&ServerConfig::operator=(const ServerConfig& src)
 
 
 	/*===Member Function===*/
+
+/**
+ * @brief Trouve la configuration de location correspondant a une requete.
+ * @param host Le nom d'hote demande (issu de l'en-tete Host).
+ * @param port Le port sur lequel la connexion a ete recue.
+ * @param uri  L'URI demandee.
+ * @return Un pointeur vers la LocationConfig correspondante, ou NULL si aucune ne correspond.
+ */
 const LocationConfig	*ServerConfig::Resolve(const std::string &host, int port, const std::string &uri)
 {
 	(void)host;

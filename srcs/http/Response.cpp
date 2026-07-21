@@ -32,6 +32,12 @@ Response	&Response::operator=(const Response& src)
 
 
 	/*===Member Function===*/
+
+/**
+ * @brief Serialise la reponse HTTP en une chaine prete a etre envoyee sur le socket.
+ * @param out Chaine dans laquelle la reponse serialisee sera ecrite.
+ * @return true si la serialisation a reussi, false sinon.
+ */
 bool	Response::Serialize(std::string &out)
 {
 	(void)out;
