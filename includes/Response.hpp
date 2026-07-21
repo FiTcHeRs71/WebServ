@@ -26,7 +26,7 @@ class Response
 
 
 	/*===Member Function===*/
-	bool	serialize(std::string &out);
+	bool	Serialize(std::string &out);
 };
 
 #endif /*RESPONSE_HPP*/

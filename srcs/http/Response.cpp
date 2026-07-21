@@ -32,7 +32,7 @@ Response	&Response::operator=(const Response& src)
 
 
 	/*===Member Function===*/
-bool	Response::serialize(std::string &out)
+bool	Response::Serialize(std::string &out)
 {
 	(void)out;
 	return (true);

@@ -32,7 +32,7 @@ Request	&Request::operator=(const Request& src)
 
 
 	/*===Member Function===*/
-	int	Request::feed(const char *data, size_t n)
+	int	Request::Feed(const char *data, size_t n)
 	{
 		(void)data;
 		(void)n;

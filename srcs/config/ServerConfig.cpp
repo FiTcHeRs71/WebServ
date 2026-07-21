@@ -32,7 +32,7 @@ ServerConfig	&ServerConfig::operator=(const ServerConfig& src)
 
 
 	/*===Member Function===*/
-const LocationConfig	*ServerConfig::resolve(const std::string &host, int port, const std::string &uri)
+const LocationConfig	*ServerConfig::Resolve(const std::string &host, int port, const std::string &uri)
 {
 	(void)host;
 	(void)port;

@@ -28,7 +28,7 @@ class ServerConfig
 
 
 	/*===Member Function===*/
-	const LocationConfig	*resolve(const std::string &host, int port, const std::string &uri);
+	const LocationConfig	*Resolve(const std::string &host, int port, const std::string &uri);
 };
 
 #endif /*SERVER_CONFIG_HPP*/

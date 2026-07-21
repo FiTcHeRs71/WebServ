@@ -26,7 +26,7 @@ class Request
 
 
 	/*===Member Function===*/
-	int	feed(const char *data, size_t n);
+	int	Feed(const char *data, size_t n);
 };
 
 #endif /*REQUEST_HPP*/
