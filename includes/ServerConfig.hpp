@@ -17,7 +17,7 @@ class ServerConfig
 {
 	private:
 
-
+	std::vector<std::string>	_TokenConfFile;
 
 	protected:
 
