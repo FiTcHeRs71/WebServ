@@ -169,7 +169,7 @@ int main(int ac, char** av) {
 ```
 
 - Confs **valides** → le dump doit correspondre à ce qu'on attend.
-- 10 confs **invalides** dans `conf/bad/` → chacune doit sortir un message clair + `exit(1)`, **aucune acceptée**.
+- 20 confs **invalides** dans `conf/bad/` → chacune doit sortir un message clair + `exit(1)`, **aucune acceptée**.
 - `Resolve()` → tests unitaires du match de préfixe : `/kapouet/pouic/toto/pouet` → `/tmp/www/pouic/toto/pouet`.
 
 ### B – Réseau (sans le vrai HTTP : on renvoie une réponse hardcodée)
