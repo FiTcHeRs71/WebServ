@@ -38,14 +38,14 @@ vector<string> tokenize(const string &path)
 			if (flag_begin == string::npos)
 				break;
 			flag_end = (line.find_first_of(to_ignore + specials, flag_begin));
-			if (specials.find(line[flag_end]) != string::npos)
+			if (flag_end != string::npos && specials.find(line[flag_end]) != string::npos)
 			{
 				if (flag_end > flag_begin)
 					lexer_config.push_back(line.substr(flag_begin, flag_end - flag_begin));
 				lexer_config.push_back(line.substr(flag_end, 1));
 				flag_begin = flag_end + 1;
 			}
-			else if (line.size() > 0)
+			else if (flag_end - flag_begin > 0)
 			{
 				lexer_config.push_back(line.substr(flag_begin, flag_end - flag_begin));
 				flag_begin = flag_end;
