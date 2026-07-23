@@ -12,11 +12,12 @@ int main(int argc, char **argv)
 	}
 	try
 	{
-		tokenize(argv[1]);
+		check_syntax(tokenize(argv[1]));
+		cout << "Checking OK " << endl;
 	}
 	catch (exception &e)
 	{
-		cout << "Error : "<< e.what() << endl;
+		cout << "/!\\ Error /!\\ : "<< e.what() << endl;
 		return (1);
 	}
 	return (0);

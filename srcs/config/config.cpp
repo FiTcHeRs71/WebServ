@@ -3,7 +3,11 @@
 #include <cstddef>
 #include <fstream>
 #include <ostream>
+#include <stdexcept>
 #include <string>
+#include <vector>
+#include <set>
+
 
 using namespace std;
 
@@ -29,8 +33,9 @@ vector<string> tokenize(const string &path)
 	{
 		size_t	flag_begin = 0;
 		size_t	flag_end = 0;
+		size_t	first = line.find_first_not_of(to_ignore);
 
-		if (line.size()<= 0 ||line[0] == '#')
+		if (first == string::npos || line[first] == '#')
 			continue;
 		while (flag_end < line.size())
 		{
@@ -55,3 +60,62 @@ vector<string> tokenize(const string &path)
 	return (lexer_config);
 }
 
+
+void	check_syntax(const vector<string> &tokens)
+{
+	vector<string>	block_stack;
+	size_t			i = 0;
+
+	while (i < tokens.size())
+	{
+		const string &tok = tokens[i];
+
+		if (tok == "}")
+		{
+			if (block_stack.empty())
+				throw invalid_argument("Closing brace expected");
+			block_stack.pop_back();
+			i++;
+			continue;
+		}
+		else if (!known_directives().count(tok))
+			throw runtime_error("directive inconnue : " + tok);
+		if (tok == "server" && !block_stack.empty())
+			throw runtime_error("Cannot have a server block inside a otherone");
+		if (tok == "location" && (block_stack.empty() || block_stack.back() != "server"))
+			throw runtime_error("Location block must be inside a server block");
+		if (tok != "server" && tok != "location" && block_stack.empty())
+			throw runtime_error(tok + "is out side on any blocks");
+
+		i++;
+
+		if (tok == "server" || tok == "location")
+		{
+			if (tok == "location")
+			{
+				if (i >= tokens.size() || tokens[i] == "{")
+					throw runtime_error("Location without PATH");
+				i++;
+			}
+			if (i >= tokens.size() || tokens[i] != "{")
+				throw runtime_error("'{' expected after " + tok);
+			block_stack.push_back(tok);
+			i++;
+			continue;
+		}
+
+		size_t	value_count = 0;
+		while (i < tokens.size() && tokens[i] != ";" && tokens[i] != "}" && known_directives().count(tok))
+		{
+			value_count++;
+			i++;
+		}
+		if (value_count == 0)
+			throw runtime_error("directive '" + tok + "' without value");
+		if (i >= tokens.size() || tokens[i] != ";")
+			throw runtime_error("';' missing after '" + tok + "'");
+		i++;
+	}
+	if (!block_stack.empty())
+		throw runtime_error("Brace not closed");
+}
