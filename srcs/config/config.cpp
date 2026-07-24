@@ -33,9 +33,12 @@ vector<string> tokenize(const string &path)
 	{
 		size_t	flag_begin = 0;
 		size_t	flag_end = 0;
+		size_t	comment = line.find("#");
+		
+		if (comment != string::npos)
+			line.erase(comment);
 		size_t	first = line.find_first_not_of(to_ignore);
-
-		if (first == string::npos || line[first] == '#')
+		if (first == string::npos)
 			continue;
 		while (flag_end < line.size())
 		{
@@ -105,7 +108,9 @@ void	check_syntax(const vector<string> &tokens)
 		}
 
 		size_t	value_count = 0;
-		while (i < tokens.size() && tokens[i] != ";" && tokens[i] != "}" && known_directives().count(tok))
+
+		while (i < tokens.size() && tokens[i] != ";" && tokens[i] != "}"
+			&& tokens[i] != "{" && !known_directives().count(tokens[i]))
 		{
 			value_count++;
 			i++;
