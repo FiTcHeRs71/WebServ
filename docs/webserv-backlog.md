@@ -60,7 +60,7 @@ Convention : `[MOD-NN] titre — dépend de — DoD`
 
 | ID | Titre | DoD |
 |---|---|---|
-| S0-01 | Squelette repo : Makefile (`all clean fclean re`, `-Wall -Wextra -Werror -std=c++98`), arbo `src/ inc/ conf/ www/ tests/` | `make` compile un `main` vide sans relink inutile |
+| S0-01 | Squelette repo : Makefile (`all clean fclean re`, `-Wall -Wextra -Werror -std=c++98`), arbo `srcs/ includes/ conf/ www/ tests/` | `make` compile un `main` vide sans relink inutile |
 | S0-02 | Figer les headers d'interface (`ServerConfig.hpp`, `Request.hpp`, `Response.hpp`, `Connection.hpp`) — corps vides | Les 3 modules compilent contre ces headers |
 | S0-03 | Écrire `conf/default.conf` cible + `conf/bad/*.conf` (20 cas invalides) | Sert de spec au module A |
 | S0-04 | Convention Git : branches `feat/a-*`, `feat/b-*`, `feat/c-*`, PR + relecture croisée obligatoire | Écrit dans le README |
@@ -72,7 +72,7 @@ Convention : `[MOD-NN] titre — dépend de — DoD`
 | A-01 | Lecture fichier + tokenizer (blocs `{}`, directives `;`, commentaires `#`) | S0-03 | Dump des tokens sur un conf valide |
 | A-02 | Parse bloc `server` : `listen`, `server_name`, `error_page`, `client_max_body_size` | A-01 | Struct remplie, affichable |
 | A-03 | Parse bloc `location` : `allow_methods`, `root`, `index`, `autoindex`, `return`, `upload_store`, `cgi_pass`/`cgi_ext` | A-02 | Struct remplie |
-| A-04 | Validation + erreurs explicites (port 0-65535, duplicat de listen, root inexistant, méthode inconnue, taille mal formée) | A-03 | Les 10 confs invalides sortent un message clair + exit 1, aucune n'est acceptée |
+| A-04 | Validation + erreurs explicites (port 0-65535, duplicat de listen, root dupliqué, méthode inconnue, taille mal formée, validations croisées) | A-03 | Les 20 confs invalides sortent un message clair + exit 1, aucune n'est acceptée |
 | A-05 | `Resolve()` : match du préfixe le plus long, fallback location `/` | A-03 | Tests unitaires : `/`, `/kapouet/pouic/toto/pouet` → `/tmp/www/pouic/toto/pouet` |
 | A-06 | Valeurs par défaut si directive absente (index, autoindex off, body size, error pages built-in) | A-04 | Conf minimale (juste `listen`) démarre |
 

@@ -66,8 +66,8 @@ Le champ qui compte, c'est la **DoD** : une condition **binaire**, qui teste la 
 
 1. Je prends un ticket `Backlog` → je me l'assigne → `In progress`.
 2. Je crée une branche : `feat/<mod>-<id>` (ex. `feat/b-03-connection-buffers`).
-3. Je code **contre les interfaces figées**, pas contre le vrai code des autres.
-4. DoD atteinte + testée → je pousse → j'ouvre une PR → colonne `Needs review`, label `needs-review`.
+3. Je code **contre les interfaces figées**, pas contre le vrai code des autres. Mes commits suivent la [convention de commits](templates/commit-convention.md) (`type(scope): description (ID)`).
+4. DoD atteinte + testée → je pousse → j'ouvre une PR (le [template](templates/pull_request_template.md) se copie dans la description) → colonne `Needs review`, label `needs-review`.
 5. Un autre équipier relit, teste la DoD lui-même, approuve.
 6. Merge → `Closes #NN` → colonne `Done`. **Jamais de merge sans relecture.**
 
@@ -84,9 +84,9 @@ git checkout main && git pull
 # 2. Créer sa branche de ticket
 git checkout -b feat/b-03-connection-buffers
 
-# 3. Coder, puis commiter
+# 3. Coder, puis commiter (convention : docs/templates/commit-convention.md)
 git add -A
-git commit -m "B-03: buffers de connexion (recv/send partiel)"
+git commit -m "feat(net): buffers de connexion recv/send partiel (B-03)"
 
 # 4. Pousser la branche
 git push -u origin feat/b-03-connection-buffers
@@ -229,9 +229,9 @@ python3 tests/run.py     # doit être tout vert avant chaque merge de synchro
 
 Plus, pour B : stress test `siege -b` / `ab` → availability 100 %, RAM stable, `valgrind` propre.
 
-### Le tester officiel 42 (`tester/`)
+### Le tester officiel 42 (`tests/testeur/`)
 
-Les binaires du sujet sont dans `tester/` : `tester` (teste le serveur) et `cgi_tester` (sert de programme CGI que **votre** serveur exécute). **Passer ce test est le minimum avant l'éval** — mais il ne teste pas tout, gardez la suite Python à côté.
+Les binaires du sujet sont dans `tests/testeur/` : `tester` (teste le serveur) et `cgi_tester` (sert de programme CGI que **votre** serveur exécute). **Passer ce test est le minimum avant l'éval** — mais il ne teste pas tout, gardez la suite Python à côté.
 
 **Étape 1 — créer l'arborescence attendue** (contenu des fichiers libre) :
 
@@ -259,7 +259,7 @@ YoupiBanane/
 
 ```
 ./webserv conf/tester.conf &
-./tester/tester http://localhost:8080
+./tests/testeur/tester http://localhost:8080
 ```
 
 > C'est un bon jalon de synchro : dès que le point n°3 (site statique servi) est atteint, on doit viser à faire passer ce tester. Le CGI (`*.bla` + `cgi_tester`) ne passera qu'après le module D.
@@ -275,7 +275,7 @@ YoupiBanane/
 - [ ] README en anglais : 1re ligne en italique avec les 3 logins + usage de l'IA.
 - [ ] Chacun sait expliquer les **3** modules, pas seulement le sien.
 - [ ] Chaque feature du sujet démontrable en **une commande**.
-- [ ] Le tester officiel (`tester/tester`) passe (voir §4).
+- [ ] Le tester officiel (`tests/testeur/tester`) passe (voir §4).
 
 
 ## 6. Notes

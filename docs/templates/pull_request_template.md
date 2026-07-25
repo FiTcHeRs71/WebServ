@@ -26,5 +26,12 @@ Closes #
 
 <!-- Ce qui mérite un regard attentif : cas limites, hypothèses, dépendances avec un autre module. -->
 
+## Convention de commits
+
+<!-- Les commits de cette PR suivent la convention : type(scope): description (ID-ticket). -->
+<!-- Détail : docs/templates/commit-convention.md -->
+
+- [ ] Messages de commit conformes à la [convention](commit-convention.md)
+
 ---
-_Convention détaillée : [`docs/github-setup.md`](github-setup.md) · Backlog & DoD : [`docs/webserv-backlog.md`](webserv-backlog.md)_
+_Convention de commits : [`docs/templates/commit-convention.md`](commit-convention.md) · Workflow PR : [`docs/github-setup.md`](../github-setup.md) · Backlog & DoD : [`docs/webserv-backlog.md`](../webserv-backlog.md)_

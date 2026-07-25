@@ -120,7 +120,7 @@ Le mot magique : **`Closes #23`** (ou `Fixes #23`) dans la PR ou un commit → f
 
 Les tickets `E-01/02/03` sont créés (label `mod:bonus`) mais restent en **Backlog**.
 **Ne pas les convertir/démarrer** tant que le mandatory n'est pas parfait
-(tester officiel `tester/tester` OK + valgrind propre + relecture). Le sujet n'évalue le bonus
+(tester officiel `tests/testeur/tester` OK + valgrind propre + relecture). Le sujet n'évalue le bonus
 que si l'obligatoire est 100 % complet.
 
 ## Variante : tout scripter avec `gh` (si un jour vous voulez)
