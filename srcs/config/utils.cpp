@@ -5,6 +5,9 @@
 
 using namespace std;
 
+/**
+ * @brief check si le fichier passer en argument du programme est ouvrable / lisible et non-vide.
+*/
 void	is_valid_file(ifstream &file)
 {
 	if (!file.is_open())
@@ -13,6 +16,11 @@ void	is_valid_file(ifstream &file)
 		throw invalid_argument("configuration file is empty");
 }
 
+/**
+ * @brief contient toutes les arguments(key) valide passable aux programme
+ * ex : ->listen<-	0.0.0.0:8080;
+ * @return Return l'argument de la ligne en cours de checking.
+*/
 const set<string> &known_directives(void)
 {
 	static const string names[] = {

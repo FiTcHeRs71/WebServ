@@ -1,8 +1,6 @@
 # include "../../includes/config.hpp"
-#include <algorithm>
 #include <cstddef>
 #include <fstream>
-#include <ostream>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -63,7 +61,14 @@ vector<string> tokenize(const string &path)
 	return (lexer_config);
 }
 
-
+/**
+ * @brief Prend la liste de tokens et verifie la syntaxe
+ * 
+ * Il parcours la liste de tokens generer par la fonction tokenize et verifie l'ordre des arguments
+ * Il ne fait aucune verificatiion sur la validite des ports ou autres
+ * throw une exception en cas de syntaxe invalid
+ * @return void
+*/
 void	check_syntax(const vector<string> &tokens)
 {
 	vector<string>	block_stack;
