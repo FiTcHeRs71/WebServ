@@ -1,13 +1,47 @@
-# include "../../includes/config.hpp"
+#include "../../includes/Config.hpp"
 #include <cstddef>
 #include <fstream>
 #include <stdexcept>
 #include <string>
-#include <vector>
-#include <set>
-
 
 using namespace std;
+
+ConfigParser::ConfigParser(void)
+{
+	//cout << "ConfigParser default constructor called" << endl;
+}
+ConfigParser::~ConfigParser(void)
+{
+	//cout << "ConfigParser default destructor called" << endl;
+}
+ConfigParser::ConfigParser(const ConfigParser& to_copy)
+	:_LexerConfig(to_copy._LexerConfig)
+{
+	//cout << "ConfigParser copy constructor called" << endl;
+}
+ConfigParser & ConfigParser::operator=(const ConfigParser& src)
+{
+	//cout << "ConfigParser operator assignement(=) constructor called" << endl;
+	if (this != &src)
+	{
+		this->_LexerConfig = src._LexerConfig;
+	}
+	return (*this);
+}
+
+/**
+ * @brief Fonction d'entrer pour le parsing et les checking
+ * 
+ * Remplir avec les differents appel au fonction de checking
+ * @return void
+*/
+void	parse(const string &argv1)
+{
+	ConfigParser	Config;
+
+	Config.tokenize(argv1);
+	Config.check_syntax(Config._LexerConfig);
+}
 
 /**
  * @brief Prend le fichier de configuration et le tokenize.
@@ -15,12 +49,11 @@ using namespace std;
  * Il stocke les valeurs dans dans un vector (lexer_config)
  * Il ne fait aucune verification de validite ou synthaxes des arguments
  * Checking au debut de l'accesiblite du file passer en argument
- * @return Le vector remplie de token de non checker du file de configuration
+ * @return void
 */
-vector<string> tokenize(const string &path)
+void	ConfigParser::tokenize(const string &path)
 {
 	ifstream		config_file(path.c_str());
-	vector<string>	lexer_config;
 	string			line;
 	string			to_ignore = " \t\n\r\v\f";
 	string			specials = ";{}";
@@ -47,18 +80,17 @@ vector<string> tokenize(const string &path)
 			if (flag_end != string::npos && specials.find(line[flag_end]) != string::npos)
 			{
 				if (flag_end > flag_begin)
-					lexer_config.push_back(line.substr(flag_begin, flag_end - flag_begin));
-				lexer_config.push_back(line.substr(flag_end, 1));
+					this->_LexerConfig.push_back(line.substr(flag_begin, flag_end - flag_begin));
+				this->_LexerConfig.push_back(line.substr(flag_end, 1));
 				flag_begin = flag_end + 1;
 			}
 			else if (flag_end - flag_begin > 0)
 			{
-				lexer_config.push_back(line.substr(flag_begin, flag_end - flag_begin));
+				this->_LexerConfig.push_back(line.substr(flag_begin, flag_end - flag_begin));
 				flag_begin = flag_end;
 			}
 		}
 	}
-	return (lexer_config);
 }
 
 /**
@@ -69,7 +101,7 @@ vector<string> tokenize(const string &path)
  * throw une exception en cas de syntaxe invalid
  * @return void
 */
-void	check_syntax(const vector<string> &tokens)
+void	ConfigParser::check_syntax(const vector<string> &tokens)
 {
 	vector<string>	block_stack;
 	size_t			i = 0;

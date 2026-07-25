@@ -1,4 +1,4 @@
-#include "../../includes/config.hpp"
+#include "../../includes/Config.hpp"
 #include <fstream>
 #include <iostream>
 #include <set>
