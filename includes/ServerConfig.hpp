@@ -2,9 +2,8 @@
 # define SERVER_CONFIG_HPP
 
 # include "LocationConfig.hpp"
+# include "Config.hpp"
 # include <iostream>
-# include <string>
-# include <vector>
 
 /**
  * @brief Represente la configuration d'un serveur virtuel (bloc "server").
@@ -15,9 +14,10 @@
  */
 class ServerConfig
 {
+	friend class ConfigParser;
 	private:
 
-	std::vector<std::string>	_TokenConfFile;
+
 
 	protected:
 
