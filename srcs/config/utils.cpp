@@ -6,9 +6,12 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <map>
 #include <set>
 #include <stdexcept>
+#include <string>
 #include <utility>
+#include <vector>
 
 using namespace std;
 
@@ -39,7 +42,7 @@ const set<string> &known_directives(void)
 	return (s);
 }
 
-pair<string, int>	parse_listen(string	value)
+pair<string, int>	parse_listen(const string &value)
 {
 	pair<string, int>	pair;
 	size_t				flag;
@@ -59,4 +62,49 @@ pair<string, int>	parse_listen(string	value)
 	pair.first = host;
 	pair.second = static_cast<int>(port_converted);
 	return (pair);
+}
+
+size_t	parse_body_size(const string &value)
+{
+	int		multiplier;
+	long	size_converted;
+	char*	p_end = NULL;
+	errno = 0;
+
+	if (value.empty())
+		throw runtime_error(value + " is not a valid body size");
+	size_converted = strtol(value.c_str(), &p_end, 10);
+	if (p_end == value.c_str() || size_converted < 0 || errno == ERANGE)
+		throw runtime_error(value + " is not a valid body size");
+	if (*p_end == '\0')
+		multiplier = 1;
+	else if ((*p_end == 'K' || *p_end == 'k') && p_end[1] == '\0')
+		multiplier = 1024;
+	else if ((*p_end == 'M' || *p_end == 'm') && p_end[1] == '\0')
+		multiplier = 1024 * 1024;
+	else
+		throw runtime_error(value + " is not a valid body size");
+	if (size_converted > INT_MAX / multiplier)
+		throw runtime_error(value + " is a too big body size");
+	return (static_cast<size_t>(size_converted));
+}
+
+map<int, string>	parse_error_pages(const vector<string> value, size_t &j)
+{
+	map<int, string>	map;
+	long	size_converted;
+	char*	p_end = NULL;
+	
+	if (value.size() < 2)
+		throw ("Error pages missing a elements, minimum correct value needed is 2 or more");
+	while (j < value.size() - 1)
+	{
+		errno = 0;
+		size_converted = strtol(value[j].c_str(), &p_end, 10);
+		if (size_converted > 600 || size_converted < 0 || errno == ERANGE || *p_end != '\0')
+			throw runtime_error( value[j] + " is not a valid code page error");
+		map[static_cast<int>(size_converted)] = value.back();
+		j++;
+	}
+	return (map);
 }
