@@ -1,8 +1,11 @@
 #include "../../includes/Config.hpp"
+#include "../../includes/ServerConfig.hpp"
 #include <cstddef>
+#include <cstdlib>
 #include <fstream>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -41,6 +44,7 @@ void	parse(const string &argv1)
 
 	Config.tokenize(argv1);
 	Config.check_syntax(Config._LexerConfig);
+	Config.fill_servers_config();
 }
 
 /**
@@ -160,4 +164,60 @@ void	ConfigParser::check_syntax(const vector<string> &tokens)
 	}
 	if (!block_stack.empty())
 		throw runtime_error("Brace not closed");
+}
+
+void	ConfigParser::fill_servers_config(void)
+{
+	size_t i = 0;
+
+	while (i < this->_LexerConfig.size())
+	{
+		i += 2; // skip token "server" + "{"
+		ServerConfig	server;
+		fill_one_server(server, i);
+		this->_Servers.push_back(server);
+	}
+}
+
+void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
+{
+	while (this->_LexerConfig[i] != "}")
+	{
+		string	key = this->_LexerConfig[i];
+		i++;
+
+		if (key == "location") //ticket A-03
+			continue;
+		else
+		{
+			vector<string>	value = collect_values(i);
+			for (int j = 0; i < value.size(); i++)
+			{
+				if (key == "listen")
+					server._Listens.push_back(parse_listen(value[j++])); // split 0.0.0.0 de 8080
+				else if (key ==  "server_name")
+					server._ServerNames.push_back(value[j++]);
+				/*else if (key == "client_max_body_size")
+					server._ClientMaxBodySize = (strtol(value[++i])); // ajouter check si value corret ex pas de lettre
+				else if (key == "error_page")
+					server._ErrorPages.insert(static_cast<int>(strtol(value[++i])), value[++i]); //ajouter check si value corret ex pas de lettre ou range
+				else
+					throw runtime_error("directive '" + key + "' interdite dans server");*/
+			}
+		}
+		i++;
+	}
+}
+
+vector<string>	ConfigParser::collect_values(size_t &i)
+{
+	vector<string>	values;
+
+	while (_LexerConfig[i] != ";")
+	{
+		values.push_back(_LexerConfig[i]);
+		i++;
+	}
+	i++;
+	return (values);
 }
