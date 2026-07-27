@@ -2,7 +2,10 @@
 *.o
 *.d
 objs/
-webserv
+# Binaire compile a la racine. Le !/webserv/ reautorise un eventuel
+# dossier du meme nom, sinon git l'ignorerait silencieusement.
+/webserv
+!/webserv/
 
 # Éditeurs / OS
 .vscode/
