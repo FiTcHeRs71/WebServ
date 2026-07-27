@@ -2,9 +2,9 @@
 # define CONFIG_HPP
 
 # include "ServerConfig.hpp"
-#include <cstddef>
+# include <cstddef>
 # include <iostream>
-#include <string>
+# include <string>
 # include <vector>
 # include <set>
 
@@ -47,6 +47,8 @@ class ConfigParser
 void				is_valid_file(ifstream &file);
 void				parse(const string &argv1);
 const set<string>	&known_directives();
-pair<string, int>	parse_listen(string	value);
+pair<string, int>	parse_listen(const string &value);
+size_t				parse_body_size(const string &value);
+map<int, string>	parse_error_pages(const vector<string> value, size_t &j);
 
 #endif /*CONFIG_HPP*/
