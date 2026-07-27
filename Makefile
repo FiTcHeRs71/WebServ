@@ -40,7 +40,7 @@ DEPS = $(OBJS:.o=.d)
 
 # Compiler and flags
 CXX = c++
-CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -I$(INC_DIR) -g
+CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -I$(INC_DIR) -g -fstandalone-debug
 DEPFLAGS = -MMD -MP
 
 # Colors
