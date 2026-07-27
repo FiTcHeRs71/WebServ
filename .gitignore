@@ -10,3 +10,4 @@ objs/
 # Éditeurs / OS
 .vscode/
 .DS_Store
+make fcl

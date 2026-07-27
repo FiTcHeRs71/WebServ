@@ -1,11 +1,9 @@
 #include "../../includes/Config.hpp"
-#include <algorithm>
 #include <cerrno>
 #include <climits>
 #include <cstddef>
 #include <cstdlib>
 #include <fstream>
-#include <iostream>
 #include <map>
 #include <set>
 #include <stdexcept>
@@ -42,6 +40,11 @@ const set<string> &known_directives(void)
 	return (s);
 }
 
+/**
+ * @brief Split le token value associe a la key listen dans une pair.
+ * La pair contient le host puis le port (0.0.0.0 | 8080)
+ * @return Return la pair completer
+*/
 pair<string, int>	parse_listen(const string &value)
 {
 	pair<string, int>	pair;
@@ -64,6 +67,12 @@ pair<string, int>	parse_listen(const string &value)
 	return (pair);
 }
 
+/**
+ * @brief fait la conversion entre la value donner par client_max_body_size en size_t
+ * Check si une lettre de size est presente en fin value (KkMmGg)
+ * 
+ * @return Return le size_t convertie
+*/
 size_t	parse_body_size(const string &value)
 {
 	int		multiplier;

@@ -1,7 +1,6 @@
 #include "../../includes/Config.hpp"
 #include "../../includes/ServerConfig.hpp"
 #include <cstddef>
-#include <cstdlib>
 #include <fstream>
 #include <stdexcept>
 #include <string>
@@ -166,6 +165,14 @@ void	ConfigParser::check_syntax(const vector<string> &tokens)
 		throw runtime_error("Brace not closed");
 }
 
+/**
+ * @brief Fonction d'entrer pour le parsing de chaque bloc serveur
+ * 
+ * Il parcours la liste de tokens generer par la fonction tokenize
+ * Il remplie le vector _Servers avec des objets de Serverconfig.
+ * ServerConfig contient tous les elements de chaque serveur block
+ * @return void
+*/
 void	ConfigParser::fill_servers_config(void)
 {
 	size_t i = 0;
@@ -185,6 +192,14 @@ void	ConfigParser::fill_servers_config(void)
 	}
 }
 
+/**
+ * @brief prend un objet server instancier dans fill_servers_config et remplie ces attributs
+ * 
+ * Il parcours la liste de tokens generer par la fonction tokenize
+ * Puis trouve les directives et remplies les attributs avec valeurs associes
+ * Gere des erreurs de valeurs non valide
+ * @return void
+*/
 void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 {
 	while (this->_LexerConfig[i] != "}" && i < this->_LexerConfig.size())
@@ -221,6 +236,12 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 	}
 }
 
+/**
+ * @brief rempli un vecteur de toute les valeurs associe a une key
+ * 
+ * remplie un vecteur de tous les elements contenu entre la key et ";"
+ * @return vecteur remplie des valeur
+*/
 vector<string>	ConfigParser::collect_values(size_t &i)
 {
 	vector<string>	values;

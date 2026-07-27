@@ -7,6 +7,9 @@
 # include <string>
 # include <vector>
 # include <set>
+# include <fstream>
+# include <utility>
+# include <map>
 
 using namespace std;
 
