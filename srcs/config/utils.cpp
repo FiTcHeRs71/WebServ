@@ -120,7 +120,7 @@ map<int, string>	parse_error_pages(const vector<string> value, size_t &j)
 	{
 		errno = 0;
 		size_converted = strtol(value[j].c_str(), &p_end, 10);
-		if (size_converted > 600 || size_converted < 0 || errno == ERANGE || *p_end != '\0')
+		if (size_converted > 505 || size_converted < 0 || errno == ERANGE || *p_end != '\0')
 			throw runtime_error( value[j] + " is not a valid code page error");
 		map[static_cast<int>(size_converted)] = value.back();
 		j++;
