@@ -96,7 +96,7 @@ void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
 	if (flag != 0)
 		throw runtime_error(token[i] + " is not a valid PATH");
 	this->_Path = token[i];
-	i+=2; // saute le PATH + "{"
+	i += 2; // saute le PATH + "{"
 	while (i < token.size() && token[i] != "}")
 	{
 		string	key = token[i];
@@ -115,9 +115,7 @@ void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
 				this->_AutoIndex = true;
 		}
 		else if (key == "cgi_ext")
-		{
-
-		}
+			this->_CgiExt = parse_cgi_ext(value);
 		else if (key == "cgi_pass")
 		{
 

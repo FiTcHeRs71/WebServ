@@ -58,5 +58,6 @@ set<string>			parse_allow_methods(const vector<string> &value);
 string				parse_root(const vector<string> &value);
 vector<string>		parse_index(const vector<string> &value);
 bool				parse_auto_index(const vector<string> &value);
+string				parse_cgi_ext(const vector<string> &value);
 
 #endif /*CONFIG_HPP*/

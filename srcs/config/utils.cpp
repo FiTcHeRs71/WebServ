@@ -200,3 +200,12 @@ bool	parse_auto_index(const vector<string> &value)
 		return (true);
 	return (false);
 }
+
+string	parse_cgi_ext(const vector<string> &value)
+{
+	if (value.size() != 1)
+		throw runtime_error("cgi_ext takes exactly one extension");
+	if (value[0].size() < 2 || value[0][0] != '.')
+		throw runtime_error(value[0] + " is not a valid CGI extensions");
+	return (value[0]);
+}
