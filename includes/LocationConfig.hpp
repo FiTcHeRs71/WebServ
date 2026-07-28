@@ -33,6 +33,7 @@ class LocationConfig
 	string				_CgiPass;
 	size_t				_ClientMaxBodySize;
 	bool				_HasClientMaxBodySize;
+	string				_ReturnTarget;
 
 	protected:
 

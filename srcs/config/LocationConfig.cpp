@@ -127,7 +127,12 @@ void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
 		}
 		else if (key == "return")
 		{
-
+			if (value.empty() || value.size() > 2)
+				throw runtime_error(key + " needs one or two arguments");
+			this->_HasReturn = true;
+			this->_ReturnCode = parser_return_code(value[0]);
+			if (value.size() == 2)
+				this->_ReturnTarget = value[1];
 		}
 		else 
 			throw runtime_error(key + " is not a valid instructions in location bloc");

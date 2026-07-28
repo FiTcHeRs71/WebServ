@@ -1,5 +1,6 @@
 #include "../../includes/Config.hpp"
 #include <algorithm>
+#include <cctype>
 #include <cerrno>
 #include <climits>
 #include <cstddef>
@@ -216,4 +217,19 @@ string	parse_cgi_pass(const vector<string> &value)
 		throw runtime_error("cgi_pass takes exactly one extension");
 	//check si le path du cgi est bon ?
 	return (value[0]);
+}
+
+int	parser_return_code(const string &value)
+{
+	for (size_t i = 0; i < value.size(); i++)
+	{
+		if(!isdigit(static_cast<unsigned char>(value[i])))
+			throw runtime_error(value + " is not a valid return code");
+	}
+	char	*end;
+	errno = 0;
+	long	code = strtol(value.c_str(), &end, 10);
+	if (code < 100 || code > 599 || errno == ERANGE || *end != '\0')
+		throw runtime_error(value + "is not a valid HTTP status code");
+	return (static_cast<int>(code));
 }
