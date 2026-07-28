@@ -2,6 +2,12 @@
 # define LOCATION_CONFIG_HPP
 
 # include <iostream>
+# include <map>
+# include <string>
+# include <vector>
+# include <set>
+
+using namespace std;
 
 /**
  * @brief Represente la configuration d'une location (bloc "location") d'un serveur.
@@ -13,7 +19,17 @@ class LocationConfig
 {
 	private:
 
-
+	string				_Path;
+	set<string>			_Methods;
+	string				_Root;
+	vector<string>		_Index;
+	bool				_AutoIndex;
+	bool				_HasAutoIndex;
+	int					_ReturnCode;
+	string				_ReturnUrl;
+	bool				_HasReturn;
+	string				_CgiExt;
+	string				_CgiPass;
 
 	protected:
 
@@ -32,6 +48,8 @@ class LocationConfig
 
 	/*===Member Function===*/
 
+
+	friend ostream	&operator<<(ostream &flux, const LocationConfig &src);
 };
 
 #endif /*LOCATION_CONFIG_HPP*/
