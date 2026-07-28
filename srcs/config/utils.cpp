@@ -1,4 +1,5 @@
 #include "../../includes/Config.hpp"
+#include <algorithm>
 #include <cerrno>
 #include <climits>
 #include <cstddef>
@@ -108,14 +109,14 @@ size_t	parse_body_size(const string &value)
  *
  * @return une map[<Error_code>] = "PATH"
 */
-map<int, string>	parse_error_pages(const vector<string> value, size_t &j)
+map<int, string>	parse_error_pages(const vector<string> &value, size_t &j)
 {
 	map<int, string>	map;
 	long	size_converted;
 	char*	p_end = NULL;
 	
 	if (value.size() < 2)
-		throw ("Error pages missing a elements, minimum correct value needed is 2 or more");
+		throw runtime_error("Error pages missing a elements, minimum correct value needed is 2 or more");
 	while (j < value.size() - 1)
 	{
 		errno = 0;
@@ -126,4 +127,65 @@ map<int, string>	parse_error_pages(const vector<string> value, size_t &j)
 		j++;
 	}
 	return (map);
+}
+
+/**
+ * @brief Remplit un vecteur de toutes les valeurs associees a une key
+ *
+ * Remplit un vecteur de tous les elements contenus entre la key et ";"
+ * @return vecteur rempli des valeurs
+*/
+vector<string>		collect_values(vector<string> &token, size_t &i)
+{
+	vector<string>	values;
+
+	while (token[i] != ";")
+	{
+		values.push_back(token[i]);
+		i++;
+	}
+	i++; // saute le ";"
+	return (values);
+}
+
+const set<string> &known_methods(void)
+{
+	static const string names[] = {
+		"GET", "POST", "DELETE"
+	};
+	static const set<string> s(names, names + sizeof(names) / sizeof(names[0]));
+	return (s);
+}
+
+set<string>	parse_allow_methods(const vector<string> &value)
+{
+	set<string>	set;
+
+	for (size_t i = 0; i < value.size(); i++)
+	{
+		if (!known_methods().count(value[i]))
+			throw runtime_error("Unknow directives : " + value[i]);
+		set.insert(value[i]);
+	}
+	return (set);
+}
+
+string	parse_root(const vector<string> &value)
+{
+	if (value.size() > 1)
+		throw runtime_error("Too much arguments for key <ROOT>");
+	return (value[0]);
+}
+
+vector<string>	parse_index(const vector<string> &value)
+{
+	if (value.size() == 0)
+		throw runtime_error("Key index in location bloc need at leat one value");
+	for (size_t i = 0; i < value.size(); i++)
+	{
+		if (value[i].empty())
+			throw runtime_error ("Key index in location bloc has a empty arguments");
+		//if (value.)// doubon ?
+	}
+	return (value);
 }

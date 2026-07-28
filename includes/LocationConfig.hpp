@@ -17,6 +17,7 @@ using namespace std;
  */
 class LocationConfig
 {
+	friend class		ServerConfig;
 	private:
 
 	string				_Path;
@@ -30,6 +31,8 @@ class LocationConfig
 	bool				_HasReturn;
 	string				_CgiExt;
 	string				_CgiPass;
+	size_t				_ClientMaxBodySize;
+	bool				_HasClientMaxBodySize;
 
 	protected:
 
@@ -47,7 +50,7 @@ class LocationConfig
 
 
 	/*===Member Function===*/
-
+	void	parse_location(vector<string>	&token, size_t &i);
 
 	friend ostream	&operator<<(ostream &flux, const LocationConfig &src);
 };
