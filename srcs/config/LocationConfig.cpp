@@ -124,7 +124,10 @@ void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
 		}
 		else if (key == "client_max_body_size")
 		{
-
+			if (value.size() != 1)
+				throw runtime_error(key + " needs only one arguments");
+			this->_HasClientMaxBodySize = true;
+			this->_ClientMaxBodySize = parse_body_size(value[0]);
 		}
 		else if (key == "return")
 		{
