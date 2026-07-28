@@ -15,6 +15,7 @@ using namespace std;
 
 /**
  * @brief check si le fichier passer en argument du programme est ouvrable / lisible et non-vide.
+ * @return Return l'argument de la ligne en cours de checking.
 */
 void	is_valid_file(ifstream &file)
 {
@@ -43,6 +44,7 @@ const set<string> &known_directives(void)
 /**
  * @brief Split le token value associe a la key listen dans une pair.
  * La pair contient le host puis le port (0.0.0.0 | 8080)
+ * Check si la valeur depasse le INT_MAX ou negative.
  * @return Return la pair completer
 */
 pair<string, int>	parse_listen(const string &value)
@@ -69,7 +71,8 @@ pair<string, int>	parse_listen(const string &value)
 
 /**
  * @brief fait la conversion entre la value donner par client_max_body_size en size_t
- * Check si une lettre de size est presente en fin value (KkMmGg)
+ * Check si une lettre de size est presente en fin value (KkMmGg).
+ * Check si la value n'est pas empty ou trop grande.
  * 
  * @return Return le size_t convertie
 */
@@ -98,6 +101,13 @@ size_t	parse_body_size(const string &value)
 	return (static_cast<size_t>(size_converted));
 }
 
+/**
+ * @brief creer des map STL contenant le code d'erreur associe au PATH de la page dedie
+ * Check si le code d'error depasse 505 ou si la value est negative ou contient des caracteres
+ * non numeric.
+ * 
+ * @return Return une map[<Error_code>] = "PATH"
+*/
 map<int, string>	parse_error_pages(const vector<string> value, size_t &j)
 {
 	map<int, string>	map;

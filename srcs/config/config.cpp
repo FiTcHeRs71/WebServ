@@ -195,7 +195,7 @@ void	ConfigParser::fill_servers_config(void)
 /**
  * @brief prend un objet server instancier dans fill_servers_config et remplie ces attributs
  * 
- * Il parcours la liste de tokens generer par la fonction tokenize
+ * Il parcours la liste de tokens generer par la fonction 'tokenize'
  * Puis trouve les directives et remplies les attributs avec valeurs associes
  * Gere des erreurs de valeurs non valide
  * @return void
@@ -226,9 +226,9 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 				else if (key ==  "server_name")
 					server._ServerNames.push_back(value[j]); 
 				else if (key == "client_max_body_size")
-					server._ClientMaxBodySize = parse_body_size(value[j]); // ajouter check si value corret ex pas de lettre
+					server._ClientMaxBodySize = parse_body_size(value[j]);
 				else if (key == "error_page")
-					server._ErrorPages = parse_error_pages(value, j); //ajouter check si value corret ex pas de lettre ou range*/
+					server._ErrorPages = parse_error_pages(value, j);
 				else
 					throw runtime_error("directive : '" + key + "' forbiden in server body");
 			}
@@ -237,7 +237,7 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 }
 
 /**
- * @brief rempli un vecteur de toute les valeurs associe a une key
+ * @brief remplie un vecteur de toute les valeurs associe a une key
  * 
  * remplie un vecteur de tous les elements contenu entre la key et ";"
  * @return vecteur remplie des valeur
