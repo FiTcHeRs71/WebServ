@@ -109,16 +109,27 @@ void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
 			this->_Root = parse_root(value);
 		else if (key == "index")
 			this->_Index = parse_index(value);
-		/*else if (key == "autoindex")
-
+		else if (key == "autoindex")
+		{
+			if (parse_auto_index(value))
+				this->_AutoIndex = true;
+		}
 		else if (key == "cgi_ext")
+		{
 
+		}
 		else if (key == "cgi_pass")
+		{
 
+		}
 		else if (key == "client_max_body_size")
+		{
 
+		}
 		else if (key == "return")
-*/
+		{
+
+		}
 		else 
 			throw runtime_error(key + " is not a valid instructions in location bloc");
 	}

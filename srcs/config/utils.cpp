@@ -189,3 +189,14 @@ vector<string>	parse_index(const vector<string> &value)
 	}
 	return (value);
 }
+
+bool	parse_auto_index(const vector<string> &value)
+{
+	if (value.size() != 1)
+		throw runtime_error("autoindex needs only one arguments");
+	if (value[0] != "on" && value[0] != "off")
+		throw runtime_error(value[0] + "is not a valid argument for key autoindex");
+	if (value[0] == "on")
+		return (true);
+	return (false);
+}
