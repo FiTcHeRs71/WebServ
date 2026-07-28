@@ -54,9 +54,9 @@ const LocationConfig	*ServerConfig::Resolve(const std::string &host, int port, c
 }
 
 /**
- * @brief surcharge d'operateur pour impression des attributs de la classe
-
- * @return le flux remplie
+ * @brief Surcharge d'operateur pour l'impression des attributs de la classe
+ *
+ * @return le flux rempli
  */
 ostream		&operator<<(ostream &flux, const ServerConfig &src)
 {

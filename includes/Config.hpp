@@ -14,9 +14,9 @@
 using namespace std;
 
 /**
- * @brief Represente toute la pahse de parsing du .conf
+ * @brief Represente toute la phase de parsing du .conf
  *
- * _LexerConfig contient sous forme de token non checker le .conf
+ * _LexerConfig contient le .conf sous forme de tokens non checkes
  */
 class ConfigParser
 {

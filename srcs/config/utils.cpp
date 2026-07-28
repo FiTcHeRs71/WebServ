@@ -14,7 +14,7 @@
 using namespace std;
 
 /**
- * @brief check si le fichier passer en argument du programme est ouvrable / lisible et non-vide.
+ * @brief Check si le fichier passe en argument du programme est ouvrable / lisible et non vide.
  * @return Return l'argument de la ligne en cours de checking.
 */
 void	is_valid_file(ifstream &file)
@@ -26,7 +26,7 @@ void	is_valid_file(ifstream &file)
 }
 
 /**
- * @brief contient toutes les arguments(key) valide passable aux programme
+ * @brief Contient tous les arguments (key) valides passables au programme
  * ex : ->listen<-	0.0.0.0:8080;
  * @return Return l'argument de la ligne en cours de checking.
 */
@@ -44,8 +44,8 @@ const set<string> &known_directives(void)
 /**
  * @brief Split le token value associe a la key listen dans une pair.
  * La pair contient le host puis le port (0.0.0.0 | 8080)
- * Check si la valeur depasse le INT_MAX ou negative.
- * @return Return la pair completer
+ * Check si la valeur depasse INT_MAX ou si elle est negative.
+ * @return la pair completee
 */
 pair<string, int>	parse_listen(const string &value)
 {
@@ -70,11 +70,11 @@ pair<string, int>	parse_listen(const string &value)
 }
 
 /**
- * @brief fait la conversion entre la value donner par client_max_body_size en size_t
- * Check si une lettre de size est presente en fin value (KkMmGg).
+ * @brief Fait la conversion de la value donnee par client_max_body_size en size_t
+ * Check si une lettre de size est presente en fin de value (KkMmGg).
  * Check si la value n'est pas empty ou trop grande.
- * 
- * @return Return le size_t convertie
+ *
+ * @return le size_t converti
 */
 size_t	parse_body_size(const string &value)
 {
@@ -102,11 +102,11 @@ size_t	parse_body_size(const string &value)
 }
 
 /**
- * @brief creer des map STL contenant le code d'erreur associe au PATH de la page dedie
- * Check si le code d'error depasse 505 ou si la value est negative ou contient des caracteres
- * non numeric.
- * 
- * @return Return une map[<Error_code>] = "PATH"
+ * @brief Cree une map STL contenant le code d'erreur associe au PATH de la page dediee
+ * Check si le code d'erreur depasse 505 ou si la value est negative ou contient des caracteres
+ * non numeriques.
+ *
+ * @return une map[<Error_code>] = "PATH"
 */
 map<int, string>	parse_error_pages(const vector<string> value, size_t &j)
 {

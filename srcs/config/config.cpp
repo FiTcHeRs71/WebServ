@@ -32,9 +32,9 @@ ConfigParser & ConfigParser::operator=(const ConfigParser& src)
 }
 
 /**
- * @brief Fonction d'entrer pour le parsing et les checking
- * 
- * Remplir avec les differents appel au fonction de checking
+ * @brief Fonction d'entree pour le parsing et le checking
+ *
+ * Remplir avec les differents appels aux fonctions de checking
  * @return void
 */
 void	parse(const string &argv1)
@@ -49,9 +49,9 @@ void	parse(const string &argv1)
 /**
  * @brief Prend le fichier de configuration et le tokenize.
  * 
- * Il stocke les valeurs dans dans un vector (lexer_config)
- * Il ne fait aucune verification de validite ou synthaxes des arguments
- * Checking au debut de l'accesiblite du file passer en argument
+ * Il stocke les valeurs dans un vector (lexer_config)
+ * Il ne fait aucune verification de validite ou de syntaxe des arguments
+ * Checking au debut de l'accessibilite du fichier passe en argument
  * @return void
 */
 void	ConfigParser::tokenize(const string &path)
@@ -99,9 +99,9 @@ void	ConfigParser::tokenize(const string &path)
 /**
  * @brief Prend la liste de tokens et verifie la syntaxe
  * 
- * Il parcours la liste de tokens generer par la fonction tokenize et verifie l'ordre des arguments
- * Il ne fait aucune verificatiion sur la validite des ports ou autres
- * throw une exception en cas de syntaxe invalid
+ * Il parcourt la liste de tokens generee par la fonction tokenize et verifie l'ordre des arguments
+ * Il ne fait aucune verification sur la validite des ports ou autres
+ * throw une exception en cas de syntaxe invalide
  * @return void
 */
 void	ConfigParser::check_syntax(const vector<string> &tokens)
@@ -166,11 +166,11 @@ void	ConfigParser::check_syntax(const vector<string> &tokens)
 }
 
 /**
- * @brief Fonction d'entrer pour le parsing de chaque bloc serveur
- * 
- * Il parcours la liste de tokens generer par la fonction tokenize
- * Il remplie le vector _Servers avec des objets de Serverconfig.
- * ServerConfig contient tous les elements de chaque serveur block
+ * @brief Fonction d'entree pour le parsing de chaque bloc serveur
+ *
+ * Il parcourt la liste de tokens generee par la fonction tokenize
+ * Il remplit le vector _Servers avec des objets ServerConfig.
+ * ServerConfig contient tous les elements de chaque bloc serveur
  * @return void
 */
 void	ConfigParser::fill_servers_config(void)
@@ -193,11 +193,11 @@ void	ConfigParser::fill_servers_config(void)
 }
 
 /**
- * @brief prend un objet server instancier dans fill_servers_config et remplie ces attributs
- * 
- * Il parcours la liste de tokens generer par la fonction 'tokenize'
- * Puis trouve les directives et remplies les attributs avec valeurs associes
- * Gere des erreurs de valeurs non valide
+ * @brief Prend un objet server instancie dans fill_servers_config et remplit ses attributs
+ *
+ * Il parcourt la liste de tokens generee par la fonction 'tokenize'
+ * Puis trouve les directives et remplit les attributs avec les valeurs associees
+ * Gere les erreurs de valeurs non valides
  * @return void
 */
 void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
@@ -237,10 +237,10 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 }
 
 /**
- * @brief remplie un vecteur de toute les valeurs associe a une key
- * 
- * remplie un vecteur de tous les elements contenu entre la key et ";"
- * @return vecteur remplie des valeur
+ * @brief Remplit un vecteur de toutes les valeurs associees a une key
+ *
+ * Remplit un vecteur de tous les elements contenus entre la key et ";"
+ * @return vecteur rempli des valeurs
 */
 vector<string>	ConfigParser::collect_values(size_t &i)
 {
