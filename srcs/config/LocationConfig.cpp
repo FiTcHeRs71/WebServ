@@ -117,9 +117,7 @@ void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
 		else if (key == "cgi_ext")
 			this->_CgiExt = parse_cgi_ext(value);
 		else if (key == "cgi_pass")
-		{
-
-		}
+			this->_CgiPass = parse_cgi_pass(value);
 		else if (key == "client_max_body_size")
 		{
 			if (value.size() != 1)

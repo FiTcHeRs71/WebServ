@@ -209,3 +209,11 @@ string	parse_cgi_ext(const vector<string> &value)
 		throw runtime_error(value[0] + " is not a valid CGI extensions");
 	return (value[0]);
 }
+
+string	parse_cgi_pass(const vector<string> &value)
+{
+	if (value.size() != 1)
+		throw runtime_error("cgi_pass takes exactly one extension");
+	//check si le path du cgi est bon ?
+	return (value[0]);
+}
