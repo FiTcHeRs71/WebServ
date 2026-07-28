@@ -1,8 +1,10 @@
 #include "../../includes/Config.hpp"
+#include "../../includes/ServerConfig.hpp"
 #include <cstddef>
 #include <fstream>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -30,9 +32,9 @@ ConfigParser & ConfigParser::operator=(const ConfigParser& src)
 }
 
 /**
- * @brief Fonction d'entrer pour le parsing et les checking
- * 
- * Remplir avec les differents appel au fonction de checking
+ * @brief Fonction d'entree pour le parsing et le checking
+ *
+ * Remplir avec les differents appels aux fonctions de checking
  * @return void
 */
 void	parse(const string &argv1)
@@ -41,14 +43,15 @@ void	parse(const string &argv1)
 
 	Config.tokenize(argv1);
 	Config.check_syntax(Config._LexerConfig);
+	Config.fill_servers_config();
 }
 
 /**
  * @brief Prend le fichier de configuration et le tokenize.
  * 
- * Il stocke les valeurs dans dans un vector (lexer_config)
- * Il ne fait aucune verification de validite ou synthaxes des arguments
- * Checking au debut de l'accesiblite du file passer en argument
+ * Il stocke les valeurs dans un vector (lexer_config)
+ * Il ne fait aucune verification de validite ou de syntaxe des arguments
+ * Checking au debut de l'accessibilite du fichier passe en argument
  * @return void
 */
 void	ConfigParser::tokenize(const string &path)
@@ -96,9 +99,9 @@ void	ConfigParser::tokenize(const string &path)
 /**
  * @brief Prend la liste de tokens et verifie la syntaxe
  * 
- * Il parcours la liste de tokens generer par la fonction tokenize et verifie l'ordre des arguments
- * Il ne fait aucune verificatiion sur la validite des ports ou autres
- * throw une exception en cas de syntaxe invalid
+ * Il parcourt la liste de tokens generee par la fonction tokenize et verifie l'ordre des arguments
+ * Il ne fait aucune verification sur la validite des ports ou autres
+ * throw une exception en cas de syntaxe invalide
  * @return void
 */
 void	ConfigParser::check_syntax(const vector<string> &tokens)
@@ -160,4 +163,94 @@ void	ConfigParser::check_syntax(const vector<string> &tokens)
 	}
 	if (!block_stack.empty())
 		throw runtime_error("Brace not closed");
+}
+
+/**
+ * @brief Fonction d'entree pour le parsing de chaque bloc serveur
+ *
+ * Il parcourt la liste de tokens generee par la fonction tokenize
+ * Il remplit le vector _Servers avec des objets ServerConfig.
+ * ServerConfig contient tous les elements de chaque bloc serveur
+ * @return void
+*/
+void	ConfigParser::fill_servers_config(void)
+{
+	size_t i = 0;
+
+	while (i < this->_LexerConfig.size())
+	{
+		if (this->_LexerConfig[i] != "server")
+			throw runtime_error("'" + this->_LexerConfig[i] + "' outside of a server block");
+		i += 2; // skip token "server" + "{"
+		ServerConfig	server;
+		fill_one_server(server, i);
+		if (i >= this->_LexerConfig.size())
+			throw runtime_error("server block not closed");
+		i++;
+		this->_Servers.push_back(server);
+		//cout << server << endl; // DEBUG A VIRER
+	}
+}
+
+/**
+ * @brief Prend un objet server instancie dans fill_servers_config et remplit ses attributs
+ *
+ * Il parcourt la liste de tokens generee par la fonction 'tokenize'
+ * Puis trouve les directives et remplit les attributs avec les valeurs associees
+ * Gere les erreurs de valeurs non valides
+ * @return void
+*/
+void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
+{
+	while (this->_LexerConfig[i] != "}" && i < this->_LexerConfig.size())
+	{
+		string	key = this->_LexerConfig[i];
+		i++;
+
+		if (key == "location") //ticket A-03 / a completer avec un vrai parse
+		{
+			while (i < this->_LexerConfig.size() && this->_LexerConfig[i] != "}")
+				i++;
+			if (i == this->_LexerConfig.size())
+				throw runtime_error("Location blovk not closed");
+			i++;
+			continue;
+		}
+		else
+		{
+			vector<string>	value = collect_values(i);
+			for (size_t j = 0; j < value.size(); j++)
+			{
+				if (key == "listen")
+					server._Listens.push_back(parse_listen(value[j])); // split 0.0.0.0 de 8080
+				else if (key ==  "server_name")
+					server._ServerNames.push_back(value[j]); 
+				else if (key == "client_max_body_size")
+					server._ClientMaxBodySize = parse_body_size(value[j]);
+				else if (key == "error_page")
+					server._ErrorPages = parse_error_pages(value, j);
+				else
+					throw runtime_error("directive : '" + key + "' forbiden in server body");
+			}
+		}
+	}
+}
+
+/**
+ * @brief Remplit un vecteur de toutes les valeurs associees a une key
+ *
+ * Remplit un vecteur de tous les elements contenus entre la key et ";"
+ * @return vecteur rempli des valeurs
+*/
+vector<string>	ConfigParser::collect_values(size_t &i)
+{
+	vector<string>	values;
+
+	while (_LexerConfig[i] != ";")
+	{
+		values.push_back(_LexerConfig[i]);
+		i++;
+	}
+	i++; // saute le ";"
+	return (values);
 }

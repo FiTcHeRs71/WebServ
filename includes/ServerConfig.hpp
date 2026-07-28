@@ -2,8 +2,14 @@
 # define SERVER_CONFIG_HPP
 
 # include "LocationConfig.hpp"
-# include "Config.hpp"
 # include <iostream>
+# include <map>
+# include <ostream>
+# include <string>
+# include <utility>
+# include <vector>
+
+using namespace std;
 
 /**
  * @brief Represente la configuration d'un serveur virtuel (bloc "server").
@@ -14,10 +20,14 @@
  */
 class ServerConfig
 {
-	friend class ConfigParser;
+	friend class				ConfigParser;
 	private:
 
-
+	vector<pair<string, int> >	_Listens;
+	vector<string>				_ServerNames;
+	map<int, string>			_ErrorPages;
+	vector<LocationConfig>		_Locations;
+	size_t						_ClientMaxBodySize;
 
 	protected:
 
@@ -36,6 +46,10 @@ class ServerConfig
 
 	/*===Member Function===*/
 	const LocationConfig	*Resolve(const std::string &host, int port, const std::string &uri);
+
+
+	/*===Friends===*/
+	friend ostream			&operator<<(ostream &flux, const ServerConfig &src);
 };
 
 #endif /*SERVER_CONFIG_HPP*/

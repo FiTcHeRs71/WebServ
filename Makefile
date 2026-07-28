@@ -39,9 +39,21 @@ OBJS = $(SRCS:%.cpp=$(OBJ_DIR)/%.o)
 DEPS = $(OBJS:.o=.d)
 
 # Compiler and flags
-CXX = c++
+# On prefere clang++ (compilateur des macs de l'ecole) pour avoir localement
+# les memes diagnostics -Werror qu'a la soutenance. Repli sur c++ si clang++
+# n'est pas installe. Override possible : make CXX=g++
+CXX := $(shell command -v clang++ >/dev/null 2>&1 && echo clang++ || echo c++)
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -I$(INC_DIR) -g
 DEPFLAGS = -MMD -MP
+
+# -fstandalone-debug n'existe que chez Clang (macs de l'ecole) : il force
+# l'emission des infos de debug completes, que Clang tronque par defaut.
+# GCC (Linux) les emet deja avec -g et rejette le flag, ce qui cassait
+# la compilation. On ne l'ajoute donc que si le compilateur est Clang.
+IS_CLANG := $(shell $(CXX) --version 2>/dev/null | grep -ci clang)
+ifneq ($(IS_CLANG),0)
+    CXXFLAGS += -fstandalone-debug
+endif
 
 # Colors
 GREEN = \033[0;32m

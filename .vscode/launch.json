@@ -1,0 +1,88 @@
+{
+	// ============================================================
+	//  POUR CHANGER DE FICHIER .conf, DEUX POSSIBILITES :
+	//
+	//  1) Rapide (fichier fixe) : modifier "args" de la premiere
+	//     configuration ci-dessous, ligne signalee par [CHANGER ICI].
+	//     Le chemin est relatif a "cwd" (= racine du projet).
+	//       ex : "args": ["conf/tester.conf"]
+	//            "args": ["conf/bad/xxx.conf"]
+	//            "args": ["perso/mon_test.conf"]
+	//
+	//  2) Sans toucher au JSON : utiliser la 2eme configuration
+	//     "webserv (choose conf file)" dans le menu deroulant de
+	//     l'onglet Run and Debug. VSCode demande le fichier a chaque
+	//     lancement. Pour ajouter un choix a cette liste, ajouter une
+	//     ligne dans "inputs" > "options" en bas de ce fichier,
+	//     signale par [AJOUTER UN CHOIX ICI].
+	// ============================================================
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "webserv (default.conf)",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/webserv",
+			// [CHANGER ICI] le fichier de conf passe a ./webserv (argv[1]).
+			// Chemin relatif a "cwd" ci-dessous, ou chemin absolu.
+			"args": ["conf/default.conf"],
+			"stopAtEntry": false,
+			// Repertoire de travail du programme : la racine du projet.
+			// C'est ce qui fait que "conf/default.conf" est trouve.
+			// Si tu le changes, les chemins de "args" changent aussi.
+			"cwd": "${workspaceFolder}",
+			"environment": [],
+			"externalConsole": false,
+			"MIMode": "gdb",
+			"miDebuggerPath": "/usr/bin/gdb",
+			// Lance "make" (tache de tasks.json) avant de debuger.
+			// Mettre a null pour lancer sans recompiler.
+			"preLaunchTask": "make",
+			"setupCommands": [
+				{
+					"description": "Enable pretty-printing for gdb",
+					"text": "-enable-pretty-printing",
+					"ignoreFailures": true
+				}
+			]
+		},
+		{
+			// Cette config demande le fichier .conf au lancement
+			// (voir "inputs" en bas). Rien a modifier ici.
+			"name": "webserv (choose conf file)",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/webserv",
+			"args": ["${input:confFile}"],
+			"stopAtEntry": false,
+			"cwd": "${workspaceFolder}",
+			"environment": [],
+			"externalConsole": false,
+			"MIMode": "gdb",
+			"miDebuggerPath": "/usr/bin/gdb",
+			"preLaunchTask": "make",
+			"setupCommands": [
+				{
+					"description": "Enable pretty-printing for gdb",
+					"text": "-enable-pretty-printing",
+					"ignoreFailures": true
+				}
+			]
+		}
+	],
+	"inputs": [
+		{
+			"id": "confFile",
+			"type": "pickString",
+			"description": "Configuration file to run webserv with",
+			"options": [
+				// [AJOUTER UN CHOIX ICI] une ligne par fichier .conf,
+				// chemin relatif a la racine du projet, virgule entre chaque.
+				"conf/default.conf",
+				"conf/tester.conf"
+			],
+			// Choix pre-selectionne dans le menu.
+			"default": "conf/default.conf"
+		}
+	]
+}
