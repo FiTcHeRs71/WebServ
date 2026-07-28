@@ -37,11 +37,7 @@ ServerConfig	&ServerConfig::operator=(const ServerConfig& src)
 	return (*this);
 }
 
-	/*===Getters & Setters===*/
-
-
 	/*===Member Function===*/
-
 /**
  * @brief Trouve la configuration de location correspondant a une requete.
  * @param host Le nom d'hote demande (issu de l'en-tete Host).
