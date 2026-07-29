@@ -6,11 +6,12 @@
 	/*===Canonical Form===*/
 LocationConfig::LocationConfig(void)
 	:_AutoIndex(false)
-	,_HasAutoIndex(false)
+	//,_HasAutoIndex(false)
 	,_ReturnCode(0)
 	,_HasReturn(false)
 	,_ClientMaxBodySize(0)
 	,_HasClientMaxBodySize(false)
+	,_HasUploadStore(false)
 {
 	//std::cout << "LocationConfig default constructor called" << std::endl;
 }
@@ -26,7 +27,7 @@ LocationConfig::LocationConfig(const LocationConfig& to_copy)
 	,_Root(to_copy._Root)
 	,_Index(to_copy._Index)
 	,_AutoIndex(to_copy._AutoIndex)
-	,_HasAutoIndex(to_copy._HasAutoIndex)
+	//,_HasAutoIndex(to_copy._HasAutoIndex)
 	,_ReturnCode(to_copy._ReturnCode)
 	,_ReturnUrl(to_copy._ReturnUrl)
 	,_HasReturn(to_copy._HasReturn)
@@ -34,6 +35,9 @@ LocationConfig::LocationConfig(const LocationConfig& to_copy)
 	,_CgiPass(to_copy._CgiPass)
 	,_ClientMaxBodySize(to_copy._ClientMaxBodySize)
 	,_HasClientMaxBodySize(to_copy._HasClientMaxBodySize)
+	,_ReturnTarget(to_copy._ReturnTarget)
+	,_UploadStore(to_copy._UploadStore)
+	,_HasUploadStore(to_copy._HasUploadStore)
 {
 	//std::cout << "LocationConfig copy constructor called" << std::endl;
 }
@@ -47,7 +51,7 @@ LocationConfig	&LocationConfig::operator=(const LocationConfig& src)
 		this->_Root = src._Root;
 		this->_Index = src._Index;
 		this->_AutoIndex = src._AutoIndex;
-		this->_HasAutoIndex = src._HasAutoIndex;
+		//this->_HasAutoIndex = src._HasAutoIndex;
 		this->_ReturnCode = src._ReturnCode;
 		this->_ReturnUrl = src._ReturnUrl;
 		this->_HasReturn = src._HasReturn;
@@ -77,7 +81,7 @@ ostream	&operator<<(ostream &flux, const LocationConfig &src)
 		flux << src._Index[i] << " | ";
 	flux << endl;
 	flux << "Auto index = " << src._AutoIndex << endl;
-	flux << "Has auto index" << src._HasAutoIndex << endl;
+	//flux << "Has auto index" << src._HasAutoIndex << endl;
 	flux << "Return Code = " << src._ReturnCode << endl;
 	flux << "Return URL = " << src._ReturnUrl << endl;
 	flux << "Has return = " << src._HasReturn << endl;
@@ -133,6 +137,11 @@ void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
 			this->_ReturnCode = parser_return_code(value[0], value.size());
 			if (value.size() == 2)
 				this->_ReturnTarget = value[1];
+		}
+		else if (key == "upload_store")
+		{
+			this->_UploadStore = parse_upload_store(value);
+			this->_HasUploadStore = true;
 		}
 		else 
 			throw runtime_error(key + " is not a valid instructions in location bloc");

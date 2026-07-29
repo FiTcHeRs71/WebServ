@@ -235,3 +235,10 @@ int	parser_return_code(const string &value, const size_t nb_args)
 		throw runtime_error(value + "is not a valid HTTP status code");
 	return (static_cast<int>(code));
 }
+
+string	parse_upload_store(const vector<string> &value)
+{
+	if (value.size() != 1)
+		throw runtime_error("upload_store in location block needs only one value");
+	return (value[0]);
+}
