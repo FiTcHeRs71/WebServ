@@ -130,7 +130,7 @@ void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
 			if (value.empty() || value.size() > 2)
 				throw runtime_error(key + " needs one or two arguments");
 			this->_HasReturn = true;
-			this->_ReturnCode = parser_return_code(value[0]);
+			this->_ReturnCode = parser_return_code(value[0], value.size());
 			if (value.size() == 2)
 				this->_ReturnTarget = value[1];
 		}

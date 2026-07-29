@@ -219,7 +219,7 @@ string	parse_cgi_pass(const vector<string> &value)
 	return (value[0]);
 }
 
-int	parser_return_code(const string &value)
+int	parser_return_code(const string &value, const size_t nb_args)
 {
 	for (size_t i = 0; i < value.size(); i++)
 	{
@@ -229,6 +229,8 @@ int	parser_return_code(const string &value)
 	char	*end;
 	errno = 0;
 	long	code = strtol(value.c_str(), &end, 10);
+	if (code > 299 && code < 400 && nb_args == 1)
+		throw runtime_error (value + " needs to have target <URL>");
 	if (code < 100 || code > 599 || errno == ERANGE || *end != '\0')
 		throw runtime_error(value + "is not a valid HTTP status code");
 	return (static_cast<int>(code));
