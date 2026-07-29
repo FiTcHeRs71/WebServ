@@ -234,4 +234,3 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 	}
 }
 
-

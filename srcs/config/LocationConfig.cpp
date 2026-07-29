@@ -167,3 +167,4 @@ void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
 	}
 	i++;
 }
+
