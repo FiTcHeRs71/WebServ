@@ -25,7 +25,6 @@ class LocationConfig
 	string				_Root;
 	vector<string>		_Index;
 	bool				_AutoIndex;
-	bool				_HasAutoIndex;
 	int					_ReturnCode;
 	string				_ReturnUrl;
 	bool				_HasReturn;
@@ -34,6 +33,8 @@ class LocationConfig
 	size_t				_ClientMaxBodySize;
 	bool				_HasClientMaxBodySize;
 	string				_ReturnTarget;
+	string				_UploadStore;
+	bool				_HasUploadStore;
 
 	protected:
 

@@ -59,6 +59,9 @@ LocationConfig	&LocationConfig::operator=(const LocationConfig& src)
 		this->_CgiPass = src._CgiPass;
 		this->_ClientMaxBodySize = src._ClientMaxBodySize;
 		this->_HasClientMaxBodySize = src._HasClientMaxBodySize;
+		this->_ReturnTarget = src._ReturnTarget;
+		this->_UploadStore = src._UploadStore;
+		this->_HasUploadStore = src._HasUploadStore;
 	}
 	return (*this);
 }
@@ -89,6 +92,9 @@ ostream	&operator<<(ostream &flux, const LocationConfig &src)
 	flux << "CGI pass = " << src._CgiPass << endl;
 	flux << "Client max body size = " << src._ClientMaxBodySize << endl;
 	flux << "Has client max body size = " << src._HasClientMaxBodySize << endl;
+	flux << "Return = " << src._ReturnTarget << endl;
+	flux << "Upload_store = " << src._UploadStore << endl;
+	flux << "Has Upload store" << src._HasUploadStore << endl;
 	flux << "=====================" << endl;
 	return (flux);
 }

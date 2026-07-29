@@ -61,5 +61,6 @@ bool				parse_auto_index(const vector<string> &value);
 string				parse_cgi_ext(const vector<string> &value);
 string				parse_cgi_pass(const vector<string> &value);
 int					parser_return_code(const string &value, const size_t nb_args);
+string				parse_upload_store(const vector<string> &value);
 
 #endif /*CONFIG_HPP*/
