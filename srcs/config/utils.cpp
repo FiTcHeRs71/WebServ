@@ -38,6 +38,7 @@ const set<string> &known_directives(void)
 		"listen", "server_name", "client_max_body_size", "error_page",
 		"allow_methods", "root", "index", "autoindex",
 		"cgi_ext", "cgi_pass", "return", "location", "server",
+		"upload_store"
 	};
 	static const set<string> s(names, names + sizeof(names) / sizeof(names[0]));
 	return (s);
