@@ -99,7 +99,7 @@ ostream	&operator<<(ostream &flux, const LocationConfig &src)
 	flux << "Has client max body size = " << src._HasClientMaxBodySize << endl;
 	flux << "Return = " << src._ReturnTarget << endl;
 	flux << "Upload_store = " << src._UploadStore << endl;
-	flux << "Has Upload store" << src._HasUploadStore << endl;
+	flux << "Has Upload store = " << src._HasUploadStore << endl;
 	flux << "=====================" << endl;
 	return (flux);
 }

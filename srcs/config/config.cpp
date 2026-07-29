@@ -188,7 +188,7 @@ void	ConfigParser::fill_servers_config(void)
 			throw runtime_error("server block not closed");
 		i++;
 		this->_Servers.push_back(server);
-		//cout << server << endl; // DEBUG A VIRER
+		cout << server << endl; // DEBUG A VIRER
 	}
 }
 
