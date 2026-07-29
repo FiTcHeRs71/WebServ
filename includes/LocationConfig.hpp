@@ -26,7 +26,6 @@ class LocationConfig
 	vector<string>		_Index;
 	bool				_AutoIndex;
 	int					_ReturnCode;
-	string				_ReturnUrl;
 	bool				_HasReturn;
 	string				_CgiExt;
 	string				_CgiPass;
