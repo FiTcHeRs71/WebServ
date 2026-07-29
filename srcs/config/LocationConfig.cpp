@@ -69,6 +69,11 @@ LocationConfig	&LocationConfig::operator=(const LocationConfig& src)
 	/*===Getters & Setters===*/
 
 	/*===Member Function===*/
+/**
+ * @brief Surcharge d'operateur pour l'impression des attributs de la classe LocationConfig
+ *
+ * @return le flux rempli
+ */
 ostream	&operator<<(ostream &flux, const LocationConfig &src)
 {
 	flux << "=== Location block ===" << endl;
@@ -99,6 +104,14 @@ ostream	&operator<<(ostream &flux, const LocationConfig &src)
 	return (flux);
 }
 
+/**
+ * @brief Fonction dentre pour le parsing des block location contenu dans chaque bloc serveur
+ * 
+ * Elle remplie les attributs de l'objet LocationConfig avec les elements indique dans le bloc location
+ * Effectue une verification du nombre darguments et leur validite pour chaque unstructions <KEY>
+ * Les verifications se sont sur des criteres basic mais aucune verication sur des doublons ou des ports non disponible
+ * @return le flux rempli
+ */
 void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
 {
 	size_t flag = token[i].find_first_of("/");

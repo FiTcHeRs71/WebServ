@@ -149,6 +149,12 @@ vector<string>		collect_values(vector<string> &token, size_t &i)
 	return (values);
 }
 
+/**
+ * @brief Contient toutes les methods possible accepter par notre webserv
+ *
+ * Actuel GET/POST/DELETE
+ * @return 
+*/
 const set<string> &known_methods(void)
 {
 	static const string names[] = {
@@ -158,6 +164,12 @@ const set<string> &known_methods(void)
 	return (s);
 }
 
+/**
+ * @brief Prend tous les arguments de <allow_methods> et verifie leurs valeurs.
+ *
+ * @param value contient tous les arguments contenue entre le key <allow_methods> et le prochain ";"
+ * @return la valeur associe a la key
+*/
 set<string>	parse_allow_methods(const vector<string> &value)
 {
 	set<string>	set;
@@ -171,6 +183,12 @@ set<string>	parse_allow_methods(const vector<string> &value)
 	return (set);
 }
 
+/**
+ * @brief Prend tous les arguments de <root> et verifie leurs valeurs.
+ *
+ * @param value contient tous les arguments contenue entre le key <root> et le prochain ";"
+ * @return la valeur associe a la key
+*/
 string	parse_root(const vector<string> &value)
 {
 	if (value.size() > 1)
@@ -178,6 +196,12 @@ string	parse_root(const vector<string> &value)
 	return (value[0]);
 }
 
+/**
+ * @brief Prend tous les arguments de <index> et verifie leurs valeurs.
+ *
+ * @param value contient tous les arguments contenue entre le key <index> et le prochain ";"
+ * @return la valeur associe a la key
+*/
 vector<string>	parse_index(const vector<string> &value)
 {
 	if (value.size() == 0)
@@ -191,6 +215,12 @@ vector<string>	parse_index(const vector<string> &value)
 	return (value);
 }
 
+/**
+ * @brief Prend tous les arguments de <auto_index> et verifie leurs valeurs.
+ *
+ * @param value contient tous les arguments contenue entre le key <auto_index> et le prochain ";"
+ * @return la valeur associe a la key
+*/
 bool	parse_auto_index(const vector<string> &value)
 {
 	if (value.size() != 1)
@@ -202,6 +232,12 @@ bool	parse_auto_index(const vector<string> &value)
 	return (false);
 }
 
+/**
+ * @brief Prend tous les arguments de <cgi_ext> et verifie leurs valeurs.
+ *
+ * @param value contient tous les arguments contenue entre le key <cgi_ext> et le prochain ";"
+ * @return la valeur associe a la key
+*/
 string	parse_cgi_ext(const vector<string> &value)
 {
 	if (value.size() != 1)
@@ -211,6 +247,12 @@ string	parse_cgi_ext(const vector<string> &value)
 	return (value[0]);
 }
 
+/**
+ * @brief Prend tous les arguments de <cgi_pass> et verifie leurs valeurs.
+ *
+ * @param value contient tous les arguments contenue entre le key <cgi_pass> et le prochain ";"
+ * @return la valeur associe a la key
+*/
 string	parse_cgi_pass(const vector<string> &value)
 {
 	if (value.size() != 1)
@@ -219,6 +261,12 @@ string	parse_cgi_pass(const vector<string> &value)
 	return (value[0]);
 }
 
+/**
+ * @brief Prend tous les arguments de <return> et verifie leurs valeurs.
+ *
+ * @param value contient tous les arguments contenue entre le key <return> et le prochain ";"
+ * @return la valeur associe a la key
+*/
 int	parser_return_code(const string &value, const size_t nb_args)
 {
 	for (size_t i = 0; i < value.size(); i++)
@@ -236,6 +284,12 @@ int	parser_return_code(const string &value, const size_t nb_args)
 	return (static_cast<int>(code));
 }
 
+/**
+ * @brief Prend tous les arguments de <upload_store> et verifie leurs valeurs.
+ *
+ * @param value contient tous les arguments contenue entre le key <upload_store> et le prochain ";"
+ * @return la valeur associe a la key
+*/
 string	parse_upload_store(const vector<string> &value)
 {
 	if (value.size() != 1)
