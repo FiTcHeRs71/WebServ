@@ -54,7 +54,7 @@ const LocationConfig	*ServerConfig::Resolve(const std::string &host, int port, c
 }
 
 /**
- * @brief Surcharge d'operateur pour l'impression des attributs de la classe
+ * @brief Surcharge d'operateur pour l'impression des attributs de la classe ServerConfig
  *
  * @return le flux rempli
  */
@@ -67,7 +67,8 @@ ostream		&operator<<(ostream &flux, const ServerConfig &src)
 		flux << "Server Name : " << src._ServerNames[i] << endl;
 	for (map<int, string>::const_iterator it = src._ErrorPages.begin(); it != src._ErrorPages.end(); ++it)
 		flux << "Error Pages : " << it->first << ", " << it->second << endl;
-	// locations ?
+	for (size_t i = 0; i < src._Locations.size(); i++)
+		flux << src._Locations[i] << endl;
 	flux << "Client max body size = " << src._ClientMaxBodySize << endl;
 	return (flux);
 }

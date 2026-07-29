@@ -202,23 +202,21 @@ void	ConfigParser::fill_servers_config(void)
 */
 void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 {
-	while (this->_LexerConfig[i] != "}" && i < this->_LexerConfig.size())
+	while (i < this->_LexerConfig.size() && this->_LexerConfig[i] != "}")
 	{
 		string	key = this->_LexerConfig[i];
 		i++;
 
-		if (key == "location") //ticket A-03 / a completer avec un vrai parse
+		if (key == "location")
 		{
-			while (i < this->_LexerConfig.size() && this->_LexerConfig[i] != "}")
-				i++;
-			if (i == this->_LexerConfig.size())
-				throw runtime_error("Location blovk not closed");
-			i++;
-			continue;
+			LocationConfig	location;
+			location.parse_location(this->_LexerConfig, i);
+			//cout << location << endl; DEBUG A VIRER
+			server._Locations.push_back(location);
 		}
 		else
 		{
-			vector<string>	value = collect_values(i);
+			vector<string>	value = collect_values(this->_LexerConfig, i);
 			for (size_t j = 0; j < value.size(); j++)
 			{
 				if (key == "listen")
@@ -236,21 +234,3 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 	}
 }
 
-/**
- * @brief Remplit un vecteur de toutes les valeurs associees a une key
- *
- * Remplit un vecteur de tous les elements contenus entre la key et ";"
- * @return vecteur rempli des valeurs
-*/
-vector<string>	ConfigParser::collect_values(size_t &i)
-{
-	vector<string>	values;
-
-	while (_LexerConfig[i] != ";")
-	{
-		values.push_back(_LexerConfig[i]);
-		i++;
-	}
-	i++; // saute le ";"
-	return (values);
-}

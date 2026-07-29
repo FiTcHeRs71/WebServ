@@ -1,4 +1,6 @@
 #include "../../includes/Config.hpp"
+#include <algorithm>
+#include <cctype>
 #include <cerrno>
 #include <climits>
 #include <cstddef>
@@ -36,6 +38,7 @@ const set<string> &known_directives(void)
 		"listen", "server_name", "client_max_body_size", "error_page",
 		"allow_methods", "root", "index", "autoindex",
 		"cgi_ext", "cgi_pass", "return", "location", "server",
+		"upload_store"
 	};
 	static const set<string> s(names, names + sizeof(names) / sizeof(names[0]));
 	return (s);
@@ -108,14 +111,14 @@ size_t	parse_body_size(const string &value)
  *
  * @return une map[<Error_code>] = "PATH"
 */
-map<int, string>	parse_error_pages(const vector<string> value, size_t &j)
+map<int, string>	parse_error_pages(const vector<string> &value, size_t &j)
 {
 	map<int, string>	map;
 	long	size_converted;
 	char*	p_end = NULL;
 	
 	if (value.size() < 2)
-		throw ("Error pages missing a elements, minimum correct value needed is 2 or more");
+		throw runtime_error("Error pages missing a elements, minimum correct value needed is 2 or more");
 	while (j < value.size() - 1)
 	{
 		errno = 0;
@@ -126,4 +129,171 @@ map<int, string>	parse_error_pages(const vector<string> value, size_t &j)
 		j++;
 	}
 	return (map);
+}
+
+/**
+ * @brief Remplit un vecteur de toutes les valeurs associees a une key
+ *
+ * Remplit un vecteur de tous les elements contenus entre la key et ";"
+ * @return vecteur rempli des valeurs
+*/
+vector<string>		collect_values(vector<string> &token, size_t &i)
+{
+	vector<string>	values;
+
+	while (token[i] != ";")
+	{
+		values.push_back(token[i]);
+		i++;
+	}
+	i++; // saute le ";"
+	return (values);
+}
+
+/**
+ * @brief Contient toutes les methods possible accepter par notre webserv
+ *
+ * Actuel GET/POST/DELETE
+ * @return 
+*/
+const set<string> &known_methods(void)
+{
+	static const string names[] = {
+		"GET", "POST", "DELETE"
+	};
+	static const set<string> s(names, names + sizeof(names) / sizeof(names[0]));
+	return (s);
+}
+
+/**
+ * @brief Prend tous les arguments de <allow_methods> et verifie leurs valeurs.
+ *
+ * @param value contient tous les arguments contenue entre le key <allow_methods> et le prochain ";"
+ * @return la valeur associe a la key
+*/
+set<string>	parse_allow_methods(const vector<string> &value)
+{
+	set<string>	set;
+
+	for (size_t i = 0; i < value.size(); i++)
+	{
+		if (!known_methods().count(value[i]))
+			throw runtime_error("Unknow directives : " + value[i]);
+		set.insert(value[i]);
+	}
+	return (set);
+}
+
+/**
+ * @brief Prend tous les arguments de <root> et verifie leurs valeurs.
+ *
+ * @param value contient tous les arguments contenue entre le key <root> et le prochain ";"
+ * @return la valeur associe a la key
+*/
+string	parse_root(const vector<string> &value)
+{
+	if (value.size() > 1)
+		throw runtime_error("Too much arguments for key <ROOT>");
+	return (value[0]);
+}
+
+/**
+ * @brief Prend tous les arguments de <index> et verifie leurs valeurs.
+ *
+ * @param value contient tous les arguments contenue entre le key <index> et le prochain ";"
+ * @return la valeur associe a la key
+*/
+vector<string>	parse_index(const vector<string> &value)
+{
+	if (value.size() == 0)
+		throw runtime_error("Key index in location bloc need at leat one value");
+	for (size_t i = 0; i < value.size(); i++)
+	{
+		if (value[i].empty())
+			throw runtime_error ("Key index in location bloc has a empty arguments");
+		//if (value.)// doubon ?
+	}
+	return (value);
+}
+
+/**
+ * @brief Prend tous les arguments de <auto_index> et verifie leurs valeurs.
+ *
+ * @param value contient tous les arguments contenue entre le key <auto_index> et le prochain ";"
+ * @return la valeur associe a la key
+*/
+bool	parse_auto_index(const vector<string> &value)
+{
+	if (value.size() != 1)
+		throw runtime_error("autoindex needs only one arguments");
+	if (value[0] != "on" && value[0] != "off")
+		throw runtime_error(value[0] + "is not a valid argument for key autoindex");
+	if (value[0] == "on")
+		return (true);
+	return (false);
+}
+
+/**
+ * @brief Prend tous les arguments de <cgi_ext> et verifie leurs valeurs.
+ *
+ * @param value contient tous les arguments contenue entre le key <cgi_ext> et le prochain ";"
+ * @return la valeur associe a la key
+*/
+string	parse_cgi_ext(const vector<string> &value)
+{
+	if (value.size() != 1)
+		throw runtime_error("cgi_ext takes exactly one extension");
+	if (value[0].size() < 2 || value[0][0] != '.')
+		throw runtime_error(value[0] + " is not a valid CGI extensions");
+	return (value[0]);
+}
+
+/**
+ * @brief Prend tous les arguments de <cgi_pass> et verifie leurs valeurs.
+ *
+ * @param value contient tous les arguments contenue entre le key <cgi_pass> et le prochain ";"
+ * @return la valeur associe a la key
+*/
+string	parse_cgi_pass(const vector<string> &value)
+{
+	if (value.size() != 1)
+		throw runtime_error("cgi_pass takes exactly one extension");
+	//check si le path du cgi est bon ?
+	return (value[0]);
+}
+
+/**
+ * @brief Prend tous les arguments de <return> et verifie leurs valeurs.
+ *
+ * @param value contient tous les arguments contenue entre le key <return> et le prochain ";"
+ * @return la valeur associe a la key
+*/
+int	parser_return_code(const string &value, const size_t nb_args)
+{
+	for (size_t i = 0; i < value.size(); i++)
+	{
+		if(!isdigit(static_cast<unsigned char>(value[i])))
+			throw runtime_error(value + " is not a valid return code");
+	}
+	char	*end;
+	errno = 0;
+	long	code = strtol(value.c_str(), &end, 10);
+	if (code > 299 && code < 400 && nb_args == 1)
+		throw runtime_error (value + " needs to have target <URL>");
+	if (code < 100 || code > 599 || errno == ERANGE || *end != '\0')
+		throw runtime_error(value + "is not a valid HTTP status code");
+	return (static_cast<int>(code));
+}
+
+/**
+ * @brief Prend tous les arguments de <upload_store> et verifie leurs valeurs.
+ *
+ * @param value contient tous les arguments contenue entre le key <upload_store> et le prochain ";"
+ * @return la valeur associe a la key
+*/
+string	parse_upload_store(const vector<string> &value)
+{
+	if (value.size() != 1)
+		throw runtime_error("upload_store in location block needs only one value");
+	return (value[0]);
 }
