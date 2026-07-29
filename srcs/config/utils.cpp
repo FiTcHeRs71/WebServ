@@ -44,6 +44,33 @@ const set<string> &known_directives(void)
 	return (s);
 }
 
+static bool	is_valid_ipv4(const string &host)
+{
+	size_t	start = 0;
+	size_t	i = 0;
+	size_t	dot;
+
+	if (count(host.begin(), host.end(), '.') != 3)
+		return (false);
+	while (i < 4)
+	{
+		dot = host.find('.', start);
+		string	segment = host.substr(start, dot - start);
+
+		if (segment.empty() || segment.size() > 3)
+			return (false);
+		if (segment.find_first_not_of("0123456789") != string::npos)
+			return (false);
+		if (segment.size() > 1 && segment[0] == '0')
+			return (false);
+		if (atoi(segment.c_str()) > 255)
+			return (false);
+		start = dot + 1;
+		i++;
+	}
+	return (true);
+}
+
 /**
  * @brief Split le token value associe a la key listen dans une pair.
  * La pair contient le host puis le port (0.0.0.0 | 8080)
@@ -61,11 +88,14 @@ pair<string, int>	parse_listen(const string &value)
 	host = value.substr(0, flag);
 	port = value.substr(flag + 1);
 
-	char*				p_end = NULL;
-	errno = 0;
-	long				port_converted = strtol(port.c_str(), &p_end, 10);
+	if (!is_valid_ipv4(host))
+		throw runtime_error(host + "is a invalid IPv4 value");
 
-	if (port_converted > INT_MAX || port_converted < 0 || errno == ERANGE)
+	errno = 0;
+	char*	p_end = NULL;
+	long	port_converted = strtol(port.c_str(), &p_end, 10);
+
+	if (port.empty() || p_end == port.c_str() || *p_end != '\0' || errno == ERANGE || port_converted <= 0 || port_converted > 65535)
 		throw runtime_error( port + " is not a valid port");
 	pair.first = host;
 	pair.second = static_cast<int>(port_converted);

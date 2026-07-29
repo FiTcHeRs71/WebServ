@@ -1,6 +1,7 @@
 #include "../../includes/Config.hpp"
 #include "../../includes/ServerConfig.hpp"
 #include <cstddef>
+#include <cstring>
 #include <fstream>
 #include <stdexcept>
 #include <string>
@@ -202,6 +203,9 @@ void	ConfigParser::fill_servers_config(void)
 */
 void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 {
+	t_flag	flag;
+	memset(&flag, 0, sizeof(t_flag));
+
 	while (i < this->_LexerConfig.size() && this->_LexerConfig[i] != "}")
 	{
 		string	key = this->_LexerConfig[i];
@@ -220,7 +224,12 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 			for (size_t j = 0; j < value.size(); j++)
 			{
 				if (key == "listen")
+				{
+					if (flag.flag_listen)
+						throw runtime_error("Can't have multiple definition of listen in same server block");
 					server._Listens.push_back(parse_listen(value[j])); // split 0.0.0.0 de 8080
+					flag.flag_listen = true;
+				}
 				else if (key ==  "server_name")
 					server._ServerNames.push_back(value[j]); 
 				else if (key == "client_max_body_size")
