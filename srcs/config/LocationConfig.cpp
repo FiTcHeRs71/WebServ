@@ -6,7 +6,7 @@
 	/*===Canonical Form===*/
 LocationConfig::LocationConfig(void)
 	:_AutoIndex(false)
-	,_ReturnCode(0)
+	,_ReturnCode(-1)
 	,_HasReturn(false)
 	,_ClientMaxBodySize(0)
 	,_HasClientMaxBodySize(false)
@@ -120,17 +120,41 @@ void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
 
 		vector<string>	value = collect_values(token, i);
 		if (key == "allow_methods")
+		{
+			if (!this->_Methods.empty())
+				throw runtime_error("Multiple definition of allow_methods in location blocks");
 			this->_Methods = parse_allow_methods(value);
+		}
 		else if (key == "root")
+		{
+			if (!this->_Root.empty())
+				throw runtime_error("Invalid multiple definition of root in location bocks");
 			this->_Root = parse_root(value);
+		}
 		else if (key == "index")
+		{
+			if (!this->_Index.empty())
+				throw runtime_error("Multiple definition of index in location blocks");
 			this->_Index = parse_index(value);
+		}
 		else if (key == "autoindex")
-				this->_AutoIndex = parse_auto_index(value);
+		{
+			if (this->_AutoIndex)
+				throw runtime_error("Multiple definition of auto_index in location blocks");
+			this->_AutoIndex = parse_auto_index(value);
+		}
 		else if (key == "cgi_ext")
+		{
+			if (!this->_CgiExt.empty())
+				throw runtime_error("Multiple definition of cgi_ext in location blocks");
 			this->_CgiExt = parse_cgi_ext(value);
+		}
 		else if (key == "cgi_pass")
+		{
+			if (!this->_CgiPass.empty())
+				throw runtime_error("Multiple definition of cgi_pass in location blocks");
 			this->_CgiPass = parse_cgi_pass(value);
+		}
 		else if (key == "client_max_body_size")
 		{
 			if (value.size() != 1)
@@ -140,6 +164,8 @@ void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
 		}
 		else if (key == "return")
 		{
+			if (this->_ReturnCode != -1)
+				throw runtime_error("Multiple definition of return in location blocks");
 			if (value.empty() || value.size() > 2)
 				throw runtime_error(key + " needs one or two arguments");
 			this->_HasReturn = true;

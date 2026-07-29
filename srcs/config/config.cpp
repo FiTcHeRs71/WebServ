@@ -1,5 +1,6 @@
 #include "../../includes/Config.hpp"
 #include "../../includes/ServerConfig.hpp"
+#include <algorithm>
 #include <cstddef>
 #include <cstring>
 #include <fstream>
@@ -203,9 +204,6 @@ void	ConfigParser::fill_servers_config(void)
 */
 void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 {
-	t_flag	flag;
-	memset(&flag, 0, sizeof(t_flag));
-
 	while (i < this->_LexerConfig.size() && this->_LexerConfig[i] != "}")
 	{
 		string	key = this->_LexerConfig[i];
@@ -215,7 +213,6 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 		{
 			LocationConfig	location;
 			location.parse_location(this->_LexerConfig, i);
-			//cout << location << endl; DEBUG A VIRER
 			server._Locations.push_back(location);
 		}
 		else
@@ -225,15 +222,23 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 			{
 				if (key == "listen")
 				{
-					if (flag.flag_listen)
-						throw runtime_error("Can't have multiple definition of listen in same server block");
-					server._Listens.push_back(parse_listen(value[j])); // split 0.0.0.0 de 8080
-					flag.flag_listen = true;
+					pair<string, int> listen = parse_listen(value[j]); // split 0.0.0.0 de 8080
+					if (find(server._Listens.begin(), server._Listens.end(), listen) != server._Listens.end())
+						throw runtime_error("'" + value[j] + "' is already used in this or in a other server block");
+					server._Listens.push_back(listen);
 				}
 				else if (key ==  "server_name")
+				{
+					if (!server._ServerNames.empty())
+						throw runtime_error("Mutiple definition of server name");
 					server._ServerNames.push_back(value[j]); 
+				}
 				else if (key == "client_max_body_size")
+				{
+					/*if (server._ClientMaxBodySize == 0)
+						throw runtime_error("Mutiple definition of client max body size");*/
 					server._ClientMaxBodySize = parse_body_size(value[j]);
+				}
 				else if (key == "error_page")
 					server._ErrorPages = parse_error_pages(value, j);
 				else
