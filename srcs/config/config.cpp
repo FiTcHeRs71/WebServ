@@ -211,6 +211,7 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 		{
 			LocationConfig	location;
 			location.parse_location(this->_LexerConfig, i);
+			//cout << location << endl; DEBUG A VIRER
 			server._Locations.push_back(location);
 		}
 		else
