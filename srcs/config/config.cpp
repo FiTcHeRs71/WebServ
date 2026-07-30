@@ -235,8 +235,8 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 				}
 				else if (key == "client_max_body_size")
 				{
-					/*if (server._ClientMaxBodySize == 0)
-						throw runtime_error("Mutiple definition of client max body size");*/
+					if (server._HasCLientMaxBodzSize)
+						throw runtime_error("Mutiple definition of client max body size");
 					server._ClientMaxBodySize = parse_body_size(value[j]);
 				}
 				else if (key == "error_page")
