@@ -97,10 +97,10 @@ void	ConfigParser::tokenize(const string &path)
 			}
 		}
 	}
-	for (size_t i = 0; i < this->_LexerConfig.size(); i++)
+	/*for (size_t i = 0; i < this->_LexerConfig.size(); i++)
 	{
 		cout << "'"<< this->_LexerConfig[i] << "'" << endl;
-	}
+	}*/
 }
 
 /**

@@ -151,7 +151,10 @@ void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
 		{
 			/*if (!this->_CgiExt.empty())
 				throw runtime_error("Multiple definition of cgi_ext in location blocks");*/
+			/*if (this->_CgiPass.size() == 0)
+				throw runtime_error("Multiple definition of cgi_pass in location blocks");*/
 			this->_CgiExt = parse_cgi_ext(value);
+			cout << this->_CgiPass.size() << endl;
 		}
 		else if (key == "cgi_pass")
 		{
@@ -185,6 +188,8 @@ void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
 		else 
 			throw runtime_error(key + " is not a valid instructions in location bloc");
 	}
+	if (this->_CgiExt.size() > 0 && this->_CgiPass.size() == 0)
+		throw runtime_error("Multiple definition of return in location blocks");
 	i++; // saute le "}" vant de rendre le i aparse bloc server
 }
 
