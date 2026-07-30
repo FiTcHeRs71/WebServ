@@ -202,7 +202,7 @@ void	ConfigParser::fill_servers_config(void)
 /**
  * @brief Prend un objet server instancie dans fill_servers_config et remplit ses attributs
  *
- * Il parcourt la liste de tokens generee par la fonction 'tokenize'
+ * Il parcourt la liste de tokens genere par la fonction 'tokenize'
  * Puis trouve les directives et remplit les attributs avec les valeurs associees
  * Gere les erreurs de valeurs non valides
  * @return void
