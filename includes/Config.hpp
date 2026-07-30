@@ -1,6 +1,7 @@
 #ifndef CONFIG_HPP
 # define CONFIG_HPP
 
+#include "LocationConfig.hpp"
 # include "ServerConfig.hpp"
 # include <cstddef>
 # include <iostream>

@@ -44,6 +44,7 @@ void	parse(const string &argv1)
 	ConfigParser	Config;
 
 	Config.tokenize(argv1);
+	
 	Config.check_syntax(Config._LexerConfig);
 	Config.fill_servers_config();
 }
@@ -95,6 +96,10 @@ void	ConfigParser::tokenize(const string &path)
 				flag_begin = flag_end;
 			}
 		}
+	}
+	for (size_t i = 0; i < this->_LexerConfig.size(); i++)
+	{
+		cout << "'"<< this->_LexerConfig[i] << "'" << endl;
 	}
 }
 
@@ -204,9 +209,13 @@ void	ConfigParser::fill_servers_config(void)
 */
 void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 {
+	set<string>	seen;
+
 	while (i < this->_LexerConfig.size() && this->_LexerConfig[i] != "}")
 	{
 		string	key = this->_LexerConfig[i];
+		if (!seen.insert(key).second && key != "location" && key != "error_page" /*&& key != "listen"*/)
+			throw runtime_error(key + " multiple definition not allowed");
 		i++;
 
 		if (key == "location")
@@ -225,18 +234,24 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 					pair<string, int> listen = parse_listen(value[j]); // split 0.0.0.0 de 8080
 					if (find(server._Listens.begin(), server._Listens.end(), listen) != server._Listens.end())
 						throw runtime_error("'" + value[j] + "' is already used in this or in a other server block");
+					for (size_t i = 0; i < this->_Servers.size(); i++)
+					{
+						cout << this->_Servers[i] << endl;
+						if (find(this->_Servers[i]._Listens.begin(), this->_Servers[i]._Listens.end(), listen) != this->_Servers[i]._Listens.end())
+							throw runtime_error("'" + value[j] + "' is already used in this or in a other server block");
+					}
 					server._Listens.push_back(listen);
 				}
 				else if (key ==  "server_name")
 				{
-					if (!server._ServerNames.empty())
-						throw runtime_error("Mutiple definition of server name");
+					/*if (!server._ServerNames.empty())
+						throw runtime_error("Mutiple definition of server name");*/
 					server._ServerNames.push_back(value[j]); 
 				}
 				else if (key == "client_max_body_size")
 				{
-					if (server._HasCLientMaxBodzSize)
-						throw runtime_error("Mutiple definition of client max body size");
+					/*if (server._HasCLientMaxBodzSize)
+						throw runtime_error("Mutiple definition of client max body size")*/;
 					server._ClientMaxBodySize = parse_body_size(value[j]);
 				}
 				else if (key == "error_page")

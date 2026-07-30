@@ -108,6 +108,7 @@ ostream	&operator<<(ostream &flux, const LocationConfig &src)
 void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
 {
 	size_t flag = token[i].find_first_of("/");
+	set<string>	seen;
 	
 	if (flag != 0)
 		throw runtime_error(token[i] + " is not a valid PATH");
@@ -117,6 +118,9 @@ void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
 	{
 		string	key = token[i];
 		i++;
+
+		if (!seen.insert(key).second)
+			throw runtime_error("Multiple definition of " + key + " not allowed in same location blocks");
 
 		vector<string>	value = collect_values(token, i);
 		if (key == "allow_methods")
