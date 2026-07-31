@@ -36,8 +36,9 @@ ConfigParser & ConfigParser::operator=(const ConfigParser& src)
 /**
  * @brief Fonction d'entree pour le parsing et le checking
  *
- * Remplir avec les differents appels aux fonctions de checking
- * @return void
+ * Enchaine les trois passes : tokenize -> check_syntax -> fill_servers_config
+ * @param argv1 Le chemin du fichier .conf passe au programme.
+ * @return void, throw a la premiere erreur rencontree
 */
 void	parse(const string &argv1)
 {
@@ -52,9 +53,11 @@ void	parse(const string &argv1)
 /**
  * @brief Prend le fichier de configuration et le tokenize.
  * 
- * Il stocke les valeurs dans un vector (lexer_config)
+ * Il stocke les valeurs dans _LexerConfig, les commentaires (#) sont retires et
+ * les caracteres speciaux (";{}") sont isoles comme des tokens a part entiere.
  * Il ne fait aucune verification de validite ou de syntaxe des arguments
  * Checking au debut de l'accessibilite du fichier passe en argument
+ * @param path Le chemin du fichier .conf a lire.
  * @return void
 */
 void	ConfigParser::tokenize(const string &path)
@@ -107,9 +110,11 @@ void	ConfigParser::tokenize(const string &path)
  * @brief Prend la liste de tokens et verifie la syntaxe
  * 
  * Il parcourt la liste de tokens generee par la fonction tokenize et verifie l'ordre des arguments
+ * Controle l'equilibre des accolades, l'imbrication des blocs, la presence
+ * d'une valeur et du ";" apres chaque directive
  * Il ne fait aucune verification sur la validite des ports ou autres
- * throw une exception en cas de syntaxe invalide
- * @return void
+ * @param tokens La liste de tokens produite par tokenize().
+ * @return void, throw en cas de syntaxe invalide
 */
 void	ConfigParser::check_syntax(const vector<string> &tokens)
 {
@@ -178,7 +183,7 @@ void	ConfigParser::check_syntax(const vector<string> &tokens)
  * Il parcourt la liste de tokens generee par la fonction tokenize
  * Il remplit le vector _Servers avec des objets ServerConfig.
  * ServerConfig contient tous les elements de chaque bloc serveur
- * @return void
+ * @return void, throw si un token traine hors d'un bloc server
 */
 void	ConfigParser::fill_servers_config(void)
 {
@@ -203,8 +208,12 @@ void	ConfigParser::fill_servers_config(void)
  *
  * Il parcourt la liste de tokens genere par la fonction 'tokenize'
  * Puis trouve les directives et remplit les attributs avec les valeurs associees
- * Gere les erreurs de valeurs non valides
- * @return void
+ * Refuse les directives dupliquees (sauf location et error_page) et les
+ * couples ip:port deja utilises dans ce bloc ou dans un bloc server precedent
+ * Delegue les blocs location a LocationConfig::parse_location()
+ * @param server L'objet a remplir, instancie par fill_servers_config().
+ * @param i Index positionne apres le "{" du bloc, avance jusqu'au "}" final.
+ * @return void, throw sur toute valeur ou directive invalide
 */
 void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 {

@@ -17,14 +17,15 @@ using namespace std;
 /**
  * @brief Represente toute la phase de parsing du .conf
  *
- * _LexerConfig contient le .conf sous forme de tokens non checkes
+ * Le parsing se fait en trois passes : tokenize() decoupe le fichier,
+ * check_syntax() valide la structure, fill_servers_config() construit les objets.
  */
 class ConfigParser
 {
 	private:
 
-	vector<string>			_LexerConfig;
-	vector<ServerConfig>	_Servers;
+	vector<string>			_LexerConfig;	///< Le .conf sous forme de tokens non checkes
+	vector<ServerConfig>	_Servers;		///< Un objet par bloc server valide
 
 	public:
 
@@ -38,12 +39,12 @@ class ConfigParser
 	
 
 	/*===Member Function===*/
-	void			check_syntax(const vector<string> &tokens);
-	void			tokenize(const string &path);
+	void			check_syntax(const vector<string> &tokens);			///< Passe 2 : valide la structure des tokens
+	void			tokenize(const string &path);						///< Passe 1 : decoupe le .conf en tokens
 	friend void		parse(const string &argv1);
-	void			fill_servers_config(void);
-	void			fill_one_server(ServerConfig &server, size_t &i);
-	
+	void			fill_servers_config(void);							///< Passe 3 : construit un ServerConfig par bloc
+	void			fill_one_server(ServerConfig &server, size_t &i);	///< Remplit un seul bloc server
+
 };
 
 /* === Helpers === */

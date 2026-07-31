@@ -61,12 +61,12 @@ LocationConfig	&LocationConfig::operator=(const LocationConfig& src)
 	return (*this);
 }
 
-	/*===Getters & Setters===*/
-
 	/*===Member Function===*/
 /**
  * @brief Surcharge d'operateur pour l'impression des attributs de la classe LocationConfig
  *
+ * @param flux Le flux de sortie a remplir.
+ * @param src La location dont on affiche les attributs.
  * @return le flux rempli
  */
 ostream	&operator<<(ostream &flux, const LocationConfig &src)
@@ -98,12 +98,14 @@ ostream	&operator<<(ostream &flux, const LocationConfig &src)
 }
 
 /**
- * @brief Fonction dentre pour le parsing des block location contenu dans chaque bloc serveur
- * 
- * Elle remplie les attributs de l'objet LocationConfig avec les elements indique dans le bloc location
- * Effectue une verification du nombre darguments et leur validite pour chaque unstructions <KEY>
- * Les verifications se sont sur des criteres basic mais aucune verication sur des doublons ou des ports non disponible
- * @return le flux rempli
+ * @brief Fonction d'entree pour le parsing des blocs location contenus dans chaque bloc serveur
+ *
+ * Elle remplit les attributs de l'objet LocationConfig avec les elements indiques dans le bloc location
+ * Effectue une verification du nombre d'arguments et de leur validite pour chaque directive <KEY>
+ * Refuse les directives dupliquees dans un meme bloc, et un cgi_ext sans cgi_pass
+ * @param token La liste complete des tokens issue de tokenize().
+ * @param i Index positionne sur le PATH du bloc, avance apres le "}" final.
+ * @return void, throw sur toute valeur ou directive invalide
  */
 void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
 {

@@ -43,6 +43,8 @@ ServerConfig	&ServerConfig::operator=(const ServerConfig& src)
 	/*===Member Function===*/
 /**
  * @brief Trouve la configuration de location correspondant a une requete.
+ *
+ * TODO : non implemente, retourne toujours NULL pour l'instant.
  * @param host Le nom d'hote demande (issu de l'en-tete Host).
  * @param port Le port sur lequel la connexion a ete recue.
  * @param uri  L'URI demandee.
@@ -59,6 +61,9 @@ const LocationConfig	*ServerConfig::Resolve(const std::string &host, int port, c
 /**
  * @brief Surcharge d'operateur pour l'impression des attributs de la classe ServerConfig
  *
+ * Affiche aussi chaque LocationConfig contenue dans le bloc.
+ * @param flux Le flux de sortie a remplir.
+ * @param src Le serveur dont on affiche les attributs.
  * @return le flux rempli
  */
 ostream		&operator<<(ostream &flux, const ServerConfig &src)
