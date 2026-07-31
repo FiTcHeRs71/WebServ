@@ -1,0 +1,13 @@
+# Objets et dépendances de compilation
+*.o
+*.d
+objs/
+
+# Binaire
+webserv
+
+# Éditeur
+.vscode/
+
+# Dossier personnel
+perso/
