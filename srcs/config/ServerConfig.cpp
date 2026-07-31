@@ -1,5 +1,7 @@
 #include "../../includes/ServerConfig.hpp"
+#include <cstddef>
 #include <ostream>
+#include <string>
 
 	/*===Canonical Form===*/
 ServerConfig::ServerConfig(void)
@@ -40,24 +42,6 @@ ServerConfig	&ServerConfig::operator=(const ServerConfig& src)
 	return (*this);
 }
 
-	/*===Member Function===*/
-/**
- * @brief Trouve la configuration de location correspondant a une requete.
- *
- * TODO : non implemente, retourne toujours NULL pour l'instant.
- * @param host Le nom d'hote demande (issu de l'en-tete Host).
- * @param port Le port sur lequel la connexion a ete recue.
- * @param uri  L'URI demandee.
- * @return Un pointeur vers la LocationConfig correspondante, ou NULL si aucune ne correspond.
- */
-const LocationConfig	*ServerConfig::Resolve(const std::string &host, int port, const std::string &uri)
-{
-	(void)host;
-	(void)port;
-	(void)uri;
-	return (NULL);
-}
-
 /**
  * @brief Surcharge d'operateur pour l'impression des attributs de la classe ServerConfig
  *
@@ -79,4 +63,33 @@ ostream		&operator<<(ostream &flux, const ServerConfig &src)
 		flux << src._Locations[i] << endl;
 	flux << "Client max body size = " << src._ClientMaxBodySize << endl;
 	return (flux);
+}
+
+	/*===Member Function===*/
+/**
+ * @brief Trouve la configuration de location correspondant a une requete.
+ *
+ * @param host Le nom d'hote demande (issu de l'en-tete Host).
+ * @param port Le port sur lequel la connexion a ete recue.
+ * @param uri  L'URI demandee.
+ * @return Un pointeur vers la LocationConfig correspondante, ou NULL si aucune ne correspond.
+ */
+const LocationConfig	*ServerConfig::Resolve(const std::string &host, int port, const std::string &uri)
+{
+	(void)port;
+	(void)host;
+	const LocationConfig *best = NULL;
+
+	for (size_t i = 0; i < this->_Locations.size(); i++)
+	{
+		const string &key = this->_Locations[i]._Path;
+
+		if (uri.compare(0, key.size(), key) != 0)
+			continue;
+		if (is_segment_boundary(uri, this->_Locations[i]._Path))
+			continue;
+		if(best == NULL || key.size() > best->_Path.size())
+			best = &this->_Locations[i];
+	}
+	return (best);
 }

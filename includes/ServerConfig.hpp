@@ -51,4 +51,7 @@ class ServerConfig
 	friend ostream			&operator<<(ostream &flux, const ServerConfig &src);
 };
 
+/*=== HELPERS ===*/
+bool	is_segment_boundary(const string &uri, const string &path);
+
 #endif /*SERVER_CONFIG_HPP*/
