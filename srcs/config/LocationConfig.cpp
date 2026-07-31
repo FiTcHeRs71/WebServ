@@ -124,44 +124,20 @@ void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
 
 		vector<string>	value = collect_values(token, i);
 		if (key == "allow_methods")
-		{
-			/*if (!this->_Methods.empty())
-				throw runtime_error("Multiple definition of allow_methods in location blocks");*/
 			this->_Methods = parse_allow_methods(value);
-		}
 		else if (key == "root")
-		{
-			/*if (!this->_Root.empty())
-				throw runtime_error("Invalid multiple definition of root in location bocks");*/
 			this->_Root = parse_root(value);
-		}
 		else if (key == "index")
-		{
-			/*if (!this->_Index.empty())
-				throw runtime_error("Multiple definition of index in location blocks");*/
 			this->_Index = parse_index(value);
-		}
 		else if (key == "autoindex")
-		{
-			/*if (this->_AutoIndex)
-				throw runtime_error("Multiple definition of auto_index in location blocks");*/
 			this->_AutoIndex = parse_auto_index(value);
-		}
 		else if (key == "cgi_ext")
 		{
-			/*if (!this->_CgiExt.empty())
-				throw runtime_error("Multiple definition of cgi_ext in location blocks");*/
-			/*if (this->_CgiPass.size() == 0)
-				throw runtime_error("Multiple definition of cgi_pass in location blocks");*/
-			this->_CgiExt = parse_cgi_ext(value);
+		this->_CgiExt = parse_cgi_ext(value);
 			cout << this->_CgiPass.size() << endl;
 		}
 		else if (key == "cgi_pass")
-		{
-			/*if (!this->_CgiPass.empty())
-				throw runtime_error("Multiple definition of cgi_pass in location blocks");*/
 			this->_CgiPass = parse_cgi_pass(value);
-		}
 		else if (key == "client_max_body_size")
 		{
 			if (value.size() != 1)

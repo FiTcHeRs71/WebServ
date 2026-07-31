@@ -241,7 +241,6 @@ vector<string>	parse_index(const vector<string> &value)
 	{
 		if (value[i].empty())
 			throw runtime_error ("Key index in location bloc has a empty arguments");
-		//if (value.)// doubon ?
 	}
 	return (value);
 }

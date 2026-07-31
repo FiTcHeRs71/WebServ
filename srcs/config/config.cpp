@@ -195,7 +195,6 @@ void	ConfigParser::fill_servers_config(void)
 			throw runtime_error("server block not closed");
 		i++;
 		this->_Servers.push_back(server);
-		//cout << server << endl; // DEBUG A VIRER
 	}
 }
 
@@ -243,17 +242,9 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 					server._Listens.push_back(listen);
 				}
 				else if (key ==  "server_name")
-				{
-					/*if (!server._ServerNames.empty())
-						throw runtime_error("Mutiple definition of server name");*/
 					server._ServerNames.push_back(value[j]); 
-				}
 				else if (key == "client_max_body_size")
-				{
-					/*if (server._HasCLientMaxBodzSize)
-						throw runtime_error("Mutiple definition of client max body size")*/;
 					server._ClientMaxBodySize = parse_body_size(value[j]);
-				}
 				else if (key == "error_page")
 					server._ErrorPages = parse_error_pages(value, j);
 				else
@@ -262,4 +253,3 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 		}
 	}
 }
-
