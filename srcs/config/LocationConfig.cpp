@@ -132,10 +132,7 @@ void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
 		else if (key == "autoindex")
 			this->_AutoIndex = parse_auto_index(value);
 		else if (key == "cgi_ext")
-		{
-		this->_CgiExt = parse_cgi_ext(value);
-			cout << this->_CgiPass.size() << endl;
-		}
+			this->_CgiExt = parse_cgi_ext(value);
 		else if (key == "cgi_pass")
 			this->_CgiPass = parse_cgi_pass(value);
 		else if (key == "client_max_body_size")
@@ -165,7 +162,7 @@ void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
 			throw runtime_error(key + " is not a valid instructions in location bloc");
 	}
 	if (this->_CgiExt.size() > 0 && this->_CgiPass.size() == 0)
-		throw runtime_error("Multiple definition of return in location blocks");
+		throw runtime_error("cgi_pass is mandatory with a cgi_ext key");
 	i++; // saute le "}" vant de rendre le i aparse bloc server
 }
 

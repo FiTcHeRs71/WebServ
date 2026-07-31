@@ -235,7 +235,6 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 						throw runtime_error("'" + value[j] + "' is already used in this or in a other server block");
 					for (size_t i = 0; i < this->_Servers.size(); i++)
 					{
-						cout << this->_Servers[i] << endl;
 						if (find(this->_Servers[i]._Listens.begin(), this->_Servers[i]._Listens.end(), listen) != this->_Servers[i]._Listens.end())
 							throw runtime_error("'" + value[j] + "' is already used in this or in a other server block");
 					}
