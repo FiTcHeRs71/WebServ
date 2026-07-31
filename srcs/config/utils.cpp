@@ -16,8 +16,10 @@
 using namespace std;
 
 /**
- * @brief Check si le fichier passe en argument du programme est ouvrable / lisible et non vide.
- * @return Return l'argument de la ligne en cours de checking.
+ * @brief Check si le fichier de configuration est ouvrable / lisible et non vide.
+ *
+ * @param file Flux ouvert sur le fichier passe en argument du programme.
+ * @return void, throw si le fichier est inaccessible ou vide.
 */
 void	is_valid_file(ifstream &file)
 {
@@ -28,9 +30,10 @@ void	is_valid_file(ifstream &file)
 }
 
 /**
- * @brief Contient tous les arguments (key) valides passables au programme
+ * @brief Contient toutes les directives (key) valides acceptees dans le .conf
  * ex : ->listen<-	0.0.0.0:8080;
- * @return Return l'argument de la ligne en cours de checking.
+ *
+ * @return le set des directives connues.
 */
 const set<string> &known_directives(void)
 {
@@ -45,10 +48,47 @@ const set<string> &known_directives(void)
 }
 
 /**
+ * @brief Verifie qu'une chaine est une adresse IPv4 bien formee.
+ *
+ * Attend 4 segments numeriques separes par 3 points, chacun <= 255,
+ * sans zero non significatif en tete (010 est refuse).
+ * @param host La partie host du token listen (avant le ":").
+ * @return true si l'IPv4 est valide, false sinon.
+*/
+static bool	is_valid_ipv4(const string &host)
+{
+	size_t	start = 0;
+	size_t	i = 0;
+	size_t	dot;
+
+	if (count(host.begin(), host.end(), '.') != 3)
+		return (false);
+	while (i < 4)
+	{
+		dot = host.find('.', start);
+		string	segment = host.substr(start, dot - start);
+
+		if (segment.empty() || segment.size() > 3)
+			return (false);
+		if (segment.find_first_not_of("0123456789") != string::npos)
+			return (false);
+		if (segment.size() > 1 && segment[0] == '0')
+			return (false);
+		if (atoi(segment.c_str()) > 255)
+			return (false);
+		start = dot + 1;
+		i++;
+	}
+	return (true);
+}
+
+/**
  * @brief Split le token value associe a la key listen dans une pair.
  * La pair contient le host puis le port (0.0.0.0 | 8080)
- * Check si la valeur depasse INT_MAX ou si elle est negative.
- * @return la pair completee
+ * Check la validite de l'IPv4 et que le port tient dans 1-65535.
+ *
+ * @param value Le token complet "host:port" associe a la key listen.
+ * @return la pair completee (host, port)
 */
 pair<string, int>	parse_listen(const string &value)
 {
@@ -61,11 +101,14 @@ pair<string, int>	parse_listen(const string &value)
 	host = value.substr(0, flag);
 	port = value.substr(flag + 1);
 
-	char*				p_end = NULL;
-	errno = 0;
-	long				port_converted = strtol(port.c_str(), &p_end, 10);
+	if (!is_valid_ipv4(host))
+		throw runtime_error(host + "is a invalid IPv4 value");
 
-	if (port_converted > INT_MAX || port_converted < 0 || errno == ERANGE)
+	errno = 0;
+	char*	p_end = NULL;
+	long	port_converted = strtol(port.c_str(), &p_end, 10);
+
+	if (port.empty() || p_end == port.c_str() || *p_end != '\0' || errno == ERANGE || port_converted <= 0 || port_converted > 65535)
 		throw runtime_error( port + " is not a valid port");
 	pair.first = host;
 	pair.second = static_cast<int>(port_converted);
@@ -74,10 +117,11 @@ pair<string, int>	parse_listen(const string &value)
 
 /**
  * @brief Fait la conversion de la value donnee par client_max_body_size en size_t
- * Check si une lettre de size est presente en fin de value (KkMmGg).
- * Check si la value n'est pas empty ou trop grande.
+ * Check si un suffixe de taille est present en fin de value (KkMm).
+ * Check si la value n'est pas empty, negative ou trop grande (> INT_MAX).
  *
- * @return le size_t converti
+ * @param value La valeur associee a la key <client_max_body_size> (ex : "10M").
+ * @return la taille en octets convertie
 */
 size_t	parse_body_size(const string &value)
 {
@@ -107,8 +151,10 @@ size_t	parse_body_size(const string &value)
 /**
  * @brief Cree une map STL contenant le code d'erreur associe au PATH de la page dediee
  * Check si le code d'erreur depasse 505 ou si la value est negative ou contient des caracteres
- * non numeriques.
+ * non numeriques. Le dernier element de value est le PATH, tous les precedents sont des codes.
  *
+ * @param value Tous les arguments contenus entre la key <error_page> et le prochain ";"
+ * @param j Index de lecture dans value, avance jusqu'au dernier code traite.
  * @return une map[<Error_code>] = "PATH"
 */
 map<int, string>	parse_error_pages(const vector<string> &value, size_t &j)
@@ -135,6 +181,9 @@ map<int, string>	parse_error_pages(const vector<string> &value, size_t &j)
  * @brief Remplit un vecteur de toutes les valeurs associees a une key
  *
  * Remplit un vecteur de tous les elements contenus entre la key et ";"
+ *
+ * @param token La liste complete des tokens issue de tokenize().
+ * @param i Index positionne sur la premiere valeur, avance apres le ";" consomme.
  * @return vecteur rempli des valeurs
 */
 vector<string>		collect_values(vector<string> &token, size_t &i)
@@ -151,10 +200,10 @@ vector<string>		collect_values(vector<string> &token, size_t &i)
 }
 
 /**
- * @brief Contient toutes les methods possible accepter par notre webserv
+ * @brief Contient toutes les methodes HTTP acceptees par notre webserv
  *
  * Actuel GET/POST/DELETE
- * @return 
+ * @return le set des methodes connues.
 */
 const set<string> &known_methods(void)
 {
@@ -169,7 +218,7 @@ const set<string> &known_methods(void)
  * @brief Prend tous les arguments de <allow_methods> et verifie leurs valeurs.
  *
  * @param value contient tous les arguments contenue entre le key <allow_methods> et le prochain ";"
- * @return la valeur associe a la key
+ * @return le set des methodes autorisees pour cette location
 */
 set<string>	parse_allow_methods(const vector<string> &value)
 {
@@ -188,7 +237,7 @@ set<string>	parse_allow_methods(const vector<string> &value)
  * @brief Prend tous les arguments de <root> et verifie leurs valeurs.
  *
  * @param value contient tous les arguments contenue entre le key <root> et le prochain ";"
- * @return la valeur associe a la key
+ * @return le chemin racine, un seul argument est accepte
 */
 string	parse_root(const vector<string> &value)
 {
@@ -201,7 +250,7 @@ string	parse_root(const vector<string> &value)
  * @brief Prend tous les arguments de <index> et verifie leurs valeurs.
  *
  * @param value contient tous les arguments contenue entre le key <index> et le prochain ";"
- * @return la valeur associe a la key
+ * @return le vecteur des fichiers index, dans l'ordre de priorite
 */
 vector<string>	parse_index(const vector<string> &value)
 {
@@ -211,7 +260,6 @@ vector<string>	parse_index(const vector<string> &value)
 	{
 		if (value[i].empty())
 			throw runtime_error ("Key index in location bloc has a empty arguments");
-		//if (value.)// doubon ?
 	}
 	return (value);
 }
@@ -220,7 +268,7 @@ vector<string>	parse_index(const vector<string> &value)
  * @brief Prend tous les arguments de <auto_index> et verifie leurs valeurs.
  *
  * @param value contient tous les arguments contenue entre le key <auto_index> et le prochain ";"
- * @return la valeur associe a la key
+ * @return true si "on", false si "off"
 */
 bool	parse_auto_index(const vector<string> &value)
 {
@@ -237,7 +285,7 @@ bool	parse_auto_index(const vector<string> &value)
  * @brief Prend tous les arguments de <cgi_ext> et verifie leurs valeurs.
  *
  * @param value contient tous les arguments contenue entre le key <cgi_ext> et le prochain ";"
- * @return la valeur associe a la key
+ * @return l'extension CGI validee, elle doit commencer par un "." (ex : ".py")
 */
 string	parse_cgi_ext(const vector<string> &value)
 {
@@ -252,7 +300,7 @@ string	parse_cgi_ext(const vector<string> &value)
  * @brief Prend tous les arguments de <cgi_pass> et verifie leurs valeurs.
  *
  * @param value contient tous les arguments contenue entre le key <cgi_pass> et le prochain ";"
- * @return la valeur associe a la key
+ * @return le chemin de l'interpreteur CGI, un seul argument est accepte
 */
 string	parse_cgi_pass(const vector<string> &value)
 {
@@ -263,10 +311,12 @@ string	parse_cgi_pass(const vector<string> &value)
 }
 
 /**
- * @brief Prend tous les arguments de <return> et verifie leurs valeurs.
+ * @brief Verifie le code HTTP de la directive <return>.
  *
- * @param value contient tous les arguments contenue entre le key <return> et le prochain ";"
- * @return la valeur associe a la key
+ * Un code de redirection (3xx) exige une <URL> cible, donc deux arguments.
+ * @param value Le premier argument de <return>, cense etre le code HTTP.
+ * @param nb_args Le nombre total d'arguments passes a <return>.
+ * @return le code HTTP converti, compris entre 100 et 599
 */
 int	parser_return_code(const string &value, const size_t nb_args)
 {
@@ -289,7 +339,7 @@ int	parser_return_code(const string &value, const size_t nb_args)
  * @brief Prend tous les arguments de <upload_store> et verifie leurs valeurs.
  *
  * @param value contient tous les arguments contenue entre le key <upload_store> et le prochain ";"
- * @return la valeur associe a la key
+ * @return le chemin de stockage des uploads, un seul argument est accepte
 */
 string	parse_upload_store(const vector<string> &value)
 {

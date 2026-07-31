@@ -3,6 +3,7 @@
 
 	/*===Canonical Form===*/
 ServerConfig::ServerConfig(void)
+	//:_HasCLientMaxBodzSize(false)
 {
 	//std::cout << "ServerConfig default constructor called" << std::endl;
 }
@@ -18,6 +19,7 @@ ServerConfig::ServerConfig(const ServerConfig& to_copy)
 	,_ErrorPages(to_copy._ErrorPages)
 	,_Locations(to_copy._Locations)
 	,_ClientMaxBodySize(to_copy._ClientMaxBodySize)
+	//,_HasCLientMaxBodzSize(to_copy._HasCLientMaxBodzSize)
 {
 	//std::cout << "ServerConfig copy constructor called" << std::endl;
 }
@@ -33,6 +35,7 @@ ServerConfig	&ServerConfig::operator=(const ServerConfig& src)
 		this->_ErrorPages = src._ErrorPages;
 		this->_Locations = src._Locations;
 		this->_ClientMaxBodySize = src._ClientMaxBodySize;
+		//this->_HasCLientMaxBodzSize = src._HasCLientMaxBodzSize;
 	}
 	return (*this);
 }
@@ -40,6 +43,8 @@ ServerConfig	&ServerConfig::operator=(const ServerConfig& src)
 	/*===Member Function===*/
 /**
  * @brief Trouve la configuration de location correspondant a une requete.
+ *
+ * TODO : non implemente, retourne toujours NULL pour l'instant.
  * @param host Le nom d'hote demande (issu de l'en-tete Host).
  * @param port Le port sur lequel la connexion a ete recue.
  * @param uri  L'URI demandee.
@@ -56,6 +61,9 @@ const LocationConfig	*ServerConfig::Resolve(const std::string &host, int port, c
 /**
  * @brief Surcharge d'operateur pour l'impression des attributs de la classe ServerConfig
  *
+ * Affiche aussi chaque LocationConfig contenue dans le bloc.
+ * @param flux Le flux de sortie a remplir.
+ * @param src Le serveur dont on affiche les attributs.
  * @return le flux rempli
  */
 ostream		&operator<<(ostream &flux, const ServerConfig &src)

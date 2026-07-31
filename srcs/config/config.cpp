@@ -1,6 +1,8 @@
 #include "../../includes/Config.hpp"
 #include "../../includes/ServerConfig.hpp"
+#include <algorithm>
 #include <cstddef>
+#include <cstring>
 #include <fstream>
 #include <stdexcept>
 #include <string>
@@ -34,14 +36,16 @@ ConfigParser & ConfigParser::operator=(const ConfigParser& src)
 /**
  * @brief Fonction d'entree pour le parsing et le checking
  *
- * Remplir avec les differents appels aux fonctions de checking
- * @return void
+ * Enchaine les trois passes : tokenize -> check_syntax -> fill_servers_config
+ * @param argv1 Le chemin du fichier .conf passe au programme.
+ * @return void, throw a la premiere erreur rencontree
 */
 void	parse(const string &argv1)
 {
 	ConfigParser	Config;
 
 	Config.tokenize(argv1);
+	
 	Config.check_syntax(Config._LexerConfig);
 	Config.fill_servers_config();
 }
@@ -49,9 +53,11 @@ void	parse(const string &argv1)
 /**
  * @brief Prend le fichier de configuration et le tokenize.
  * 
- * Il stocke les valeurs dans un vector (lexer_config)
+ * Il stocke les valeurs dans _LexerConfig, les commentaires (#) sont retires et
+ * les caracteres speciaux (";{}") sont isoles comme des tokens a part entiere.
  * Il ne fait aucune verification de validite ou de syntaxe des arguments
  * Checking au debut de l'accessibilite du fichier passe en argument
+ * @param path Le chemin du fichier .conf a lire.
  * @return void
 */
 void	ConfigParser::tokenize(const string &path)
@@ -94,15 +100,21 @@ void	ConfigParser::tokenize(const string &path)
 			}
 		}
 	}
+	/*for (size_t i = 0; i < this->_LexerConfig.size(); i++)
+	{
+		cout << "'"<< this->_LexerConfig[i] << "'" << endl;
+	}*/
 }
 
 /**
  * @brief Prend la liste de tokens et verifie la syntaxe
  * 
  * Il parcourt la liste de tokens generee par la fonction tokenize et verifie l'ordre des arguments
+ * Controle l'equilibre des accolades, l'imbrication des blocs, la presence
+ * d'une valeur et du ";" apres chaque directive
  * Il ne fait aucune verification sur la validite des ports ou autres
- * throw une exception en cas de syntaxe invalide
- * @return void
+ * @param tokens La liste de tokens produite par tokenize().
+ * @return void, throw en cas de syntaxe invalide
 */
 void	ConfigParser::check_syntax(const vector<string> &tokens)
 {
@@ -171,7 +183,7 @@ void	ConfigParser::check_syntax(const vector<string> &tokens)
  * Il parcourt la liste de tokens generee par la fonction tokenize
  * Il remplit le vector _Servers avec des objets ServerConfig.
  * ServerConfig contient tous les elements de chaque bloc serveur
- * @return void
+ * @return void, throw si un token traine hors d'un bloc server
 */
 void	ConfigParser::fill_servers_config(void)
 {
@@ -188,30 +200,36 @@ void	ConfigParser::fill_servers_config(void)
 			throw runtime_error("server block not closed");
 		i++;
 		this->_Servers.push_back(server);
-		//cout << server << endl; // DEBUG A VIRER
 	}
 }
 
 /**
  * @brief Prend un objet server instancie dans fill_servers_config et remplit ses attributs
  *
- * Il parcourt la liste de tokens generee par la fonction 'tokenize'
+ * Il parcourt la liste de tokens genere par la fonction 'tokenize'
  * Puis trouve les directives et remplit les attributs avec les valeurs associees
- * Gere les erreurs de valeurs non valides
- * @return void
+ * Refuse les directives dupliquees (sauf location et error_page) et les
+ * couples ip:port deja utilises dans ce bloc ou dans un bloc server precedent
+ * Delegue les blocs location a LocationConfig::parse_location()
+ * @param server L'objet a remplir, instancie par fill_servers_config().
+ * @param i Index positionne apres le "{" du bloc, avance jusqu'au "}" final.
+ * @return void, throw sur toute valeur ou directive invalide
 */
 void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 {
+	set<string>	seen;
+
 	while (i < this->_LexerConfig.size() && this->_LexerConfig[i] != "}")
 	{
 		string	key = this->_LexerConfig[i];
+		if (!seen.insert(key).second && key != "location" && key != "error_page" /*&& key != "listen"*/)
+			throw runtime_error(key + " multiple definition not allowed");
 		i++;
 
 		if (key == "location")
 		{
 			LocationConfig	location;
 			location.parse_location(this->_LexerConfig, i);
-			//cout << location << endl; DEBUG A VIRER
 			server._Locations.push_back(location);
 		}
 		else
@@ -220,7 +238,17 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 			for (size_t j = 0; j < value.size(); j++)
 			{
 				if (key == "listen")
-					server._Listens.push_back(parse_listen(value[j])); // split 0.0.0.0 de 8080
+				{
+					pair<string, int> listen = parse_listen(value[j]); // split 0.0.0.0 de 8080
+					if (find(server._Listens.begin(), server._Listens.end(), listen) != server._Listens.end())
+						throw runtime_error("'" + value[j] + "' is already used in this or in a other server block");
+					for (size_t i = 0; i < this->_Servers.size(); i++)
+					{
+						if (find(this->_Servers[i]._Listens.begin(), this->_Servers[i]._Listens.end(), listen) != this->_Servers[i]._Listens.end())
+							throw runtime_error("'" + value[j] + "' is already used in this or in a other server block");
+					}
+					server._Listens.push_back(listen);
+				}
 				else if (key ==  "server_name")
 					server._ServerNames.push_back(value[j]); 
 				else if (key == "client_max_body_size")
@@ -233,4 +261,3 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 		}
 	}
 }
-

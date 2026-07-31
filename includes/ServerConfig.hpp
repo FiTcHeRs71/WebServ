@@ -28,7 +28,6 @@ class ServerConfig
 	map<int, string>			_ErrorPages;
 	vector<LocationConfig>		_Locations;
 	size_t						_ClientMaxBodySize;
-
 	protected:
 
 
@@ -45,7 +44,7 @@ class ServerConfig
 
 
 	/*===Member Function===*/
-	const LocationConfig	*Resolve(const std::string &host, int port, const std::string &uri);
+	const LocationConfig	*Resolve(const std::string &host, int port, const std::string &uri);	///< TODO : location matchant une requete
 
 
 	/*===Friends===*/

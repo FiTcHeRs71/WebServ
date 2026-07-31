@@ -6,7 +6,7 @@
 	/*===Canonical Form===*/
 LocationConfig::LocationConfig(void)
 	:_AutoIndex(false)
-	,_ReturnCode(0)
+	,_ReturnCode(-1)
 	,_HasReturn(false)
 	,_ClientMaxBodySize(0)
 	,_HasClientMaxBodySize(false)
@@ -61,12 +61,12 @@ LocationConfig	&LocationConfig::operator=(const LocationConfig& src)
 	return (*this);
 }
 
-	/*===Getters & Setters===*/
-
 	/*===Member Function===*/
 /**
  * @brief Surcharge d'operateur pour l'impression des attributs de la classe LocationConfig
  *
+ * @param flux Le flux de sortie a remplir.
+ * @param src La location dont on affiche les attributs.
  * @return le flux rempli
  */
 ostream	&operator<<(ostream &flux, const LocationConfig &src)
@@ -98,16 +98,19 @@ ostream	&operator<<(ostream &flux, const LocationConfig &src)
 }
 
 /**
- * @brief Fonction dentre pour le parsing des block location contenu dans chaque bloc serveur
- * 
- * Elle remplie les attributs de l'objet LocationConfig avec les elements indique dans le bloc location
- * Effectue une verification du nombre darguments et leur validite pour chaque unstructions <KEY>
- * Les verifications se sont sur des criteres basic mais aucune verication sur des doublons ou des ports non disponible
- * @return le flux rempli
+ * @brief Fonction d'entree pour le parsing des blocs location contenus dans chaque bloc serveur
+ *
+ * Elle remplit les attributs de l'objet LocationConfig avec les elements indiques dans le bloc location
+ * Effectue une verification du nombre d'arguments et de leur validite pour chaque directive <KEY>
+ * Refuse les directives dupliquees dans un meme bloc, et un cgi_ext sans cgi_pass
+ * @param token La liste complete des tokens issue de tokenize().
+ * @param i Index positionne sur le PATH du bloc, avance apres le "}" final.
+ * @return void, throw sur toute valeur ou directive invalide
  */
 void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
 {
 	size_t flag = token[i].find_first_of("/");
+	set<string>	seen;
 	
 	if (flag != 0)
 		throw runtime_error(token[i] + " is not a valid PATH");
@@ -118,6 +121,9 @@ void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
 		string	key = token[i];
 		i++;
 
+		if (!seen.insert(key).second)
+			throw runtime_error("Multiple definition of " + key + " not allowed in same location blocks");
+
 		vector<string>	value = collect_values(token, i);
 		if (key == "allow_methods")
 			this->_Methods = parse_allow_methods(value);
@@ -126,7 +132,7 @@ void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
 		else if (key == "index")
 			this->_Index = parse_index(value);
 		else if (key == "autoindex")
-				this->_AutoIndex = parse_auto_index(value);
+			this->_AutoIndex = parse_auto_index(value);
 		else if (key == "cgi_ext")
 			this->_CgiExt = parse_cgi_ext(value);
 		else if (key == "cgi_pass")
@@ -140,6 +146,8 @@ void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
 		}
 		else if (key == "return")
 		{
+			if (this->_ReturnCode != -1)
+				throw runtime_error("Multiple definition of return in location blocks");
 			if (value.empty() || value.size() > 2)
 				throw runtime_error(key + " needs one or two arguments");
 			this->_HasReturn = true;
@@ -155,6 +163,8 @@ void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
 		else 
 			throw runtime_error(key + " is not a valid instructions in location bloc");
 	}
+	if (this->_CgiExt.size() > 0 && this->_CgiPass.size() == 0)
+		throw runtime_error("cgi_pass is mandatory with a cgi_ext key");
 	i++; // saute le "}" vant de rendre le i aparse bloc server
 }
 
