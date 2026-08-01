@@ -74,22 +74,57 @@ ostream		&operator<<(ostream &flux, const ServerConfig &src)
  * @param uri  L'URI demandee.
  * @return Un pointeur vers la LocationConfig correspondante, ou NULL si aucune ne correspond.
  */
-const LocationConfig	*ServerConfig::Resolve(const std::string &host, int port, const std::string &uri)
+const LocationConfig	*ServerConfig::Resolve(const std::string &host, int port, const std::string &uri)const
 {
 	(void)port;
 	(void)host;
-	const LocationConfig *best = NULL;
+	const LocationConfig	*best = NULL;
+	size_t					flag = uri.find_first_of("?#");
+	string					uri_parsed;
+
+	if (flag != string::npos)
+		uri_parsed = uri.substr(0, flag);
+	else
+		uri_parsed = uri;
 
 	for (size_t i = 0; i < this->_Locations.size(); i++)
 	{
 		const string &key = this->_Locations[i]._Path;
 
-		if (uri.compare(0, key.size(), key) != 0)
+		if (uri_parsed.compare(0, key.size(), key) != 0)
 			continue;
-		if (is_segment_boundary(uri, this->_Locations[i]._Path))
+		if (!is_segment_boundary(uri_parsed, this->_Locations[i]._Path))
 			continue;
 		if(best == NULL || key.size() > best->_Path.size())
 			best = &this->_Locations[i];
 	}
 	return (best);
+}
+
+/**
+ * @brief Traduit une URI en chemin disque a partir de la location qui la matche.
+ *
+ * Retire le prefixe _Path de l'URI puis recolle le reste sur _Root, en
+ * normalisant le '/' de jointure. Exemple du sujet :
+ * "/kapouet/pouic/toto/pouet" avec location "/kapouet" et root "/tmp/www"
+ * donne "/tmp/www/pouic/toto/pouet".
+ * @param location La LocationConfig retournee par Resolve() pour cette URI.
+ * @param uri L'URI demandee, query string et fragment tolerees.
+ * @return Le chemin disque correspondant.
+ */
+string	ServerConfig::build_path(const LocationConfig &location, const string &uri)const
+{
+	size_t	flag = uri.find_first_of("?#");
+	string	clean = (flag != string::npos) ? uri.substr(0, flag) : uri;
+	string	root = location._Root;
+	string	reste = clean.substr(location._Path.size());
+
+	if (root.empty())
+		return (reste);
+	if (root[root.size() - 1] == '/' && !reste.empty() && reste[0] == '/')
+		root = root.substr(0, root.size() - 1);
+	else if (root[root.size() - 1] != '/' && !reste.empty() && reste[0] != '/')
+		root += '/';
+
+	return (root + reste);
 }

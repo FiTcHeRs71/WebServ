@@ -34,18 +34,30 @@ ConfigParser & ConfigParser::operator=(const ConfigParser& src)
 }
 
 /**
+ * @brief Accesseur sur les blocs server construits par le parsing.
+ *
+ * Valide uniquement apres un appel a fill_servers_config().
+ * @return La liste des ServerConfig, vide si le parsing n'a pas eu lieu.
+*/
+const vector<ServerConfig>	&ConfigParser::getServers(void) const
+{
+	return (this->_Servers);
+}
+
+/**
  * @brief Fonction d'entree pour le parsing et le checking
  *
  * Enchaine les trois passes : tokenize -> check_syntax -> fill_servers_config
+ * Le ConfigParser est fourni par l'appelant pour que les ServerConfig
+ * lui survivent (voir getServers()).
  * @param argv1 Le chemin du fichier .conf passe au programme.
+ * @param Config Le parser a remplir.
  * @return void, throw a la premiere erreur rencontree
 */
-void	parse(const string &argv1)
+void	parse(const string &argv1, ConfigParser &Config)
 {
-	ConfigParser	Config;
-
 	Config.tokenize(argv1);
-	
+
 	Config.check_syntax(Config._LexerConfig);
 	Config.fill_servers_config();
 }
@@ -100,10 +112,6 @@ void	ConfigParser::tokenize(const string &path)
 			}
 		}
 	}
-	/*for (size_t i = 0; i < this->_LexerConfig.size(); i++)
-	{
-		cout << "'"<< this->_LexerConfig[i] << "'" << endl;
-	}*/
 }
 
 /**

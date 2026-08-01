@@ -61,6 +61,27 @@ LocationConfig	&LocationConfig::operator=(const LocationConfig& src)
 	return (*this);
 }
 
+	/*===Getters & Setters===*/
+/**
+ * @brief Accesseur sur le prefixe d'URI du bloc "location".
+ *
+ * @return Le PATH declare dans le .conf, toujours prefixe par '/'.
+ */
+const string	&LocationConfig::getPath(void) const
+{
+	return (this->_Path);
+}
+
+/**
+ * @brief Accesseur sur la racine disque du bloc "location".
+ *
+ * @return Le root declare dans le .conf, chaine vide si la directive est absente.
+ */
+const string	&LocationConfig::getRoot(void) const
+{
+	return (this->_Root);
+}
+
 	/*===Member Function===*/
 /**
  * @brief Surcharge d'operateur pour l'impression des attributs de la classe LocationConfig

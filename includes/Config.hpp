@@ -36,12 +36,12 @@ class ConfigParser
 	ConfigParser&operator=(const ConfigParser& src);
 
 	/*===Getters & Setters===*/
-	
+	const vector<ServerConfig>	&getServers(void) const;				///< Les blocs server construits par fill_servers_config()
 
 	/*===Member Function===*/
 	void			check_syntax(const vector<string> &tokens);			///< Passe 2 : valide la structure des tokens
 	void			tokenize(const string &path);						///< Passe 1 : decoupe le .conf en tokens
-	friend void		parse(const string &argv1);
+	friend void		parse(const string &argv1, ConfigParser &Config);
 	void			fill_servers_config(void);							///< Passe 3 : construit un ServerConfig par bloc
 	void			fill_one_server(ServerConfig &server, size_t &i);	///< Remplit un seul bloc server
 
@@ -50,7 +50,7 @@ class ConfigParser
 /* === Helpers === */
 vector<string>		collect_values(vector<string> &token, size_t &i);
 void				is_valid_file(ifstream &file);
-void				parse(const string &argv1);
+void				parse(const string &argv1, ConfigParser &Config);
 const set<string>	&known_directives(void);
 const set<string>	&known_methods(void);
 pair<string, int>	parse_listen(const string &value);
