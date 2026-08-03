@@ -153,7 +153,7 @@ size_t	parse_body_size(const string &value)
 		throw runtime_error(value + " is not a valid body size");
 	if (size_converted > INT_MAX / multiplier)
 		throw runtime_error(value + " is a too big body size");
-	return (static_cast<size_t>(size_converted));
+	return (static_cast<size_t>(size_converted * multiplier));
 }
 
 /**
