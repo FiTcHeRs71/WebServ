@@ -41,7 +41,7 @@ class ServerConfig
 	ServerConfig &operator=(const ServerConfig& src);
 
 	/*===Getters & Setters===*/
-
+	vector<pair<string, int> > getListens() const;
 
 	/*===Member Function===*/
 	const LocationConfig	*Resolve(const std::string &uri)const;	///< TODO : location matchant une requete
