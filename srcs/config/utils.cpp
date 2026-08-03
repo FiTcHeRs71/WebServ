@@ -357,6 +357,16 @@ string	parse_upload_store(const vector<string> &value)
 	return (value[0]);
 }
 
+/**
+ * @brief check si le prefixe path s'arrete sur une frontiere de segment de l'URI
+ *
+ * Evite qu'une location "/img" matche l'URI "/images/logo.png".
+ * @pre uri doit avoir path en prefixe (verifie par ServerConfig::Resolve)
+ * @pre path est non vide (garanti par parse_location)
+ * @param uri chemin indique dans la requette HTTP 1.1, query/fragment deja retires
+ * @param path chemin indique par le bloc location entrain detre verifier
+ * @return true si match exact, si path finit par '/', ou si le caractere suivant dans l'uri est un '/'
+*/
 bool	is_segment_boundary(const string &uri, const string &path)
 {
 	if (uri.size() == path.size())
