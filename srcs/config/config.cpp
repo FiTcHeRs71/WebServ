@@ -313,6 +313,15 @@ void	ConfigParser::apply_defaults(void)
 			if (!srv._Locations[j]._HasClientMaxBodySize)
 				srv._Locations[j]._ClientMaxBodySize = srv._ClientMaxBodySize;
 		}
-		//if (srv._ErrorPages) //TODO A-06 : Pages d'erreur par defaut
+		/*map<int, string>::const_iterator it = srv._ErrorPages.find(404);
+		if (it == srv._ErrorPages.end())
+		{
+			//pas trouver donc creer
+		}
+		else
+		{
+			ifstream	html_file(it->second.c_str());
+			is_valid_file(html_file);
+		}*/
 	}
 }
