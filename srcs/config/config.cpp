@@ -279,6 +279,18 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 	}
 }
 
+/**
+ * @brief Parcours la liste des serveurs du .conf et initilalize les valeurs critiques
+ *
+ * Il parcourt la liste de serveurs et regarde les valeurs de ou la declaration de <location / {...}>,
+ * Pour le client_max_body_size si non itinialiser appplique la valeur par default de NGINX
+ * Pour root il met par defaut le chemin vers www
+ * Pour methods il attribue automatchiquement GET
+ * Pour index il attribue automatchiquement "index.html"
+ * Toutes valeur sont dans le header config.hpp
+ * @param void void.
+ * @return void.
+*/
 void	ConfigParser::apply_defaults(void)
 {
 	for (size_t i = 0; i < this->_Servers.size(); i++)
