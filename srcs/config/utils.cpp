@@ -98,7 +98,10 @@ pair<string, int>	parse_listen(const string &value)
 	string				port;
 
 	flag = value.find_first_of( ":");
-	host = value.substr(0, flag);
+	if (flag == string::npos)
+		host = "0.0.0.0";
+	else
+		host = value.substr(0, flag);
 	port = value.substr(flag + 1);
 
 	if (!is_valid_ipv4(host))

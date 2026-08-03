@@ -6,7 +6,7 @@
 	/*===Canonical Form===*/
 LocationConfig::LocationConfig(void)
 	:_AutoIndex(false)
-	,_ReturnCode(-1)
+	,_ReturnCode(0)
 	,_HasReturn(false)
 	,_ClientMaxBodySize(0)
 	,_HasClientMaxBodySize(false)
