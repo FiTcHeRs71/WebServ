@@ -92,7 +92,7 @@ static bool	is_valid_ipv4(const string &host)
 */
 pair<string, int>	parse_listen(const string &value)
 {
-	pair<string, int>	pair;
+	pair<string, int>	pair_host_port;
 	size_t				flag;
 	string				host;
 	string				port;
@@ -113,9 +113,9 @@ pair<string, int>	parse_listen(const string &value)
 
 	if (port.empty() || p_end == port.c_str() || *p_end != '\0' || errno == ERANGE || port_converted <= 0 || port_converted > 65535)
 		throw runtime_error( port + " is not a valid port");
-	pair.first = host;
-	pair.second = static_cast<int>(port_converted);
-	return (pair);
+	pair_host_port.first = host;
+	pair_host_port.second = static_cast<int>(port_converted);
+	return (pair_host_port);
 }
 
 /**
