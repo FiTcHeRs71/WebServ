@@ -347,3 +347,12 @@ string	parse_upload_store(const vector<string> &value)
 		throw runtime_error("upload_store in location block needs only one value");
 	return (value[0]);
 }
+
+bool	is_segment_boundary(const string &uri, const string &path)
+{
+	if (uri.size() == path.size())
+		return (true);
+	if (path[path.size() - 1] == '/')
+		return (true);
+	return (uri[path.size()] == '/');
+}

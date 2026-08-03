@@ -44,11 +44,14 @@ class ServerConfig
 
 
 	/*===Member Function===*/
-	const LocationConfig	*Resolve(const std::string &host, int port, const std::string &uri);	///< TODO : location matchant une requete
-
+	const LocationConfig	*Resolve(const std::string &uri)const;	///< TODO : location matchant une requete
+	string					build_path(const LocationConfig &location, const string &uri)const;
 
 	/*===Friends===*/
 	friend ostream			&operator<<(ostream &flux, const ServerConfig &src);
 };
+
+/*=== HELPERS ===*/
+bool	is_segment_boundary(const string &uri, const string &path);
 
 #endif /*SERVER_CONFIG_HPP*/
