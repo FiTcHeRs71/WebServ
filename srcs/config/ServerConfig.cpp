@@ -5,7 +5,8 @@
 
 	/*===Canonical Form===*/
 ServerConfig::ServerConfig(void)
-	:_HasClientMaxBodySize(false)
+	:_ClientMaxBodySize(0)
+	,_HasClientMaxBodySize(false)
 {
 	//std::cout << "ServerConfig default constructor called" << std::endl;
 }
