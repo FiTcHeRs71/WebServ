@@ -14,6 +14,10 @@
 
 using namespace std;
 
+const size_t		DEFAULT_BODY_SIZE	= 1048576;
+const char *const	DEFAULT_ROOT		= "./www";
+const char *const	DEFAULT_INDEX		= "index.html";
+
 /**
  * @brief Represente toute la phase de parsing du .conf
  *
@@ -44,7 +48,7 @@ class ConfigParser
 	friend void		parse(const string &argv1, ConfigParser &Config);
 	void			fill_servers_config(void);							///< Passe 3 : construit un ServerConfig par bloc
 	void			fill_one_server(ServerConfig &server, size_t &i);	///< Remplit un seul bloc server
-
+	void			apply_defaults(void);
 };
 
 /* === Helpers === */
