@@ -259,7 +259,12 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 				else if (key ==  "server_name")
 					server._ServerNames.push_back(value[j]); 
 				else if (key == "client_max_body_size")
+				{
+					if (server._HasClientMaxBodySize)
+						throw runtime_error("Multiple definition of <client_max_body_size> key in server block");
 					server._ClientMaxBodySize = parse_body_size(value[j]);
+					server._HasClientMaxBodySize = true;
+				}
 				else if (key == "error_page")
 					server._ErrorPages = parse_error_pages(value, j);
 				else

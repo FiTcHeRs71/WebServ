@@ -99,10 +99,15 @@ pair<string, int>	parse_listen(const string &value)
 
 	flag = value.find_first_of( ":");
 	if (flag == string::npos)
+	{
 		host = "0.0.0.0";
+		port = value;
+	}
 	else
+	{
 		host = value.substr(0, flag);
-	port = value.substr(flag + 1);
+		port = value.substr(flag + 1);
+	}
 
 	if (!is_valid_ipv4(host))
 		throw runtime_error(host + "is a invalid IPv4 value");

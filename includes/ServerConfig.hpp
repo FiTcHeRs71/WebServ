@@ -29,6 +29,7 @@ class ServerConfig
 	map<int, string>			_ErrorPages;
 	vector<LocationConfig>		_Locations;
 	size_t						_ClientMaxBodySize;
+	bool						_HasClientMaxBodySize;
 
 	protected:
 

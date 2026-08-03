@@ -5,6 +5,7 @@
 
 	/*===Canonical Form===*/
 ServerConfig::ServerConfig(void)
+	:_HasClientMaxBodySize(false)
 {
 	//std::cout << "ServerConfig default constructor called" << std::endl;
 }
@@ -20,6 +21,7 @@ ServerConfig::ServerConfig(const ServerConfig& to_copy)
 	,_ErrorPages(to_copy._ErrorPages)
 	,_Locations(to_copy._Locations)
 	,_ClientMaxBodySize(to_copy._ClientMaxBodySize)
+	,_HasClientMaxBodySize(to_copy._HasClientMaxBodySize)
 {
 	//std::cout << "ServerConfig copy constructor called" << std::endl;
 }
@@ -34,6 +36,7 @@ ServerConfig	&ServerConfig::operator=(const ServerConfig& src)
 		this->_ErrorPages = src._ErrorPages;
 		this->_Locations = src._Locations;
 		this->_ClientMaxBodySize = src._ClientMaxBodySize;
+		this->_HasClientMaxBodySize = src._HasClientMaxBodySize;
 	}
 	return (*this);
 }
