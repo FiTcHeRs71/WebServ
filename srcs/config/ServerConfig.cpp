@@ -5,7 +5,6 @@
 
 	/*===Canonical Form===*/
 ServerConfig::ServerConfig(void)
-	//:_HasCLientMaxBodzSize(false)
 {
 	//std::cout << "ServerConfig default constructor called" << std::endl;
 }
@@ -21,7 +20,6 @@ ServerConfig::ServerConfig(const ServerConfig& to_copy)
 	,_ErrorPages(to_copy._ErrorPages)
 	,_Locations(to_copy._Locations)
 	,_ClientMaxBodySize(to_copy._ClientMaxBodySize)
-	//,_HasCLientMaxBodzSize(to_copy._HasCLientMaxBodzSize)
 {
 	//std::cout << "ServerConfig copy constructor called" << std::endl;
 }
@@ -29,7 +27,6 @@ ServerConfig::ServerConfig(const ServerConfig& to_copy)
 ServerConfig	&ServerConfig::operator=(const ServerConfig& src)
 {
 	//std::cout << "ServerConfig operator assignement(=) constructor called" << std::endl;
-	(void)src;
 	if (this != &src)
 	{
 		this->_Listens = src._Listens;
@@ -37,7 +34,6 @@ ServerConfig	&ServerConfig::operator=(const ServerConfig& src)
 		this->_ErrorPages = src._ErrorPages;
 		this->_Locations = src._Locations;
 		this->_ClientMaxBodySize = src._ClientMaxBodySize;
-		//this->_HasCLientMaxBodzSize = src._HasCLientMaxBodzSize;
 	}
 	return (*this);
 }
@@ -74,10 +70,8 @@ ostream		&operator<<(ostream &flux, const ServerConfig &src)
  * @param uri  L'URI demandee.
  * @return Un pointeur vers la LocationConfig correspondante, ou NULL si aucune ne correspond.
  */
-const LocationConfig	*ServerConfig::Resolve(const std::string &host, int port, const std::string &uri)const
+const LocationConfig	*ServerConfig::Resolve(const std::string &uri)const
 {
-	(void)port;
-	(void)host;
 	const LocationConfig	*best = NULL;
 	size_t					flag = uri.find_first_of("?#");
 	string					uri_parsed;

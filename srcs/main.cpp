@@ -4,16 +4,12 @@
 
 using namespace std;
 
+/*========================================================================================================*/
+/*========================================================================================================*/
 /**
- * @brief Mode debug : resout une URI et affiche la location + le chemin disque.
- *
- * Sert aux tests unitaires du module config (tests/test_resolve.sh), la sortie
- * tient en deux lignes "location: ..." et "path: ..." pour etre parsable en shell.
- * @param cfg Le parser deja rempli.
- * @param uri L'URI a resoudre.
- * @return 0 si le premier bloc server existe, 1 sinon.
+ * @brief Pour test ou debug les URI
  */
-static int	resolve_debug(const ConfigParser &cfg, const string &uri)
+/*static int	resolve_debug(const ConfigParser &cfg, const string &uri)
 {
 	if (cfg.getServers().empty())
 	{
@@ -56,5 +52,30 @@ int main(int argc, char **argv)
 	}
 	if (debug)
 		return (resolve_debug(cfg, argv[3]));
+	return (0);
+}*/
+/*========================================================================================================*/
+/*main → parse(argv[1], cfg)        // une seule fois, échec = exit 1
+     → ListenSockets(cfg.getServers())   // B-01, lit les _Listens
+     → boucle poll()              // B-02, tourne jusqu'à SIGINT
+        → par requête : selectServer(port) → srv.Resolve(uri) → srv.build_path(...)*/
+/*========================================================================================================*/
+int main(int argc, char **argv)
+{
+	if (argc != 2)
+	{
+		cout << "USAGE : \n./Webserv <conf_file.conf>" << endl;
+		return (1);
+	}
+	try
+	{
+		ConfigParser	cfg;
+		parse(argv[1], cfg);
+	}
+	catch (exception &e)
+	{
+		cout << "/!\\ Error /!\\ : "<< e.what() << endl;
+		return (1);
+	}
 	return (0);
 }

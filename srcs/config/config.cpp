@@ -57,7 +57,6 @@ const vector<ServerConfig>	&ConfigParser::getServers(void) const
 void	parse(const string &argv1, ConfigParser &Config)
 {
 	Config.tokenize(argv1);
-
 	Config.check_syntax(Config._LexerConfig);
 	Config.fill_servers_config();
 }
