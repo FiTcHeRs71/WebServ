@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <cstring>
 #include <fstream>
+#include <map>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -59,6 +60,7 @@ void	parse(const string &argv1, ConfigParser &Config)
 	Config.tokenize(argv1);
 	Config.check_syntax(Config._LexerConfig);
 	Config.fill_servers_config();
+	Config.apply_defaults();
 }
 
 /**
@@ -266,10 +268,51 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 					server._HasClientMaxBodySize = true;
 				}
 				else if (key == "error_page")
-					server._ErrorPages = parse_error_pages(value, j);
+				{
+					map<int, string>	tmp = parse_error_pages(value, j);
+					server._ErrorPages.insert(tmp.begin(), tmp.end());
+				}
 				else
 					throw runtime_error("directive : '" + key + "' forbiden in server body");
 			}
 		}
+	}
+}
+
+void	ConfigParser::apply_defaults(void)
+{
+	for (size_t i = 0; i < this->_Servers.size(); i++)
+	{
+		ServerConfig	&srv= this->_Servers[i];
+		bool			location_flag = false;
+
+		if (!srv._HasClientMaxBodySize)
+			srv._ClientMaxBodySize = DEFAULT_BODY_SIZE;
+		for (size_t k = 0; k < srv._Locations.size(); k++)
+		{
+			if (srv._Locations[k]._Path == "/")
+			{
+				location_flag = true;
+				break;
+			}
+		}
+		if (!location_flag)
+		{
+			LocationConfig	default_location;
+			default_location._Path = "/";
+			srv._Locations.push_back(default_location);
+		}
+		for (size_t j = 0; j < srv._Locations.size(); j++)
+		{
+			if (srv._Locations[j]._Index.empty())
+				srv._Locations[j]._Index.push_back(DEFAULT_INDEX);
+			if (srv._Locations[j]._Root.empty())
+				srv._Locations[j]._Root = DEFAULT_ROOT;
+			if (srv._Locations[j]._Methods.empty())
+				srv._Locations[j]._Methods.insert("GET");
+			if (!srv._Locations[j]._HasClientMaxBodySize)
+				srv._Locations[j]._ClientMaxBodySize = srv._ClientMaxBodySize;
+		}
+		//if (srv._ErrorPages) //TODO A-06 : Pages d'erreur par defaut
 	}
 }
