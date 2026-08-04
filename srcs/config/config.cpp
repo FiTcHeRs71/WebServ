@@ -254,15 +254,18 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 					pair<string, int> listen = parse_listen(value[j]); // split 0.0.0.0 de 8080
 					if (find(server._Listens.begin(), server._Listens.end(), listen) != server._Listens.end())
 						throw runtime_error("'" + value[j] + "' is already used in this or in a other server block");
-					for (size_t i = 0; i < this->_Servers.size(); i++)  //Handler de listen sur la meme host + port
-					{
-						vector<pair<string, int> >::iterator it = find(this->_Servers[i]._Listens.begin(), this->_Servers[i]._Listens.end(), listen);
-						if (it != this->_Servers[i]._Listens.end())
-						{
-							if (it->first == listen .first && it->second == listen.second)
-								throw runtime_error("Conflictinf server name on same lsiten port");
-						}
-					}
+					for (size_t a = 0; a < _Servers.size(); a++) // conflit = meme host:port ET un server_name en commun (deux blocs sans server_name = conflit aussi : meme default server)
+						for (size_t b = a + 1; b < _Servers.size(); b++)
+							for (size_t la = 0; la < _Servers[a]._Listens.size(); la++)
+							{
+								if (find(_Servers[b]._Listens.begin(), _Servers[b]._Listens.end(), _Servers[a]._Listens[la]) == _Servers[b]._Listens.end())
+									continue;
+								if (_Servers[a]._ServerNames.empty() && _Servers[b]._ServerNames.empty())
+									throw runtime_error("conflicting default server on same host:port");
+								for (size_t n = 0; n < _Servers[a]._ServerNames.size(); n++)
+									if (find(_Servers[b]._ServerNames.begin(), _Servers[b]._ServerNames.end(), _Servers[a]._ServerNames[n]) != _Servers[b]._ServerNames.end())
+										throw runtime_error("conflicting server name '" + _Servers[a]._ServerNames[n] + "'");
+							}
 					server._Listens.push_back(listen);
 				}
 				else if (key ==  "server_name")
