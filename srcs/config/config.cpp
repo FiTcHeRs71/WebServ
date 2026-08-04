@@ -7,6 +7,7 @@
 #include <map>
 #include <stdexcept>
 #include <string>
+#include <utility>
 #include <vector>
 
 using namespace std;
@@ -21,6 +22,7 @@ ConfigParser::~ConfigParser(void)
 }
 ConfigParser::ConfigParser(const ConfigParser& to_copy)
 	:_LexerConfig(to_copy._LexerConfig)
+	,_Servers(to_copy._Servers)
 {
 	//cout << "ConfigParser copy constructor called" << endl;
 }
@@ -30,6 +32,7 @@ ConfigParser & ConfigParser::operator=(const ConfigParser& src)
 	if (this != &src)
 	{
 		this->_LexerConfig = src._LexerConfig;
+		this->_Servers = src._Servers;
 	}
 	return (*this);
 }
@@ -251,11 +254,15 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 					pair<string, int> listen = parse_listen(value[j]); // split 0.0.0.0 de 8080
 					if (find(server._Listens.begin(), server._Listens.end(), listen) != server._Listens.end())
 						throw runtime_error("'" + value[j] + "' is already used in this or in a other server block");
-					/*for (size_t i = 0; i < this->_Servers.size(); i++)
+					for (size_t i = 0; i < this->_Servers.size(); i++)  //Handler de listen sur la meme host + port
 					{
-						if (find(this->_Servers[i]._Listens.begin(), this->_Servers[i]._Listens.end(), listen) != this->_Servers[i]._Listens.end())
-							throw runtime_error("'" + value[j] + "' is already used in this or in a other server block");
-					}*/ //Handler de listen sur la meme host + port
+						vector<pair<string, int> >::iterator it = find(this->_Servers[i]._Listens.begin(), this->_Servers[i]._Listens.end(), listen);
+						if (it != this->_Servers[i]._Listens.end())
+						{
+							if (it->first == listen .first && it->second == listen.second)
+								throw runtime_error("Conflictinf server name on same lsiten port");
+						}
+					}
 					server._Listens.push_back(listen);
 				}
 				else if (key ==  "server_name")
@@ -314,6 +321,14 @@ void	ConfigParser::apply_defaults(void)
 			default_location._Path = "/";
 			srv._Locations.push_back(default_location);
 		}
+		if (srv._Listens.size() < 1)
+		{
+			pair<string, int>	default_listens;
+			default_listens.first = DEFAULT_HOST;
+			default_listens.second = DEFAULT_PORT;
+			srv._Listens.push_back(default_listens);
+		}
+		cout << srv << endl;
 		for (size_t j = 0; j < srv._Locations.size(); j++)
 		{
 			if (srv._Locations[j]._Index.empty())
