@@ -17,7 +17,7 @@ ServerConfig::~ServerConfig(void)
 ServerConfig::ServerConfig(const ServerConfig& to_copy)
 	:_Listens(to_copy._Listens)
 	,_ServerNames(to_copy._ServerNames)
-	,_ErrorPages(to_copy._ErrorPages)
+	,_ErrorPages(to_copy ._ErrorPages)
 	,_Locations(to_copy._Locations)
 	,_ClientMaxBodySize(to_copy._ClientMaxBodySize)
 {

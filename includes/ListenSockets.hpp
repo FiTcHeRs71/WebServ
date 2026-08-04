@@ -4,6 +4,7 @@
 # include "ServerConfig.hpp"
 # include "Config.hpp"
 # include <iostream>
+# include <unistd.h>
 # include <vector>
 # include <sys/types.h>
 # include <sys/socket.h>
@@ -12,7 +13,9 @@
 # include <arpa/inet.h>
 # include <string.h>
 # include <sstream>
+# include <fcntl.h>
 
+# define BACKLOG 511
 using namespace std;
 
 /**
@@ -24,11 +27,7 @@ using namespace std;
 class ListenSockets
 {
 	private:
-	vector<int> _sockFd;
-
-	protected:
-
-
+	vector<int> _ServFd;
 
 	public:
 
@@ -37,11 +36,13 @@ class ListenSockets
 	~ListenSockets(void);
 	ListenSockets(const ListenSockets& to_copy);
 	ListenSockets &operator=(const ListenSockets& src);
-	/*===Getters & Setters===*/
 
+	/*===Getters & Setters===*/
+	vector<int> getServFd() const;
 
 	/*===Member Function===*/
 	bool	creatSocket(const pair<string, int>& listen);
+	void	closeFd();
 };
 
 #endif /*LISTEN_SOCKETS_HPP*/

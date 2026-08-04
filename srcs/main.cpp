@@ -72,7 +72,7 @@ int main(int argc, char **argv)
 	{
 		ConfigParser	cfg;
 		parse(argv[1], cfg);
-		ListenSockets Sock(cfg.getServers());
+		ListenSockets servSock(cfg.getServers());
 	}
 	catch (exception &e)
 	{
