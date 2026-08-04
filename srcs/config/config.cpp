@@ -231,7 +231,7 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 	while (i < this->_LexerConfig.size() && this->_LexerConfig[i] != "}")
 	{
 		string	key = this->_LexerConfig[i];
-		if (!seen.insert(key).second && key != "location" && key != "error_page" /*&& key != "listen"*/)
+		if (!seen.insert(key).second && key != "location" && key != "error_page" && key != "listen")
 			throw runtime_error(key + " multiple definition not allowed");
 		i++;
 
@@ -251,11 +251,11 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 					pair<string, int> listen = parse_listen(value[j]); // split 0.0.0.0 de 8080
 					if (find(server._Listens.begin(), server._Listens.end(), listen) != server._Listens.end())
 						throw runtime_error("'" + value[j] + "' is already used in this or in a other server block");
-					for (size_t i = 0; i < this->_Servers.size(); i++)
+					/*for (size_t i = 0; i < this->_Servers.size(); i++)
 					{
 						if (find(this->_Servers[i]._Listens.begin(), this->_Servers[i]._Listens.end(), listen) != this->_Servers[i]._Listens.end())
 							throw runtime_error("'" + value[j] + "' is already used in this or in a other server block");
-					}
+					}*/ //Handler de listen sur la meme host + port
 					server._Listens.push_back(listen);
 				}
 				else if (key ==  "server_name")

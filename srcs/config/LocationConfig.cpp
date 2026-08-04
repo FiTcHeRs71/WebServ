@@ -167,8 +167,6 @@ void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
 		}
 		else if (key == "return")
 		{
-			if (this->_ReturnCode != -1)
-				throw runtime_error("Multiple definition of return in location blocks");
 			if (value.empty() || value.size() > 2)
 				throw runtime_error(key + " needs one or two arguments");
 			this->_HasReturn = true;
