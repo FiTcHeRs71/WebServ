@@ -332,19 +332,17 @@ void	ConfigParser::apply_defaults(void)
 			if (!srv._Locations[j]._HasClientMaxBodySize)
 				srv._Locations[j]._ClientMaxBodySize = srv._ClientMaxBodySize;
 		}
-		/*map<int, string>::const_iterator it = srv._ErrorPages.find(404);
-		if (it == srv._ErrorPages.end())
-		{
-			//pas trouver donc creer
-		}
-		else
-		{
-			ifstream	html_file(it->second.c_str());
-			is_valid_file(html_file);
-		}*/
 	}
 }
 
+/**
+ * @brief Parcours tous les lsitens declarer dans .conf et check les doublon
+ *
+ * Parcours la liste des listens declarer et verifie que les serveurs ayant le meme listen ont un 
+ * <server_name> different
+ * @param void void.
+ * @return void + throw une exception en cas de listen invalid.
+*/
 void	ConfigParser::check_listen(void)
 {
 	for (size_t a = 0; a < this->_Servers.size(); a++) // conflit = meme host:port ET un server_name en commun (deux blocs sans server_name = conflit aussi : meme default server)

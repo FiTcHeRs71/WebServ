@@ -47,7 +47,7 @@ class ConfigParser
 
 	/*===Member Function===*/
 	void			check_syntax(const vector<string> &tokens);			///< Passe 2 : valide la structure des tokens
-	void			check_listen(void);
+	void			check_listen(void);									///< Passe 4 : check les multi listen
 	void			tokenize(const string &path);						///< Passe 1 : decoupe le .conf en tokens
 	friend void		parse(const string &argv1, ConfigParser &Config);
 	void			fill_servers_config(void);							///< Passe 3 : construit un ServerConfig par bloc
