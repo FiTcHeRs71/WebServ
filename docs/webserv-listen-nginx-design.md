@@ -172,19 +172,30 @@ jamais implémenté.
 
 Fichiers d'erreur à ajouter dans `conf/bad/` :
 
-| Fichier                              | Cas                                    |
-| ------------------------------------ | -------------------------------------- |
-| `22_listen_ipv6.conf`                | `listen [::]:8080;`                    |
-| `23_listen_unix_socket.conf`         | `listen unix:/tmp/webserv.sock;`       |
-| `24_listen_unsupported_param.conf`   | `listen 8080 ssl;`                     |
-| `25_listen_duplicate_default.conf`   | deux `default_server` sur `*:8080`     |
-| `26_listen_duplicate_in_server.conf` | `listen 8080;` deux fois dans un bloc  |
+| Fichier                              | Cas                                   | Étape |
+| ------------------------------------ | ------------------------------------- | ----- |
+| `22_listen_ipv6.conf`                | `listen [::]:8080;`                   | 2 ✅  |
+| `23_listen_unix_socket.conf`         | `listen unix:/tmp/webserv.sock;`      | 2 ✅  |
+| `24_listen_missing_addr.conf`        | `listen :8080;`                       | 2 ✅  |
+| `25_listen_missing_port.conf`        | `listen 127.0.0.1:;`                  | 2 ✅  |
+| `26_listen_multiple_colon.conf`      | `listen 1:2:3;`                       | 2 ✅  |
+| `27_listen_unsupported_param.conf`   | `listen 8080 ssl;`                    | 3     |
+| `28_listen_duplicate_default.conf`   | deux `default_server` sur `*:8080`    | 4     |
+| `29_listen_duplicate_in_server.conf` | `listen 8080;` deux fois dans un bloc | 4     |
+
+Le cas « IPv4 invalide » (`listen 500.0.0.0:8080;`) est déjà couvert par
+`conf/bad/10_invalid_ip.conf`, qui passe désormais par `resolve_host()`.
 
 `conf/bad/20_server_name_conflict.conf` devient un cas **valide** (warning) et
 migre vers `conf/`. `tests/test_conf.sh` est adapté en conséquence.
 
-Fichier valide de couverture (`conf/listen_forms.conf`) exerçant chaque ligne
-du tableau du §3, avec vérification de la table `_AddrPorts` produite.
+`conf/default.conf` exerce chaque forme acceptée du tableau du §3 :
+`0.0.0.0:8080`, `8081`, `*:9090`, `localhost:7070`, `127.0.0.1`, `*`.
+
+Attention : les deux dernières prennent le port implicite 80, donc un port
+privilégié. Le parsing les accepte, mais leur `bind()` échouera en non-root une
+fois B-01 écrit. Si ça gêne, les déplacer vers un `conf/listen_forms.conf`
+dédié et laisser `conf/default.conf` sur des ports hauts.
 
 Comparaison contre NGINX (ticket T-03) pour les cas ambigus :
 `listen 127.0.0.1;`, `*:8080` face à `127.0.0.1:8080`, `default_server`
