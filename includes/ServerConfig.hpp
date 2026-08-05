@@ -18,13 +18,16 @@ using namespace std;
  * Une seule directive Listen peut donc produire plusieurs ListenConfig si le 
  * hostname resout vers plusieurs adresses (Comportement NGINX).
 
- * ex : ->listen-< 127.0.0.1:8080 default_server;
+ * ex : ->listen<- 127.0.0.1:8080 default_server;
  */
 struct	TListenConfig
 {
 	string	Host;
 	int		Port;
 	bool	IsDefaultServer;
+
+	TListenConfig(void);
+	TListenConfig(const string &host, int port, bool is_default_server);
 };
 
 /**
@@ -40,7 +43,7 @@ class ServerConfig
 
 	private:
 
-	vector<LocationConfig>	_Listens;
+	vector<TListenConfig>	_Listens;
 	vector<string>			_ServerNames;
 	map<int, string>		_ErrorPages;
 	vector<LocationConfig>	_Locations;
