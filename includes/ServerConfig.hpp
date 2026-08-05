@@ -21,6 +21,7 @@ using namespace std;
 class ServerConfig
 {
 	friend class				ConfigParser;
+
 	private:
 
 	vector<pair<string, int> >	_Listens;
@@ -28,6 +29,8 @@ class ServerConfig
 	map<int, string>			_ErrorPages;
 	vector<LocationConfig>		_Locations;
 	size_t						_ClientMaxBodySize;
+	bool						_HasClientMaxBodySize;
+
 	protected:
 
 

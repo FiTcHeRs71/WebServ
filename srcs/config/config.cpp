@@ -4,8 +4,10 @@
 #include <cstddef>
 #include <cstring>
 #include <fstream>
+#include <map>
 #include <stdexcept>
 #include <string>
+#include <utility>
 #include <vector>
 
 using namespace std;
@@ -20,6 +22,7 @@ ConfigParser::~ConfigParser(void)
 }
 ConfigParser::ConfigParser(const ConfigParser& to_copy)
 	:_LexerConfig(to_copy._LexerConfig)
+	,_Servers(to_copy._Servers)
 {
 	//cout << "ConfigParser copy constructor called" << endl;
 }
@@ -29,6 +32,7 @@ ConfigParser & ConfigParser::operator=(const ConfigParser& src)
 	if (this != &src)
 	{
 		this->_LexerConfig = src._LexerConfig;
+		this->_Servers = src._Servers;
 	}
 	return (*this);
 }
@@ -59,6 +63,8 @@ void	parse(const string &argv1, ConfigParser &Config)
 	Config.tokenize(argv1);
 	Config.check_syntax(Config._LexerConfig);
 	Config.fill_servers_config();
+	Config.check_listen();
+	Config.apply_defaults();
 }
 
 /**
@@ -229,7 +235,7 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 	while (i < this->_LexerConfig.size() && this->_LexerConfig[i] != "}")
 	{
 		string	key = this->_LexerConfig[i];
-		if (!seen.insert(key).second && key != "location" && key != "error_page" /*&& key != "listen"*/)
+		if (!seen.insert(key).second && key != "location" && key != "error_page" && key != "listen")
 			throw runtime_error(key + " multiple definition not allowed");
 		i++;
 
@@ -247,24 +253,106 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 				if (key == "listen")
 				{
 					pair<string, int> listen = parse_listen(value[j]); // split 0.0.0.0 de 8080
-					if (find(server._Listens.begin(), server._Listens.end(), listen) != server._Listens.end())
-						throw runtime_error("'" + value[j] + "' is already used in this or in a other server block");
-					for (size_t i = 0; i < this->_Servers.size(); i++)
-					{
-						if (find(this->_Servers[i]._Listens.begin(), this->_Servers[i]._Listens.end(), listen) != this->_Servers[i]._Listens.end())
-							throw runtime_error("'" + value[j] + "' is already used in this or in a other server block");
-					}
 					server._Listens.push_back(listen);
 				}
 				else if (key ==  "server_name")
 					server._ServerNames.push_back(value[j]); 
 				else if (key == "client_max_body_size")
+				{
+					if (server._HasClientMaxBodySize)
+						throw runtime_error("Multiple definition of <client_max_body_size> key in server block");
 					server._ClientMaxBodySize = parse_body_size(value[j]);
+					server._HasClientMaxBodySize = true;
+				}
 				else if (key == "error_page")
-					server._ErrorPages = parse_error_pages(value, j);
+				{
+					map<int, string>	tmp = parse_error_pages(value, j);
+					server._ErrorPages.insert(tmp.begin(), tmp.end());
+				}
 				else
 					throw runtime_error("directive : '" + key + "' forbiden in server body");
 			}
 		}
 	}
+}
+
+/**
+ * @brief Parcours la liste des serveurs du .conf et initilalize les valeurs critiques
+ *
+ * Il parcourt la liste de serveurs et regarde les valeurs de ou la declaration de <location / {...}>,
+ * Pour le client_max_body_size si non itinialiser appplique la valeur par default de NGINX
+ * Pour root il met par defaut le chemin vers www
+ * Pour methods il attribue automatchiquement GET
+ * Pour index il attribue automatchiquement "index.html"
+ * Toutes valeur sont dans le header config.hpp
+ * @param void void.
+ * @return void.
+*/
+void	ConfigParser::apply_defaults(void)
+{
+	for (size_t i = 0; i < this->_Servers.size(); i++)
+	{
+		ServerConfig	&srv= this->_Servers[i];
+		bool			location_flag = false;
+
+		if (!srv._HasClientMaxBodySize)
+			srv._ClientMaxBodySize = DEFAULT_BODY_SIZE;
+		for (size_t k = 0; k < srv._Locations.size(); k++)
+		{
+			if (srv._Locations[k]._Path == "/")
+			{
+				location_flag = true;
+				break;
+			}
+		}
+		if (!location_flag)
+		{
+			LocationConfig	default_location;
+			default_location._Path = "/";
+			srv._Locations.push_back(default_location);
+		}
+		if (srv._Listens.size() < 1)
+		{
+			pair<string, int>	default_listens;
+			default_listens.first = DEFAULT_HOST;
+			default_listens.second = DEFAULT_PORT;
+			srv._Listens.push_back(default_listens);
+		}
+		cout << srv << endl;
+		for (size_t j = 0; j < srv._Locations.size(); j++)
+		{
+			if (srv._Locations[j]._Index.empty())
+				srv._Locations[j]._Index.push_back(DEFAULT_INDEX);
+			if (srv._Locations[j]._Root.empty())
+				srv._Locations[j]._Root = DEFAULT_ROOT;
+			if (srv._Locations[j]._Methods.empty())
+				srv._Locations[j]._Methods.insert("GET");
+			if (!srv._Locations[j]._HasClientMaxBodySize)
+				srv._Locations[j]._ClientMaxBodySize = srv._ClientMaxBodySize;
+		}
+	}
+}
+
+/**
+ * @brief Parcours tous les lsitens declarer dans .conf et check les doublon
+ *
+ * Parcours la liste des listens declarer et verifie que les serveurs ayant le meme listen ont un 
+ * <server_name> different
+ * @param void void.
+ * @return void + throw une exception en cas de listen invalid.
+*/
+void	ConfigParser::check_listen(void)
+{
+	for (size_t a = 0; a < this->_Servers.size(); a++) // conflit = meme host:port ET un server_name en commun (deux blocs sans server_name = conflit aussi : meme default server)
+		for (size_t b = a + 1; b < _Servers.size(); b++)
+			for (size_t la = 0; la < _Servers[a]._Listens.size(); la++)
+			{
+				if (find(_Servers[b]._Listens.begin(), _Servers[b]._Listens.end(), _Servers[a]._Listens[la]) == _Servers[b]._Listens.end())
+					continue;
+				if (_Servers[a]._ServerNames.empty() && _Servers[b]._ServerNames.empty())
+					throw runtime_error("conflicting default server on same host:port");
+				for (size_t n = 0; n < _Servers[a]._ServerNames.size(); n++)
+					if (find(_Servers[b]._ServerNames.begin(), _Servers[b]._ServerNames.end(), _Servers[a]._ServerNames[n]) != _Servers[b]._ServerNames.end())
+						throw runtime_error("conflicting server name '" + _Servers[a]._ServerNames[n] + "'");
+			}
 }

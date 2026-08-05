@@ -14,6 +14,13 @@
 
 using namespace std;
 
+const size_t		DEFAULT_BODY_SIZE	= 1048576;
+const char *const	DEFAULT_ROOT		= "./www";
+const char *const	DEFAULT_INDEX		= "index.html";
+const char *const	DEFAULT_HOST		="0.0.0.0";
+const int			DEFAULT_PORT		= 8080;
+
+
 /**
  * @brief Represente toute la phase de parsing du .conf
  *
@@ -40,11 +47,12 @@ class ConfigParser
 
 	/*===Member Function===*/
 	void			check_syntax(const vector<string> &tokens);			///< Passe 2 : valide la structure des tokens
+	void			check_listen(void);									///< Passe 4 : check les multi listen
 	void			tokenize(const string &path);						///< Passe 1 : decoupe le .conf en tokens
 	friend void		parse(const string &argv1, ConfigParser &Config);
 	void			fill_servers_config(void);							///< Passe 3 : construit un ServerConfig par bloc
 	void			fill_one_server(ServerConfig &server, size_t &i);	///< Remplit un seul bloc server
-
+	void			apply_defaults(void);
 };
 
 /* === Helpers === */

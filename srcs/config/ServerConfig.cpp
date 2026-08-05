@@ -5,6 +5,8 @@
 
 	/*===Canonical Form===*/
 ServerConfig::ServerConfig(void)
+	:_ClientMaxBodySize(0)
+	,_HasClientMaxBodySize(false)
 {
 	//std::cout << "ServerConfig default constructor called" << std::endl;
 }
@@ -20,6 +22,7 @@ ServerConfig::ServerConfig(const ServerConfig& to_copy)
 	,_ErrorPages(to_copy._ErrorPages)
 	,_Locations(to_copy._Locations)
 	,_ClientMaxBodySize(to_copy._ClientMaxBodySize)
+	,_HasClientMaxBodySize(to_copy._HasClientMaxBodySize)
 {
 	//std::cout << "ServerConfig copy constructor called" << std::endl;
 }
@@ -34,6 +37,7 @@ ServerConfig	&ServerConfig::operator=(const ServerConfig& src)
 		this->_ErrorPages = src._ErrorPages;
 		this->_Locations = src._Locations;
 		this->_ClientMaxBodySize = src._ClientMaxBodySize;
+		this->_HasClientMaxBodySize = src._HasClientMaxBodySize;
 	}
 	return (*this);
 }
@@ -50,7 +54,7 @@ ostream		&operator<<(ostream &flux, const ServerConfig &src)
 {
 	flux << "CONFIG SERVER :" << endl;
 	for (size_t i = 0; i < src._Listens.size(); i++)
-		flux << "Listens = " << src._Listens[i].first << ", " << src._Listens[i].second << endl;
+		flux << "Listens = " << src._Listens[i].first << ":" << src._Listens[i].second << endl;
 	for (size_t i = 0; i < src._ServerNames.size(); i++)
 		flux << "Server Name : " << src._ServerNames[i] << endl;
 	for (map<int, string>::const_iterator it = src._ErrorPages.begin(); it != src._ErrorPages.end(); ++it)
