@@ -11,8 +11,8 @@
 #include <cstring>
 #include <sstream>
 
-void	split_addr_port(const string &token, string &addr, string &port);
-void	resolve_host(const string &host, vector<string> &out);
+static void	split_addr_port(const string &token, string &addr, string &port);
+static void	resolve_host(const string &host, vector<string> &out);
 
 TListenConfig::TListenConfig(void)
 	: Host("")
@@ -50,7 +50,8 @@ vector<TListenConfig>	parse_listen_directive(const vector<string> &tokens)
 		char*	p_end = NULL;
 		long	port_converted = strtol(port.c_str(), &p_end, 10);
 		if (port.empty() || p_end == port.c_str() || *p_end != '\0' || errno == ERANGE || port_converted <= 0 || port_converted > 65535)
-		throw runtime_error( port + " is not a valid port");
+			throw runtime_error( port + " is not a valid port");
+		port_value = static_cast<int>(port_converted);
 	}
 	resolve_host(addr, hosts);
 	for (size_t i = 0; i < hosts.size(); i++)
@@ -71,7 +72,7 @@ vector<TListenConfig>	parse_listen_directive(const vector<string> &tokens)
  * @param out Recoit les IPv4 resolues, dans l'ordre rendu par getaddrinfo.
  * @return void + throw si le host ne resout vers aucune IPv4.
 */
-void	resolve_host(const string &host, vector<string> &out)
+static void	resolve_host(const string &host, vector<string> &out)
 {
 	struct addrinfo	hints;
 	struct addrinfo	*res;
@@ -133,7 +134,7 @@ void	resolve_host(const string &host, vector<string> &out)
  * @param port Recoit la partie port, vide si absente.
  * @return void + throw sur token malforme ou forme non supportee.
 */
-void	split_addr_port(const string &token, string &addr, string &port)
+static void	split_addr_port(const string &token, string &addr, string &port)
 {
 	size_t	separator;
 
