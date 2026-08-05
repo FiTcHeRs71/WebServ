@@ -73,6 +73,7 @@ int main(int argc, char **argv)
 		ConfigParser	cfg;
 		parse(argv[1], cfg);
 		ListenSockets servSock(cfg.getServers());
+		cout << servSock;
 	}
 	catch (exception &e)
 	{

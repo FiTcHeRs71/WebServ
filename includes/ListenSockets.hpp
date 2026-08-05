@@ -27,7 +27,7 @@ using namespace std;
 class ListenSockets
 {
 	private:
-	vector<int> _ServFd;
+	vector<pair<int, string> > _ServFd;
 
 	public:
 
@@ -38,11 +38,13 @@ class ListenSockets
 	ListenSockets &operator=(const ListenSockets& src);
 
 	/*===Getters & Setters===*/
-	vector<int> getServFd() const;
+	vector<pair<int, string> > getServFd() const;
 
 	/*===Member Function===*/
 	bool	creatSocket(const pair<string, int>& listen);
+	bool	findHostPort(string hostPort);
 	void	closeFd();
+	friend ostream& operator<<(ostream& flux, const ListenSockets& listen);
 };
 
-#endif /*LISTEN_SOCKETS_HPP*/
+#endif

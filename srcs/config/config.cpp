@@ -63,7 +63,7 @@ void	parse(const string &argv1, ConfigParser &Config)
 
 /**
  * @brief Prend le fichier de configuration et le tokenize.
- * 
+ *
  * Il stocke les valeurs dans _LexerConfig, les commentaires (#) sont retires et
  * les caracteres speciaux (";{}") sont isoles comme des tokens a part entiere.
  * Il ne fait aucune verification de validite ou de syntaxe des arguments
@@ -85,7 +85,7 @@ void	ConfigParser::tokenize(const string &path)
 		size_t	flag_begin = 0;
 		size_t	flag_end = 0;
 		size_t	comment = line.find("#");
-		
+
 		if (comment != string::npos)
 			line.erase(comment);
 		size_t	first = line.find_first_not_of(to_ignore);
@@ -115,7 +115,7 @@ void	ConfigParser::tokenize(const string &path)
 
 /**
  * @brief Prend la liste de tokens et verifie la syntaxe
- * 
+ *
  * Il parcourt la liste de tokens generee par la fonction tokenize et verifie l'ordre des arguments
  * Controle l'equilibre des accolades, l'imbrication des blocs, la presence
  * d'une valeur et du ";" apres chaque directive
@@ -247,17 +247,17 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 				if (key == "listen")
 				{
 					pair<string, int> listen = parse_listen(value[j]); // split 0.0.0.0 de 8080
-					if (find(server._Listens.begin(), server._Listens.end(), listen) != server._Listens.end())
-						throw runtime_error("'" + value[j] + "' is already used in this or in a other server block");
-					for (size_t i = 0; i < this->_Servers.size(); i++)
-					{
-						if (find(this->_Servers[i]._Listens.begin(), this->_Servers[i]._Listens.end(), listen) != this->_Servers[i]._Listens.end())
-							throw runtime_error("'" + value[j] + "' is already used in this or in a other server block");
-					}
+					// if (find(server._Listens.begin(), server._Listens.end(), listen) != server._Listens.end())
+					// 	throw runtime_error("'" + value[j] + "' is already used in this or in a other server block");
+					// for (size_t i = 0; i < this->_Servers.size(); i++)
+					// {
+					// 	if (find(this->_Servers[i]._Listens.begin(), this->_Servers[i]._Listens.end(), listen) != this->_Servers[i]._Listens.end())
+					// 		throw runtime_error("'" + value[j] + "' is already used in this or in a other server block");
+					// }
 					server._Listens.push_back(listen);
 				}
 				else if (key ==  "server_name")
-					server._ServerNames.push_back(value[j]); 
+					server._ServerNames.push_back(value[j]);
 				else if (key == "client_max_body_size")
 					server._ClientMaxBodySize = parse_body_size(value[j]);
 				else if (key == "error_page")

@@ -23,13 +23,13 @@ ListenSockets::~ListenSockets(void)
 
 ListenSockets::ListenSockets(const ListenSockets& to_copy)
 {
-	if (!this->_ServFd.empty())
-		this->closeFd();
 	this->_ServFd = to_copy._ServFd;
 }
 
 ListenSockets	&ListenSockets::operator=(const ListenSockets& src)
 {
+	if (!this->_ServFd.empty())
+		this->closeFd();
 	if (this != &src)
 		this->_ServFd = src._ServFd;
 	return (*this);
@@ -55,7 +55,10 @@ bool	ListenSockets::creatSocket(const pair<string, int>& listens){
 	addr.ai_socktype = SOCK_STREAM;
 	addr.ai_flags = AI_PASSIVE;
 
-	//Permet de creer la structure de donnee pour ouvrir le fd
+	// On cherche sur la combinaison host:port est deja associer a un fd existant
+	if (findHostPort(listens.first + ":" + port))
+		return true;
+	// Permet de creer la structure de donnee pour ouvrir le fd
 	///!\ Attention il faut free la structure avec freeaddrinfo
 	if (getaddrinfo(listens.first.c_str(), port.c_str() , &addr, &res) != 0)
 		return false;
@@ -65,7 +68,8 @@ bool	ListenSockets::creatSocket(const pair<string, int>& listens){
 		freeaddrinfo(res);
 		return false;
 	}
-	this->_ServFd.push_back(fd);
+	this->_ServFd.push_back(make_pair(fd, listens.first + ":" + port));
+
 
 	// Permet de manipuler les options du socket , evite les erreurs tel que
 	// "address already in use" si on quitte le programme et relance d'aussi tot
@@ -78,9 +82,7 @@ bool	ListenSockets::creatSocket(const pair<string, int>& listens){
 	// addr au socket
 	if (bind(fd, res->ai_addr, res->ai_addrlen) < 0){
 		freeaddrinfo(res);
-		close(fd);
-		this->_ServFd.pop_back();
-		return true;
+		return false;
 	}
 
 	// Permet de mettre le socket en mode en mode passif, attendant qu'un client
@@ -95,7 +97,6 @@ bool	ListenSockets::creatSocket(const pair<string, int>& listens){
 		freeaddrinfo(res);
 		return false;
 	}
-
 	freeaddrinfo(res);
 	return true;
 }
@@ -106,11 +107,31 @@ bool	ListenSockets::creatSocket(const pair<string, int>& listens){
  */
 void ListenSockets::closeFd(){
 	for(size_t i = 0; i < this->_ServFd.size(); i++){
-		close(this->_ServFd[i]);
+		close(this->_ServFd[i].first);
 	}
 }
 
-vector<int> ListenSockets::getServFd() const{
+vector<pair<int, string> > ListenSockets::getServFd() const{
 	return this->_ServFd;
 }
 
+bool ListenSockets::findHostPort(string hostPort){
+	vector<pair<int, string> >::iterator it;
+	for(it = this->_ServFd.begin(); it < this->_ServFd.end(); it++){
+		if (it->second == hostPort){
+			return true;
+		}
+	}
+	return false;
+}
+
+ostream& operator<<(ostream& flux, const ListenSockets& listen){
+
+	for(size_t i = 0; i < listen._ServFd.size(); i++){
+		flux << "ListenSockets._servFd[" << i << "].first = ";
+		flux << listen._ServFd[i].first << endl;
+		flux << "ListenSockets._servFd[" << i << "].second = ";
+		flux << listen._ServFd[i].second << endl;
+	}
+	return (flux);
+}
