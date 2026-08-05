@@ -1,6 +1,7 @@
 # include "../../includes/ServerConfig.hpp"
 #include <algorithm>
 #include <cstddef>
+#include <cstdint>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -102,9 +103,15 @@ void  resolve_host(const string &host, vector<string> &out)
 	out.clear();
 
 	if (host.empty() || host == "*")
+	{
 		out.push_back("0.0.0.0");
+		return;
+	}
 	else if (is_valid_ipv4(host))
+	{
 		out.push_back(host);
+		return;
+	}
 
 	memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_INET;
@@ -113,13 +120,14 @@ void  resolve_host(const string &host, vector<string> &out)
 	if (status != 0)
 		throw runtime_error(host + ": " + gai_strerror(status));
 
-      /* 5. parcourir it = res -> it->ai_next :
+      /* 5. parcourir it = res -> it->ai_next:
             caster it->ai_addr en (struct sockaddr_in *)
             recuperer ntohl(sin->sin_addr.s_addr)
             formater "a.b.c.d" et push_back si pas deja present */
-	while (it->ai_next)
+	for (it = res; it != NULL; it->ai_next)
 	{
-		
+		const struct sockaddr_in	*sin = reinterpret_cast<const struct sockaddr_in*>(it->ai_addr);
+		uint32_t					ip = ntohl(sin->sin_addr.s_addr);
 	}
 	
 
