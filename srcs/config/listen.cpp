@@ -1,7 +1,6 @@
 # include "../../includes/ServerConfig.hpp"
 #include <algorithm>
 #include <cstddef>
-#include <cstdint>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -120,18 +119,24 @@ void  resolve_host(const string &host, vector<string> &out)
 	if (status != 0)
 		throw runtime_error(host + ": " + gai_strerror(status));
 
-      /* 5. parcourir it = res -> it->ai_next:
-            caster it->ai_addr en (struct sockaddr_in *)
-            recuperer ntohl(sin->sin_addr.s_addr)
-            formater "a.b.c.d" et push_back si pas deja present */
-	for (it = res; it != NULL; it->ai_next)
+	for (it = res; it != NULL; it = it->ai_next)
 	{
-		const struct sockaddr_in	*sin = reinterpret_cast<const struct sockaddr_in*>(it->ai_addr);
-		uint32_t					ip = ntohl(sin->sin_addr.s_addr);
+		const struct sockaddr_in	*sin;
+		uint32_t					ip;
+		ostringstream				oss;
+		string						ipv4;
+
+		sin = reinterpret_cast<const struct sockaddr_in*>(it->ai_addr);
+		ip = ntohl(sin->sin_addr.s_addr);
+		oss << static_cast<int>((ip >> 24) & 0xFF) << "."
+			<< static_cast<int>((ip >> 16) & 0xFF) << "."
+			<< static_cast<int>((ip >> 8) & 0xFF) << "."
+			<< static_cast<int>((ip & 0xFF));
+		ipv4 = oss.str();
+		if (find(out.begin(), out.end(), ipv4) == out.end())
+			out.push_back(ipv4);
 	}
-	
-
-      /* 6. freeaddrinfo(res)  <- AVANT tout throw eventuel */
-
-      /* 7. out vide -> throw runtime_error(host + " does not resolve to anyIPv4") */
+	freeaddrinfo(res);
+	if (out.empty())
+		throw runtime_error(host + " does not resolve any IPv4");
 }
