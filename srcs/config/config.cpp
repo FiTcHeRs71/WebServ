@@ -252,8 +252,8 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 			{
 				if (key == "listen")
 				{
-					pair<string, int> listen = parse_listen(value[j]); // split 0.0.0.0 de 8080
-					server._Listens.push_back(listen);
+					/*pair<string, int> listen = parse_listen(value[j]); // split 0.0.0.0 de 8080
+					server._Listens.push_back(listen);*/
 				}
 				else if (key ==  "server_name")
 					server._ServerNames.push_back(value[j]); 
@@ -313,9 +313,9 @@ void	ConfigParser::apply_defaults(void)
 		}
 		if (srv._Listens.size() < 1)
 		{
-			pair<string, int>	default_listens;
-			default_listens.first = DEFAULT_HOST;
-			default_listens.second = DEFAULT_PORT;
+			TListenConfig	default_listens;
+			default_listens.Host = DEFAULT_HOST;
+			default_listens.Port = DEFAULT_PORT;
 			srv._Listens.push_back(default_listens);
 		}
 		cout << srv << endl;
