@@ -6,10 +6,26 @@
 # include <map>
 # include <ostream>
 # include <string>
-# include <utility>
 # include <vector>
 
 using namespace std;
+
+/**
+ * @brief Represente un point decoute issu d'une directive <listen>
+ * 
+ * Un ListenConfig porte toujours une IPv4 litterale : "*" est normalise en
+ * "0.0.0.0" des le parsing et un hostname esr resolu via getaddrinfo.
+ * Une seule directive Listen peut donc produire plusieurs ListenConfig si le 
+ * hostname resout vers plusieurs adresses (Comportement NGINX).
+
+ * ex : ->listen-< 127.0.0.1:8080 default_server;
+ */
+struct	TListenConfig
+{
+	string	Host;
+	int		Port;
+	bool	IsDefaultServer;
+};
 
 /**
  * @brief Represente la configuration d'un serveur virtuel (bloc "server").
@@ -24,12 +40,12 @@ class ServerConfig
 
 	private:
 
-	vector<pair<string, int> >	_Listens;
-	vector<string>				_ServerNames;
-	map<int, string>			_ErrorPages;
-	vector<LocationConfig>		_Locations;
-	size_t						_ClientMaxBodySize;
-	bool						_HasClientMaxBodySize;
+	vector<LocationConfig>	_Listens;
+	vector<string>			_ServerNames;
+	map<int, string>		_ErrorPages;
+	vector<LocationConfig>	_Locations;
+	size_t					_ClientMaxBodySize;
+	bool					_HasClientMaxBodySize;
 
 	protected:
 
@@ -56,5 +72,6 @@ class ServerConfig
 
 /*=== HELPERS ===*/
 bool	is_segment_boundary(const string &uri, const string &path);
+bool	operator==(const TListenConfig &Listen_a, const TListenConfig &Listen_b);
 
 #endif /*SERVER_CONFIG_HPP*/
