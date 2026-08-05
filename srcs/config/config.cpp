@@ -250,16 +250,16 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 		else
 		{
 			vector<string>	value = collect_values(this->_LexerConfig, i);
-			for (size_t j = 0; j < value.size(); j++)
-			{
-				if (key == "listen")
+			if (key == "listen")
 				{
 					vector<TListenConfig>	listens = parse_listen_directive(value);
 					for (size_t k = 0; k < listens.size(); k++)
 						server._Listens.push_back(listens[k]);
 					continue;
 				}
-				else if (key ==  "server_name")
+			for (size_t j = 0; j < value.size(); j++)
+			{
+				if (key ==  "server_name")
 					server._ServerNames.push_back(value[j]); 
 				else if (key == "client_max_body_size")
 				{
