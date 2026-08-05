@@ -358,3 +358,8 @@ void	ConfigParser::check_listen(void)
 						throw runtime_error("conflicting server name '" + _Servers[a]._ServerNames[n] + "'");
 			}
 }
+
+void	ConfigParser::build_addr_port_groups(void)
+{
+	
+}
