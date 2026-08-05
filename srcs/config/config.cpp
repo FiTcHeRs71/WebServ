@@ -23,6 +23,7 @@ ConfigParser::~ConfigParser(void)
 ConfigParser::ConfigParser(const ConfigParser& to_copy)
 	:_LexerConfig(to_copy._LexerConfig)
 	,_Servers(to_copy._Servers)
+	,_AddrPorts(to_copy._AddrPorts)
 {
 	//cout << "ConfigParser copy constructor called" << endl;
 }
@@ -33,6 +34,7 @@ ConfigParser & ConfigParser::operator=(const ConfigParser& src)
 	{
 		this->_LexerConfig = src._LexerConfig;
 		this->_Servers = src._Servers;
+		this->_AddrPorts = src._AddrPorts;
 	}
 	return (*this);
 }
@@ -252,8 +254,8 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 			{
 				if (key == "listen")
 				{
-					/*pair<string, int> listen = parse_listen(value[j]); // split 0.0.0.0 de 8080
-					server._Listens.push_back(listen);*/
+					pair<string, int> listen = parse_listen(value[j]); // split 0.0.0.0 de 8080
+					server._Listens.push_back(TListenConfig(listen.first, listen.second, false));
 				}
 				else if (key ==  "server_name")
 					server._ServerNames.push_back(value[j]); 
