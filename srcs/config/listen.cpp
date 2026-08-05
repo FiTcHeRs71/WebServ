@@ -34,7 +34,7 @@ bool	operator==(const TListenConfig &Listen_a, const TListenConfig &Listen_b)
  * @param port Recoit la partie port, vide si absente.
  * @return void + throw sur token malforme ou forme non supportee.
 */
-static void	split_addr_port(const string &token, string &addr, string &port)
+void	split_addr_port(const string &token, string &addr, string &port)
 {
 	size_t	separator;
 
@@ -45,7 +45,7 @@ static void	split_addr_port(const string &token, string &addr, string &port)
 		throw runtime_error("Invalid listen without arguments");
 	if (token[0] == '[')
 		throw runtime_error("IPv6 is not supported by webserv");
-	if (token.find_first_not_of("unix") != 3)
+	if (token.compare(0, 5, "unix:") == 0)
 		throw runtime_error("unix sockets are not supported by webserv");
 
 	separator = token.find(':');
@@ -56,7 +56,6 @@ static void	split_addr_port(const string &token, string &addr, string &port)
 			port = token;
 		else
 			addr = token;
-		return;
 	}
 	else
 	{
