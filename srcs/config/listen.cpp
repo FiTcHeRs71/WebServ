@@ -59,7 +59,7 @@ void	split_addr_port(const string &token, string &addr, string &port)
 	}
 	else
 	{
-		if (token.find_first_of(separator + 1, ':') != string::npos)
+		if (token.find_first_of(':', separator + 1) != string::npos)
 			throw runtime_error("Invalid argument for <listen> key");
 		addr = token.substr(0, separator);
 		port = token.substr(separator + 1);
