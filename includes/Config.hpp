@@ -1,7 +1,9 @@
 #ifndef CONFIG_HPP
 # define CONFIG_HPP
 
-#include "LocationConfig.hpp"
+# include "Struct_webserv.hpp"
+# include "Default.hpp"
+# include "LocationConfig.hpp"
 # include "ServerConfig.hpp"
 # include <cstddef>
 # include <iostream>
@@ -13,20 +15,6 @@
 # include <map>
 
 using namespace std;
-
-const size_t		DEFAULT_BODY_SIZE	= 1048576;
-const char *const	DEFAULT_ROOT		= "./www";
-const char *const	DEFAULT_INDEX		= "index.html";
-const char *const	DEFAULT_HOST		="0.0.0.0";
-const int			DEFAULT_PORT		= 8080;
-
-struct	TAddrPortGroup
-{
-	string			Host;
-	int				Port;
-	vector<size_t>	ServerIndexes;
-	size_t			DefaultIndex;
-};
 
 /**
  * @brief Represente toute la phase de parsing du .conf

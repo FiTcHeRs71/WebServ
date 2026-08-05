@@ -1,4 +1,5 @@
 # include "../../includes/ServerConfig.hpp"
+# include "../../includes/Config.hpp"
 #include <algorithm>
 #include <cstddef>
 #include <stdexcept>
@@ -9,6 +10,9 @@
 #include <sys/socket.h>
 #include <cstring>
 #include <sstream>
+
+void	split_addr_port(const string &token, string &addr, string &port);
+void	resolve_host(const string &host, vector<string> &out);
 
 TListenConfig::TListenConfig(void)
 	: Host("")
@@ -25,6 +29,95 @@ TListenConfig::TListenConfig(const string &host, int port, bool is_default_serve
 bool	operator==(const TListenConfig &Listen_a, const TListenConfig &Listen_b)
 {
 	return (Listen_a.Host == Listen_b.Host && Listen_a.Port == Listen_b.Port);
+}
+
+vector<TListenConfig>	parse_listen_directive(const vector<string> &tokens)
+{
+	vector<TListenConfig>	Listens;
+	vector<string>			hosts;
+	string					addr;
+	string					port;
+	int						port_value;
+
+	if (tokens.empty())
+		throw runtime_error("listen without value");
+	split_addr_port(tokens[0], addr, port);
+	if (port.empty())
+		port_value = DEFAULT_PORT;
+	else
+	{
+		errno = 0;
+		char*	p_end = NULL;
+		long	port_converted = strtol(port.c_str(), &p_end, 10);
+		if (port.empty() || p_end == port.c_str() || *p_end != '\0' || errno == ERANGE || port_converted <= 0 || port_converted > 65535)
+		throw runtime_error( port + " is not a valid port");
+	}
+	resolve_host(addr, hosts);
+	for (size_t i = 0; i < hosts.size(); i++)
+	{
+		Listens.push_back(TListenConfig(hosts[i], port_value, false));
+	}
+	return (Listens);
+}
+/**
+ * @brief Resout une adresse de directive listen en une ou plusieurs IPv4.
+ *
+ * "" et "*" designent toutes les interfaces et donnent "0.0.0.0" sans appel
+ * systeme. Une IPv4 litterale est validee puis renvoyee telle quelle. Un
+ * hostname est resolu par getaddrinfo, une seule fois, ici, au parsing :
+ * jamais pendant le service.
+ *
+ * @param host La partie adresse rendue par split_addr_port().
+ * @param out Recoit les IPv4 resolues, dans l'ordre rendu par getaddrinfo.
+ * @return void + throw si le host ne resout vers aucune IPv4.
+*/
+void	resolve_host(const string &host, vector<string> &out)
+{
+	struct addrinfo	hints;
+	struct addrinfo	*res;
+	struct addrinfo	*it;
+	int				status;
+
+	out.clear();
+
+	if (host.empty() || host == "*")
+	{
+		out.push_back("0.0.0.0");
+		return;
+	}
+	else if (is_valid_ipv4(host))
+	{
+		out.push_back(host);
+		return;
+	}
+
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_STREAM;
+	status = getaddrinfo(host.c_str(), NULL, &hints, &res);
+	if (status != 0)
+		throw runtime_error(host + ": " + gai_strerror(status));
+
+	for (it = res; it != NULL; it = it->ai_next)
+	{
+		const struct sockaddr_in	*sin;
+		uint32_t					ip;
+		ostringstream				oss;
+		string						ipv4;
+
+		sin = reinterpret_cast<const struct sockaddr_in*>(it->ai_addr);
+		ip = ntohl(sin->sin_addr.s_addr);
+		oss << static_cast<int>((ip >> 24) & 0xFF) << "."
+			<< static_cast<int>((ip >> 16) & 0xFF) << "."
+			<< static_cast<int>((ip >> 8) & 0xFF) << "."
+			<< static_cast<int>((ip & 0xFF));
+		ipv4 = oss.str();
+		if (find(out.begin(), out.end(), ipv4) == out.end())
+			out.push_back(ipv4);
+	}
+	freeaddrinfo(res);
+	if (out.empty())
+		throw runtime_error(host + " does not resolve any IPv4");
 }
 
 /**
@@ -72,71 +165,4 @@ void	split_addr_port(const string &token, string &addr, string &port)
 		if (addr.empty() || port.empty())
 			throw runtime_error("Missing argument for <listen> key");
 	}
-}
-
-vector<TListenConfig>	parse_listen_directive(const vector<string> &tokens)
-{
-	vector<TListenConfig>	Listens;
-	(void)tokens;
-	return (Listens);
-}
-/**
- * @brief Resout une adresse de directive listen en une ou plusieurs IPv4.
- *
- * "" et "*" designent toutes les interfaces et donnent "0.0.0.0" sans appel
- * systeme. Une IPv4 litterale est validee puis renvoyee telle quelle. Un
- * hostname est resolu par getaddrinfo, une seule fois, ici, au parsing :
- * jamais pendant le service.
- *
- * @param host La partie adresse rendue par split_addr_port().
- * @param out Recoit les IPv4 resolues, dans l'ordre rendu par getaddrinfo.
- * @return void + throw si le host ne resout vers aucune IPv4.
-*/
-void  resolve_host(const string &host, vector<string> &out)
-{
-	struct addrinfo	hints;
-	struct addrinfo	*res;
-	struct addrinfo	*it;
-	int				status;
-
-	out.clear();
-
-	if (host.empty() || host == "*")
-	{
-		out.push_back("0.0.0.0");
-		return;
-	}
-	else if (is_valid_ipv4(host))
-	{
-		out.push_back(host);
-		return;
-	}
-
-	memset(&hints, 0, sizeof(hints));
-	hints.ai_family = AF_INET;
-	hints.ai_socktype = SOCK_STREAM;
-	status = getaddrinfo(host.c_str(), NULL, &hints, &res);
-	if (status != 0)
-		throw runtime_error(host + ": " + gai_strerror(status));
-
-	for (it = res; it != NULL; it = it->ai_next)
-	{
-		const struct sockaddr_in	*sin;
-		uint32_t					ip;
-		ostringstream				oss;
-		string						ipv4;
-
-		sin = reinterpret_cast<const struct sockaddr_in*>(it->ai_addr);
-		ip = ntohl(sin->sin_addr.s_addr);
-		oss << static_cast<int>((ip >> 24) & 0xFF) << "."
-			<< static_cast<int>((ip >> 16) & 0xFF) << "."
-			<< static_cast<int>((ip >> 8) & 0xFF) << "."
-			<< static_cast<int>((ip & 0xFF));
-		ipv4 = oss.str();
-		if (find(out.begin(), out.end(), ipv4) == out.end())
-			out.push_back(ipv4);
-	}
-	freeaddrinfo(res);
-	if (out.empty())
-		throw runtime_error(host + " does not resolve any IPv4");
 }
