@@ -18,6 +18,8 @@ using namespace std;
 class LocationConfig
 {
 	friend class		ServerConfig;
+	friend class		ConfigParser;
+
 	private:
 
 	string				_Path;

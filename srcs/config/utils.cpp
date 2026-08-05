@@ -92,14 +92,22 @@ static bool	is_valid_ipv4(const string &host)
 */
 pair<string, int>	parse_listen(const string &value)
 {
-	pair<string, int>	pair;
+	pair<string, int>	pair_host_port;
 	size_t				flag;
 	string				host;
 	string				port;
 
 	flag = value.find_first_of( ":");
-	host = value.substr(0, flag);
-	port = value.substr(flag + 1);
+	if (flag == string::npos)
+	{
+		host = "0.0.0.0";
+		port = value;
+	}
+	else
+	{
+		host = value.substr(0, flag);
+		port = value.substr(flag + 1);
+	}
 
 	if (!is_valid_ipv4(host))
 		throw runtime_error(host + "is a invalid IPv4 value");
@@ -110,9 +118,9 @@ pair<string, int>	parse_listen(const string &value)
 
 	if (port.empty() || p_end == port.c_str() || *p_end != '\0' || errno == ERANGE || port_converted <= 0 || port_converted > 65535)
 		throw runtime_error( port + " is not a valid port");
-	pair.first = host;
-	pair.second = static_cast<int>(port_converted);
-	return (pair);
+	pair_host_port.first = host;
+	pair_host_port.second = static_cast<int>(port_converted);
+	return (pair_host_port);
 }
 
 /**
@@ -145,7 +153,7 @@ size_t	parse_body_size(const string &value)
 		throw runtime_error(value + " is not a valid body size");
 	if (size_converted > INT_MAX / multiplier)
 		throw runtime_error(value + " is a too big body size");
-	return (static_cast<size_t>(size_converted));
+	return (static_cast<size_t>(size_converted * multiplier));
 }
 
 /**
@@ -261,6 +269,7 @@ vector<string>	parse_index(const vector<string> &value)
 		if (value[i].empty())
 			throw runtime_error ("Key index in location bloc has a empty arguments");
 	}
+	// TODO checker si index.html souvre ?
 	return (value);
 }
 
@@ -348,6 +357,16 @@ string	parse_upload_store(const vector<string> &value)
 	return (value[0]);
 }
 
+/**
+ * @brief check si le prefixe path s'arrete sur une frontiere de segment de l'URI
+ *
+ * Evite qu'une location "/img" matche l'URI "/images/logo.png".
+ * @pre uri doit avoir path en prefixe (verifie par ServerConfig::Resolve)
+ * @pre path est non vide (garanti par parse_location)
+ * @param uri chemin indique dans la requette HTTP 1.1, query/fragment deja retires
+ * @param path chemin indique par le bloc location entrain detre verifier
+ * @return true si match exact, si path finit par '/', ou si le caractere suivant dans l'uri est un '/'
+*/
 bool	is_segment_boundary(const string &uri, const string &path)
 {
 	if (uri.size() == path.size())
