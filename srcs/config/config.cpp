@@ -251,12 +251,12 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 		{
 			vector<string>	value = collect_values(this->_LexerConfig, i);
 			if (key == "listen")
-				{
-					vector<TListenConfig>	listens = parse_listen_directive(value);
-					for (size_t k = 0; k < listens.size(); k++)
-						server._Listens.push_back(listens[k]);
-					continue;
-				}
+			{
+				vector<TListenConfig>	listens = parse_listen_directive(value);
+				for (size_t k = 0; k < listens.size(); k++)
+					server._Listens.push_back(listens[k]);
+				continue;
+			}
 			for (size_t j = 0; j < value.size(); j++)
 			{
 				if (key ==  "server_name")
