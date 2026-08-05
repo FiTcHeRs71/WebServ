@@ -31,8 +31,8 @@ class ConfigParser
 {
 	private:
 
-	vector<string>			_LexerConfig;	///< Le .conf sous forme de tokens non checkes
-	vector<ServerConfig>	_Servers;		///< Un objet par bloc server valide
+	vector<string>			_LexerConfig;	//< Le .conf sous forme de tokens non checkes
+	vector<ServerConfig>	_Servers;		//< Un objet par bloc server valide
 
 	public:
 
@@ -43,15 +43,15 @@ class ConfigParser
 	ConfigParser&operator=(const ConfigParser& src);
 
 	/*===Getters & Setters===*/
-	const vector<ServerConfig>	&getServers(void) const;				///< Les blocs server construits par fill_servers_config()
+	const vector<ServerConfig>	&getServers(void) const;				//< Les blocs server construits par fill_servers_config()
 
 	/*===Member Function===*/
-	void			check_syntax(const vector<string> &tokens);			///< Passe 2 : valide la structure des tokens
-	void			check_listen(void);									///< Passe 4 : check les multi listen
-	void			tokenize(const string &path);						///< Passe 1 : decoupe le .conf en tokens
+	void			check_syntax(const vector<string> &tokens);			//< Passe 2 : valide la structure des tokens
+	void			check_listen(void);									//< Passe 4 : check les multi listen
+	void			tokenize(const string &path);						//< Passe 1 : decoupe le .conf en tokens
 	friend void		parse(const string &argv1, ConfigParser &Config);
-	void			fill_servers_config(void);							///< Passe 3 : construit un ServerConfig par bloc
-	void			fill_one_server(ServerConfig &server, size_t &i);	///< Remplit un seul bloc server
+	void			fill_servers_config(void);							//< Passe 3 : construit un ServerConfig par bloc
+	void			fill_one_server(ServerConfig &server, size_t &i);	//< Remplit un seul bloc server
 	void			apply_defaults(void);
 };
 
