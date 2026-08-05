@@ -47,6 +47,18 @@ const set<string> &known_directives(void)
 	return (s);
 }
 
+bool	is_all_digits(const string &s)
+{
+	if (s.empty())
+		return (false);
+	for (std::string::size_type i = 0; i < s.size(); ++i)
+	{
+		if (!std::isdigit(static_cast<unsigned char>(s[i])))
+			return (false);
+	}
+	return (true);
+}
+
 /**
  * @brief Verifie qu'une chaine est une adresse IPv4 bien formee.
  *
