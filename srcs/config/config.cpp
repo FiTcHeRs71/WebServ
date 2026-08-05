@@ -254,8 +254,10 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 			{
 				if (key == "listen")
 				{
-					pair<string, int> listen = parse_listen(value[j]); // split 0.0.0.0 de 8080
-					server._Listens.push_back(TListenConfig(listen.first, listen.second, false));
+					vector<TListenConfig>	listens = parse_listen_directive(value);
+					for (size_t k = 0; k < listens.size(); k++)
+						server._Listens.push_back(listens[k]);
+					continue;
 				}
 				else if (key ==  "server_name")
 					server._ServerNames.push_back(value[j]); 

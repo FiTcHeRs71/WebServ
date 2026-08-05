@@ -11,7 +11,6 @@
 # include <vector>
 # include <set>
 # include <fstream>
-# include <utility>
 # include <map>
 
 using namespace std;
@@ -58,7 +57,6 @@ void					is_valid_file(ifstream &file);
 void					parse(const string &argv1, ConfigParser &Config);
 const set<string>		&known_directives(void);
 const set<string>		&known_methods(void);
-pair<string, int>		parse_listen(const string &value); // TODO a virer
 size_t					parse_body_size(const string &value);
 map<int, string>		parse_error_pages(const vector<string> &value, size_t &j);
 set<string>				parse_allow_methods(const vector<string> &value);
