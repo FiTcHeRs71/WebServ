@@ -76,6 +76,7 @@ class ServerConfig
 /*=== HELPERS ===*/
 bool	is_segment_boundary(const string &uri, const string &path);
 bool	is_all_digits(const string &s);
+bool	is_valid_ipv4(const string &host);
 bool	operator==(const TListenConfig &Listen_a, const TListenConfig &Listen_b);
 
 #endif /*SERVER_CONFIG_HPP*/

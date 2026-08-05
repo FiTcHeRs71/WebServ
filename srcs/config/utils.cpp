@@ -67,7 +67,7 @@ bool	is_all_digits(const string &s)
  * @param host La partie host du token listen (avant le ":").
  * @return true si l'IPv4 est valide, false sinon.
 */
-static bool	is_valid_ipv4(const string &host)
+bool	is_valid_ipv4(const string &host)
 {
 	size_t	start = 0;
 	size_t	i = 0;

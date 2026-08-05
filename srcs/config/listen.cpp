@@ -1,8 +1,14 @@
 # include "../../includes/ServerConfig.hpp"
 #include <algorithm>
+#include <cstddef>
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <cstring>
+#include <sstream>
 
 TListenConfig::TListenConfig(void)
 	: Host("")
@@ -73,4 +79,51 @@ vector<TListenConfig>	parse_listen_directive(const vector<string> &tokens)
 	vector<TListenConfig>	Listens;
 	(void)tokens;
 	return (Listens);
+}
+/**
+ * @brief Resout une adresse de directive listen en une ou plusieurs IPv4.
+ *
+ * "" et "*" designent toutes les interfaces et donnent "0.0.0.0" sans appel
+ * systeme. Une IPv4 litterale est validee puis renvoyee telle quelle. Un
+ * hostname est resolu par getaddrinfo, une seule fois, ici, au parsing :
+ * jamais pendant le service.
+ *
+ * @param host La partie adresse rendue par split_addr_port().
+ * @param out Recoit les IPv4 resolues, dans l'ordre rendu par getaddrinfo.
+ * @return void + throw si le host ne resout vers aucune IPv4.
+*/
+void  resolve_host(const string &host, vector<string> &out)
+{
+	struct addrinfo	hints;
+	struct addrinfo	*res;
+	struct addrinfo	*it;
+	int				status;
+
+	out.clear();
+
+	if (host.empty() || host == "*")
+		out.push_back("0.0.0.0");
+	else if (is_valid_ipv4(host))
+		out.push_back(host);
+
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_STREAM;
+	status = getaddrinfo(host.c_str(), NULL, &hints, &res);
+	if (status != 0)
+		throw runtime_error(host + ": " + gai_strerror(status));
+
+      /* 5. parcourir it = res -> it->ai_next :
+            caster it->ai_addr en (struct sockaddr_in *)
+            recuperer ntohl(sin->sin_addr.s_addr)
+            formater "a.b.c.d" et push_back si pas deja present */
+	while (it->ai_next)
+	{
+		
+	}
+	
+
+      /* 6. freeaddrinfo(res)  <- AVANT tout throw eventuel */
+
+      /* 7. out vide -> throw runtime_error(host + " does not resolve to anyIPv4") */
 }
