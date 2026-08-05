@@ -252,8 +252,6 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 			{
 				if (key == "listen")
 				{
-					if (server._Listens.size() != 0)
-						throw runtime_error("Multiple definition of <listen> key in server block");
 					pair<string, int> listen = parse_listen(value[j]); // split 0.0.0.0 de 8080
 					server._Listens.push_back(listen);
 				}
