@@ -54,7 +54,7 @@ ostream		&operator<<(ostream &flux, const ServerConfig &src)
 {
 	flux << "CONFIG SERVER :" << endl;
 	for (size_t i = 0; i < src._Listens.size(); i++)
-		flux << "Listens = " << src._Listens[i].Host << ":" << src._Listens[i].Port << (src._Listens[i].IsDefaultServer ? "default_server" : "") << endl;
+		flux << "Listens = " << src._Listens[i].Host << ":" << src._Listens[i].Port << (src._Listens[i].IsDefaultServer ? " default_server" : "") << endl;
 	for (size_t i = 0; i < src._ServerNames.size(); i++)
 		flux << "Server Name : " << src._ServerNames[i] << endl;
 	for (map<int, string>::const_iterator it = src._ErrorPages.begin(); it != src._ErrorPages.end(); ++it)
