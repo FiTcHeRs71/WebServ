@@ -64,7 +64,7 @@ const set<string> &known_methods(void)
 /**
  * @brief Contient toutes les parametres de listen existant dans NGINX
  *
- * @return le set des methodes connues.
+ * @return le set des parametres de listen connues
 */
 const set<string>	&know_listen_parameters(void)
 {
