@@ -57,10 +57,14 @@ vector<TListenConfig>	parse_listen_directive(const vector<string> &tokens)
 	resolve_host(addr, hosts);
 	for (size_t i = 1; i < tokens.size(); i++)
 	{
-		if (tokens[i] != "default_server" || tokens.size() > 2)
-			throw runtime_error("invalid arguments for <listen> key after host:port declared");
-		else
+		if (tokens[i] == "default_server" && !flag)
 			flag = true;
+		else if (tokens[i] == "default_server" && flag)
+			throw runtime_error("Multiple declaration of default_server");
+		else if (known_directives().count(tokens[i]))
+			throw runtime_error (tokens[i] + "is not supported");
+		else
+			throw runtime_error("Unknow listen parameter");
 	}
 	for (size_t i = 0; i < hosts.size(); i++)
 	{
