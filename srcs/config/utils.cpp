@@ -66,7 +66,7 @@ const set<string> &known_methods(void)
  *
  * @return le set des parametres de listen connues
 */
-const set<string>	&know_listen_parameters(void)
+const set<string>	&known_listen_parameters(void)
 {
 	static const string names[] = {
 		"ssl", "http2", "quic", "proxy_protocol", "deferred", "bind",

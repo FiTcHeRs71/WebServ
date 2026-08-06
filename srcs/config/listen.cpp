@@ -63,10 +63,10 @@ vector<TListenConfig>	parse_listen_directive(const vector<string> &tokens)
 			flag = true;
 		else if (tokens[i] == "default_server" && flag)
 			throw runtime_error("Multiple declaration of default_server");
-		else if (know_listen_parameters().count(name))
+		else if (known_listen_parameters().count(name))
 			throw runtime_error ("listen parameter \"" + name + "\" is not supported by webserv");
 		else
-			throw runtime_error("unknow \"" + tokens[i] + "\"");
+			throw runtime_error("unknow listen parameter \"" + tokens[i] + "\"");
 	}
 
 	resolve_host(addr, hosts);
