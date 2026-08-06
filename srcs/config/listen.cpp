@@ -55,16 +55,19 @@ vector<TListenConfig>	parse_listen_directive(const vector<string> &tokens)
 		port_value = static_cast<int>(port_converted);
 	}
 	resolve_host(addr, hosts);
+	
 	for (size_t i = 1; i < tokens.size(); i++)
 	{
+		size_t	eq = tokens[i].find("=");
+		string	name = (eq == string::npos) ? tokens[i] : tokens[i].substr(0, eq);
 		if (tokens[i] == "default_server" && !flag)
 			flag = true;
 		else if (tokens[i] == "default_server" && flag)
 			throw runtime_error("Multiple declaration of default_server");
-		else if (known_directives().count(tokens[i]))
-			throw runtime_error (tokens[i] + "is not supported");
+		else if (know_listen_parameters().count(name))
+			throw runtime_error ("listen parameter \"" + name + "\" is not suuported by webserv");
 		else
-			throw runtime_error("Unknow listen parameter");
+			throw runtime_error("listen parameter \"" + tokens[i] + "\" is not suuported by webserv");
 	}
 	for (size_t i = 0; i < hosts.size(); i++)
 	{

@@ -192,6 +192,17 @@ const set<string> &known_methods(void)
 	return (s);
 }
 
+const set<string>	&know_listen_parameters(void)
+{
+	static const string names[] = {
+		"ssl", "http2", "quic", "proxy_protocol", "deferred", "bind",
+		"reuseport", "multipath", "backlog", "rcvbuf", "sndbuff", "setfib",
+		"fastopen", "accept_filter", "ipv6only", "so_keepalive"
+	};
+	static const set<string> s(names, names + sizeof(names) / sizeof(names[0]));
+	return (s);
+}
+
 /**
  * @brief Prend tous les arguments de <allow_methods> et verifie leurs valeurs.
  *
