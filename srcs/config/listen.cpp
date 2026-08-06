@@ -54,8 +54,7 @@ vector<TListenConfig>	parse_listen_directive(const vector<string> &tokens)
 			throw runtime_error( port + " is not a valid port");
 		port_value = static_cast<int>(port_converted);
 	}
-	resolve_host(addr, hosts);
-	
+
 	for (size_t i = 1; i < tokens.size(); i++)
 	{
 		size_t	eq = tokens[i].find("=");
@@ -65,10 +64,13 @@ vector<TListenConfig>	parse_listen_directive(const vector<string> &tokens)
 		else if (tokens[i] == "default_server" && flag)
 			throw runtime_error("Multiple declaration of default_server");
 		else if (know_listen_parameters().count(name))
-			throw runtime_error ("listen parameter \"" + name + "\" is not suuported by webserv");
+			throw runtime_error ("listen parameter \"" + name + "\" is not suported by webserv");
 		else
-			throw runtime_error("listen parameter \"" + tokens[i] + "\" is not suuported by webserv");
+			throw runtime_error("unknow listen parameter \"" + tokens[i] + "\" is not suported by webserv");
 	}
+
+	resolve_host(addr, hosts);
+
 	for (size_t i = 0; i < hosts.size(); i++)
 	{
 		Listens.push_back(TListenConfig(hosts[i], port_value, flag));

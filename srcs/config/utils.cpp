@@ -196,7 +196,7 @@ const set<string>	&know_listen_parameters(void)
 {
 	static const string names[] = {
 		"ssl", "http2", "quic", "proxy_protocol", "deferred", "bind",
-		"reuseport", "multipath", "backlog", "rcvbuf", "sndbuff", "setfib",
+		"reuseport", "multipath", "backlog", "rcvbuf", "sndbuf", "setfib",
 		"fastopen", "accept_filter", "ipv6only", "so_keepalive"
 	};
 	static const set<string> s(names, names + sizeof(names) / sizeof(names[0]));
