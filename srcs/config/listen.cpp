@@ -38,6 +38,7 @@ vector<TListenConfig>	parse_listen_directive(const vector<string> &tokens)
 	string					addr;
 	string					port;
 	int						port_value;
+	bool					flag = false;
 
 	if (tokens.empty())
 		throw runtime_error("listen without value");
@@ -54,9 +55,16 @@ vector<TListenConfig>	parse_listen_directive(const vector<string> &tokens)
 		port_value = static_cast<int>(port_converted);
 	}
 	resolve_host(addr, hosts);
+	for (size_t i = 1; i < tokens.size(); i++)
+	{
+		if (tokens[i] != "default_server" || tokens.size() > 2)
+			throw runtime_error("invalid arguments for <listen> key after host:port declared");
+		else
+			flag = true;
+	}
 	for (size_t i = 0; i < hosts.size(); i++)
 	{
-		Listens.push_back(TListenConfig(hosts[i], port_value, false));
+		Listens.push_back(TListenConfig(hosts[i], port_value, flag));
 	}
 	return (Listens);
 }
