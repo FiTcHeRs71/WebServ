@@ -2,6 +2,7 @@
 #include "../../includes/ServerConfig.hpp"
 #include <algorithm>
 #include <cstddef>
+#include <cstdlib>
 #include <cstring>
 #include <fstream>
 #include <map>
@@ -363,5 +364,23 @@ void	ConfigParser::check_listen(void)
 
 void	ConfigParser::build_addr_port_groups(void)
 {
-	
+	this->_AddrPorts.clear();
+
+	for (size_t i = 0; this->_Servers.size(); i++)
+	{
+		const vector<TListenConfig>	&listens = this->_Servers[i]._Listens;
+
+		for (size_t l = 0; l < listens.size(); l++)
+		{
+			size_t g;
+
+			if (find(listens.begin(), listens.end(), listens[l]) != listens.end())
+				throw runtime_error("duplicated listen");
+
+			for (size_t a = 0; a < this->_AddrPorts.size(); a++)
+			{
+				if (this->_AddrPorts[a]. ==)
+			}
+		}
+	}
 }
