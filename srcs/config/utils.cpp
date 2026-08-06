@@ -46,6 +46,37 @@ const set<string> &known_directives(void)
 	return (s);
 }
 
+/**
+ * @brief Contient toutes les methodes HTTP acceptees par notre webserv
+ *
+ * Actuel GET/POST/DELETE
+ * @return le set des methodes connues.
+*/
+const set<string> &known_methods(void)
+{
+	static const string names[] = {
+		"GET", "POST", "DELETE"
+	};
+	static const set<string> s(names, names + sizeof(names) / sizeof(names[0]));
+	return (s);
+}
+
+/**
+ * @brief Contient toutes les parametres de listen existant dans NGINX
+ *
+ * @return le set des methodes connues.
+*/
+const set<string>	&know_listen_parameters(void)
+{
+	static const string names[] = {
+		"ssl", "http2", "quic", "proxy_protocol", "deferred", "bind",
+		"reuseport", "multipath", "backlog", "rcvbuf", "sndbuf", "setfib",
+		"fastopen", "accept_filter", "ipv6only", "so_keepalive"
+	};
+	static const set<string> s(names, names + sizeof(names) / sizeof(names[0]));
+	return (s);
+}
+
 bool	is_all_digits(const string &s)
 {
 	if (s.empty())
@@ -175,32 +206,6 @@ vector<string>		collect_values(vector<string> &token, size_t &i)
 	}
 	i++; // saute le ";"
 	return (values);
-}
-
-/**
- * @brief Contient toutes les methodes HTTP acceptees par notre webserv
- *
- * Actuel GET/POST/DELETE
- * @return le set des methodes connues.
-*/
-const set<string> &known_methods(void)
-{
-	static const string names[] = {
-		"GET", "POST", "DELETE"
-	};
-	static const set<string> s(names, names + sizeof(names) / sizeof(names[0]));
-	return (s);
-}
-
-const set<string>	&know_listen_parameters(void)
-{
-	static const string names[] = {
-		"ssl", "http2", "quic", "proxy_protocol", "deferred", "bind",
-		"reuseport", "multipath", "backlog", "rcvbuf", "sndbuf", "setfib",
-		"fastopen", "accept_filter", "ipv6only", "so_keepalive"
-	};
-	static const set<string> s(names, names + sizeof(names) / sizeof(names[0]));
-	return (s);
 }
 
 /**
