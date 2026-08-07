@@ -1,6 +1,7 @@
 #ifndef STRUCT_WEBSERV_HPP
 # define STRUCT_WEBSERV_HPP
 
+#include <cstddef>
 # include <iostream>
 # include <vector>
 
@@ -12,6 +13,9 @@ struct	TAddrPortGroup
 	int				Port;
 	vector<size_t>	ServerIndexes;
 	size_t			DefaultIndex;
+
+	TAddrPortGroup(void);
+	TAddrPortGroup(const string &host, const int port, const size_t default_index);
 };
 
 /**
