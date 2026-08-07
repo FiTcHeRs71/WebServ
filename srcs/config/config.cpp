@@ -385,7 +385,7 @@ void	ConfigParser::build_addr_port_groups(void)
 			goal = this->_AddrPorts.size();
 			for (size_t a = 0; a < this->_AddrPorts.size(); a++)
 			{
-				if (this->_AddrPorts[a].Port == listens[l].Port)
+				if (this->_AddrPorts[a].Port == listens[l].Port && this->_AddrPorts[a].Host == listens[l].Host)
 				{
 					goal = a;
 					break;
@@ -400,6 +400,7 @@ void	ConfigParser::build_addr_port_groups(void)
 				group.DefaultIndex = this->_Servers.size();
 				this->_AddrPorts.push_back(group);
 			}
+			this->_AddrPorts[goal].ServerIndexes.push_back(i);
 		}
 	}
 }
