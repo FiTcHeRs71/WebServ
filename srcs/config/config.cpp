@@ -392,10 +392,18 @@ void	ConfigParser::build_addr_port_groups(void)
 
 		if (this->_AddrPorts[g].DefaultIndex == this->_Servers.size())
 			this->_AddrPorts[g].DefaultIndex = this->_AddrPorts[g].ServerIndexes[0];
-		for (size_t s = 0; s < this->_AddrPorts[s].ServerIndexes.size(); s++)
+		for (size_t s = 0; s < this->_AddrPorts[g].ServerIndexes.size(); s++)
 		{
-			seen.insert(this->_Servers[this->_AddrPorts[s].ServerIndexes[g]]._ServerNames);
-			if (seen.insert())
+			const ServerConfig	&srv = this->_Servers[this->_AddrPorts[g].ServerIndexes[s]];
+
+			for (size_t n = 0; n < srv._ServerNames.size(); n++)
+			{
+				if (!seen.insert(srv._ServerNames[n]).second)
+					cerr << "webserv: [warn] conflicting server name \""
+						 << srv._ServerNames[n] << "\" on "
+						 << this->_AddrPorts[g].Host << ":" << this->_AddrPorts[g].Port
+						 << ", ignored" << endl;
+			}
 		}
 	}
 }
