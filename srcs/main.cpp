@@ -1,5 +1,6 @@
 #include "../includes/Config.hpp"
 #include "../includes/ListenSockets.hpp"
+#include "../includes/Request.hpp"
 #include <iostream>
 #include <exception>
 
@@ -73,7 +74,11 @@ int main(int argc, char **argv)
 		ConfigParser	cfg;
 		parse(argv[1], cfg);
 		ListenSockets servSock(cfg.getServers());
-		cout << servSock;
+		string str[3]  = {"GE", "T\r\n\\hello.txt?log\r\n\r\nHT", "TP/1.1"};
+		Request Req;
+		for(size_t i = 0; i < 3; i++){
+			Req.Feed(str[i].c_str(), str[i].length());
+		}
 	}
 	catch (exception &e)
 	{

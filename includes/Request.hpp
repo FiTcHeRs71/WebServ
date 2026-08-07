@@ -18,8 +18,8 @@ enum EParseState
 {
 	ST_REQUEST_LINE,
 	ST_HEADERS,
-	ST_DONE,
 	ST_BODY,
+	ST_DONE,
 	ST_ERROR
 };
 
@@ -58,6 +58,9 @@ class Request
 
 	/*===Member Function===*/
 	EParseResult	Feed(const char *data, size_t n);
+	bool			findMethod();
+	bool			findPath();
+	bool			findVersion();
 };
 
 #endif /*REQUEST_HPP*/

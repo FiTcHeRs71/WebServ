@@ -58,34 +58,70 @@ Request	&Request::operator=(const Request& src)
 	 * @param n    Nombre d'octets valides dans data.
 	 * @return Le statut du parsing (a definir : ex. -1 erreur, 0 incomplet, 1 termine).
 	 */
-	EParseResult	Request::Feed(const char *data, size_t n)
-	{
-		this->_Raw += string(data, n);
-		if (this->_State == ST_REQUEST_LINE){
-			size_t find = this->_Raw.find_first_of("\r\n");
-			if (find != string::npos){
-				this->_Method = this->_Raw.substr(0, find);
-				this->_Raw.erase(find + 2);
-				this->_State = ST_HEADERS;
-			}
-		}
-
-		else if (this->_State == ST_HEADERS){
-			size_t find = this->_Raw.find_first_of("\r\n\r\n");
-			if (find != string::npos){
-		// Token 2 (la "cible", ex: /index.html?foo=bar) → cherche un ? dedans : ce qui précède va dans _Path, ce qui suit (s'il y a un ?) va dans _Query. Pas de ? → tout va dans _Path, _Query reste vide.
-				this->_State = ST_BODY;
-			}
-		}
-
-		else if (this->_State == ST_BODY){
-			size_t find = this->_Raw.find_first_of("\0");
-			if (find != string::npos){
-				this->_Version = this->_Raw.substr(0, find);
-				this->_Raw.erase(find + 2);
-				this->_State = ST_BODY;
-			}
-		}
-
-		return (REQ_INCOMPLETE);
+EParseResult	Request::Feed(const char *data, size_t n)
+{
+	this->_Raw += string(data, n);
+	// cout << "_Here = [[[" << this->_Raw << "]]]" << endl;
+	if (this->_State == ST_REQUEST_LINE)
+		if (!this->findMethod() && this->_State != ST_ERROR)
+			return	(REQ_INCOMPLETE);
+	if (this->_State == ST_HEADERS)
+		if (!this->findPath() && this->_State != ST_ERROR)
+			return	(REQ_INCOMPLETE);
+	if (this->_State == ST_BODY)
+		if (!this->findVersion() && this->_State != ST_ERROR)
+			return (REQ_COMPLETE);
+	if (this->_State == ST_ERROR){
+		this->_ErrorCode = 1;
+		return (REQ_ERROR);
 	}
+	else
+		return (REQ_INCOMPLETE);
+}
+
+bool	Request::findMethod(){
+	size_t find = this->_Raw.find_first_of("\r\n");
+	if (find != string::npos){
+		this->_Method = this->_Raw.substr(0, find);
+		cout << "_Method = " << this->_Method << endl;
+		if (this->_Method != "GET" && this->_Method != "POST" && this->_Method != "DELETE"){
+			this->_State = ST_ERROR;
+			return false;
+		}
+		this->_State = ST_HEADERS;
+		this->_Raw.erase(0, find + 2);
+		return true;
+	}
+	else
+		return false;
+}
+
+bool	Request::findPath(){
+	size_t find = this->_Raw.find_first_of("\r\n\r\n");
+	if (find != string::npos){
+		size_t findQuery = this->_Raw.find("?");
+		if (findQuery != string::npos){
+			this->_Path = this->_Raw.substr(0, findQuery);
+			this->_Query = this->_Raw.substr(findQuery + 1, find - findQuery);
+			this->_Raw.erase(0, find + 4);
+		}
+		else
+			this->_Path = this->_Raw.substr(0, find);
+		this->_State = ST_BODY;
+		cout << "_Path = " << this->_Path << endl << " _Query = " << this->_Query << endl;
+		return true;
+	}
+	else
+		return false;
+}
+
+bool	Request::findVersion(){
+	if (this->_Raw == "HTTP/1.1" || this->_Raw == "HTTP/1.0"){
+		this->_Version = this->_Raw;
+		this->_State = ST_DONE;
+		cout << "_Version = " << this->_Version << endl;
+		return true;
+	}
+	return false;
+}
+
