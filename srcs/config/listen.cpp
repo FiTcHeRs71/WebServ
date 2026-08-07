@@ -15,7 +15,7 @@ static void	split_addr_port(const string &token, string &addr, string &port);
 static void	resolve_host(const string &host, vector<string> &out);
 
 TListenConfig::TListenConfig(void)
-	: Host("")
+	:Host("")
 	,Port(0)
 	,IsDefaultServer(false)
 {}
@@ -24,6 +24,17 @@ TListenConfig::TListenConfig(const string &host, int port, bool is_default_serve
 	:Host(host)
 	,Port(port)
 	,IsDefaultServer(is_default_server)
+{}
+
+TAddrPortGroup::TAddrPortGroup(void)
+	:Host("")
+	,Port(0)
+	,DefaultIndex(0)
+{}
+TAddrPortGroup::TAddrPortGroup(const string &host, const int port, const size_t default_index)
+	:Host(host)
+	,Port(port)
+	,DefaultIndex(default_index)
 {}
 
 bool	operator==(const TListenConfig &Listen_a, const TListenConfig &Listen_b)
