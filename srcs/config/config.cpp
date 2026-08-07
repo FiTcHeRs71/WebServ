@@ -399,17 +399,19 @@ void	ConfigParser::build_addr_port_groups(void)
 			this->_AddrPorts[goal].ServerIndexes.push_back(i);
 			if(listens[l].IsDefaultServer)
 			{
-				if (this->_AddrPorts[l].DefaultIndex != this->_Servers.size())
+				if (this->_AddrPorts[goal].DefaultIndex != this->_Servers.size())
 				{
 					ostringstream oss;
-
-					oss << "duplicated listen " << listens[l].Host << ":" << listens[l].Port;
+					oss << "duplicate default server for " << listens[l].Host << ":" << listens[l].Port;
 					throw runtime_error(oss.str());
 				}
-				else
 					this->_AddrPorts[l].DefaultIndex = i;
 			}
 		}
 	}
-
+	for (size_t g = 0; this->_AddrPorts.size(); g++)
+	{
+		if (this->_AddrPorts[g].DefaultIndex == this->_Servers.size())
+			this->_AddrPorts[g].DefaultIndex = this->_AddrPorts[g].ServerIndexes[0];
+	}
 }
