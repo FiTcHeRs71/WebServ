@@ -379,7 +379,7 @@ void	ConfigParser::build_addr_port_groups(void)
 			{
 				ostringstream	oss;
 
-				oss << "duplicated listen" << listens[l].Host << ":" << listens[l].Port;
+				oss << "duplicated listen " << listens[l].Host << ":" << listens[l].Port;
 				throw runtime_error(oss.str());
 			}
 			goal = this->_AddrPorts.size();
@@ -391,8 +391,15 @@ void	ConfigParser::build_addr_port_groups(void)
 					break;
 				}
 			}
-			this->_AddrPorts[goal].ServerIndexes.push_back(this->_Servers[i]);
-			
+			if (goal == this->_AddrPorts.size())
+			{
+				TAddrPortGroup group;
+
+				group.Host = listens[l].Host;
+				group.Port = listens[l].Port;
+				group.DefaultIndex = this->_Servers.size();
+				this->_AddrPorts.push_back(group);
+			}
 		}
 	}
 }
