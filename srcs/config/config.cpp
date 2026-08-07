@@ -6,6 +6,7 @@
 #include <cstring>
 #include <fstream>
 #include <map>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -366,21 +367,32 @@ void	ConfigParser::build_addr_port_groups(void)
 {
 	this->_AddrPorts.clear();
 
-	for (size_t i = 0; this->_Servers.size(); i++)
+	for (size_t i = 0; i < this->_Servers.size(); i++)
 	{
 		const vector<TListenConfig>	&listens = this->_Servers[i]._Listens;
 
 		for (size_t l = 0; l < listens.size(); l++)
 		{
-			size_t g;
+			size_t goal;
 
-			if (find(listens.begin(), listens.end(), listens[l]) != listens.end())
-				throw runtime_error("duplicated listen");
+			if (find(listens.begin(), listens.begin() + l, listens[l]) != listens.begin() + l)
+			{
+				ostringstream	oss;
 
+				oss << "duplicated listen" << listens[l].Host << ":" << listens[l].Port;
+				throw runtime_error(oss.str());
+			}
+			goal = this->_AddrPorts.size();
 			for (size_t a = 0; a < this->_AddrPorts.size(); a++)
 			{
-				if (this->_AddrPorts[a]. ==)
+				if (this->_AddrPorts[a].Port == listens[l].Port)
+				{
+					goal = a;
+					break;
+				}
 			}
+			this->_AddrPorts[goal].ServerIndexes.push_back(this->_Servers[i]);
+			
 		}
 	}
 }
