@@ -354,6 +354,22 @@ void	ConfigParser::apply_defaults(void)
 	}
 }
 
+/**
+ * @brief Construit la table des sockets d'ecoute a partir des _Listens.
+ *
+ * Regroupe les serveurs par couple (Host, Port) exact, elit le serveur par
+ * defaut de chaque groupe (celui portant <default_server>, sinon le premier
+ * declare) et detecte les conflits :
+ *   - meme host:port repete dans un seul bloc server -> erreur
+ *   - deux <default_server> dans un meme groupe      -> erreur
+ *   - <server_name> duplique dans un meme groupe     -> warning, premier gagne
+ *
+ * Appelee APRES apply_defaults() : c'est elle qui donne un listen aux blocs
+ * server qui n'en declarent pas, sans quoi ils echapperaient aux conflits.
+ *
+ * @param void void.
+ * @return void + throw une exception en cas de conflit.
+*/
 void	ConfigParser::build_addr_port_groups(void)
 {
 	this->_AddrPorts.clear();
