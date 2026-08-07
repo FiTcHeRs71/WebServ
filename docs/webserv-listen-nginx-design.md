@@ -182,8 +182,8 @@ Fichiers d'erreur à ajouter dans `conf/bad/` :
 | `27_listen_unsupported_param.conf`   | `listen 8080 ssl;`                    | 3 ✅  |
 | `28_listen_unknown_param.conf`       | `listen 8080 nawak;`                  | 3 ✅  |
 | `29_listen_duplicate_param.conf`     | `default_server` deux fois            | 3 ✅  |
-| `30_listen_duplicate_default.conf`   | deux `default_server` sur `*:8080`    | 4     |
-| `31_listen_duplicate_in_server.conf` | `listen 8080;` deux fois dans un bloc | 4     |
+| `30_listen_duplicate_default.conf`   | deux `default_server` sur `0.0.0.0:8080` | 4 ✅ |
+| `31_listen_duplicate_in_server.conf` | `8080` et `0.0.0.0:8080` dans un bloc | 4 ✅  |
 
 Les cas 27 et 28 sont un couple : ils vérifient que les deux branches du
 diagnostic rendent des messages distincts — « existe en NGINX, hors périmètre »
@@ -192,8 +192,19 @@ contre « n'existe nulle part ».
 Le cas « IPv4 invalide » (`listen 500.0.0.0:8080;`) est déjà couvert par
 `conf/bad/10_invalid_ip.conf`, qui passe désormais par `resolve_host()`.
 
-`conf/bad/20_server_name_conflict.conf` devient un cas **valide** (warning) et
-migre vers `conf/`. `tests/test_conf.sh` est adapté en conséquence.
+Deux anciens cas d'erreur deviennent **valides** sous les règles NGINX et
+migrent vers `conf/` :
+
+| Avant | Après | Comportement |
+| ----- | ----- | ------------ |
+| `bad/20_server_name_conflict.conf` | `conf/warn_server_name_conflict.conf` | accepté + warning |
+| `bad/21_default_server_conflict.conf` | `conf/multi_server_no_name.conf` | accepté, silencieux |
+
+Les blocs `server` sans aucun `server_name` ne déclenchent volontairement
+aucun warning : le premier déclaré devient le défaut du groupe, les suivants
+sont inatteignables tant qu'aucun `default_server` n'est posé. NGINX émet
+`conflicting server name ""` dans ce cas ; on s'en écarte parce que le message
+parle d'un nom qui n'existe pas plutôt que du vrai problème.
 
 `conf/default.conf` exerce chaque forme acceptée du tableau du §3 :
 `0.0.0.0:8080`, `8081`, `*:9090`, `localhost:7070`, `127.0.0.1`, `*`.
