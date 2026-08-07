@@ -6,6 +6,7 @@
 #include <cstring>
 #include <fstream>
 #include <map>
+#include <set>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -67,8 +68,8 @@ void	parse(const string &argv1, ConfigParser &Config)
 	Config.tokenize(argv1);
 	Config.check_syntax(Config._LexerConfig);
 	Config.fill_servers_config();
-	Config.check_listen();
 	Config.apply_defaults();
+	Config.build_addr_port_groups();
 }
 
 /**
@@ -339,30 +340,6 @@ void	ConfigParser::apply_defaults(void)
 	}
 }
 
-/**
- * @brief Parcours tous les lsitens declarer dans .conf et check les doublon
- *
- * Parcours la liste des listens declarer et verifie que les serveurs ayant le meme listen ont un 
- * <server_name> different
- * @param void void.
- * @return void + throw une exception en cas de listen invalid.
-*/
-void	ConfigParser::check_listen(void)
-{
-	for (size_t a = 0; a < this->_Servers.size(); a++) // conflit = meme host:port ET un server_name en commun (deux blocs sans server_name = conflit aussi : meme default server)
-		for (size_t b = a + 1; b < _Servers.size(); b++)
-			for (size_t la = 0; la < _Servers[a]._Listens.size(); la++)
-			{
-				if (find(_Servers[b]._Listens.begin(), _Servers[b]._Listens.end(), _Servers[a]._Listens[la]) == _Servers[b]._Listens.end())
-					continue;
-				if (_Servers[a]._ServerNames.empty() && _Servers[b]._ServerNames.empty())
-					throw runtime_error("conflicting default server on same host:port");
-				for (size_t n = 0; n < _Servers[a]._ServerNames.size(); n++)
-					if (find(_Servers[b]._ServerNames.begin(), _Servers[b]._ServerNames.end(), _Servers[a]._ServerNames[n]) != _Servers[b]._ServerNames.end())
-						throw runtime_error("conflicting server name '" + _Servers[a]._ServerNames[n] + "'");
-			}
-}
-
 void	ConfigParser::build_addr_port_groups(void)
 {
 	this->_AddrPorts.clear();
@@ -411,7 +388,14 @@ void	ConfigParser::build_addr_port_groups(void)
 	}
 	for (size_t g = 0; g < this->_AddrPorts.size(); g++)
 	{
+		set<string>	seen;
+
 		if (this->_AddrPorts[g].DefaultIndex == this->_Servers.size())
 			this->_AddrPorts[g].DefaultIndex = this->_AddrPorts[g].ServerIndexes[0];
+		for (size_t s = 0; s < this->_AddrPorts[s].ServerIndexes.size(); s++)
+		{
+			seen.insert(this->_Servers[this->_AddrPorts[s].ServerIndexes[g]]._ServerNames);
+			if (seen.insert())
+		}
 	}
 }
