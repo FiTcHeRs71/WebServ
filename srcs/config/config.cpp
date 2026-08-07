@@ -405,11 +405,11 @@ void	ConfigParser::build_addr_port_groups(void)
 					oss << "duplicate default server for " << listens[l].Host << ":" << listens[l].Port;
 					throw runtime_error(oss.str());
 				}
-					this->_AddrPorts[l].DefaultIndex = i;
+				this->_AddrPorts[goal].DefaultIndex = i;
 			}
 		}
 	}
-	for (size_t g = 0; this->_AddrPorts.size(); g++)
+	for (size_t g = 0; g < this->_AddrPorts.size(); g++)
 	{
 		if (this->_AddrPorts[g].DefaultIndex == this->_Servers.size())
 			this->_AddrPorts[g].DefaultIndex = this->_AddrPorts[g].ServerIndexes[0];
