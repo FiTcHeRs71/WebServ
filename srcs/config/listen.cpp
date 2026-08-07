@@ -77,7 +77,7 @@ vector<TListenConfig>	parse_listen_directive(const vector<string> &tokens)
 		else if (known_listen_parameters().count(name))
 			throw runtime_error ("listen parameter \"" + name + "\" is not supported by webserv");
 		else
-			throw runtime_error("unknow listen parameter \"" + tokens[i] + "\"");
+			throw runtime_error("unknown listen parameter \"" + tokens[i] + "\"");
 	}
 
 	resolve_host(addr, hosts);

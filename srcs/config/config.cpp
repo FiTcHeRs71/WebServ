@@ -339,7 +339,7 @@ void	ConfigParser::apply_defaults(void)
 			default_listens.Port = DEFAULT_PORT;
 			srv._Listens.push_back(default_listens);
 		}
-		cout << srv << endl;
+		// cout << srv << endl; TODO DEBUG
 		for (size_t j = 0; j < srv._Locations.size(); j++)
 		{
 			if (srv._Locations[j]._Index.empty())
