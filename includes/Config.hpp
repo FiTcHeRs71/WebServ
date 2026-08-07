@@ -38,8 +38,8 @@ class ConfigParser
 	ConfigParser&operator=(const ConfigParser& src);
 
 	/*===Getters & Setters===*/
-	const vector<ServerConfig>	&getServers(void) const;					///< Les blocs server construits par fill_servers_config()
-
+	const vector<ServerConfig>		&getServers(void) const;					///< Les blocs server construits par fill_servers_config()
+	const vector<TAddrPortGroup>	&getAddrPorts(void) const;					///< La table des sockets d'ecoute
 	/*===Member Function===*/
 	void				check_syntax(const vector<string> &tokens);			///< Passe 2 : valide la structure des tokens
 	void				build_addr_port_groups(void);

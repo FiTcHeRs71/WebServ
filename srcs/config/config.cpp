@@ -54,6 +54,20 @@ const vector<ServerConfig>	&ConfigParser::getServers(void) const
 }
 
 /**
+ * @brief Accesseur sur la table des sockets d'ecoute
+ * 
+ * Valilde uniquement apres un appel a build_addr_groups(), donc apres
+ * parse(). Un TAddrGroup = un socket : c'est ce que ListenSockets
+ * consomera (B-01), en lisant Host et Port pour le bind() et ServerIndexes
+ * pour retrouver les serveurs a servir sur un socket
+* @return la table des groupes, vide si le parsing n'as pas eu lieu
+*/
+const vector<TAddrPortGroup> &ConfigParser::getAddrPorts(void)const
+{
+	return (this->_AddrPorts);
+}
+
+/**
  * @brief Fonction d'entree pour le parsing et le checking
  *
  * Enchaine les trois passes : tokenize -> check_syntax -> fill_servers_config
@@ -400,9 +414,9 @@ void	ConfigParser::build_addr_port_groups(void)
 			{
 				if (!seen.insert(srv._ServerNames[n]).second)
 					cerr << "webserv: [warn] conflicting server name \""
-						 << srv._ServerNames[n] << "\" on "
-						 << this->_AddrPorts[g].Host << ":" << this->_AddrPorts[g].Port
-						 << ", ignored" << endl;
+						<< srv._ServerNames[n] << "\" on "
+						<< this->_AddrPorts[g].Host << ":" << this->_AddrPorts[g].Port
+						<< ", ignored" << endl;
 			}
 		}
 	}
