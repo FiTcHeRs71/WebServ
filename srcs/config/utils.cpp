@@ -77,6 +77,14 @@ const set<string>	&known_listen_parameters(void)
 	return (s);
 }
 
+/**
+ * @brief Check si une chaine est composee uniquement de chiffres.
+ *
+ * Sert a split_addr_port() pour appliquer la regle NGINX : dans une directive
+ * listen, un token entierement numerique est un port, sinon une adresse.
+ * @param s Le token a tester.
+ * @return true si s est non vide et ne contient que des chiffres, false sinon.
+*/
 bool	is_all_digits(const string &s)
 {
 	if (s.empty())

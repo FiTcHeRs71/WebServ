@@ -14,29 +14,69 @@
 static void	split_addr_port(const string &token, string &addr, string &port);
 static void	resolve_host(const string &host, vector<string> &out);
 
+/**
+ * @brief Construit un point d'ecoute vide, utilise par apply_defaults()
+ *
+ * Les champs sont ensuite ecrases avec DEFAULT_HOST / DEFAULT_PORT pour donner
+ * un listen implicite aux blocs server qui n'en declarent aucun.
+*/
 TListenConfig::TListenConfig(void)
 	:Host("")
 	,Port(0)
 	,IsDefaultServer(false)
 {}
 
+/**
+ * @brief Construit un point d'ecoute completement resolu
+ *
+ * Appele par parse_listen_directive() une fois par IPv4 rendue par resolve_host().
+ * @param host Une IPv4 litterale deja resolue, jamais un hostname ni "*".
+ * @param port Le port valide, DEFAULT_PORT si la directive n'en donnait pas.
+ * @param is_default_server true si le mot-cle <default_server> etait present.
+*/
 TListenConfig::TListenConfig(const string &host, int port, bool is_default_server)
 	:Host(host)
 	,Port(port)
 	,IsDefaultServer(is_default_server)
 {}
 
+/**
+ * @brief Construit un groupe vide, present pour la forme canonique
+ *
+ * build_addr_port_groups() n'utilise pas ce constructeur : il passe toujours
+ * par la version parametree pour pouvoir armer la sentinelle de DefaultIndex.
+*/
 TAddrPortGroup::TAddrPortGroup(void)
 	:Host("")
 	,Port(0)
 	,DefaultIndex(0)
 {}
+
+/**
+ * @brief Ouvre un nouveau groupe pour un couple host:port jamais vu
+ *
+ * @param host L'IPv4 sur laquelle le socket sera bind.
+ * @param port Le port sur lequel le socket sera bind.
+ * @param default_index La sentinelle "aucun default_server explicite", que
+ *        l'appelant fixe a _Servers.size(), un index volontairement invalide.
+*/
 TAddrPortGroup::TAddrPortGroup(const string &host, const int port, const size_t default_index)
 	:Host(host)
 	,Port(port)
 	,DefaultIndex(default_index)
 {}
 
+/**
+ * @brief Compare deux points d'ecoute sur leur seule identite de socket
+ *
+ * IsDefaultServer est volontairement ignore : deux listen qui ne different que
+ * par ce mot-cle visent quand meme le meme socket, donc restent un doublon.
+ * C'est ce que build_addr_port_groups() cherche avec find() pour refuser un
+ * host:port repete dans un meme bloc server.
+ *
+ * @param Listen_a, Listen_b Les deux points d'ecoute a comparer.
+ * @return true si Host et Port sont identiques.
+*/
 bool	operator==(const TListenConfig &Listen_a, const TListenConfig &Listen_b)
 {
 	return (Listen_a.Host == Listen_b.Host && Listen_a.Port == Listen_b.Port);

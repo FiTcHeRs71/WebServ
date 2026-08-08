@@ -47,8 +47,8 @@ class ServerConfig
 
 
 	/*===Member Function===*/
-	const LocationConfig	*Resolve(const std::string &uri)const;	///< TODO : location matchant une requete
-	string					build_path(const LocationConfig &location, const string &uri)const;
+	const LocationConfig	*Resolve(const std::string &uri)const;						///< La location matchant l'URI, prefixe le plus long
+	string					build_path(const LocationConfig &location, const string &uri)const;	///< Traduit une URI en chemin disque via le root de la location
 
 	/*===Friends===*/
 	friend ostream			&operator<<(ostream &flux, const ServerConfig &src);

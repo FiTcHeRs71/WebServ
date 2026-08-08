@@ -18,8 +18,15 @@ using namespace std;
 /**
  * @brief Represente toute la phase de parsing du .conf
  *
- * Le parsing se fait en trois passes : tokenize() decoupe le fichier,
- * check_syntax() valide la structure, fill_servers_config() construit les objets.
+ * Le parsing se fait en cinq passes, enchainees par parse() :
+ *   1. tokenize()              decoupe le fichier en tokens
+ *   2. check_syntax()          valide la structure (accolades, ";", imbrication)
+ *   3. fill_servers_config()   construit un ServerConfig par bloc server
+ *   4. apply_defaults()        comble les directives absentes
+ *   5. build_addr_port_groups() regroupe les servers par socket a ouvrir
+ *
+ * L'ordre compte : les passes 4 et 5 sont dans cet ordre pour que les listen
+ * implicites soient soumis aux memes controles de conflit que les explicites.
  */
 class ConfigParser
 {
@@ -42,12 +49,12 @@ class ConfigParser
 	const vector<TAddrPortGroup>	&getAddrPorts(void) const;					///< La table des sockets d'ecoute
 	/*===Member Function===*/
 	void				check_syntax(const vector<string> &tokens);			///< Passe 2 : valide la structure des tokens
-	void				build_addr_port_groups(void);
+	void				build_addr_port_groups(void);						///< Passe 5 : regroupe les servers par host:port et detecte les conflits
 	void				tokenize(const string &path);						///< Passe 1 : decoupe le .conf en tokens
 	friend void			parse(const string &argv1, ConfigParser &Config);
 	void				fill_servers_config(void);							///< Passe 3 : construit un ServerConfig par bloc
 	void				fill_one_server(ServerConfig &server, size_t &i);	///< Remplit un seul bloc server
-	void				apply_defaults(void);
+	void				apply_defaults(void);								///< Passe 4 : comble les directives absentes avec Default.hpp
 };
 
 /* === Helpers === */

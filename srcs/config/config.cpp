@@ -56,10 +56,10 @@ const vector<ServerConfig>	&ConfigParser::getServers(void) const
 /**
  * @brief Accesseur sur la table des sockets d'ecoute
  * 
- * Valilde uniquement apres un appel a build_addr_groups(), donc apres
- * parse(). Un TAddrGroup = un socket : c'est ce que ListenSockets
+ * Valide uniquement apres un appel a build_addr_port_groups(), donc apres
+ * parse(). Un TAddrPortGroup = un socket : c'est ce que ListenSockets
  * consomera (B-01), en lisant Host et Port pour le bind() et ServerIndexes
- * pour retrouver les serveurs a servir sur un socket
+ * pour retrouver les serveurs a servir sur ce socket.
 * @return la table des groupes, vide si le parsing n'as pas eu lieu
 */
 const vector<TAddrPortGroup> &ConfigParser::getAddrPorts(void)const
@@ -301,11 +301,13 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
  * @brief Parcours la liste des serveurs du .conf et initilalize les valeurs critiques
  *
  * Il parcourt la liste de serveurs et regarde les valeurs de ou la declaration de <location / {...}>,
- * Pour le client_max_body_size si non itinialiser appplique la valeur par default de NGINX
+ * Pour le client_max_body_size si non initialise applique la valeur par defaut de NGINX
  * Pour root il met par defaut le chemin vers www
- * Pour methods il attribue automatchiquement GET
- * Pour index il attribue automatchiquement "index.html"
- * Toutes valeur sont dans le header config.hpp
+ * Pour methods il attribue automatiquement GET
+ * Pour index il attribue automatiquement "index.html"
+ * Cree aussi une location "/" et un listen implicites si le bloc server n'en
+ * declare pas, pour qu'aucun serveur ne sorte du parsing sans point d'entree.
+ * Toutes les valeurs par defaut sont dans le header Default.hpp
  * @param void void.
  * @return void.
 */

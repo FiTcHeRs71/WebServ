@@ -67,12 +67,20 @@ ostream		&operator<<(ostream &flux, const ServerConfig &src)
 
 	/*===Member Function===*/
 /**
- * @brief Trouve la configuration de location correspondant a une requete.
+ * @brief Trouve la LocationConfig de ce serveur qui matche une URI.
  *
- * @param host Le nom d'hote demande (issu de l'en-tete Host).
- * @param port Le port sur lequel la connexion a ete recue.
- * @param uri  L'URI demandee.
- * @return Un pointeur vers la LocationConfig correspondante, ou NULL si aucune ne correspond.
+ * Applique la regle NGINX du prefixe le plus long : on garde le bloc location
+ * dont le _Path est prefixe de l'URI et dont le _Path est le plus long. La
+ * query string et le fragment sont retires avant comparaison, et le match doit
+ * tomber sur une frontiere de segment (voir is_segment_boundary()) pour
+ * qu'une location "/img" ne capture pas "/images/logo.png".
+ *
+ * Le choix du serveur virtuel (via Host: et TAddrPortGroup) est fait en amont :
+ * ici on est deja dans le bon bloc server.
+ *
+ * @param uri L'URI demandee, query string et fragment tolerees.
+ * @return Un pointeur vers la LocationConfig la plus specifique, NULL si aucune
+ *         ne matche. Le pointeur appartient au ServerConfig, ne pas liberer.
  */
 const LocationConfig	*ServerConfig::Resolve(const std::string &uri)const
 {
