@@ -27,7 +27,7 @@ class ConfigParser
 
 	vector<string>			_LexerConfig;	///< Le .conf sous forme de tokens non checkes
 	vector<ServerConfig>	_Servers;		///< Un objet par bloc server valide
-	vector<TAddrPortGroup>	_AddrPorts;
+	vector<TAddrPortGroup>	_AddrPorts;		///< Les struct contenant les serveur ecoutant les memes ports
 
 	public:
 

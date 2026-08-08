@@ -7,6 +7,30 @@
 
 using namespace std;
 
+/**
+ * @brief Represente un socket d'ecoute et les serveurs qui se le partagent
+ *
+ * Le fichier de conf donne une vue "par serveur" (chaque ServerConfig porte ses
+ * TListenConfig). Un TAddrPortGroup est la vue inverse, "par couple Host:Port" :
+ * on ne peut faire qu'un seul bind() sur une adresse:port donnee, alors que
+ * plusieurs blocs server peuvent declarer le meme listen. build_addr_port_groups()
+ * fait donc ce regroupement, et un groupe = exactement un socket.
+ *
+ * Host / Port  : les arguments du bind().
+ * ServerIndexes: les indexes dans _Servers des blocs server joignables sur ce
+ *                socket, dans l'ordre du fichier. C'est parmi eux que le routage
+ *                cherchera une correspondance avec le header Host: de la requete.
+ * DefaultIndex : le serveur a utiliser quand aucun server_name ne matche (ou que
+ *                le header Host: est absent). Initialise a _Servers.size(), un
+ *                index volontairement invalide qui sert de sentinelle "aucun
+ *                default_server explicite vu pour l'instant" : il permet de
+ *                detecter un second default_server sur le meme groupe (erreur),
+ *                puis, s'il est toujours a la sentinelle en fin de passe, d'appliquer
+ *                la regle NGINX : le premier serveur declare devient le default.
+ *
+ * ex : deux server { listen 8080; } produisent un seul TAddrPortGroup
+ *      { "0.0.0.0", 8080, [0, 1], 0 }
+ */
 struct	TAddrPortGroup
 {
 	string			Host;

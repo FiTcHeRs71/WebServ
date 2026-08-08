@@ -42,6 +42,17 @@ bool	operator==(const TListenConfig &Listen_a, const TListenConfig &Listen_b)
 	return (Listen_a.Host == Listen_b.Host && Listen_a.Port == Listen_b.Port);
 }
 
+/**
+ * @brief Valide les arguments donner a l'instruction listen
+ *
+ * Verifie si la lsiten d'arguments n'est pas vide.
+ * Disocie l'adresse du port grace a split_addr_port() puis definie la valreur du port par default <DEFAULT_PORT>
+ * ou la convertie en INT si declarer dans le .conf
+ * appel a resolve_host(addr, hosts) pour parser tous les formes de declaration execpter IPv6 ou UNIX
+ *
+ * @param tokens vector<string> contenant tous les tokens entre <listen> et <;>
+ * @return vector<TListenConfig> avec tous le listen declarer dans le bloc server + throw si les arguments donnees a un listens ont incorect.
+*/
 vector<TListenConfig>	parse_listen_directive(const vector<string> &tokens)
 {
 	vector<TListenConfig>	Listens;
