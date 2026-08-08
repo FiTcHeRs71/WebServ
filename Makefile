@@ -16,6 +16,7 @@ SRCS_CGI = $(addprefix $(SRC_DIR)/cgi/, \
 
 SRCS_CONFIG = $(addprefix $(SRC_DIR)/config/, \
 	config.cpp \
+	listen.cpp \
 	LocationConfig.cpp \
 	ServerConfig.cpp \
 	utils.cpp)

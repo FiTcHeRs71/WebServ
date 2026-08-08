@@ -10,7 +10,6 @@
 #include <set>
 #include <stdexcept>
 #include <string>
-#include <utility>
 #include <vector>
 
 using namespace std;
@@ -48,6 +47,57 @@ const set<string> &known_directives(void)
 }
 
 /**
+ * @brief Contient toutes les methodes HTTP acceptees par notre webserv
+ *
+ * Actuel GET/POST/DELETE
+ * @return le set des methodes connues.
+*/
+const set<string> &known_methods(void)
+{
+	static const string names[] = {
+		"GET", "POST", "DELETE"
+	};
+	static const set<string> s(names, names + sizeof(names) / sizeof(names[0]));
+	return (s);
+}
+
+/**
+ * @brief Contient toutes les parametres de listen existant dans NGINX
+ *
+ * @return le set des parametres de listen connues
+*/
+const set<string>	&known_listen_parameters(void)
+{
+	static const string names[] = {
+		"ssl", "http2", "quic", "proxy_protocol", "deferred", "bind",
+		"reuseport", "multipath", "backlog", "rcvbuf", "sndbuf", "setfib",
+		"fastopen", "accept_filter", "ipv6only", "so_keepalive"
+	};
+	static const set<string> s(names, names + sizeof(names) / sizeof(names[0]));
+	return (s);
+}
+
+/**
+ * @brief Check si une chaine est composee uniquement de chiffres.
+ *
+ * Sert a split_addr_port() pour appliquer la regle NGINX : dans une directive
+ * listen, un token entierement numerique est un port, sinon une adresse.
+ * @param s Le token a tester.
+ * @return true si s est non vide et ne contient que des chiffres, false sinon.
+*/
+bool	is_all_digits(const string &s)
+{
+	if (s.empty())
+		return (false);
+	for (std::string::size_type i = 0; i < s.size(); ++i)
+	{
+		if (!std::isdigit(static_cast<unsigned char>(s[i])))
+			return (false);
+	}
+	return (true);
+}
+
+/**
  * @brief Verifie qu'une chaine est une adresse IPv4 bien formee.
  *
  * Attend 4 segments numeriques separes par 3 points, chacun <= 255,
@@ -55,7 +105,7 @@ const set<string> &known_directives(void)
  * @param host La partie host du token listen (avant le ":").
  * @return true si l'IPv4 est valide, false sinon.
 */
-static bool	is_valid_ipv4(const string &host)
+bool	is_valid_ipv4(const string &host)
 {
 	size_t	start = 0;
 	size_t	i = 0;
@@ -80,47 +130,6 @@ static bool	is_valid_ipv4(const string &host)
 		i++;
 	}
 	return (true);
-}
-
-/**
- * @brief Split le token value associe a la key listen dans une pair.
- * La pair contient le host puis le port (0.0.0.0 | 8080)
- * Check la validite de l'IPv4 et que le port tient dans 1-65535.
- *
- * @param value Le token complet "host:port" associe a la key listen.
- * @return la pair completee (host, port)
-*/
-pair<string, int>	parse_listen(const string &value)
-{
-	pair<string, int>	pair_host_port;
-	size_t				flag;
-	string				host;
-	string				port;
-
-	flag = value.find_first_of( ":");
-	if (flag == string::npos)
-	{
-		host = "0.0.0.0";
-		port = value;
-	}
-	else
-	{
-		host = value.substr(0, flag);
-		port = value.substr(flag + 1);
-	}
-
-	if (!is_valid_ipv4(host))
-		throw runtime_error(host + "is a invalid IPv4 value");
-
-	errno = 0;
-	char*	p_end = NULL;
-	long	port_converted = strtol(port.c_str(), &p_end, 10);
-
-	if (port.empty() || p_end == port.c_str() || *p_end != '\0' || errno == ERANGE || port_converted <= 0 || port_converted > 65535)
-		throw runtime_error( port + " is not a valid port");
-	pair_host_port.first = host;
-	pair_host_port.second = static_cast<int>(port_converted);
-	return (pair_host_port);
 }
 
 /**
@@ -205,21 +214,6 @@ vector<string>		collect_values(vector<string> &token, size_t &i)
 	}
 	i++; // saute le ";"
 	return (values);
-}
-
-/**
- * @brief Contient toutes les methodes HTTP acceptees par notre webserv
- *
- * Actuel GET/POST/DELETE
- * @return le set des methodes connues.
-*/
-const set<string> &known_methods(void)
-{
-	static const string names[] = {
-		"GET", "POST", "DELETE"
-	};
-	static const set<string> s(names, names + sizeof(names) / sizeof(names[0]));
-	return (s);
 }
 
 /**

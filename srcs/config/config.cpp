@@ -2,9 +2,12 @@
 #include "../../includes/ServerConfig.hpp"
 #include <algorithm>
 #include <cstddef>
+#include <cstdlib>
 #include <cstring>
 #include <fstream>
 #include <map>
+#include <set>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -23,6 +26,7 @@ ConfigParser::~ConfigParser(void)
 ConfigParser::ConfigParser(const ConfigParser& to_copy)
 	:_LexerConfig(to_copy._LexerConfig)
 	,_Servers(to_copy._Servers)
+	,_AddrPorts(to_copy._AddrPorts)
 {
 	//cout << "ConfigParser copy constructor called" << endl;
 }
@@ -33,6 +37,7 @@ ConfigParser & ConfigParser::operator=(const ConfigParser& src)
 	{
 		this->_LexerConfig = src._LexerConfig;
 		this->_Servers = src._Servers;
+		this->_AddrPorts = src._AddrPorts;
 	}
 	return (*this);
 }
@@ -46,6 +51,20 @@ ConfigParser & ConfigParser::operator=(const ConfigParser& src)
 const vector<ServerConfig>	&ConfigParser::getServers(void) const
 {
 	return (this->_Servers);
+}
+
+/**
+ * @brief Accesseur sur la table des sockets d'ecoute
+ * 
+ * Valide uniquement apres un appel a build_addr_port_groups(), donc apres
+ * parse(). Un TAddrPortGroup = un socket : c'est ce que ListenSockets
+ * consomera (B-01), en lisant Host et Port pour le bind() et ServerIndexes
+ * pour retrouver les serveurs a servir sur ce socket.
+* @return la table des groupes, vide si le parsing n'as pas eu lieu
+*/
+const vector<TAddrPortGroup> &ConfigParser::getAddrPorts(void)const
+{
+	return (this->_AddrPorts);
 }
 
 /**
@@ -63,8 +82,8 @@ void	parse(const string &argv1, ConfigParser &Config)
 	Config.tokenize(argv1);
 	Config.check_syntax(Config._LexerConfig);
 	Config.fill_servers_config();
-	Config.check_listen();
 	Config.apply_defaults();
+	Config.build_addr_port_groups();
 }
 
 /**
@@ -248,14 +267,16 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 		else
 		{
 			vector<string>	value = collect_values(this->_LexerConfig, i);
+			if (key == "listen")
+			{
+				vector<TListenConfig>	listens = parse_listen_directive(value);
+				for (size_t k = 0; k < listens.size(); k++)
+					server._Listens.push_back(listens[k]);
+				continue;
+			}
 			for (size_t j = 0; j < value.size(); j++)
 			{
-				if (key == "listen")
-				{
-					pair<string, int> listen = parse_listen(value[j]); // split 0.0.0.0 de 8080
-					server._Listens.push_back(listen);
-				}
-				else if (key ==  "server_name")
+				if (key ==  "server_name")
 					server._ServerNames.push_back(value[j]); 
 				else if (key == "client_max_body_size")
 				{
@@ -280,11 +301,13 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
  * @brief Parcours la liste des serveurs du .conf et initilalize les valeurs critiques
  *
  * Il parcourt la liste de serveurs et regarde les valeurs de ou la declaration de <location / {...}>,
- * Pour le client_max_body_size si non itinialiser appplique la valeur par default de NGINX
+ * Pour le client_max_body_size si non initialise applique la valeur par defaut de NGINX
  * Pour root il met par defaut le chemin vers www
- * Pour methods il attribue automatchiquement GET
- * Pour index il attribue automatchiquement "index.html"
- * Toutes valeur sont dans le header config.hpp
+ * Pour methods il attribue automatiquement GET
+ * Pour index il attribue automatiquement "index.html"
+ * Cree aussi une location "/" et un listen implicites si le bloc server n'en
+ * declare pas, pour qu'aucun serveur ne sorte du parsing sans point d'entree.
+ * Toutes les valeurs par defaut sont dans le header Default.hpp
  * @param void void.
  * @return void.
 */
@@ -313,12 +336,12 @@ void	ConfigParser::apply_defaults(void)
 		}
 		if (srv._Listens.size() < 1)
 		{
-			pair<string, int>	default_listens;
-			default_listens.first = DEFAULT_HOST;
-			default_listens.second = DEFAULT_PORT;
+			TListenConfig	default_listens;
+			default_listens.Host = DEFAULT_HOST;
+			default_listens.Port = DEFAULT_PORT;
 			srv._Listens.push_back(default_listens);
 		}
-		cout << srv << endl;
+		// cout << srv << endl; TODO DEBUG
 		for (size_t j = 0; j < srv._Locations.size(); j++)
 		{
 			if (srv._Locations[j]._Index.empty())
@@ -334,25 +357,85 @@ void	ConfigParser::apply_defaults(void)
 }
 
 /**
- * @brief Parcours tous les lsitens declarer dans .conf et check les doublon
+ * @brief Construit la table des sockets d'ecoute a partir des _Listens.
  *
- * Parcours la liste des listens declarer et verifie que les serveurs ayant le meme listen ont un 
- * <server_name> different
+ * Regroupe les serveurs par couple (Host, Port) exact, elit le serveur par
+ * defaut de chaque groupe (celui portant <default_server>, sinon le premier
+ * declare) et detecte les conflits :
+ *   - meme host:port repete dans un seul bloc server -> erreur
+ *   - deux <default_server> dans un meme groupe      -> erreur
+ *   - <server_name> duplique dans un meme groupe     -> warning, premier gagne
+ *
+ * Appelee APRES apply_defaults() : c'est elle qui donne un listen aux blocs
+ * server qui n'en declarent pas, sans quoi ils echapperaient aux conflits.
+ *
  * @param void void.
- * @return void + throw une exception en cas de listen invalid.
+ * @return void + throw une exception en cas de conflit.
 */
-void	ConfigParser::check_listen(void)
+void	ConfigParser::build_addr_port_groups(void)
 {
-	for (size_t a = 0; a < this->_Servers.size(); a++) // conflit = meme host:port ET un server_name en commun (deux blocs sans server_name = conflit aussi : meme default server)
-		for (size_t b = a + 1; b < _Servers.size(); b++)
-			for (size_t la = 0; la < _Servers[a]._Listens.size(); la++)
+	this->_AddrPorts.clear();
+
+	for (size_t i = 0; i < this->_Servers.size(); i++)
+	{
+		const vector<TListenConfig>	&listens = this->_Servers[i]._Listens;
+
+		for (size_t l = 0; l < listens.size(); l++)
+		{
+			size_t goal;
+
+			if (find(listens.begin(), listens.begin() + l, listens[l]) != listens.begin() + l)
 			{
-				if (find(_Servers[b]._Listens.begin(), _Servers[b]._Listens.end(), _Servers[a]._Listens[la]) == _Servers[b]._Listens.end())
-					continue;
-				if (_Servers[a]._ServerNames.empty() && _Servers[b]._ServerNames.empty())
-					throw runtime_error("conflicting default server on same host:port");
-				for (size_t n = 0; n < _Servers[a]._ServerNames.size(); n++)
-					if (find(_Servers[b]._ServerNames.begin(), _Servers[b]._ServerNames.end(), _Servers[a]._ServerNames[n]) != _Servers[b]._ServerNames.end())
-						throw runtime_error("conflicting server name '" + _Servers[a]._ServerNames[n] + "'");
+				ostringstream	oss;
+
+				oss << "duplicated listen " << listens[l].Host << ":" << listens[l].Port;
+				throw runtime_error(oss.str());
 			}
+			goal = this->_AddrPorts.size();
+			for (size_t a = 0; a < this->_AddrPorts.size(); a++)
+			{
+				if (this->_AddrPorts[a].Port == listens[l].Port && this->_AddrPorts[a].Host == listens[l].Host)
+				{
+					goal = a;
+					break;
+				}
+			}
+			if (goal == this->_AddrPorts.size())
+			{
+				TAddrPortGroup group(listens[l].Host, listens[l].Port, this->_Servers.size());
+				this->_AddrPorts.push_back(group);
+			}
+			this->_AddrPorts[goal].ServerIndexes.push_back(i);
+			if(listens[l].IsDefaultServer)
+			{
+				if (this->_AddrPorts[goal].DefaultIndex != this->_Servers.size())
+				{
+					ostringstream oss;
+					oss << "duplicate default server for " << listens[l].Host << ":" << listens[l].Port;
+					throw runtime_error(oss.str());
+				}
+				this->_AddrPorts[goal].DefaultIndex = i;
+			}
+		}
+	}
+	for (size_t g = 0; g < this->_AddrPorts.size(); g++)
+	{
+		set<string>	seen;
+
+		if (this->_AddrPorts[g].DefaultIndex == this->_Servers.size())
+			this->_AddrPorts[g].DefaultIndex = this->_AddrPorts[g].ServerIndexes[0];
+		for (size_t s = 0; s < this->_AddrPorts[g].ServerIndexes.size(); s++)
+		{
+			const ServerConfig	&srv = this->_Servers[this->_AddrPorts[g].ServerIndexes[s]];
+
+			for (size_t n = 0; n < srv._ServerNames.size(); n++)
+			{
+				if (!seen.insert(srv._ServerNames[n]).second)
+					cerr << "webserv: [warn] conflicting server name \""
+						<< srv._ServerNames[n] << "\" on "
+						<< this->_AddrPorts[g].Host << ":" << this->_AddrPorts[g].Port
+						<< ", ignored" << endl;
+			}
+		}
+	}
 }
