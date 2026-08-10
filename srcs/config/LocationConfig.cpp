@@ -1,6 +1,7 @@
 #include "../../includes/LocationConfig.hpp"
 #include "../../includes/Config.hpp"
 #include <set>
+#include <sstream>
 #include <stdexcept>
 
 	/*===Canonical Form===*/
@@ -130,9 +131,16 @@ ostream	&operator<<(ostream &flux, const LocationConfig &src)
  */
 void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
 {
-	size_t flag = token[i].find_first_of("/");
+	size_t flag = token[i].find_first_of(LOC_NO_SUPPORTED);
 	set<string>	seen;
 	
+	if (flag != string::npos)
+	{
+		ostringstream	oss;
+		oss << "location modifiers " << token[i][flag] << " are not supported";
+		throw runtime_error(oss.str());
+	}
+	flag = token[i].find_first_of("/");
 	if (flag != 0)
 		throw runtime_error(token[i] + " is not a valid PATH");
 	this->_Path = token[i];

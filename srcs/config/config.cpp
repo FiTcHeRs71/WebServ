@@ -185,7 +185,7 @@ void	ConfigParser::check_syntax(const vector<string> &tokens)
 				i++;
 			}
 			if (i >= tokens.size() || tokens[i] != "{")
-				throw runtime_error("'{' expected after " + tok);
+				throw runtime_error("location modifiers (=, ~, ~*, ^~, @) are not supported");
 			block_stack.push_back(tok);
 			i++;
 			continue;
@@ -250,10 +250,12 @@ void	ConfigParser::fill_servers_config(void)
 void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 {
 	set<string>	seen;
+	set<string>	path;
 
 	while (i < this->_LexerConfig.size() && this->_LexerConfig[i] != "}")
 	{
 		string	key = this->_LexerConfig[i];
+
 		if (!seen.insert(key).second && key != "location" && key != "error_page" && key != "listen")
 			throw runtime_error(key + " multiple definition not allowed");
 		i++;
@@ -262,6 +264,8 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 		{
 			LocationConfig	location;
 			location.parse_location(this->_LexerConfig, i);
+			if (!path.insert(location._Path).second)
+				throw runtime_error("duplicate location \"" + location._Path + "\" in server block");
 			server._Locations.push_back(location);
 		}
 		else
