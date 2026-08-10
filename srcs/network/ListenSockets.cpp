@@ -1,16 +1,16 @@
 # include "../../includes/ListenSockets.hpp"
 
 	/*===Canonical Form===*/
-ListenSockets::ListenSockets(const std::vector<ServerConfig> &servers)
+ListenSockets::ListenSockets(const vector<TAddrPortGroup>& AddrPorts)
 {
-	for (size_t i = 0; i < servers.size(); i++){
-		const vector<pair <string, int> > listens = servers[i].getListens();
-		for(size_t j = 0; j < listens.size(); j++){
-			if (!creatSocket(listens[j])){
-				closeFd();
-				throw runtime_error("bind() failed on " + listens[j].first + " "
-				+ string(strerror(errno)));
-			}
+	for (size_t i = 0; i < AddrPorts.size(); i++){
+		const TAddrPortGroup& tmp = AddrPorts[i];
+		if (!creatSocket(tmp.Host, tmp.Port)){
+			closeFd();
+			ostringstream ss;
+			ss << "bind() failed on " << tmp.Host << ":"
+			<< tmp.Port << " ";
+			throw runtime_error(ss.str() + string(strerror(errno)));
 		}
 	}
 }
@@ -23,20 +23,34 @@ ListenSockets::~ListenSockets(void)
 
 ListenSockets::ListenSockets(const ListenSockets& to_copy)
 {
-	this->_ServFd = to_copy._ServFd;
+	for(size_t i = 0; i < to_copy._ServFd.size(); i++){
+		int newFd = dup(to_copy._ServFd[i]);
+		if (newFd < 0){
+			this->closeFd();
+			throw runtime_error("Error: " + string(strerror(errno)));
+		}
+		this->_ServFd.push_back(newFd);
+	}
 }
 
 ListenSockets	&ListenSockets::operator=(const ListenSockets& src)
 {
-	if (!this->_ServFd.empty())
-		this->closeFd();
-	if (this != &src)
-		this->_ServFd = src._ServFd;
+	if (this != &src){
+		if (!this->_ServFd.empty())
+			this->closeFd();
+		for(size_t i = 0; i < src._ServFd.size(); i++){
+			int newFd = dup(src._ServFd[i]);
+			if (newFd < 0){
+				this->closeFd();
+				throw runtime_error("Error: " + string(strerror(errno)));
+			}
+			this->_ServFd.push_back(newFd);
+		}
+	}
 	return (*this);
 }
 
 
-	/*===Getters & Setters===*/
 
 /**
  * @brief Fonctions pour ouvrir les fd des sockets, 1 fd par port ouvert
@@ -44,23 +58,20 @@ ListenSockets	&ListenSockets::operator=(const ListenSockets& src)
  *
  */
 	/*===Member Function===*/
-bool	ListenSockets::creatSocket(const pair<string, int>& listens){
+bool	ListenSockets::creatSocket(const string& Host, const int& Port){
 	struct addrinfo addr;
 	struct addrinfo *res;
 	bzero(&addr, sizeof(addr));
 	ostringstream ss;
-	ss << listens.second;
-	string port = ss.str();
+	ss << Port;
+	string s_port = ss.str();
 	addr.ai_family = AF_INET;
 	addr.ai_socktype = SOCK_STREAM;
 	addr.ai_flags = AI_PASSIVE;
 
-	// On cherche sur la combinaison host:port est deja associer a un fd existant
-	if (findHostPort(listens.first + ":" + port))
-		return true;
 	// Permet de creer la structure de donnee pour ouvrir le fd
 	///!\ Attention il faut free la structure avec freeaddrinfo
-	if (getaddrinfo(listens.first.c_str(), port.c_str() , &addr, &res) != 0)
+	if (getaddrinfo(Host.c_str(), s_port.c_str() , &addr, &res) != 0)
 		return false;
 	int opt = 1;
 	int fd = socket(res->ai_family, res->ai_socktype, 0);
@@ -68,8 +79,7 @@ bool	ListenSockets::creatSocket(const pair<string, int>& listens){
 		freeaddrinfo(res);
 		return false;
 	}
-	this->_ServFd.push_back(make_pair(fd, listens.first + ":" + port));
-
+	this->_ServFd.push_back(fd);
 
 	// Permet de manipuler les options du socket , evite les erreurs tel que
 	// "address already in use" si on quitte le programme et relance d'aussi tot
@@ -107,31 +117,23 @@ bool	ListenSockets::creatSocket(const pair<string, int>& listens){
  */
 void ListenSockets::closeFd(){
 	for(size_t i = 0; i < this->_ServFd.size(); i++){
-		close(this->_ServFd[i].first);
+		if (this->_ServFd[i])
+			close(this->_ServFd[i]);
 	}
 }
 
-vector<pair<int, string> > ListenSockets::getServFd() const{
+	/*===Getters & Setters===*/
+vector<int> ListenSockets::getServFd() const{
 	return this->_ServFd;
 }
 
-bool ListenSockets::findHostPort(string hostPort){
-	vector<pair<int, string> >::iterator it;
-	for(it = this->_ServFd.begin(); it < this->_ServFd.end(); it++){
-		if (it->second == hostPort){
-			return true;
-		}
-	}
-	return false;
-}
 
+	/*===Operateur de flux===*/
 ostream& operator<<(ostream& flux, const ListenSockets& listen){
 
 	for(size_t i = 0; i < listen._ServFd.size(); i++){
-		flux << "ListenSockets._servFd[" << i << "].first = ";
-		flux << listen._ServFd[i].first << endl;
-		flux << "ListenSockets._servFd[" << i << "].second = ";
-		flux << listen._ServFd[i].second << endl;
+		flux << "ListenSockets._servFd[" << i << "] = ";
+		flux << listen._ServFd[i] << endl;
 	}
 	return (flux);
 }

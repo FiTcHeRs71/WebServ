@@ -5,6 +5,9 @@
 
 using namespace std;
 
+
+# define BACKLOG 511
+
 /**
  * @brief Valeurs appliquees quand une directive est absente du .conf
  *
@@ -16,6 +19,6 @@ const size_t		DEFAULT_BODY_SIZE	= 1048576;		///< 1 Mo, comme la directive client
 const char *const	DEFAULT_ROOT		= "./www";		///< Racine disque d'une location sans root
 const char *const	DEFAULT_INDEX		= "index.html";	///< Fichier servi quand l'URI designe un repertoire
 const char *const	DEFAULT_HOST		="0.0.0.0";		///< Toutes les interfaces, valeur d'un listen implicite
-const int			DEFAULT_PORT		= 80;			///< Port d'un listen sans port explicite
+const int			DEFAULT_PORT		= 8000;			///< Port d'un listen sans port explicite
 
 #endif

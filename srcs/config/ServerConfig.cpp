@@ -42,10 +42,6 @@ ServerConfig	&ServerConfig::operator=(const ServerConfig& src)
 	return (*this);
 }
 
-vector<pair<string, int> > ServerConfig::getListens() const{
-	return (this->_Listens);
-}
-
 /**
  * @brief Surcharge d'operateur pour l'impression des attributs de la classe ServerConfig
  *
