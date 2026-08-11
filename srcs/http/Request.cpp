@@ -6,15 +6,16 @@ Request::Request(void) : _State(ST_REQUEST_LINE),
 
 Request::~Request(void) {}
 
-Request::Request(const Request& to_copy) : _Raw(to_copy._Raw),
-										   _Method(to_copy._Method),
-										   _Path(to_copy._Path),
-										   _Query(to_copy._Query),
-										   _Version(to_copy._Version),
-										   _Body(to_copy._Body),
-										   _State(to_copy._State),
-										   _Header(to_copy._Header),
-										   _ErrorCode(to_copy._ErrorCode) {}
+Request::Request(const Request& to_copy) :
+	_Raw(to_copy._Raw),
+	_Method(to_copy._Method),
+	_Path(to_copy._Path),
+	_Query(to_copy._Query),
+	_Version(to_copy._Version),
+	_Body(to_copy._Body),
+	_State(to_copy._State),
+	_Header(to_copy._Header),
+	_ErrorCode(to_copy._ErrorCode) {}
 
 Request	&Request::operator=(const Request& src)
 {
@@ -40,16 +41,21 @@ Request	&Request::operator=(const Request& src)
 
 
 	/*
-		La ligne de requête a le format "METHODE ESPACE cible ESPACE HTTP/version" — 3 tokens séparés par des espaces :
+		POST /upload?type=image HTTP/1.1\r\n     ← ST_REQUEST_LINE (UNE seule ligne, 3 tokens)
+		↑        ↑           ↑
+		_Method  cible       _Version
+				(→ _Path="/upload", _Query="type=image")
 
+		Host: localhost:8080\r\n                 ← ST_HEADERS (une ligne = une entree
+		Content-Type: text/plain\r\n                dans _Header, repete tant qu'il y a
+		Content-Length: 11\r\n                      des lignes non-vides)
 
-		"GET /index.html?foo=bar HTTP/1.1"
-		↓         ↓                ↓
-		_Method   cible           _Version
-		Découpe la ligne sur les espaces → tu dois obtenir exactement 3 tokens (si ce n'est pas le cas : _State = ST_ERROR, requête malformée, REQ_ERROR).
-		Token 1 → directement dans _Method.
-		Token 2 (la "cible", ex: /index.html?foo=bar) → cherche un ? dedans : ce qui précède va dans _Path, ce qui suit (s'il y a un ?) va dans _Query. Pas de ? → tout va dans _Path, _Query reste vide.
-		Token 3 → dans _Version.
+		\r\n                                     ← ligne VIDE = fin des headers,
+													signal de transition ST_HEADERS -> ST_BODY
+
+		Hello world                              ← ST_BODY (Content-Length octets a lire,
+													hors scope de ton ticket C-01 si celui-ci
+													se limite a request-line + headers
 	*/
 
 	/**
@@ -61,67 +67,97 @@ Request	&Request::operator=(const Request& src)
 EParseResult	Request::Feed(const char *data, size_t n)
 {
 	this->_Raw += string(data, n);
-	// cout << "_Here = [[[" << this->_Raw << "]]]" << endl;
 	if (this->_State == ST_REQUEST_LINE)
-		if (!this->findMethod() && this->_State != ST_ERROR)
-			return	(REQ_INCOMPLETE);
+		if (!findRequestLine())
+			return (REQ_INCOMPLETE);
 	if (this->_State == ST_HEADERS)
-		if (!this->findPath() && this->_State != ST_ERROR)
-			return	(REQ_INCOMPLETE);
-	if (this->_State == ST_BODY)
-		if (!this->findVersion() && this->_State != ST_ERROR)
-			return (REQ_COMPLETE);
-	if (this->_State == ST_ERROR){
+		findHeaders();
+
+}
+
+// Methodes pour la requete http
+bool Request::findRequestLine(){
+	size_t pos = this->_Raw.find("\r\n");
+	if (pos == string::npos)
+		return false;
+	if (!setUpMethod())
+		return false;
+	if (!setUpPath())
+		return false;
+	if (!setUpVersion())
+		return false;
+	return true;
+}
+
+
+bool	Request::setUpMethod(){
+	size_t pos = this->_Raw.find_first_of(" ");
+	if (pos == string::npos)
+		return false;
+	this->_Method = this->_Raw.substr(0, pos);
+	this->_Raw.erase(0, pos + 1);
+	if (this->_Method != "GET" && this->_Method != "POST" && this->_Method != "DELETE"){
 		this->_ErrorCode = 1;
-		return (REQ_ERROR);
-	}
-	else
-		return (REQ_INCOMPLETE);
-}
-
-bool	Request::findMethod(){
-	size_t find = this->_Raw.find_first_of("\r\n");
-	if (find != string::npos){
-		this->_Method = this->_Raw.substr(0, find);
-		cout << "_Method = " << this->_Method << endl;
-		if (this->_Method != "GET" && this->_Method != "POST" && this->_Method != "DELETE"){
-			this->_State = ST_ERROR;
-			return false;
-		}
-		this->_State = ST_HEADERS;
-		this->_Raw.erase(0, find + 2);
-		return true;
-	}
-	else
+		this->_State = ST_ERROR;
 		return false;
+	}
+	return true;
 }
 
-bool	Request::findPath(){
-	size_t find = this->_Raw.find_first_of("\r\n\r\n");
-	if (find != string::npos){
-		size_t findQuery = this->_Raw.find("?");
-		if (findQuery != string::npos){
-			this->_Path = this->_Raw.substr(0, findQuery);
-			this->_Query = this->_Raw.substr(findQuery + 1, find - findQuery);
-			this->_Raw.erase(0, find + 4);
-		}
-		else
-			this->_Path = this->_Raw.substr(0, find);
-		this->_State = ST_BODY;
-		cout << "_Path = " << this->_Path << endl << " _Query = " << this->_Query << endl;
-		return true;
-	}
-	else
+bool	Request::setUpPath(){
+	size_t pos = this->_Raw.find_first_of(" ");
+	if (pos == string::npos)
 		return false;
-}
-
-bool	Request::findVersion(){
-	if (this->_Raw == "HTTP/1.1" || this->_Raw == "HTTP/1.0"){
-		this->_Version = this->_Raw;
-		this->_State = ST_DONE;
-		cout << "_Version = " << this->_Version << endl;
-		return true;
+	size_t posQuery = this->_Raw.find_first_of("?");
+	if (posQuery == string::npos){
+		this->_Path = this->_Raw.substr(0, pos);
+		this->_Raw.erase(0, pos + 1);
 	}
-	return false;
+	else{
+		this->_Path = this->_Raw.substr(0, posQuery);
+		this->_Query = this->_Raw.substr(posQuery + 1, pos -posQuery);
+		this->_Raw.erase(0, pos + 1);
+		// Parsing a faire sur le path et le Query
+	}
+	return true;
 }
 
+bool	Request::setUpVersion(){
+	size_t pos = this->_Raw.find("\r\n");
+	if (pos == string::npos)
+		return false;
+	this->_Version = this->_Raw.substr(0, pos);
+	this->_Raw.erase(0, pos + 1);
+	if (this->_Version != "HTTP/1.0" && this->_Version != "HTTP/1.1")
+		return false;
+	this->_State = ST_BODY;
+	return true;
+}
+
+bool	Request::findHeaders(){
+	size_t pos = this->_Raw.find("\r\n\r\n");
+	if (pos == string::npos)
+		return false;
+	while(true){
+		size_t delPos = this->_Raw.find(":");
+		if (delPos == string::npos)
+			break;
+
+	}
+}
+
+/**
+ * @brief Fonction permettant de trim les espaes de debut det de fin
+ *
+ * @param s
+ */
+void trim(string& s){
+	size_t end = s.find_last_of(" \t");
+	if (end == string::npos)
+		return ;
+	s.erase(0, end);
+	size_t first = s.find_first_of(" \t");
+	if (first == string::npos)
+		return;
+	s.erase(first + 1);
+}
