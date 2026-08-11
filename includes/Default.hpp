@@ -6,7 +6,6 @@
 using namespace std;
 
 
-# define BACKLOG 511
 
 /**
  * @brief Valeurs appliquees quand une directive est absente du .conf

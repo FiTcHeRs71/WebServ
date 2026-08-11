@@ -6,11 +6,12 @@ ListenSockets::ListenSockets(const vector<TAddrPortGroup>& AddrPorts)
 	for (size_t i = 0; i < AddrPorts.size(); i++){
 		const TAddrPortGroup& tmp = AddrPorts[i];
 		if (!creatSocket(tmp.Host, tmp.Port)){
+			int saveError = errno;
 			closeFd();
 			ostringstream ss;
 			ss << "bind() failed on " << tmp.Host << ":"
 			<< tmp.Port << " ";
-			throw runtime_error(ss.str() + string(strerror(errno)));
+			throw runtime_error(ss.str() + string(strerror(saveError)));
 		}
 	}
 }
@@ -26,8 +27,9 @@ ListenSockets::ListenSockets(const ListenSockets& to_copy)
 	for(size_t i = 0; i < to_copy._ServFd.size(); i++){
 		int newFd = dup(to_copy._ServFd[i]);
 		if (newFd < 0){
+			int saveError = errno;
 			this->closeFd();
-			throw runtime_error("Error: " + string(strerror(errno)));
+			throw runtime_error("Error: " + string(strerror(saveError)));
 		}
 		this->_ServFd.push_back(newFd);
 	}
@@ -41,8 +43,9 @@ ListenSockets	&ListenSockets::operator=(const ListenSockets& src)
 		for(size_t i = 0; i < src._ServFd.size(); i++){
 			int newFd = dup(src._ServFd[i]);
 			if (newFd < 0){
+				int saveError = errno;
 				this->closeFd();
-				throw runtime_error("Error: " + string(strerror(errno)));
+				throw runtime_error("Error: " + string(strerror(saveError)));
 			}
 			this->_ServFd.push_back(newFd);
 		}
@@ -61,7 +64,7 @@ ListenSockets	&ListenSockets::operator=(const ListenSockets& src)
 bool	ListenSockets::creatSocket(const string& Host, const int& Port){
 	struct addrinfo addr;
 	struct addrinfo *res;
-	bzero(&addr, sizeof(addr));
+	memset(&addr, 0, sizeof(addr));
 	ostringstream ss;
 	ss << Port;
 	string s_port = ss.str();
@@ -96,8 +99,9 @@ bool	ListenSockets::creatSocket(const string& Host, const int& Port){
 	}
 
 	// Permet de mettre le socket en mode en mode passif, attendant qu'un client
-	// tente de se connecter. le parametre backlog defini la taille de la file d'attente
-	if (listen(fd, BACKLOG) < 0){
+	// tente de se connecter. le parametre SOMAXCONN defini la taille de la file d'attente
+	// qui est definis selon l'OS
+	if (listen(fd, SOMAXCONN) < 0){
 		freeaddrinfo(res);
 		return false;
 	}
@@ -117,13 +121,15 @@ bool	ListenSockets::creatSocket(const string& Host, const int& Port){
  */
 void ListenSockets::closeFd(){
 	for(size_t i = 0; i < this->_ServFd.size(); i++){
-		if (this->_ServFd[i])
+		if (this->_ServFd[i] >= 0)
 			close(this->_ServFd[i]);
 	}
+	this->_ServFd.clear();
 }
 
 	/*===Getters & Setters===*/
-vector<int> ListenSockets::getServFd() const{
+	// Attention si des closes sont fait, bien verifier avant car envoyer par references
+const vector<int>& ListenSockets::getServFd() const{
 	return this->_ServFd;
 }
 
