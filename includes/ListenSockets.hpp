@@ -35,7 +35,7 @@ class ListenSockets
 	ListenSockets &operator=(const ListenSockets& src);
 
 	/*===Getters & Setters===*/
-	const vector<int> &getServFd() const;
+	vector<int> getServFd() const;
 
 	/*===Member Function===*/
 	bool	creatSocket(const string& Host, const int& Port);

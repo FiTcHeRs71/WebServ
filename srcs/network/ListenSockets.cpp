@@ -1,6 +1,4 @@
 # include "../../includes/ListenSockets.hpp"
-#include <cerrno>
-#include <cstring>
 
 	/*===Canonical Form===*/
 ListenSockets::ListenSockets(const vector<TAddrPortGroup>& AddrPorts)
@@ -8,12 +6,11 @@ ListenSockets::ListenSockets(const vector<TAddrPortGroup>& AddrPorts)
 	for (size_t i = 0; i < AddrPorts.size(); i++){
 		const TAddrPortGroup& tmp = AddrPorts[i];
 		if (!creatSocket(tmp.Host, tmp.Port)){
-			int saved = errno;
 			closeFd();
 			ostringstream ss;
 			ss << "bind() failed on " << tmp.Host << ":"
 			<< tmp.Port << " ";
-			throw runtime_error(ss.str() + string(strerror(saved)));
+			throw runtime_error(ss.str() + string(strerror(errno)));
 		}
 	}
 }
@@ -63,7 +60,7 @@ ListenSockets	&ListenSockets::operator=(const ListenSockets& src)
 bool	ListenSockets::creatSocket(const string& Host, const int& Port){
 	struct addrinfo addr;
 	struct addrinfo *res;
-	memset(&addr, 0, sizeof(addr));
+	bzero(&addr, sizeof(addr));
 	ostringstream ss;
 	ss << Port;
 	string s_port = ss.str();
@@ -119,15 +116,14 @@ bool	ListenSockets::creatSocket(const string& Host, const int& Port){
  */
 void ListenSockets::closeFd(){
 	for(size_t i = 0; i < this->_ServFd.size(); i++){
-		if (this->_ServFd[i] >= 0)
+		if (this->_ServFd[i])
 			close(this->_ServFd[i]);
 	}
-	this->_ServFd.clear();
 }
 
 	/*===Getters & Setters===*/
-const vector<int> &ListenSockets::getServFd() const{
-	return (this->_ServFd);
+vector<int> ListenSockets::getServFd() const{
+	return this->_ServFd;
 }
 
 
