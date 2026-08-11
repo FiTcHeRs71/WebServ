@@ -51,13 +51,12 @@ ListenSockets	&ListenSockets::operator=(const ListenSockets& src)
 }
 
 
-
+/*===Member Function===*/
 /**
  * @brief Fonctions pour ouvrir les fd des sockets, 1 fd par port ouvert
  * stock des fds dans l'attribut>_ServFd
  *
  */
-	/*===Member Function===*/
 bool	ListenSockets::creatSocket(const string& Host, const int& Port){
 	struct addrinfo addr;
 	struct addrinfo *res;
