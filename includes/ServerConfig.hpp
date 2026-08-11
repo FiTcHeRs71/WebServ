@@ -1,12 +1,12 @@
 #ifndef SERVER_CONFIG_HPP
 # define SERVER_CONFIG_HPP
 
+# include "Struct_webserv.hpp"
 # include "LocationConfig.hpp"
 # include <iostream>
 # include <map>
 # include <ostream>
 # include <string>
-# include <utility>
 # include <vector>
 
 using namespace std;
@@ -24,12 +24,12 @@ class ServerConfig
 
 	private:
 
-	vector<pair<string, int> >	_Listens;
-	vector<string>				_ServerNames;
-	map<int, string>			_ErrorPages;
-	vector<LocationConfig>		_Locations;
-	size_t						_ClientMaxBodySize;
-	bool						_HasClientMaxBodySize;
+	vector<TListenConfig>	_Listens;
+	vector<string>			_ServerNames;
+	map<int, string>		_ErrorPages;
+	vector<LocationConfig>	_Locations;
+	size_t					_ClientMaxBodySize;
+	bool					_HasClientMaxBodySize;
 
 	protected:
 
@@ -47,8 +47,8 @@ class ServerConfig
 	vector<pair<string, int> > getListens() const;
 
 	/*===Member Function===*/
-	const LocationConfig	*Resolve(const std::string &uri)const;	///< TODO : location matchant une requete
-	string					build_path(const LocationConfig &location, const string &uri)const;
+	const LocationConfig	*Resolve(const std::string &uri)const;						///< La location matchant l'URI, prefixe le plus long
+	string					build_path(const LocationConfig &location, const string &uri)const;	///< Traduit une URI en chemin disque via le root de la location
 
 	/*===Friends===*/
 	friend ostream			&operator<<(ostream &flux, const ServerConfig &src);
@@ -56,5 +56,8 @@ class ServerConfig
 
 /*=== HELPERS ===*/
 bool	is_segment_boundary(const string &uri, const string &path);
+bool	is_all_digits(const string &s);
+bool	is_valid_ipv4(const string &host);
+bool	operator==(const TListenConfig &Listen_a, const TListenConfig &Listen_b);
 
 #endif /*SERVER_CONFIG_HPP*/

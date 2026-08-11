@@ -1,7 +1,9 @@
 #ifndef CONFIG_HPP
 # define CONFIG_HPP
 
-#include "LocationConfig.hpp"
+# include "Struct_webserv.hpp"
+# include "Default.hpp"
+# include "LocationConfig.hpp"
 # include "ServerConfig.hpp"
 # include <cstddef>
 # include <iostream>
@@ -9,23 +11,22 @@
 # include <vector>
 # include <set>
 # include <fstream>
-# include <utility>
 # include <map>
 
 using namespace std;
 
-const size_t		DEFAULT_BODY_SIZE	= 1048576;
-const char *const	DEFAULT_ROOT		= "./www";
-const char *const	DEFAULT_INDEX		= "index.html";
-const char *const	DEFAULT_HOST		="0.0.0.0";
-const int			DEFAULT_PORT		= 8080;
-
-
 /**
  * @brief Represente toute la phase de parsing du .conf
  *
- * Le parsing se fait en trois passes : tokenize() decoupe le fichier,
- * check_syntax() valide la structure, fill_servers_config() construit les objets.
+ * Le parsing se fait en cinq passes, enchainees par parse() :
+ *   1. tokenize()              decoupe le fichier en tokens
+ *   2. check_syntax()          valide la structure (accolades, ";", imbrication)
+ *   3. fill_servers_config()   construit un ServerConfig par bloc server
+ *   4. apply_defaults()        comble les directives absentes
+ *   5. build_addr_port_groups() regroupe les servers par socket a ouvrir
+ *
+ * L'ordre compte : les passes 4 et 5 sont dans cet ordre pour que les listen
+ * implicites soient soumis aux memes controles de conflit que les explicites.
  */
 class ConfigParser
 {
@@ -33,6 +34,7 @@ class ConfigParser
 
 	vector<string>			_LexerConfig;	///< Le .conf sous forme de tokens non checkes
 	vector<ServerConfig>	_Servers;		///< Un objet par bloc server valide
+	vector<TAddrPortGroup>	_AddrPorts;		///< Les struct contenant les serveur ecoutant les memes ports
 
 	public:
 
@@ -43,34 +45,35 @@ class ConfigParser
 	ConfigParser&operator=(const ConfigParser& src);
 
 	/*===Getters & Setters===*/
-	const vector<ServerConfig>	&getServers(void) const;				///< Les blocs server construits par fill_servers_config()
-
+	const vector<ServerConfig>		&getServers(void) const;					///< Les blocs server construits par fill_servers_config()
+	const vector<TAddrPortGroup>	&getAddrPorts(void) const;					///< La table des sockets d'ecoute
 	/*===Member Function===*/
-	void			check_syntax(const vector<string> &tokens);			///< Passe 2 : valide la structure des tokens
-	void			check_listen(void);									///< Passe 4 : check les multi listen
-	void			tokenize(const string &path);						///< Passe 1 : decoupe le .conf en tokens
-	friend void		parse(const string &argv1, ConfigParser &Config);
-	void			fill_servers_config(void);							///< Passe 3 : construit un ServerConfig par bloc
-	void			fill_one_server(ServerConfig &server, size_t &i);	///< Remplit un seul bloc server
-	void			apply_defaults(void);
+	void				check_syntax(const vector<string> &tokens);			///< Passe 2 : valide la structure des tokens
+	void				build_addr_port_groups(void);						///< Passe 5 : regroupe les servers par host:port et detecte les conflits
+	void				tokenize(const string &path);						///< Passe 1 : decoupe le .conf en tokens
+	friend void			parse(const string &argv1, ConfigParser &Config);
+	void				fill_servers_config(void);							///< Passe 3 : construit un ServerConfig par bloc
+	void				fill_one_server(ServerConfig &server, size_t &i);	///< Remplit un seul bloc server
+	void				apply_defaults(void);								///< Passe 4 : comble les directives absentes avec Default.hpp
 };
 
 /* === Helpers === */
-vector<string>		collect_values(vector<string> &token, size_t &i);
-void				is_valid_file(ifstream &file);
-void				parse(const string &argv1, ConfigParser &Config);
-const set<string>	&known_directives(void);
-const set<string>	&known_methods(void);
-pair<string, int>	parse_listen(const string &value);
-size_t				parse_body_size(const string &value);
-map<int, string>	parse_error_pages(const vector<string> &value, size_t &j);
-set<string>			parse_allow_methods(const vector<string> &value);
-string				parse_root(const vector<string> &value);
-vector<string>		parse_index(const vector<string> &value);
-bool				parse_auto_index(const vector<string> &value);
-string				parse_cgi_ext(const vector<string> &value);
-string				parse_cgi_pass(const vector<string> &value);
-int					parser_return_code(const string &value, const size_t nb_args);
-string				parse_upload_store(const vector<string> &value);
+vector<string>			collect_values(vector<string> &token, size_t &i);
+void					is_valid_file(ifstream &file);
+void					parse(const string &argv1, ConfigParser &Config);
+const set<string>		&known_directives(void);
+const set<string>		&known_methods(void);
+const set<string>		&known_listen_parameters(void);
+size_t					parse_body_size(const string &value);
+map<int, string>		parse_error_pages(const vector<string> &value, size_t &j);
+set<string>				parse_allow_methods(const vector<string> &value);
+string					parse_root(const vector<string> &value);
+vector<string>			parse_index(const vector<string> &value);
+bool					parse_auto_index(const vector<string> &value);
+string					parse_cgi_ext(const vector<string> &value);
+string					parse_cgi_pass(const vector<string> &value);
+int						parser_return_code(const string &value, const size_t nb_args);
+string					parse_upload_store(const vector<string> &value);
+vector<TListenConfig>	parse_listen_directive(const vector<string> &tokens);
 
 #endif /*CONFIG_HPP*/
