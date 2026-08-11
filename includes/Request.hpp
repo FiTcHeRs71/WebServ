@@ -4,8 +4,14 @@
 # include <iostream>
 # include <cstddef>
 # include <map>
+# include <string>
+# include <cctype>
 
 using namespace std;
+
+
+void trim(string& s);
+void MyToLower(string& key);
 
 enum EParseResult
 {
@@ -58,9 +64,11 @@ class Request
 
 	/*===Member Function===*/
 	EParseResult	Feed(const char *data, size_t n);
-	bool			findMethod();
-	bool			findPath();
-	bool			findVersion();
+	bool	setUpMethod();
+	bool	setUpPath();
+	bool	setUpVersion();
+	bool	findRequestLine();
+	bool	findHeaders();
 };
 
 #endif /*REQUEST_HPP*/

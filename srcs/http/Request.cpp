@@ -71,7 +71,9 @@ EParseResult	Request::Feed(const char *data, size_t n)
 		if (!findRequestLine())
 			return (REQ_INCOMPLETE);
 	if (this->_State == ST_HEADERS)
-		findHeaders();
+		if (!findHeaders());
+			return (REQ_INCOMPLETE);
+	return (REQ_INCOMPLETE);
 
 }
 
@@ -128,8 +130,11 @@ bool	Request::setUpVersion(){
 		return false;
 	this->_Version = this->_Raw.substr(0, pos);
 	this->_Raw.erase(0, pos + 1);
-	if (this->_Version != "HTTP/1.0" && this->_Version != "HTTP/1.1")
+	if (this->_Version != "HTTP/1.0" && this->_Version != "HTTP/1.1"){
+		this->_State = ST_ERROR;
+		this->_ErrorCode = 1;
 		return false;
+	}
 	this->_State = ST_BODY;
 	return true;
 }
@@ -139,13 +144,31 @@ bool	Request::findHeaders(){
 	if (pos == string::npos)
 		return false;
 	while(true){
+		size_t endOfLine = this->_Raw.find("\r\n");
+		if (endOfLine == string::npos){
+			this->_State = ST_ERROR;
+			this->_ErrorCode = 1;
+			return false;
+		}
 		size_t delPos = this->_Raw.find(":");
-		if (delPos == string::npos)
-			break;
-
+		if (delPos == string::npos){
+			this->_State = ST_ERROR;
+			this->_ErrorCode = 1;
+			return false;
+		}
+		string key = this->_Raw.substr(0, delPos);
+		string value = this->_Raw.substr(delPos + 1);
+		trim(value);
+		MyToLower(key);
+		this->_Header.insert(make_pair(key, value));
+		this->_Raw.erase(endOfLine + 1);
 	}
+	return true;
 }
 
+
+
+/*===Fonctions externes===*/
 /**
  * @brief Fonction permettant de trim les espaes de debut det de fin
  *
@@ -160,4 +183,10 @@ void trim(string& s){
 	if (first == string::npos)
 		return;
 	s.erase(first + 1);
+}
+
+void MyToLower(string& key){
+	for(size_t i = 0; i < key.size(); i++){
+		tolower(key[i]);
+	}
 }
