@@ -47,6 +47,7 @@ class ConfigParser
 	/*===Getters & Setters===*/
 	const vector<ServerConfig>		&getServers(void) const;					///< Les blocs server construits par fill_servers_config()
 	const vector<TAddrPortGroup>	&getAddrPorts(void) const;					///< La table des sockets d'ecoute
+
 	/*===Member Function===*/
 	void				check_syntax(const vector<string> &tokens);			///< Passe 2 : valide la structure des tokens
 	void				build_addr_port_groups(void);						///< Passe 5 : regroupe les servers par host:port et detecte les conflits
@@ -60,6 +61,7 @@ class ConfigParser
 /* === Helpers === */
 vector<string>			collect_values(vector<string> &token, size_t &i);
 void					is_valid_file(ifstream &file);
+void					check_valid_path(const string &path);
 void					parse(const string &argv1, ConfigParser &Config);
 const set<string>		&known_directives(void);
 const set<string>		&known_methods(void);

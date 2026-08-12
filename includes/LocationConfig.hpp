@@ -37,10 +37,6 @@ class LocationConfig
 	string				_UploadStore;
 	bool				_HasUploadStore;
 
-	protected:
-
-
-
 	public:
 
 	/*===Canonical Form===*/
