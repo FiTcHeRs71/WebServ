@@ -1,8 +1,10 @@
 #include "../../includes/LocationConfig.hpp"
 #include "../../includes/Config.hpp"
+#include <algorithm>
 #include <set>
 #include <sstream>
 #include <stdexcept>
+#include <string>
 
 	/*===Canonical Form===*/
 LocationConfig::LocationConfig(void)
@@ -129,17 +131,18 @@ ostream	&operator<<(ostream &flux, const LocationConfig &src)
  * @param i Index positionne sur le PATH du bloc, avance apres le "}" final.
  * @return void, throw sur toute valeur ou directive invalide
  */
-void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
+void	LocationConfig::parse_location(vector<string> &token, size_t &i)
 {
+	set<string>	seen;
+	size_t		flag;
+
 	if (token.empty())
 		throw runtime_error("Missing arguments for <listen> key");
-	size_t flag = token[0].find_first_of(LOC_NO_SUPPORTED);
-	set<string>	seen;
-	
+	flag = token[i].find_first_of(LOC_NO_SUPPORTED);
 	if (flag != string::npos)
 	{
 		ostringstream	oss;
-		oss << "location modifiers " << token[i][flag] << " are not supported";
+		oss << "location modifiers " << token[i][0] << " are not supported";
 		throw runtime_error(oss.str());
 	}
 	flag = token[i].find_first_of("/");

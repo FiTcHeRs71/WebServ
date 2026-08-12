@@ -185,7 +185,7 @@ void	ConfigParser::check_syntax(const vector<string> &tokens)
 				i++;
 			}
 			if (i >= tokens.size() || tokens[i] != "{")
-				throw runtime_error("location modifiers (=, ~, ~*, ^~, @) are not supported");
+				throw runtime_error("'{' expected after " + tok);
 			block_stack.push_back(tok);
 			i++;
 			continue;
