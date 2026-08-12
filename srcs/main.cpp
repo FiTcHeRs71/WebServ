@@ -1,4 +1,5 @@
 #include "../includes/Config.hpp"
+#include "../includes/ListenSockets.hpp"
 #include <iostream>
 #include <exception>
 
@@ -71,6 +72,8 @@ int main(int argc, char **argv)
 	{
 		ConfigParser	cfg;
 		parse(argv[1], cfg);
+		ListenSockets servSock(cfg.getAddrPorts());
+		cout << servSock;
 	}
 	catch (exception &e)
 	{
