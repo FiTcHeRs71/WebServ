@@ -1,16 +1,14 @@
 #ifndef LISTEN_SOCKETS_HPP
 # define LISTEN_SOCKETS_HPP
 
-# include "ServerConfig.hpp"
 # include "Config.hpp"
 # include <iostream>
+# include <string>
 # include <unistd.h>
 # include <vector>
 # include <sys/types.h>
 # include <sys/socket.h>
-# include <netinet/in.h>
 # include <netdb.h>
-# include <arpa/inet.h>
 # include <string.h>
 # include <sstream>
 # include <fcntl.h>
@@ -26,23 +24,23 @@ using namespace std;
 class ListenSockets
 {
 	private:
-	vector<pair<int, string> > _ServFd;
+	vector<int>	_ServFd;
 
 	public:
 
 	/*===Canonical Form===*/
-	ListenSockets(const std::vector<ServerConfig> &servers);
+	ListenSockets(const vector<TAddrPortGroup>& AddrPorts);
 	~ListenSockets(void);
 	ListenSockets(const ListenSockets& to_copy);
 	ListenSockets &operator=(const ListenSockets& src);
 
 	/*===Getters & Setters===*/
-	vector<pair<int, string> > getServFd() const;
+	const vector<int>& getServFd() const;
 
 	/*===Member Function===*/
-	bool	creatSocket(const pair<string, int>& listen);
-	bool	findHostPort(string hostPort);
+	bool	creatSocket(const string& Host, const int& Port);
 	void	closeFd();
+
 	friend ostream& operator<<(ostream& flux, const ListenSockets& listen);
 };
 
