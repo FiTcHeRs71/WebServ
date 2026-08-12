@@ -244,6 +244,11 @@ void	ConfigParser::fill_servers_config(void)
  * Refuse les directives dupliquees (sauf location et error_page) et les
  * couples ip:port deja utilises dans ce bloc ou dans un bloc server precedent
  * Delegue les blocs location a LocationConfig::parse_location()
+ * Refuse deux blocs location declarant le meme _Path dans CE bloc server
+ * (comme NGINX). La portee du doublon est le bloc server : deux serveurs
+ * differents ont le droit de declarer chacun "location /". Les paths sont
+ * compares bruts, sans normalisation : "/foo" et "/foo/" restent distincts.
+
  * @param server L'objet a remplir, instancie par fill_servers_config().
  * @param i Index positionne apres le "{" du bloc, avance jusqu'au "}" final.
  * @return void, throw sur toute valeur ou directive invalide
@@ -413,7 +418,7 @@ void	ConfigParser::build_addr_port_groups(void)
 			this->_AddrPorts[goal].ServerIndexes.push_back(i);
 			if(listens[l].IsDefaultServer)
 			{
-				if (this->_AddrPorts[goal].DefaultIndex != this->_Servers.size())
+				if (this->_AddrPorts[goal].DefaultIndex != this->_Servers.size() /* || wildcard deja dcalrer ?*/)
 				{
 					ostringstream oss;
 					oss << "duplicate default server for " << listens[l].Host << ":" << listens[l].Port;
