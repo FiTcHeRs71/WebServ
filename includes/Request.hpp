@@ -6,12 +6,10 @@
 # include <map>
 # include <string>
 # include <cctype>
+# include <sstream>
 
 using namespace std;
 
-
-void trim(string& s);
-void MyToLower(string& key);
 
 enum EParseResult
 {
@@ -60,7 +58,12 @@ class Request
 	Request &operator=(const Request& src);
 
 	/*===Getters & Setters===*/
-
+	const string&	getMethod() const;
+	const string&	getPath() const;
+	const string&	getQuery() const;
+	const string&	getVersion() const;
+	// const map<string, string>&	getHeader(string) const;
+	// const string&	getBody() const;
 
 	/*===Member Function===*/
 	EParseResult	Feed(const char *data, size_t n);
@@ -70,5 +73,9 @@ class Request
 	bool	findRequestLine();
 	bool	findHeaders();
 };
+
+void trim(string& s);
+void MyToLower(string& key);
+
 
 #endif /*REQUEST_HPP*/
