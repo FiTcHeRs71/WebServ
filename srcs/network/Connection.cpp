@@ -29,6 +29,9 @@ Connection	&Connection::operator=(const Connection& src)
 }
 
 	/*===Getters & Setters===*/
-
+int	Connection::getFd(void) const
+{
+	return(this->_Fd);
+}
 
 	/*===Member Function===*/

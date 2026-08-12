@@ -28,6 +28,7 @@ SRCS_HTTP = $(addprefix $(SRC_DIR)/http/, \
 
 SRCS_NETWORK = $(addprefix $(SRC_DIR)/network/, \
 	Connection.cpp \
+	EventLoop.cpp \
 	ListenSockets.cpp \
 	network.cpp)
 
