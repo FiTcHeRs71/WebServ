@@ -15,7 +15,6 @@
 # include <sstream>
 # include <fcntl.h>
 
-# define BACKLOG 511
 using namespace std;
 
 /**

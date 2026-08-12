@@ -74,9 +74,10 @@ int main(int argc, char **argv)
 		ConfigParser	cfg;
 		parse(argv[1], cfg);
 		ListenSockets servSock(cfg.getServers());
-		string str[5]  = {"POST /upl", "oad?type=image H", "TTP/1.1\r\n", "Host: loca", "lhost:8080\r\n"};
+		string str[8]  = {"POST /upl", "oad?type=image H", "TTP/1.1\r\n", "Host: loca", "lhost:8080\r\n",
+						"Content-Type:", " text/plain\r\n", "Content-Length: 11\r\n\r\n"};
 		Request Req;
-		for(size_t i = 0; i < 5; i++){
+		for(size_t i = 0; i < 8; i++){
 			Req.Feed(str[i].c_str(), str[i].length());
 		}
 	}
