@@ -131,7 +131,9 @@ ostream	&operator<<(ostream &flux, const LocationConfig &src)
  */
 void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
 {
-	size_t flag = token[i].find_first_of(LOC_NO_SUPPORTED);
+	if (token.empty())
+		throw runtime_error("Missing arguments for <listen> key");
+	size_t flag = token[0].find_first_of(LOC_NO_SUPPORTED);
 	set<string>	seen;
 	
 	if (flag != string::npos)
