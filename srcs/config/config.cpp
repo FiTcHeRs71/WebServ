@@ -110,7 +110,7 @@ void	ConfigParser::tokenize(const string &path)
 		size_t	flag_begin = 0;
 		size_t	flag_end = 0;
 		size_t	comment = line.find("#");
-		
+
 		if (comment != string::npos)
 			line.erase(comment);
 		size_t	first = line.find_first_not_of(to_ignore);
@@ -287,7 +287,7 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 			for (size_t j = 0; j < value.size(); j++)
 			{
 				if (key ==  "server_name")
-					server._ServerNames.push_back(value[j]); 
+					server._ServerNames.push_back(value[j]);
 				else if (key == "client_max_body_size")
 				{
 					if (server._HasClientMaxBodySize)
@@ -351,7 +351,6 @@ void	ConfigParser::apply_defaults(void)
 			default_listens.Port = DEFAULT_PORT;
 			srv._Listens.push_back(default_listens);
 		}
-		// cout << srv << endl; TODO DEBUG
 		for (size_t j = 0; j < srv._Locations.size(); j++)
 		{
 			if (srv._Locations[j]._Index.empty())

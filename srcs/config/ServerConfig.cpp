@@ -129,6 +129,5 @@ string	ServerConfig::build_path(const LocationConfig &location, const string &ur
 		root = root.substr(0, root.size() - 1);
 	else if (root[root.size() - 1] != '/' && !reste.empty() && reste[0] != '/')
 		root += '/';
-
 	return (root + reste);
 }

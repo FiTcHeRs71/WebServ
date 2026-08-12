@@ -179,7 +179,7 @@ void	LocationConfig::parse_location(vector<string> &token, size_t &i)
 			this->_UploadStore = parse_upload_store(value);
 			this->_HasUploadStore = true;
 		}
-		else 
+		else
 			throw runtime_error(key + " is not a valid instructions in location bloc");
 	}
 	if (this->_CgiExt.size() > 0 && this->_CgiPass.size() == 0)

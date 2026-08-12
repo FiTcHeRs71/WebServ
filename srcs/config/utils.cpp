@@ -180,7 +180,7 @@ map<int, string>	parse_error_pages(const vector<string> &value, size_t &j)
 	map<int, string>	map;
 	long	size_converted;
 	char*	p_end = NULL;
-	
+
 	if (value.size() < 2)
 		throw runtime_error("Error pages missing a elements, minimum correct value needed is 2 or more");
 	while (j < value.size() - 1)
@@ -264,7 +264,6 @@ vector<string>	parse_index(const vector<string> &value)
 		if (value[i].empty())
 			throw runtime_error ("Key index in location bloc has a empty arguments");
 	}
-	// TODO checker si index.html souvre ?
 	return (value);
 }
 
