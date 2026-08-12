@@ -134,20 +134,7 @@ ostream	&operator<<(ostream &flux, const LocationConfig &src)
 void	LocationConfig::parse_location(vector<string> &token, size_t &i)
 {
 	set<string>	seen;
-	size_t		flag;
 
-	if (token.empty())
-		throw runtime_error("Missing arguments for <listen> key");
-	flag = token[i].find_first_of(LOC_NO_SUPPORTED);
-	if (flag != string::npos)
-	{
-		ostringstream	oss;
-		oss << "location modifiers " << token[i][0] << " are not supported";
-		throw runtime_error(oss.str());
-	}
-	flag = token[i].find_first_of("/");
-	if (flag != 0)
-		throw runtime_error(token[i] + " is not a valid PATH");
 	this->_Path = token[i];
 	i += 2; // saute le PATH + "{"
 	while (i < token.size() && token[i] != "}")

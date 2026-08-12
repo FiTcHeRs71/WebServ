@@ -160,7 +160,7 @@ void	ConfigParser::check_syntax(const vector<string> &tokens)
 		if (tok == "}")
 		{
 			if (block_stack.empty())
-				throw invalid_argument("Closing brace expected");
+				throw invalid_argument("Closing brace '}' expected");
 			block_stack.pop_back();
 			i++;
 			continue;
@@ -182,6 +182,7 @@ void	ConfigParser::check_syntax(const vector<string> &tokens)
 			{
 				if (i >= tokens.size() || tokens[i] == "{")
 					throw runtime_error("Location without PATH");
+				check_valid_path(tokens[i]);
 				i++;
 			}
 			if (i >= tokens.size() || tokens[i] != "{")

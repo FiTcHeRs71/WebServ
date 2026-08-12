@@ -11,6 +11,7 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <sstream>
 
 using namespace std;
 
@@ -368,4 +369,22 @@ bool	is_segment_boundary(const string &uri, const string &path)
 	if (path[path.size() - 1] == '/')
 		return (true);
 	return (uri[path.size()] == '/');
+}
+
+void	check_valid_path(const string &path)
+{
+	size_t	flag;
+
+	if (path.empty())
+		throw runtime_error("Missing PATH argument for location block");
+	flag = path.find_first_of(LOC_NO_SUPPORTED);
+	if (flag == 0)
+	{
+		ostringstream	oss;
+		oss << "location modifiers " << path[0] << " are not supported";
+		throw runtime_error(oss.str());
+	}
+	flag = path.find_first_of('/');
+	if (flag != 0)
+		throw runtime_error("location needs to start with '/'");
 }

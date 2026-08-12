@@ -60,6 +60,7 @@ class ConfigParser
 /* === Helpers === */
 vector<string>			collect_values(vector<string> &token, size_t &i);
 void					is_valid_file(ifstream &file);
+void					check_valid_path(const string &path);
 void					parse(const string &argv1, ConfigParser &Config);
 const set<string>		&known_directives(void);
 const set<string>		&known_methods(void);
