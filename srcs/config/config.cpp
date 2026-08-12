@@ -418,7 +418,7 @@ void	ConfigParser::build_addr_port_groups(void)
 			this->_AddrPorts[goal].ServerIndexes.push_back(i);
 			if(listens[l].IsDefaultServer)
 			{
-				if (this->_AddrPorts[goal].DefaultIndex != this->_Servers.size() /* || wildcard deja dcalrer ?*/)
+				if (this->_AddrPorts[goal].DefaultIndex != this->_Servers.size())
 				{
 					ostringstream oss;
 					oss << "duplicate default server for " << listens[l].Host << ":" << listens[l].Port;
@@ -426,6 +426,19 @@ void	ConfigParser::build_addr_port_groups(void)
 				}
 				this->_AddrPorts[goal].DefaultIndex = i;
 			}
+		}
+	}
+	for (size_t g = 0; g < this->_AddrPorts.size(); g++)
+	{
+		for (size_t h = g + 1; h < this->_AddrPorts.size(); h++)
+		{
+			if (this->_AddrPorts[g].Port == this->_AddrPorts[h].Port)
+				if (this->_AddrPorts[g].Host == DEFAULT_HOST || this->_AddrPorts[h].Host == DEFAULT_HOST)
+				{
+					ostringstream oss;
+					oss << "duplicate wildcard for " << this->_AddrPorts[g].Host << ":" << this->_AddrPorts[g].Port << " with " << this->_AddrPorts[h].Host << ":" << this->_AddrPorts[h].Port;
+					throw runtime_error(oss.str());
+				}
 		}
 	}
 	for (size_t g = 0; g < this->_AddrPorts.size(); g++)
