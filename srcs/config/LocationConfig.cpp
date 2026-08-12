@@ -1,7 +1,10 @@
 #include "../../includes/LocationConfig.hpp"
 #include "../../includes/Config.hpp"
+#include <algorithm>
 #include <set>
+#include <sstream>
 #include <stdexcept>
+#include <string>
 
 	/*===Canonical Form===*/
 LocationConfig::LocationConfig(void)
@@ -128,13 +131,10 @@ ostream	&operator<<(ostream &flux, const LocationConfig &src)
  * @param i Index positionne sur le PATH du bloc, avance apres le "}" final.
  * @return void, throw sur toute valeur ou directive invalide
  */
-void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
+void	LocationConfig::parse_location(vector<string> &token, size_t &i)
 {
-	size_t flag = token[i].find_first_of("/");
 	set<string>	seen;
-	
-	if (flag != 0)
-		throw runtime_error(token[i] + " is not a valid PATH");
+
 	this->_Path = token[i];
 	i += 2; // saute le PATH + "{"
 	while (i < token.size() && token[i] != "}")
@@ -179,7 +179,7 @@ void	LocationConfig::parse_location(vector<string>	&token, size_t &i)
 			this->_UploadStore = parse_upload_store(value);
 			this->_HasUploadStore = true;
 		}
-		else 
+		else
 			throw runtime_error(key + " is not a valid instructions in location bloc");
 	}
 	if (this->_CgiExt.size() > 0 && this->_CgiPass.size() == 0)
