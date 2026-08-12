@@ -37,6 +37,7 @@ class EventLoop
 
 	void	AcceptNewClients(int listen_fd);
 	void	HandleClientEvent(size_t index);
+	int		FindFd(int fd);
 };
 
 #endif
