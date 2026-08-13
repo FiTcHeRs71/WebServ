@@ -56,6 +56,7 @@ class ConfigParser
 	void				fill_servers_config(void);							///< Passe 3 : construit un ServerConfig par bloc
 	void				fill_one_server(ServerConfig &server, size_t &i);	///< Remplit un seul bloc server
 	void				apply_defaults(void);								///< Passe 4 : comble les directives absentes avec Default.hpp
+	void				resolve_paths(void);								///< Passe 5 : rend absolus tous les chemins disque de la conf
 };
 
 /* === Helpers === */
@@ -77,5 +78,6 @@ string					parse_cgi_pass(const vector<string> &value);
 int						parser_return_code(const string &value, const size_t nb_args);
 string					parse_upload_store(const vector<string> &value);
 vector<TListenConfig>	parse_listen_directive(const vector<string> &tokens);
+string					to_absolute(const string &path, const string &cwd);
 
 #endif /*CONFIG_HPP*/

@@ -83,6 +83,19 @@ pid_t	CgiProcess::GetPid(void) const
  */
 bool	CgiProcess::Start(const Request &request, const LocationConfig &location, const string &script_path)
 {
+	char	*argv[3];
+	char	*envp[1];
+	int		pip_in[2];
+	int		pip_out[2];
+
+	argv[0] = const_cast<char *>(location.getPass().c_str());
+	argv[1] = const_cast<char *>(script_path.c_str());
+	argv[2] = NULL;
+	envp[0] = NULL; // D-02 remplira les meta-variables CGI
+
+	string dir = script_path.substr(0, script_path.rfind('/'));
+	const char *dir_c = dir.c_str;
+
 	(void)request;
 	(void)location;
 	(void)script_path;

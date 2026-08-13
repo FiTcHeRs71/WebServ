@@ -1,6 +1,7 @@
 #ifndef CGI_PROCESS_HPP
 # define CGI_PROCESS_HPP
 
+# include "./LocationConfig.hpp"
 # include <ctime>
 # include <iostream>
 # include <sys/types.h>

@@ -22,20 +22,20 @@ class LocationConfig
 
 	private:
 
-	string				_Path;
-	set<string>			_Methods;
-	string				_Root;
-	vector<string>		_Index;
-	bool				_AutoIndex;
-	int					_ReturnCode;
-	bool				_HasReturn;
-	string				_CgiExt;
-	string				_CgiPass;
-	size_t				_ClientMaxBodySize;
-	bool				_HasClientMaxBodySize;
-	string				_ReturnTarget;
-	string				_UploadStore;
-	bool				_HasUploadStore;
+	string			_Path;
+	set<string>		_Methods;
+	string			_Root;
+	vector<string>	_Index;
+	bool			_AutoIndex;
+	int				_ReturnCode;
+	bool			_HasReturn;
+	string			_CgiExt;
+	string			_CgiPass;
+	size_t			_ClientMaxBodySize;
+	bool			_HasClientMaxBodySize;
+	string			_ReturnTarget;
+	string			_UploadStore;
+	bool			_HasUploadStore;
 
 	public:
 

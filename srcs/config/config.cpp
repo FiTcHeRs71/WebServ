@@ -12,6 +12,8 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <unistd.h>
+#include <linux/limits.h>
 
 using namespace std;
 
@@ -83,6 +85,7 @@ void	parse(const string &argv1, ConfigParser &Config)
 	Config.check_syntax(Config._LexerConfig);
 	Config.fill_servers_config();
 	Config.apply_defaults();
+	Config.resolve_paths();
 	Config.build_addr_port_groups();
 }
 
@@ -458,6 +461,36 @@ void	ConfigParser::build_addr_port_groups(void)
 						<< this->_AddrPorts[g].Host << ":" << this->_AddrPorts[g].Port
 						<< ", ignored" << endl;
 			}
+		}
+	}
+}
+
+	/**
+	 * @brief Passe 5 : convertit en absolu tous les chemins disque de la configuration.
+	 *
+	 * Appelee une seule fois au demarrage. Apres cette passe, plus aucun chemin
+	 * de la conf ne depend du repertoire courant : un chdir() dans un enfant CGI
+	 * ne peut plus rien casser.
+	 */
+void	ConfigParser::resolve_paths(void)
+{
+	char	buffer[4096];
+	getcwd(buffer, sizeof(buffer));
+
+	if (!getcwd(buffer, sizeof(buffer)))
+		throw runtime_error("getcwd failed");
+
+	string	cwd(buffer);
+
+	for(size_t i = 0; i < this->_Servers.size(); i++)
+	{
+		for(size_t j = 0; j < this->_Servers[i]._Locations.size(); j++)
+		{
+			LocationConfig &loc = this->_Servers[i]._Locations[j];
+
+			loc._Root = to_absolute(loc._Root, cwd);
+			loc._CgiPass = to_absolute(loc._CgiPass, cwd);
+			loc._UploadStore = to_absolute(loc._UploadStore, cwd);
 		}
 	}
 }
