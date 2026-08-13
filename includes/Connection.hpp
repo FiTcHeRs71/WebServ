@@ -45,8 +45,8 @@ class Connection
 	
 	
 	/*===Member Function===*/
-	ssize_t		OnReadable(void);				///< un seul recv(), renvoie ce que recv() a rendu
-	ssize_t		OnWritable(void);				///< un seul send() partiel
+	size_t		OnReadable(void);				///< un seul recv(), renvoie ce que recv() a rendu
+	size_t		OnWritable(void);				///< un seul send() partiel
 	void		QueueOutput(const std::string &data);
 
 };

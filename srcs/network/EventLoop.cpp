@@ -1,9 +1,12 @@
 #include "../../includes/EventLoop.hpp"
 #include <algorithm>
 #include <condition_variable>
+#include <fcntl.h>
+#include <netinet/in.h>
 #include <poll.h>
 #include <sys/poll.h>
 #include <type_traits>
+#include <unistd.h>
 #include <vector>
 
 EventLoop::EventLoop(const ConfigParser &config, const ListenSockets &sockets)
@@ -147,11 +150,25 @@ void	EventLoop::SetEvents(int fd, short events)
 
 void	EventLoop::AcceptNewClients(int listen_fd)
 {
+	struct sockaddr_in	clientAddr;
+	socklen_t			clientLen = sizeof(clientAddr);
 
+	if (listen_fd <= 0)
+		return ;
+	int clientFd = accept(listen_fd, (struct sockaddr *)&clientAddr, &clientLen);
+	if (clientFd < 0)
+	{
+		cerr << "Error: accept() failure." << endl;
+		return ;
+	}
+	if (fcntl(clientFd, F_SETFL, O_NONBLOCK) < 0)
+		close(clientFd);
+	_Clients[clientFd] = Connection(); // TODO: needs to be finished when connection is done and we can add the connection state
+	AddFd(clientFd, POLLIN);
 }
 
 void	EventLoop::HandleClientEvent(size_t index)
 {
-
+	(void)index;
 }
 

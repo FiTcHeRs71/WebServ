@@ -1,5 +1,6 @@
 #include "../includes/Config.hpp"
 #include "../includes/ListenSockets.hpp"
+#include "../includes/EventLoop.hpp"
 #include <iostream>
 #include <exception>
 
@@ -17,6 +18,8 @@ int main(int argc, char **argv)
 		ConfigParser	cfg;
 		parse(argv[1], cfg);
 		ListenSockets servSock(cfg.getAddrPorts());
+		EventLoop pollLoop(cfg, servSock);
+		pollLoop.Run();
 	}
 	catch (exception &e)
 	{
