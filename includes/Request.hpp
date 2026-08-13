@@ -7,6 +7,7 @@
 # include <string>
 # include <cctype>
 # include <sstream>
+# include"Default.hpp"
 
 using namespace std;
 
@@ -46,6 +47,8 @@ class Request
 		EParseState			_State;
 		map<string, string>	_Header;		//<cles en minuscules
 		int					_ErrorCode;		//< 0 tant que tout vas bien
+		int					_RequestOctetsSize;
+		int					_HeadersOctetsSize;
 
 	protected:
 
@@ -62,7 +65,8 @@ class Request
 	const string&	getPath() const;
 	const string&	getQuery() const;
 	const string&	getVersion() const;
-	// const map<string, string>&	getHeader(string) const;
+	const int&		getErrorCode() const;
+	string			getHeader(const string& key) const;
 	// const string&	getBody() const;
 
 	/*===Member Function===*/
@@ -70,12 +74,15 @@ class Request
 	bool	setUpMethod();
 	bool	setUpPath();
 	bool	setUpVersion();
-	bool	findRequestLine();
-	bool	findHeaders();
+	bool	findRequestLine(int n);
+	bool	findHeaders(int n);
+	bool	expandEncodingUrl();
+	// bool	findBody(int n);		///< A remplir Ticket (C-02)
 };
 
 void trim(string& s);
 void MyToLower(string& key);
-
+bool isHexa(char c, char d);
+char convertToHexa(char c,char d);
 
 #endif /*REQUEST_HPP*/

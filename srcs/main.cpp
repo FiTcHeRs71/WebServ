@@ -17,8 +17,8 @@ int main(int argc, char **argv)
 	{
 		ConfigParser	cfg;
 		parse(argv[1], cfg);
-		// ListenSockets servSock(cfg.getAddrPorts());
-		string str[9]  = {"POST /upl", "oad?type=image H", "TTP/1.1\r\n", "HOSt: loca", "lhost:8080\r\n",
+		ListenSockets servSock(cfg.getAddrPorts());
+		string str[9]  = {"POST /upl", "o%3cad?type=image H", "TTP/1.1\r\n", "HOSt: loca", "lhost:8080\r\n",
 						"Content-Type:", " text/plain\r\n", "Content-Length: 11\r\n\r\nHell", "o world"};
 		Request Req;
 		for(size_t i = 0; i < 9; i++){
@@ -32,3 +32,5 @@ int main(int argc, char **argv)
 	}
 	return (0);
 }
+
+

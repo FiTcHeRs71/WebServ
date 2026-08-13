@@ -5,6 +5,9 @@
 
 using namespace std;
 
+# define MAXHEADERS		100		 ///< 100 Headers maximum par requetes
+# define REQUESTMAXSIZE 8000	///< 8000 octets maximum par requetes
+
 /**
  * @brief Valeurs appliquees quand une directive est absente du .conf
  *
