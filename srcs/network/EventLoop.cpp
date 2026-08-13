@@ -3,21 +3,21 @@
 #include <condition_variable>
 #include <poll.h>
 #include <sys/poll.h>
+#include <type_traits>
+#include <vector>
 
 EventLoop::EventLoop(const ConfigParser &config, const ListenSockets &sockets)
 	:_Config(&config)
+	,_Running(true)
 {
-	vector<TAddrPortGroup>	AddrPorts = config.getAddrPorts();
-	size_t fd_i = 0;
-	for (size_t i = 0; i < AddrPorts.size(); i++)
+	vector<int>				servFds = sockets.getServFd();
+
+	for (size_t i = 0; i <servFds.size(); i++)
 	{
-		for(size_t j = 0; j < AddrPorts[i].ServerIndexes.size(); j++)
-		{
-			_ListenFds[fd_i] = AddrPorts[i].ServerIndexes[j];
-			fd_i++;
-		}
+		_ListenFds[servFds[i]] = i; ///< servFds[i] is the socket, i is the index in _AddrPorts
+		AddFd(servFds[i], POLLIN);
 	}
-	_Running = true;
+
 	cout << "EventLoop constructor called." << endl;
 }
 
@@ -56,24 +56,32 @@ void	EventLoop::Run(void)
 	int	status;
 	while (_Running)
 	{
-		status = poll(&_Pollfds[0], _Pollfds.size(), -1);
-		if (status == 0) // check what to do with in case of poll errors
+		status = poll(&_Pollfds[0], _Pollfds.size(), -1); // timeout = -1 might need to be dropped in B-05
+		if (status == 0)
+			continue ;
+		else if (status < 0)
 		{
-			cerr << "Poll error: timed out." << endl;
-			return ;
-		}
-		else if (status == -1) // check what to do with in case of poll errors
-		{
-			cerr << "Poll error: failed." << endl;
-			return ;
+			if (errno == EINTR) // errno is okay, subject says forbidden only after a read or write
+				continue ;
+			cerr << "Error: poll() failed." << endl;
+			break ;
 		}
 		for (size_t i = 0; i < _Pollfds.size(); i++)
 		{
-			if ((_Pollfds[i].revents & POLLIN) || (_Pollfds[i].revents & POLLOUT))
+			if (_Pollfds[i].revents == 0)
 			{
-				//dispatch entre Accept...() et Handle...(), RemoveFd() en sortie de fonction
-				//_Pollfds contient quoi ?
+				i++;
+				continue ;
 			}
+			int	fd = _Pollfds[i].fd;
+			if (_ListenFds.count(fd)) ///< 1 is a listen fd so we accept, 0 isn't, its a client so we handle
+			{
+				if (_Pollfds[i].revents & POLLIN)
+					AcceptNewClients(fd);
+				i++;
+			}
+			else
+				HandleClientEvent(i);
 		}
 	}
 }
