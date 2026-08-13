@@ -48,6 +48,8 @@ class LocationConfig
 	/*===Getters & Setters===*/
 	const string	&getPath(void) const;	///< Le prefixe d'URI declare par le bloc "location"
 	const string	&getRoot(void) const;	///< La racine disque associee a ce bloc
+	const string	&getExt(void) const;
+	const string	&getPass(void) const;
 
 	/*===Member Function===*/
 	void	parse_location(vector<string>	&token, size_t &i);

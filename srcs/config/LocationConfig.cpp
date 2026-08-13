@@ -85,6 +85,25 @@ const string	&LocationConfig::getRoot(void) const
 	return (this->_Root);
 }
 
+/**
+ * @brief Accesseur sur l'extention du script
+ *
+ * @return Le fichier et son extention sont declarer dans le .conf, chaine vide si la directive est absente.
+ */
+const string	&LocationConfig::getExt(void) const
+{
+	return (this->_CgiExt);
+}
+
+/**
+ * @brief Accesseur sur le PATH ou se trouve le scirpt
+ *
+ * @return Le fichier et son extention sont declarer dans le .conf, chaine vide si la directive est absente.
+ */
+const string	&LocationConfig::getPass(void) const
+{
+	return (this->_CgiPass);
+}
 	/*===Member Function===*/
 /**
  * @brief Surcharge d'operateur pour l'impression des attributs de la classe LocationConfig

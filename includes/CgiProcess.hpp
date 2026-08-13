@@ -1,7 +1,12 @@
 #ifndef CGI_PROCESS_HPP
 # define CGI_PROCESS_HPP
 
+# include <ctime>
 # include <iostream>
+# include <sys/types.h>
+# include <string>
+
+using namespace std;
 
 class Request;
 class LocationConfig;
@@ -16,11 +21,15 @@ class CgiProcess
 {
 	private:
 
+	pid_t	_Pid;
+	int		_ReadFd;
+	int		_WriteFd;
+	time_t	_StartTime;	///< D-05 : timeout
+	string	_InBuf;		///< body restant a ecrire (D-03)
+	string	_OutBuf;	///< sortie brute accumulee (D-04)
+	bool	_Finished;
 
-
-	protected:
-
-
+	bool	SetupPipes(int pip_in[2], int pip_out[2]);
 
 	public:
 
@@ -33,9 +42,11 @@ class CgiProcess
 	/*===Getters & Setters===*/
 	int		GetReadFd(void) const;
 	int		GetWriteFd(void) const;
+	pid_t	GetPid(void) const;
 
 	/*===Member Function===*/
-	void	Start(const Request &request, const LocationConfig &location);
+	bool	Start(const Request &request, const LocationConfig &location, const string &script_path);
+	void	Kill(void);	///< D-05
 };
 
 #endif /*CGI_PROCESS_HPP*/
