@@ -20,7 +20,7 @@ using namespace std;
  */
 class ServerConfig
 {
-	friend class				ConfigParser;
+	friend class			ConfigParser;
 
 	private:
 
@@ -44,14 +44,14 @@ class ServerConfig
 	ServerConfig &operator=(const ServerConfig& src);
 
 	/*===Getters & Setters===*/
-	vector<pair<string, int> > getListens() const;
+	vector<pair<string, int> >	getListens() const;
 
 	/*===Member Function===*/
-	const LocationConfig	*Resolve(const std::string &uri)const;						///< La location matchant l'URI, prefixe le plus long
-	string					build_path(const LocationConfig &location, const string &uri)const;	///< Traduit une URI en chemin disque via le root de la location
+	const LocationConfig		*Resolve(const std::string &uri)const;						///< La location matchant l'URI, prefixe le plus long
+	string						build_path(const LocationConfig &location, const string &uri)const;	///< Traduit une URI en chemin disque via le root de la location
 
 	/*===Friends===*/
-	friend ostream			&operator<<(ostream &flux, const ServerConfig &src);
+	friend ostream				&operator<<(ostream &flux, const ServerConfig &src);
 };
 
 /*=== HELPERS ===*/

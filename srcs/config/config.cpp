@@ -110,7 +110,7 @@ void	ConfigParser::tokenize(const string &path)
 		size_t	flag_begin = 0;
 		size_t	flag_end = 0;
 		size_t	comment = line.find("#");
-		
+
 		if (comment != string::npos)
 			line.erase(comment);
 		size_t	first = line.find_first_not_of(to_ignore);
@@ -160,7 +160,7 @@ void	ConfigParser::check_syntax(const vector<string> &tokens)
 		if (tok == "}")
 		{
 			if (block_stack.empty())
-				throw invalid_argument("Closing brace expected");
+				throw invalid_argument("Closing brace '}' expected");
 			block_stack.pop_back();
 			i++;
 			continue;
@@ -182,6 +182,7 @@ void	ConfigParser::check_syntax(const vector<string> &tokens)
 			{
 				if (i >= tokens.size() || tokens[i] == "{")
 					throw runtime_error("Location without PATH");
+				check_valid_path(tokens[i]);
 				i++;
 			}
 			if (i >= tokens.size() || tokens[i] != "{")
@@ -243,6 +244,11 @@ void	ConfigParser::fill_servers_config(void)
  * Refuse les directives dupliquees (sauf location et error_page) et les
  * couples ip:port deja utilises dans ce bloc ou dans un bloc server precedent
  * Delegue les blocs location a LocationConfig::parse_location()
+ * Refuse deux blocs location declarant le meme _Path dans CE bloc server
+ * (comme NGINX). La portee du doublon est le bloc server : deux serveurs
+ * differents ont le droit de declarer chacun "location /". Les paths sont
+ * compares bruts, sans normalisation : "/foo" et "/foo/" restent distincts.
+
  * @param server L'objet a remplir, instancie par fill_servers_config().
  * @param i Index positionne apres le "{" du bloc, avance jusqu'au "}" final.
  * @return void, throw sur toute valeur ou directive invalide
@@ -250,10 +256,12 @@ void	ConfigParser::fill_servers_config(void)
 void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 {
 	set<string>	seen;
+	set<string>	path;
 
 	while (i < this->_LexerConfig.size() && this->_LexerConfig[i] != "}")
 	{
 		string	key = this->_LexerConfig[i];
+
 		if (!seen.insert(key).second && key != "location" && key != "error_page" && key != "listen")
 			throw runtime_error(key + " multiple definition not allowed");
 		i++;
@@ -262,6 +270,8 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 		{
 			LocationConfig	location;
 			location.parse_location(this->_LexerConfig, i);
+			if (!path.insert(location._Path).second)
+				throw runtime_error("duplicate location \"" + location._Path + "\" in server block");
 			server._Locations.push_back(location);
 		}
 		else
@@ -277,7 +287,7 @@ void	ConfigParser::fill_one_server(ServerConfig &server, size_t &i)
 			for (size_t j = 0; j < value.size(); j++)
 			{
 				if (key ==  "server_name")
-					server._ServerNames.push_back(value[j]); 
+					server._ServerNames.push_back(value[j]);
 				else if (key == "client_max_body_size")
 				{
 					if (server._HasClientMaxBodySize)
@@ -341,7 +351,6 @@ void	ConfigParser::apply_defaults(void)
 			default_listens.Port = DEFAULT_PORT;
 			srv._Listens.push_back(default_listens);
 		}
-		// cout << srv << endl; TODO DEBUG
 		for (size_t j = 0; j < srv._Locations.size(); j++)
 		{
 			if (srv._Locations[j]._Index.empty())
@@ -416,6 +425,19 @@ void	ConfigParser::build_addr_port_groups(void)
 				}
 				this->_AddrPorts[goal].DefaultIndex = i;
 			}
+		}
+	}
+	for (size_t g = 0; g < this->_AddrPorts.size(); g++)
+	{
+		for (size_t h = g + 1; h < this->_AddrPorts.size(); h++)
+		{
+			if (this->_AddrPorts[g].Port == this->_AddrPorts[h].Port)
+				if (this->_AddrPorts[g].Host == DEFAULT_HOST || this->_AddrPorts[h].Host == DEFAULT_HOST)
+				{
+					ostringstream oss;
+					oss << "duplicate wildcard for " << this->_AddrPorts[g].Host << ":" << this->_AddrPorts[g].Port << " with " << this->_AddrPorts[h].Host << ":" << this->_AddrPorts[h].Port;
+					throw runtime_error(oss.str());
+				}
 		}
 	}
 	for (size_t g = 0; g < this->_AddrPorts.size(); g++)

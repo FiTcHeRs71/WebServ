@@ -11,6 +11,7 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <sstream>
 
 using namespace std;
 
@@ -179,7 +180,7 @@ map<int, string>	parse_error_pages(const vector<string> &value, size_t &j)
 	map<int, string>	map;
 	long	size_converted;
 	char*	p_end = NULL;
-	
+
 	if (value.size() < 2)
 		throw runtime_error("Error pages missing a elements, minimum correct value needed is 2 or more");
 	while (j < value.size() - 1)
@@ -263,7 +264,6 @@ vector<string>	parse_index(const vector<string> &value)
 		if (value[i].empty())
 			throw runtime_error ("Key index in location bloc has a empty arguments");
 	}
-	// TODO checker si index.html souvre ?
 	return (value);
 }
 
@@ -368,4 +368,22 @@ bool	is_segment_boundary(const string &uri, const string &path)
 	if (path[path.size() - 1] == '/')
 		return (true);
 	return (uri[path.size()] == '/');
+}
+
+void	check_valid_path(const string &path)
+{
+	size_t	flag;
+
+	if (path.empty())
+		throw runtime_error("Missing PATH argument for location block");
+	flag = path.find_first_of(LOC_NO_SUPPORTED);
+	if (flag == 0)
+	{
+		ostringstream	oss;
+		oss << "location modifiers " << path[0] << " are not supported";
+		throw runtime_error(oss.str());
+	}
+	flag = path.find_first_of('/');
+	if (flag != 0)
+		throw runtime_error("location needs to start with '/'");
 }
