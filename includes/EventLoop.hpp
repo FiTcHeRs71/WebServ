@@ -5,6 +5,11 @@
 # include <vector>
 # include <map>
 # include <sys/poll.h>
+# include <algorithm>
+# include <fcntl.h>
+# include <netinet/in.h>
+# include <poll.h>
+# include <unistd.h>
 # include "Connection.hpp"
 # include "Config.hpp"
 # include "ListenSockets.hpp"

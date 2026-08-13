@@ -1,13 +1,4 @@
 #include "../../includes/EventLoop.hpp"
-#include <algorithm>
-#include <condition_variable>
-#include <fcntl.h>
-#include <netinet/in.h>
-#include <poll.h>
-#include <sys/poll.h>
-#include <type_traits>
-#include <unistd.h>
-#include <vector>
 
 EventLoop::EventLoop(const ConfigParser &config, const ListenSockets &sockets)
 	:_Config(&config)
@@ -21,12 +12,12 @@ EventLoop::EventLoop(const ConfigParser &config, const ListenSockets &sockets)
 		AddFd(servFds[i], POLLIN);
 	}
 
-	cout << "EventLoop constructor called." << endl;
+	//cout << "EventLoop constructor called." << endl;
 }
 
 EventLoop::~EventLoop(void)
 {
-	cout << "EventLoop destructor called." << endl;
+	//cout << "EventLoop destructor called." << endl;
 }
 
 EventLoop::EventLoop(const EventLoop& to_copy)
@@ -36,7 +27,7 @@ EventLoop::EventLoop(const EventLoop& to_copy)
 	,_Config(to_copy._Config)
 	,_Running(to_copy._Running)
 {
-	cout << "EventLoop copy constructor called." << endl;
+	//cout << "EventLoop copy constructor called." << endl;
 }
 
 EventLoop &EventLoop::operator=(const EventLoop& src)
@@ -49,7 +40,7 @@ EventLoop &EventLoop::operator=(const EventLoop& src)
 		this->_Config = src._Config;
 		this->_Running = src._Running;
 	}
-	cout << "EventLoop copy assignment operator called." << endl;
+	//cout << "EventLoop copy assignment operator called." << endl;
 	return (*this);
 }
 
@@ -163,8 +154,11 @@ void	EventLoop::AcceptNewClients(int listen_fd)
 	}
 	if (fcntl(clientFd, F_SETFL, O_NONBLOCK) < 0)
 		close(clientFd);
-	_Clients[clientFd] = Connection(); // TODO: needs to be finished when connection is done and we can add the connection state
+	_Clients[clientFd] = Connection();
 	AddFd(clientFd, POLLIN);
+	// TODO:	needs to be finished when connection is done and we can add the connection state
+	//			should have these lines then :	size_t groupIndex = _ListenFds[listen_fd];
+	//											_Clients[clientFd] = Connection(clientFd, groupIndex);
 }
 
 void	EventLoop::HandleClientEvent(size_t index)
