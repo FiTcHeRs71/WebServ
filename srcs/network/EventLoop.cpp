@@ -1,5 +1,16 @@
 #include "../../includes/EventLoop.hpp"
+#include <cstddef>
 
+/**
+ * @brief Enregistre les sockets d'ecoute dans poll et dans _ListenFds
+ *
+ * Un TAddrPortGroup = un listen-fd, dans le meme ordre que getServFd().
+ * La valeur stockee est l'index du groupe dans _AddrPorts, pour que chaque
+ * client accepte plus tard sache quel ServerConfig peut lui repondre.
+ *
+ * @param config Le parser deja rempli par parse(), conserve par pointeur.
+ * @param sockets Les listen-fds deja bind/listen/O_NONBLOCK (B-01).
+ */
 EventLoop::EventLoop(const ConfigParser &config, const ListenSockets &sockets)
 	:_Config(&config)
 	,_Running(true)
@@ -44,18 +55,26 @@ EventLoop &EventLoop::operator=(const EventLoop& src)
 	return (*this);
 }
 
-
+/**
+ * @brief Boucle unique : poll() puis dispatch listen-fd / client-fd
+ *
+ * timeout = -1 tant que B-05 n'a pas de ComputeTimeout(). Un retour 0
+ * (timeout) est ignore. Un retour < 0 avec EINTR relance la boucle ;
+ * toute autre erreur arrete Run().
+ *
+ * @return void
+ */
 void	EventLoop::Run(void)
 {
 	int	status;
 	while (_Running)
 	{
-		status = poll(&_Pollfds[0], _Pollfds.size(), -1); // timeout = -1 might need to be dropped in B-05
+		status = poll(&_Pollfds[0], _Pollfds.size(), -1);
 		if (status == 0)
 			continue ;
 		else if (status < 0)
 		{
-			if (errno == EINTR) // errno is okay, subject says forbidden only after a read or write
+			if (errno == EINTR) ///< errno is okay, subject says forbidden only after a read or write
 				continue ;
 			cerr << "Error: poll() failed." << endl;
 			break ;
@@ -78,8 +97,19 @@ void	EventLoop::Run(void)
 				HandleClientEvent(i);
 		}
 	}
+	for (size_t i = 0; i < _Pollfds.size(); i++)
+	{
+		if (_Pollfds[i].fd != 0)
+			RemoveFd(_Pollfds[i].fd);
+	}
 }
 
+/**
+ * @brief Cherche un fd dans _Pollfds
+ *
+ * @param fd Le descripteur a localiser.
+ * @return Son index dans _Pollfds, ou -1 s'il n'y est pas.
+ */
 int	EventLoop::FindFd(int fd)
 {
 	for (size_t i = 0; i < _Pollfds.size(); i++)
@@ -90,6 +120,15 @@ int	EventLoop::FindFd(int fd)
 	return (-1);
 }
 
+/**
+ * @brief Ajoute un fd a _Pollfds, ou met a jour ses events s'il y est deja
+ *
+ * Sert aussi a B-07 pour enregistrer les pipes CGI dans le meme poll.
+ *
+ * @param fd Le descripteur a surveiller. Ignore si fd < 0.
+ * @param events Masque poll (POLLIN, POLLOUT, ou les deux).
+ * @return void
+ */
 void	EventLoop::AddFd(int fd, short events)
 {
 	struct pollfd	newFd;
@@ -109,13 +148,22 @@ void	EventLoop::AddFd(int fd, short events)
 	_Pollfds.push_back(newFd);
 }
 
+/**
+ * @brief Retire un fd de _Pollfds
+ *
+ * Invalide les index : ne pas appeler pendant l'iteration de Run(),
+ * collecter les fds a fermer et purger apres la boucle.
+ *
+ * @param fd Le descripteur a retirer. Ignore si fd < 0.
+ * @return void
+ */
 void	EventLoop::RemoveFd(int fd)
 {
 	int	idx;
 
 	if (fd < 0)
 		return ;
-	idx  = FindFd(fd);
+	idx = FindFd(fd);
 	if (idx != -1)
 	{
 		_Pollfds.erase(_Pollfds.begin() + idx);
@@ -124,6 +172,15 @@ void	EventLoop::RemoveFd(int fd)
 	cerr << "This fd wasnt found." << endl; //checker si message d'erreur necessaire ou si on skip.
 }
 
+/**
+ * @brief Change le masque d'events d'un fd deja present dans _Pollfds
+ *
+ * POLLOUT ne doit etre arme que si le client a des octets a envoyer (B-03).
+ *
+ * @param fd Le descripteur a modifier. Ignore si fd < 0.
+ * @param events Nouveau masque poll.
+ * @return void
+ */
 void	EventLoop::SetEvents(int fd, short events)
 {
 	int				idx;
@@ -139,6 +196,18 @@ void	EventLoop::SetEvents(int fd, short events)
 	cerr << "This fd wasnt found." << endl; //checker si message d'erreur necessaire ou si on skip.
 }
 
+/**
+ * @brief Accepte un client sur un socket d'ecoute pret
+ *
+ * A appeler seulement si poll() a signale POLLIN sur listen_fd.
+ * Le nouveau fd est passe en O_NONBLOCK tout de suite (le flag du
+ * listen-fd n'est pas herite), puis range dans _Clients et _Pollfds.
+ * L'index du TAddrPortGroup se lit dans _ListenFds[listen_fd] pour
+ * le coller sur la Connection (choix du ServerConfig par le module C).
+ *
+ * @param listen_fd Le socket d'ecoute signale pret par poll().
+ * @return void
+ */
 void	EventLoop::AcceptNewClients(int listen_fd)
 {
 	struct sockaddr_in	clientAddr;
@@ -161,6 +230,16 @@ void	EventLoop::AcceptNewClients(int listen_fd)
 	//											_Clients[clientFd] = Connection(clientFd, groupIndex);
 }
 
+
+/**
+ * @brief Traite un evenement sur un fd qui n'est pas un listen-fd
+ *
+ * B-03 : POLLIN -> recv dans inBuf, POLLOUT -> send depuis outBuf.
+ * B-04 : POLLHUP / POLLERR / recv == 0 -> close + RemoveFd.
+ *
+ * @param index Index du pollfd client dans _Pollfds.
+ * @return void
+ */
 void	EventLoop::HandleClientEvent(size_t index)
 {
 	(void)index;
