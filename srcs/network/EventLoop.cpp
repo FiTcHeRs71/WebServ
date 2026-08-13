@@ -77,7 +77,7 @@ void	EventLoop::Run(void)
 			if (errno == EINTR) ///< errno is okay, subject says forbidden only after a read or write
 				continue ;
 			cerr << "Error: poll() failed." << endl;
-			break ;
+			break ;			//TODO: A check break ou throw ?
 		}
 		for (size_t i = 0; i < _Pollfds.size(); i++)
 		{
