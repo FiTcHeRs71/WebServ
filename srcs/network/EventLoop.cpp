@@ -97,11 +97,6 @@ void	EventLoop::Run(void)
 				HandleClientEvent(i);
 		}
 	}
-	for (size_t i = 0; i < _Pollfds.size(); i++)
-	{
-		if (_Pollfds[i].fd != 0)
-			RemoveFd(_Pollfds[i].fd);
-	}
 }
 
 /**
