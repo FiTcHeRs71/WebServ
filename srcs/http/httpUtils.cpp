@@ -1,6 +1,5 @@
 #include "../../includes/Request.hpp"
 
-
 /*===Fonctions externes===*/
 /**
  * @brief Fonction permettant de trim les espaes de debut det de fin
