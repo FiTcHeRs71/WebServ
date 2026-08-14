@@ -1,6 +1,7 @@
 #include "../includes/Config.hpp"
 #include "../includes/ListenSockets.hpp"
 #include "../includes/Request.hpp"
+#include "../includes/EventLoop.hpp"
 #include <iostream>
 #include <exception>
 
@@ -25,6 +26,8 @@ int main(int argc, char **argv)
 			Req.Feed(str[i].c_str(), str[i].length());
 		}
 		cout << Req;
+		EventLoop pollLoop(cfg, servSock);
+		pollLoop.Run();
 	}
 	catch (exception &e)
 	{
