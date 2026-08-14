@@ -23,6 +23,7 @@ SRCS_CONFIG = $(addprefix $(SRC_DIR)/config/, \
 
 SRCS_HTTP = $(addprefix $(SRC_DIR)/http/, \
 	http.cpp \
+	httpUtils.cpp \
 	Request.cpp \
 	Response.cpp)
 

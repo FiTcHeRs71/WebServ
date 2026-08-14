@@ -72,10 +72,9 @@ bool	ListenSockets::creatSocket(const string& Host, const int& Port){
 	addr.ai_socktype = SOCK_STREAM;
 	addr.ai_flags = AI_PASSIVE;
 
-	// Permet de creer la structure de donnee pour ouvrir le fd
-	///!\ Attention il faut free la structure avec freeaddrinfo
-	if (getaddrinfo(Host.c_str(), s_port.c_str() , &addr, &res) != 0)
-		return false;
+	if (getaddrinfo(Host.c_str(), s_port.c_str() , &addr, &res) != 0)		///< Permet de creer la structure de donnee pour ouvrir le fd
+		return false;														///< Attention il faut free la structure avec freeaddrinfo
+
 	int opt = 1;
 	int fd = socket(res->ai_family, res->ai_socktype, 0);
 	if (fd < 0){
@@ -84,31 +83,24 @@ bool	ListenSockets::creatSocket(const string& Host, const int& Port){
 	}
 	this->_ServFd.push_back(fd);
 
-	// Permet de manipuler les options du socket , evite les erreurs tel que
-	// "address already in use" si on quitte le programme et relance d'aussi tot
-	if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0){
-		freeaddrinfo(res);
+	if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0){	///< Permet de manipuler les options du socket , evite les erreurs tel que
+		freeaddrinfo(res);													///< "address already in use" si on quitte le programme et relance d'aussi tot
 		return false;
 	}
 
-	// Permet de lier une adresse local et le numero de port specifie par
-	// addr au socket
-	if (bind(fd, res->ai_addr, res->ai_addrlen) < 0){
-		freeaddrinfo(res);
+	if (bind(fd, res->ai_addr, res->ai_addrlen) < 0){		///< Permet de lier une adresse local et le numero de port specifie par
+		freeaddrinfo(res);									///< addr au socket
+
 		return false;
 	}
 
-	// Permet de mettre le socket en mode en mode passif, attendant qu'un client
-	// tente de se connecter. le parametre SOMAXCONN defini la taille de la file d'attente
-	// qui est definis selon l'OS
-	if (listen(fd, SOMAXCONN) < 0){
-		freeaddrinfo(res);
-		return false;
+	if (listen(fd, SOMAXCONN) < 0){			///< Permet de mettre le socket en mode en mode passif, attendant qu'un client
+		freeaddrinfo(res);					///< tente de se connecter. le parametre SOMAXCONN defini la taille de la file d'attente
+		return false;						///< qui est definis selon l'OS
 	}
-	//dis au kernel : "sur ce fd, si une opération (accept, read, write...)
-	// n'a rien à faire immédiatement
-	if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0){
-		freeaddrinfo(res);
+
+	if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0){	///< dis au kernel : "sur ce fd, si une opération (accept, read, write...)
+		freeaddrinfo(res);						///< n'a rien à faire immédiatement
 		return false;
 	}
 	freeaddrinfo(res);
