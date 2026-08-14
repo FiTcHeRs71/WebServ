@@ -1,5 +1,6 @@
 #include "../../includes/CgiProcess.hpp"
 #include "../../includes/ServerConfig.hpp"
+#include "../../includes/Request.hpp"
 #include <vector>
 #include <string>
 
