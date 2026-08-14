@@ -3,9 +3,31 @@
 #include <vector>
 #include <string>
 
-void	addEnv(vector<string>& storage, string &key, string &value)
+void	addEnv(vector<string>& storage, const string &key, const string &value)
 {
-	storage.push_back(key + '=' + value);
+	storage.push_back(key + "=" + value);
+}
+
+string findScriptName(const Request &request, const LocationConfig &location)
+{
+	string	Path = request.getPath();
+	string	Ext = location.getExt();
+
+	size_t idx = Path.find(Ext);
+	string	ScriptName;
+	ScriptName.substr(0, idx + Ext.size() - 1);
+	return(ScriptName);
+}
+
+string findPathInfo(const Request &request, const LocationConfig &location)
+{
+	string	Path = request.getPath();
+	string	Ext = location.getExt();
+
+	size_t idx = Path.find(Ext);
+	string	PathInfo;
+	PathInfo.substr(0, idx + Ext.size());
+	return (PathInfo);
 }
 
 /**
@@ -21,15 +43,17 @@ void	addEnv(vector<string>& storage, string &key, string &value)
  * @return Le tableau char** terminé par NULL, a passer a execve().
 */
 char	**build_cgi_env(const Request &request, const LocationConfig &location,
-					const ServerConfig &server, std::vector<std::string> &storage)
+					const ServerConfig &server)
 {
+	vector<string>	storage;
 	vector<string>	serverNames = server.getServerNames();
+	string		PathTran = server.build_path(location, findPathInfo(request, location));
 
 	addEnv(storage, "REQUEST_METHOD", request.getMethod());
-	addEnv(storage, "SCRIPT_NAME", );
-	addEnv(storage, "SCRIPT_FILENAME", );
-	addEnv(storage, "PATH_INFO", );
-	addEnv(storage, "PATH_TRANSLATED", );
+	addEnv(storage, "SCRIPT_NAME", findScriptName(request, location));
+	addEnv(storage, "SCRIPT_FILENAME", server.build_path(location, findScriptName(request, location)));
+	addEnv(storage, "PATH_INFO", findPathInfo(request, location));
+	addEnv(storage, "PATH_TRANSLATED", PathTran);
 	addEnv(storage, "QUERY_STRING", request.getQuery());
 	addEnv(storage, "CONTENT_LENGTH", );
 	addEnv(storage, "CONTENT_TYPE", request.getHeader());
