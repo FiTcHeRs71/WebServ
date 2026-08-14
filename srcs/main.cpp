@@ -1,5 +1,6 @@
 #include "../includes/Config.hpp"
 #include "../includes/ListenSockets.hpp"
+#include "../includes/Request.hpp"
 #include "../includes/EventLoop.hpp"
 #include <iostream>
 #include <exception>
@@ -28,3 +29,5 @@ int main(int argc, char **argv)
 	}
 	return (0);
 }
+
+
