@@ -140,8 +140,7 @@ bool	Request::setUpMethod(){
  * @brief Permet de soustraire le path et le query s'il y en a un,
  * parsing et expansion du path
  *
- * @return true tout es ok path valide avec expansion valide + query
- * @return false erreur lors du parsing
+ * @return true tout es ok path valide avec expansion valide + query ou false erreur lors du parsing
  */
 bool	Request::setUpPath(){
 	size_t pos = this->_Raw.find_first_of(" ");
