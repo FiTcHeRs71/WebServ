@@ -95,7 +95,19 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location, c
 	argv[2] = NULL;
 	envp[0] = NULL; // D-02 remplira les meta-variables CGI
 
-	string dir = script_path.substr(0, script_path.rfind('/'));
+	// Dossier du script pour le chdir() de l'enfant. Les deux cas limites
+	// donnent un chemin invalide si on prend le substr tel quel :
+	// "script.bla" (pas de '/') -> "" et "/script.bla" (slash en tete) -> "".
+	size_t	slash = script_path.rfind('/');
+	string	dir;
+
+	if (slash == string::npos)
+		dir = ".";
+	else if (slash == 0)
+		dir = "/";
+	else
+		dir = script_path.substr(0, slash);
+
 	const char *dir_c = dir.c_str();
 	if (!this->SetupPipes(pip_in, pip_out))
 		return (false);
@@ -114,7 +126,11 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location, c
 	{
 		if (dup2(pip_in[0], STDIN_FILENO) < 0 || dup2(pip_out[1], STDOUT_FILENO) < 0)
 			_exit(1);
-		for (int fd = 3; fd < 1024; fd++) //FD_CLOEXEC ?? MODULE B
+		// Fermeture en force de tout ce qui est herite du serveur : sockets
+		// d'ecoute, connexions des autres clients, et les extremites de pipe
+		// deja dupliquees sur 0/1 juste au-dessus. FD_CLOEXEC n'est pas une
+		// option : le sujet limite fcntl() a F_SETFL / O_NONBLOCK.
+		for (int fd = 3; fd < 1024; fd++)
 			close(fd);
 		if (chdir(dir_c) < 0)
 			_exit(1);

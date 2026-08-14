@@ -475,7 +475,6 @@ void	ConfigParser::build_addr_port_groups(void)
 void	ConfigParser::resolve_paths(void)
 {
 	char	buffer[4096];
-	getcwd(buffer, sizeof(buffer));
 
 	if (!getcwd(buffer, sizeof(buffer)))
 		throw runtime_error("getcwd failed");

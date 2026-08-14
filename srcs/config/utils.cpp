@@ -388,13 +388,13 @@ void	check_valid_path(const string &path)
 		throw runtime_error("location needs to start with '/'");
 }
 
-	/**
-	 * @brief Rend absolu un chemin de configuration, comme le fait nginx au chargement.
-	 *
-	 * @param path Le chemin lu dans le .conf, relatif ou absolu.
-	 * @param cwd  Le repertoire de lancement du serveur (notre equivalent du prefix nginx).
-	 * @return Le chemin absolu, ou la chaine vide si path etait vide.
-	 */
+/**
+ * @brief Rend absolu un chemin de configuration, comme le fait nginx au chargement.
+ *
+ * @param path Le chemin lu dans le .conf, relatif ou absolu.
+ * @param cwd  Le repertoire de lancement du serveur (notre equivalent du prefix nginx).
+ * @return Le chemin absolu, ou la chaine vide si path etait vide.
+ */
 string	to_absolute(const string &path, const string &cwd)
 {
 	if(path.empty())
