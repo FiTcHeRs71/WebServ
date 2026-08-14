@@ -22,20 +22,20 @@ class LocationConfig
 
 	private:
 
-	string				_Path;
-	set<string>			_Methods;
-	string				_Root;
-	vector<string>		_Index;
-	bool				_AutoIndex;
-	int					_ReturnCode;
-	bool				_HasReturn;
-	string				_CgiExt;
-	string				_CgiPass;
-	size_t				_ClientMaxBodySize;
-	bool				_HasClientMaxBodySize;
-	string				_ReturnTarget;
-	string				_UploadStore;
-	bool				_HasUploadStore;
+	string			_Path;
+	set<string>		_Methods;
+	string			_Root;
+	vector<string>	_Index;
+	bool			_AutoIndex;
+	int				_ReturnCode;
+	bool			_HasReturn;
+	string			_CgiExt;
+	string			_CgiPass;
+	size_t			_ClientMaxBodySize;
+	bool			_HasClientMaxBodySize;
+	string			_ReturnTarget;
+	string			_UploadStore;
+	bool			_HasUploadStore;
 
 	public:
 
@@ -48,6 +48,8 @@ class LocationConfig
 	/*===Getters & Setters===*/
 	const string	&getPath(void) const;	///< Le prefixe d'URI declare par le bloc "location"
 	const string	&getRoot(void) const;	///< La racine disque associee a ce bloc
+	const string	&getExt(void) const;
+	const string	&getPass(void) const;
 
 	/*===Member Function===*/
 	void	parse_location(vector<string>	&token, size_t &i);

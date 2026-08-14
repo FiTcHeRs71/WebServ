@@ -22,12 +22,23 @@ check_leaks() {
 	local file="$1"
 	local log="$VALGRIND_LOG_DIR/$(basename "$file").log"
 
-	valgrind --leak-check=full --error-exitcode=99 --quiet \
+	valgrind --leak-check=full --track-fds=yes --error-exitcode=99 --quiet \
 		"$BIN" "$file" > /dev/null 2> "$log"
+	local status=$?
 
-	if [ "$?" -eq 99 ] || grep -q "definitely lost: [1-9]" "$log" \
+	# valgrind ne compte pas les fd ouverts comme des erreurs : il faut lire
+	# le rapport a la main. On ignore 0/1/2 (stdin/stdout/stderr).
+	local fds
+	fds=$(grep -c "Open file descriptor [3-9]" "$log")
+
+	if [ "$status" -eq 99 ] || grep -q "definitely lost: [1-9]" "$log" \
 		|| grep -q "indirectly lost: [1-9]" "$log"; then
-		echo "      -> LEAK detecte (voir $log)"
+		echo "      -> LEAK memoire detecte (voir $log)"
+		leaks=$((leaks + 1))
+		return 1
+	fi
+	if [ "$fds" -gt 0 ]; then
+		echo "      -> $fds FD non ferme(s) (voir $log)"
 		leaks=$((leaks + 1))
 		return 1
 	fi
