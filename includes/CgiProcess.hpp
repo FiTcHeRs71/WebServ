@@ -15,8 +15,10 @@ class LocationConfig;
 /**
  * @brief Gere le cycle de vie d'un processus CGI externe.
  *
- * Encapsule le lancement du script CGI (fork/exec) ainsi que les
- * descripteurs de fichiers utilises pour communiquer avec lui.
+ * Ownership des fds : le destructeur ne ferme rien, volontairement.
+ * La forme canonique copie _ReadFd/_WriteFd ; un destructeur fermant
+ * provoquerait un double close des qu'un conteneur copierait l'objet.
+ * C'est donc a l'appelant (EventLoop, B-07) d'appeler CloseFds().
  */
 class CgiProcess
 {
@@ -47,7 +49,9 @@ class CgiProcess
 
 	/*===Member Function===*/
 	bool	Start(const Request &request, const LocationConfig &location, const string &script_path);
-	void	Kill(void);	///< D-05
+	void	Kill(void);				///< D-05
+	void	CloseFds(void);			///< Ferme les 2 pipes. Idempotente.
+	void	CloseWriteFd(void);		///< Ferme le stdin du CGI : D-03, quand le body est entierement ecrit.
 };
 
 #endif /*CGI_PROCESS_HPP*/

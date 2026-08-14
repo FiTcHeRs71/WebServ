@@ -1,5 +1,6 @@
 #include "../../includes/CgiProcess.hpp"
 #include <csignal>
+#include <sched.h>
 #include <unistd.h>
 #include <fcntl.h>
 
@@ -75,7 +76,7 @@ pid_t	CgiProcess::GetPid(void) const
 }
 
 	/*===Member Function===*/
-	/**
+/**
  * @brief Demarre l'execution du script CGI correspondant a la requete.
  * @param request  La requete HTTP a transmettre au processus CGI.
  * @param location La configuration de location associee (chemin du CGI, etc.).
@@ -83,6 +84,7 @@ pid_t	CgiProcess::GetPid(void) const
  */
 bool	CgiProcess::Start(const Request &request, const LocationConfig &location, const string &script_path)
 {
+	(void)request;
 	char	*argv[3];
 	char	*envp[1];
 	int		pip_in[2];
@@ -94,31 +96,48 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location, c
 	envp[0] = NULL; // D-02 remplira les meta-variables CGI
 
 	string dir = script_path.substr(0, script_path.rfind('/'));
-	const char *dir_c = dir.c_str;
+	const char *dir_c = dir.c_str();
+	if (!this->SetupPipes(pip_in, pip_out))
+		return (false);
 
-	(void)request;
-	(void)location;
-	(void)script_path;
-	return (false);
+	pid_t	pid = fork();
+
+	if(pid == -1)
+	{
+		close(pip_out[0]);
+		close(pip_out[1]);
+		close(pip_in[0]);
+		close(pip_in[1]);
+		return (false);
+	}
+	if (pid == 0)
+	{
+		if (dup2(pip_in[0], STDIN_FILENO) < 0 || dup2(pip_out[1], STDOUT_FILENO) < 0)
+			_exit(1);
+		for (int fd = 3; fd < 1024; fd++) //FD_CLOEXEC ?? MODULE B
+			close(fd);
+		if (chdir(dir_c) < 0)
+			_exit(1);
+		execve(argv[0], argv, envp);
+		_exit(1);
+	}
+	close(pip_in[0]);
+	close(pip_out[1]);
+	this->_WriteFd = pip_in[1];
+	this->_ReadFd = pip_out[0];
+	this->_Pid = pid;
+	this->_StartTime = time(NULL);
+	return (true);
 }
 
-	/**
-	 * @brief Tue le processus CGI et ferme les pipes. Appele sur timeout (D-05).
-	 */
+/**
+ * @brief Tue le processus CGI et ferme les pipes. Appele sur timeout (D-05).
+ */
 void	CgiProcess::Kill(void)
 {
 	if (this->_Pid > 0)
 		kill(this->_Pid, SIGKILL);
-	if (this->_ReadFd != -1)
-	{
-		close(this->_ReadFd);
-		this->_ReadFd = -1;
-	}
-	if (this->_WriteFd != -1)
-	{
-		close(this->_WriteFd);
-		this->_WriteFd = -1;
-	}
+	this->CloseFds();
 	this->_Finished = true;
 }
 
@@ -148,4 +167,41 @@ bool	CgiProcess::SetupPipes(int pip_in[2], int pip_out[2])
 		return (false);
 	}
 	return (true);
+}
+
+/**
+ * @brief Ferme les deux pipes et invalide les descripteurs.
+ *
+ * Idempotente : les fds sont remis a -1, un second appel ne fait rien.
+ * A appeler par l'EventLoop quand le CGI sort du poll (B-07).
+ * Le destructeur ne ferme PAS : voir le contrat en tete de classe.
+ */
+void	CgiProcess::CloseFds(void)
+{
+	if (this->_ReadFd != -1)
+	{
+		close(this->_ReadFd);
+		this->_ReadFd = -1;
+	}
+	if (this->_WriteFd != -1)
+	{
+		close(this->_WriteFd);
+		this->_WriteFd = -1;
+	}
+}
+
+	/**
+	 * @brief Ferme le stdin du CGI pour lui signaler la fin du body.
+	 *
+	 * Sans cet appel, le script reste bloque sur read(stdin) : le pipe
+	 * a toujours un ecrivain vivant. A appeler des le dernier octet ecrit,
+	 * y compris quand il n'y a pas de body (GET).
+	 */
+void	CgiProcess::CloseWriteFd(void)
+{
+		if (this->_WriteFd != -1)
+	{
+		close(this->_WriteFd);
+		this->_WriteFd = -1;
+	}
 }
