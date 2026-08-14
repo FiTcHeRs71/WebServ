@@ -54,9 +54,8 @@ Request	&Request::operator=(const Request& src)
 		\r\n                                     ← ligne VIDE = fin des headers,
 													signal de transition ST_HEADERS -> ST_BODY
 
-		Hello world                              ← ST_BODY (Content-Length octets a lire,
-													hors scope de ton ticket C-01 si celui-ci
-													se limite a request-line + headers
+		Hello world                              ← ST_BODY (Content-Length octets a lire)
+
 	*/
 
 
@@ -78,12 +77,14 @@ EParseResult	Request::Feed(const char *data, size_t n)
 			if (this->_State != ST_ERROR)
 				return (REQ_INCOMPLETE);
 	// if (this->_State == ST_BODY)
-	// 	if (!findBody(n))					///< A Remplir par Ticket (C-02)
+	// 	if (!findBody())					///< (C-02)
 	// 		return (REQ_INCOMPLETE);
 	if (this->_State == ST_ERROR)
 		return (REQ_ERROR);
-	if (this->_State == ST_DONE)
-		return (REQ_COMPLETE);
+	if (this->_State == ST_DONE){
+		this->reset();			///< Il peut rester un reste de la prochaine requete dans _Raw
+		return (REQ_COMPLETE);	///< donc REQ est incomplete, a checker si cest dans poll qu'on doit reset
+	}							///< des qu'une requette est completee
 	return (REQ_INCOMPLETE);
 }
 
@@ -162,6 +163,7 @@ bool	Request::setUpPath(){
 	}
 	if (!expandEncodingUrl())
 		return false;
+	trimSlash();
 	this->_Raw.erase(0, pos + 1);
 	if (!this->_Raw.empty() && this->_Raw[0] == ' '){
 		this->_ErrorCode = 400;
@@ -230,7 +232,7 @@ bool	Request::findHeaders(int n){
 		trim(value);
 		trim(key);
 		MyToLower(key);
-		map<string, string>:: iterator it = this->_Header.find(key);
+		map<string, string>::iterator it = this->_Header.find(key);
 		if (it == this->_Header.end())
 			this->_Header.insert(make_pair(key, value));
 		else{
@@ -252,7 +254,11 @@ bool	Request::findHeaders(int n){
 		return false;
 	}
 	this->_Raw.erase(0, pos + 4);
-	this->_State = ST_BODY;
+	map<string, string>::iterator it = this->_Header.find("content-length");
+	if (it == this->_Header.end())
+		this->_State = ST_DONE;
+	else
+		this->_State = ST_BODY;
 	return true;
 }
 
@@ -283,75 +289,35 @@ bool	Request::expandEncodingUrl(){
 	return true;
 }
 
-/*===Fonctions externes===*/
-/**
- * @brief Fonction permettant de trim les espaes de debut det de fin
- *
- * @param s
- */
-void trim(string& s){
-	size_t end = s.find_last_not_of(" \t\r\n");
-	if (end == string::npos)
-		return ;
-	s.erase(end + 1);
-	size_t first = s.find_first_not_of(" \t");
-	if (first == string::npos)
-		return;
-	s.erase(0, first);
+void Request::reset(){
+	this->_Method.clear();
+	this->_Path.clear();
+	this->_Query.clear();
+	this->_Version.clear();
+	this->_Body.clear();
+	this->_State = ST_REQUEST_LINE;
+	this->_Header.clear();
+	this->_ErrorCode = 0;
+	this->_HeadersOctetsSize = 0;
+	this->_RequestOctetsSize = this->_Raw.size();
 }
 
 /**
- * @brief Permet de mettre une string en lowercase
+ * @brief Fonction for trim the multiple slash in the path of the http request
  *
- * @param key
  */
-void MyToLower(string& key){
-	for(size_t i = 0; i < key.size(); i++){
-		key[i] = tolower(key[i]);
+void Request::trimSlash(){
+	string tmp;
+	for(size_t i = 0; i < this->_Path.size(); i++){
+		if (this->_Path[i] == '/' && !tmp.empty() && tmp[tmp.size() - 1] == '/')
+			continue;
+		else
+			tmp.push_back(this->_Path[i]);
 	}
+	this->_Path.clear();
+	this->_Path = tmp;
 }
 
-/**
- * @brief check si les 2 char sont en hexadecimal
- *
- * @param c char 1
- * @param d char 2
- * @return true
- * @return false
- */
-bool isHexa(char c, char d){
-	if (((c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f')) &&
-		((d >= '0' && d <= '9') || (d >= 'A' && d <= 'F') || (d >= 'a' && d <= 'f')))
-		return true;
-	return false;
-
-}
-
-/**
- * @brief Permet de convertir la valeur hexadecimal de l'url encoding
- *
- * @param c char 1
- * @param d char 2
- * @return char converti
- */
-char convertToHexa(char c,char d){
-	int convertC = 0;
-	int convertD = 0;
-	if (c >='0' && c <= '9')
-		convertC = c - '0';
-	else if (c >= 'a' && c <= 'f')
-		convertC = c - 'a' + 10;
-	else if (c >= 'A' && c <= 'F')
-		convertC = c - 'A' + 10;
-	if (d >='0' && d <= '9')
-		convertD = d - '0';
-	else if (d >= 'a' && d <= 'f')
-		convertD = d - 'a' + 10;
-	else if (d >= 'A' && d <= 'F')
-		convertD = d - 'A' + 10;
-	char val = (convertC * 16) + convertD;
-	return val;
-}
 
 /*===GETTERS===*/
 const string& Request::getMethod() const{
@@ -385,7 +351,7 @@ const int& Request::getErrorCode() const{
  * @brief Getters de header
  * /!\ Il est retourner par valeur et non par reference
  *
- * @param key le mot clef pour recuperer la value du header
+ * @param key le mot cle en minuscule pour recuperer la value du header
  * @return string&
  */
 string Request::getHeader(const string& key) const{
@@ -394,4 +360,17 @@ string Request::getHeader(const string& key) const{
 			return (it->second);
 	else
 		return("");
+}
+
+
+ostream& operator<<(ostream& flux, Request& obj){
+	flux << "Raw = " << obj._Raw << endl;
+	flux << "Method = " << obj._Method << endl;
+	flux << "Path = " << obj._Path << endl;
+	flux << "Query = " << obj._Query << endl;
+	// flux << "Body = " << obj._Body << endl;			///< (c-02)
+	for(map<string, string>::iterator it = obj._Header.begin(); it != obj._Header.end(); it++){
+		flux << "Key = " << it->first << ", Value = " << it->second << endl;
+	}
+	return flux;
 }

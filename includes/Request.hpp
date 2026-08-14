@@ -7,7 +7,7 @@
 # include <string>
 # include <cctype>
 # include <sstream>
-# include"Default.hpp"
+# include "Default.hpp"
 
 using namespace std;
 
@@ -67,17 +67,21 @@ class Request
 	const string&	getVersion() const;
 	const int&		getErrorCode() const;
 	string			getHeader(const string& key) const;
-	// const string&	getBody() const;
+	// const string&	getBody() const;		///< (C-02)
 
 	/*===Member Function===*/
 	EParseResult	Feed(const char *data, size_t n);
-	bool	setUpMethod();
-	bool	setUpPath();
-	bool	setUpVersion();
-	bool	findRequestLine(int n);
-	bool	findHeaders(int n);
-	bool	expandEncodingUrl();
-	// bool	findBody(int n);		///< A remplir Ticket (C-02)
+	void			reset();
+	bool			setUpMethod();
+	bool			setUpPath();
+	bool			setUpVersion();
+	bool			findRequestLine(int n);
+	bool			findHeaders(int n);
+	bool			expandEncodingUrl();
+	void			trimSlash();
+	// bool	findBody(-_r);		///< (C-02)
+
+	friend ostream& operator<<(ostream& flux, Request& obj);
 };
 
 void trim(string& s);
