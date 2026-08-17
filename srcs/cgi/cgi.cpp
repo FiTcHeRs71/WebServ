@@ -1,6 +1,10 @@
 #include "../../includes/CgiProcess.hpp"
 #include "../../includes/ServerConfig.hpp"
 #include "../../includes/Request.hpp"
+#include "../../includes/Connection.hpp"
+#include "../../includes/Config.hpp"
+#include <cctype>
+#include <sstream>
 #include <vector>
 #include <string>
 
@@ -44,11 +48,13 @@ string findPathInfo(const Request &request, const LocationConfig &location)
  * @return Le tableau char** terminé par NULL, a passer a execve().
 */
 char	**build_cgi_env(const Request &request, const LocationConfig &location,
-					const ServerConfig &server)
+					const ServerConfig &server, const Connection &connection, const ConfigParser &config)
 {
 	vector<string>	storage;
 	vector<string>	serverNames = server.getServerNames();
 	string		PathTran = server.build_path(location, findPathInfo(request, location));
+	ostringstream	ss;
+	ss << config.getAddrPorts()[connection.getGroupIndex()].Port;
 
 	addEnv(storage, "REQUEST_METHOD", request.getMethod());
 	addEnv(storage, "SCRIPT_NAME", findScriptName(request, location));
@@ -56,15 +62,30 @@ char	**build_cgi_env(const Request &request, const LocationConfig &location,
 	addEnv(storage, "PATH_INFO", findPathInfo(request, location));
 	addEnv(storage, "PATH_TRANSLATED", PathTran);
 	addEnv(storage, "QUERY_STRING", request.getQuery());
-	addEnv(storage, "CONTENT_LENGTH", );
-	addEnv(storage, "CONTENT_TYPE", request.getHeader());
+	addEnv(storage, "CONTENT_LENGTH", request.getHeader("content-length"));
+	addEnv(storage, "CONTENT_TYPE", request.getHeader("content-type"));
 	addEnv(storage, "SERVER_PROTOCOL", "HTTP/1.1");
 	addEnv(storage, "SERVER_SOFTWARE", "webserv/1.0");
 	addEnv(storage, "SERVER_NAME", serverNames[0]);
-	addEnv(storage, "SERVER_PORT", );
+	addEnv(storage, "SERVER_PORT", ss.str());
 	addEnv(storage, "GATEWAY_INTERFACE", "CGI/1.1");
-	addEnv(storage, "REMOTE_ADDR", );
+	addEnv(storage, "REMOTE_ADDR", connection.ip);
 	addEnv(storage, "REDIRECT_STATUS", "200");
 }
 
-std::string	header_to_meta(const std::string &name);	///< "Accept-Language" -> "HTTP_ACCEPT_LANGUAGE"
+std::string	header_to_meta(const std::string &name)	///< "Accept-Language" -> "HTTP_ACCEPT_LANGUAGE"
+{
+	string	meta;
+	if (name.empty())
+		return ("");
+	for (size_t i = 0; i < name.length(); i++)
+	{
+		if (name[i] == '-')
+		{
+			meta[i] = '_';
+			continue ;
+		}
+		meta[i] = toupper(name[i]);
+	}
+	return("HTTP_" + meta);
+}

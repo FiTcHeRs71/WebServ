@@ -82,7 +82,7 @@ pid_t	CgiProcess::GetPid(void) const
  * @param location La configuration de location associee (chemin du CGI, etc.).
  * @param script_path Le path vers le script a executer
  */
-bool	CgiProcess::Start(const Request &request, const LocationConfig &location, const string &script_path)
+bool	CgiProcess::Start(const Request &request, const LocationConfig &location, const ServerConfig &server, const string &script_path)
 {
 	(void)request;
 	char	*argv[3];
