@@ -4,6 +4,7 @@
 #include "../../includes/Connection.hpp"
 #include "../../includes/Config.hpp"
 #include <cctype>
+#include <map>
 #include <sstream>
 #include <vector>
 #include <string>
@@ -35,6 +36,35 @@ string findPathInfo(const Request &request, const LocationConfig &location)
 	return (PathInfo);
 }
 
+char	**VectorToChar(vector<string> &storage)
+{
+	char **envp = new char*[storage.size() + 1];
+
+	for(size_t i = 0; i < storage.size(); i++)
+	{
+		envp[i] = const_cast<char*>(storage[i].c_str());
+	}
+	envp[storage.size()] = NULL;
+	return (envp);
+}
+
+std::string	header_to_meta(const std::string &name)	///< "Accept-Language" -> "HTTP_ACCEPT_LANGUAGE"
+{
+	string	meta;
+	if (name.empty())
+		return ("");
+	for (size_t i = 0; i < name.length(); i++)
+	{
+		if (name[i] == '-')
+		{
+			meta[i] += '_';
+			continue ;
+		}
+		meta[i] += static_cast<char>(toupper(static_cast<unsigned char>(name[i])));
+	}
+	return("HTTP_" + meta);
+}
+
 /**
  * @brief Construit les meta-variables CGI/1.1 de la requete.
  *
@@ -47,7 +77,7 @@ string findPathInfo(const Request &request, const LocationConfig &location)
  * @param storage Recoit les chaines "CLE=valeur".
  * @return Le tableau char** terminé par NULL, a passer a execve().
 */
-char	**build_cgi_env(const Request &request, const LocationConfig &location,
+vector<string>	build_cgi_env(const Request &request, const LocationConfig &location,
 					const ServerConfig &server, const Connection &connection, const ConfigParser &config)
 {
 	vector<string>	storage;
@@ -71,21 +101,13 @@ char	**build_cgi_env(const Request &request, const LocationConfig &location,
 	addEnv(storage, "GATEWAY_INTERFACE", "CGI/1.1");
 	addEnv(storage, "REMOTE_ADDR", connection.ip);
 	addEnv(storage, "REDIRECT_STATUS", "200");
-}
 
-std::string	header_to_meta(const std::string &name)	///< "Accept-Language" -> "HTTP_ACCEPT_LANGUAGE"
-{
-	string	meta;
-	if (name.empty())
-		return ("");
-	for (size_t i = 0; i < name.length(); i++)
+	const map<string, string>	headers = request.getHeaders();
+	for(map<string, string>::const_iterator it = headers.begin(); it != headers.end(); it++)
 	{
-		if (name[i] == '-')
-		{
-			meta[i] = '_';
+		if (it->first == "content-length" || it->first == "content-type")
 			continue ;
-		}
-		meta[i] = toupper(name[i]);
+		addEnv(storage, header_to_meta(it->first), it->second);
 	}
-	return("HTTP_" + meta);
+	return (storage);
 }

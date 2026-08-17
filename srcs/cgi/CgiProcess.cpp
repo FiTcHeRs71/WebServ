@@ -3,6 +3,7 @@
 #include <sched.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <vector>
 
 	/*===Canonical Form===*/
 CgiProcess::CgiProcess(void)
@@ -82,18 +83,21 @@ pid_t	CgiProcess::GetPid(void) const
  * @param location La configuration de location associee (chemin du CGI, etc.).
  * @param script_path Le path vers le script a executer
  */
-bool	CgiProcess::Start(const Request &request, const LocationConfig &location, const ServerConfig &server, const string &script_path)
+bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
+							const ServerConfig &server, const Connection &connection,
+							const ConfigParser &config, const string &script_path)
 {
 	(void)request;
 	char	*argv[3];
-	char	*envp[1];
+	char	**envp;
 	int		pip_in[2];
 	int		pip_out[2];
 
 	argv[0] = const_cast<char *>(location.getPass().c_str());
 	argv[1] = const_cast<char *>(script_path.c_str());
 	argv[2] = NULL;
-	envp[0] = NULL; // D-02 remplira les meta-variables CGI
+	vector<string>	storage = build_cgi_env(request, location, server, connection, config);
+	envp = VectorToChar(storage);
 
 	// Dossier du script pour le chdir() de l'enfant. Les deux cas limites
 	// donnent un chemin invalide si on prend le substr tel quel :
@@ -124,6 +128,7 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location, c
 	}
 	if (pid == 0)
 	{
+		chdir(dir.c_str());
 		if (dup2(pip_in[0], STDIN_FILENO) < 0 || dup2(pip_out[1], STDOUT_FILENO) < 0)
 			_exit(1);
 		// Fermeture en force de tout ce qui est herite du serveur : sockets
