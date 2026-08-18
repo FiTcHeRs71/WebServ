@@ -45,6 +45,9 @@ class Connection
 	int			getFd(void) const;
 	bool		HasPendingOutput(void) const;	///< pilote l'armement de POLLOUT
 	time_t		getLastActivity(void) const;
+	size_t		getGroupIndex(void) const;
+	std::string	getIpv4(void) const;
+	void		setIpV4(std::string src);
 	
 	
 	/*===Member Function===*/

@@ -61,12 +61,13 @@ class Request
 	Request &operator=(const Request& src);
 
 	/*===Getters & Setters===*/
-	const string&	getMethod() const;
-	const string&	getPath() const;
-	const string&	getQuery() const;
-	const string&	getVersion() const;
-	const int&		getErrorCode() const;
-	string			getHeader(const string& key) const;
+	const string&		getMethod() const;
+	const string&		getPath() const;
+	const string&		getQuery() const;
+	const string&		getVersion() const;
+	const int&			getErrorCode() const;
+	string				getHeader(const string& key) const;
+	map<string, string>	getHeaders(void) const;
 
 	// const string&	getBody() const;		///< (C-02)
 
