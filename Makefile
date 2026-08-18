@@ -46,7 +46,7 @@ DEPS = $(OBJS:.o=.d)
 # les memes diagnostics -Werror qu'a la soutenance. Repli sur c++ si clang++
 # n'est pas installe. Override possible : make CXX=g++
 CXX := $(shell command -v clang++ >/dev/null 2>&1 && echo clang++ || echo c++)
-CXXFLAGS = -Wall -Wextra -Werror -std=c++11 -I$(INC_DIR) -g
+CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -I$(INC_DIR) -g
 DEPFLAGS = -MMD -MP
 
 # -fstandalone-debug n'existe que chez Clang (macs de l'ecole) : il force

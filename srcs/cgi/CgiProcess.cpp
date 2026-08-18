@@ -122,12 +122,14 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 	const char *dir_c = dir.c_str();
 	if (!this->SetupPipes(pip_in, pip_out))
 	{
+		delete[] envp;
 		return (false);
 	}
 	pid_t	pid = fork();
 	
 	if(pid == -1)
 	{
+		delete[] envp;
 		close(pip_out[0]);
 		close(pip_out[1]);
 		close(pip_in[0]);
