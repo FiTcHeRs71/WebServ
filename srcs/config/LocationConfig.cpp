@@ -104,6 +104,18 @@ const string	&LocationConfig::getPass(void) const
 {
 	return (this->_CgiPass);
 }
+
+/**
+ * @brief Accesseur sur le Client max body size declarer dans le .conf ou set up par la valeur par default de NGINX
+ * en cas de non declaration explicit.
+ *
+ * @return Le size_t correpondant au ClientMaxBodySize.
+ */
+const size_t	&LocationConfig::getClientMaxBodySize(void) const
+{
+	return (this->_ClientMaxBodySize);
+}
+
 	/*===Member Function===*/
 /**
  * @brief Surcharge d'operateur pour l'impression des attributs de la classe LocationConfig
