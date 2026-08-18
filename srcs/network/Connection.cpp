@@ -34,4 +34,19 @@ int	Connection::getFd(void) const
 	return(this->_Fd);
 }
 
+size_t		Connection::getGroupIndex(void) const
+{
+	return(_GroupIndex);
+}
+
+std::string	Connection::getIpv4(void) const
+{
+	return(_IpV4);
+}
+
+void		Connection::setIpV4(std::string src)
+{
+	this->_IpV4 = src;
+}
+
 	/*===Member Function===*/
