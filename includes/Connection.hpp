@@ -1,7 +1,16 @@
 #ifndef CONNECTION_HPP
 # define CONNECTION_HPP
 
+# include "./Request.hpp"
+# include "./Response.hpp"
 # include <iostream>
+# include <sys/types.h>
+# include <sys/socket.h>
+# include <cstring>
+# include <errno.h>
+#include <arpa/inet.h>
+
+using namespace std;
 
 /**
  * @brief Represente une connexion client acceptee sur un socket d'ecoute.
@@ -9,7 +18,6 @@
  * Porte le socket du client ainsi que l'etat necessaire pour
  * recevoir sa requete, la faire traiter et lui renvoyer la reponse.
  */
-
 enum EConnState
 {
 	CONN_READING,		///< on accumule la requete
@@ -22,32 +30,35 @@ class Connection
 	private:
 
 	int				_Fd;
-	std::string		_InBuf;			///< octets recus, consommes par Request::Feed()
-	std::string		_OutBuf;		///< octets a envoyer, produits par Response::Serialize()
+	Request			_Req;
+	string			_IpV4;
+	string			_InBuf;			///< octets recus, consommes par Request::Feed()
+	string			_OutBuf;		///< octets a envoyer, produits par Response::Serialize()
 	EConnState		_State;
 	time_t			_LastActivity;	///< utilise par B-05 pour les timeouts
 	size_t			_GroupIndex;	///< index dans _AddrPorts : quel ServerConfig repond
 
-	protected:
-
 	public:
-	
+
 	/*===Canonical Form===*/
 	Connection(void);
+	Connection(int fd, size_t group_index);
 	~Connection(void);
 	Connection(const Connection& to_copy);
 	Connection &operator=(const Connection& src);
-	
+
 	/*===Getters & Setters===*/
-	int			getFd(void) const;
-	bool		HasPendingOutput(void) const;	///< pilote l'armement de POLLOUT
-	time_t		getLastActivity(void) const;
-	
-	
+	int				getFd(void) const;
+	// time_t		getLastActivity(void) const;
+	void			setIpV4(string src);
+	const string&	getIpV4() const;
+
+
 	/*===Member Function===*/
-	size_t		OnReadable(void);				///< un seul recv(), renvoie ce que recv() a rendu
-	size_t		OnWritable(void);				///< un seul send() partiel
-	void		QueueOutput(const std::string &data);
+	bool		HasPendingOutput(void) const;	///< pilote l'armement de POLLOUT
+	ssize_t		OnReadable(void);				///< un seul recv(), renvoie ce que recv() a rendu
+	ssize_t		OnWritable(void);				///< un seul send() partiel
+	void		QueueOutput(const string& data);
 
 };
 

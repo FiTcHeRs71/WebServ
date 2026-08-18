@@ -218,11 +218,10 @@ void	EventLoop::AcceptNewClients(int listen_fd)
 	}
 	if (fcntl(clientFd, F_SETFL, O_NONBLOCK) < 0)
 		close(clientFd);
-	_Clients[clientFd] = Connection();
+	size_t groupIndex = _ListenFds[listen_fd];
+	_Clients[clientFd] = Connection(clientFd, groupIndex);
 	AddFd(clientFd, POLLIN);
-	// TODO:	needs to be finished when connection is done and we can add the connection state
-	//			should have these lines then :	size_t groupIndex = _ListenFds[listen_fd];
-	//											_Clients[clientFd] = Connection(clientFd, groupIndex);
+	_Clients[clientFd].setIpV4(inet_ntoa(clientAddr.sin_addr));
 }
 
 
@@ -237,6 +236,19 @@ void	EventLoop::AcceptNewClients(int listen_fd)
  */
 void	EventLoop::HandleClientEvent(size_t index)
 {
-	(void)index;
+	int fd = _Pollfds[index].fd;
+	if (_Pollfds[index].revents & POLLIN){
+		map<int, Connection>::iterator it = _Clients.find(fd);
+		if (it != _Clients.end()){
+			it->second.OnReadable();
+		}
+	}
+	if (_Pollfds[index].revents & POLLOUT){
+		map<int, Connection>::iterator it = _Clients.find(fd);
+		if (it != _Clients.end()){
+			it->second.OnWritable();
+		}
+	}
+	//TODO Interception des POLLHUP POLLERR POLLNVAL et si recv == 0 pour ticket (B-04)
 }
 
