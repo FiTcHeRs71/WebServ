@@ -73,7 +73,8 @@ class Request
 	const int&		getErrorCode() const;
 	string			getHeader(const string& key) const;
 	bool			setUpContentLength();
-	// const string&	getBody() const;		///< (C-02)
+	void			SetServerConfig(const ServerConfig *srv);
+	const string&	getBody() const;
 
 	/*===Member Function===*/
 	EParseResult	Feed(const char *data, size_t n);
@@ -85,14 +86,14 @@ class Request
 	bool			findHeaders(int n);
 	bool			expandEncodingUrl();
 	void			trimSlash();
-	// bool	findBody(-_r);		///< (C-02)
+	bool			findBody();
 
 	friend ostream& operator<<(ostream& flux, Request& obj);
 };
 
-void trim(string& s);
-void MyToLower(string& key);
-bool isHexa(char c, char d);
-char convertToHexa(char c,char d);
+void				trim(string& s);
+void				MyToLower(string& key);
+bool				isHexa(char c, char d);
+char				convertToHexa(char c,char d);
 
 #endif /*REQUEST_HPP*/
