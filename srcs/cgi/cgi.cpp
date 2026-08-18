@@ -104,7 +104,7 @@ vector<string>	build_cgi_env(const Request &request, const LocationConfig &locat
 	if (!serverNames.empty())
 		addEnv(storage, "SERVER_NAME", serverNames[0]);
 	else
-		addEnv(storage, "SERVER_NAME", "");
+		addEnv(storage, "SERVER_NAME", request.getHeader("host"));
 	addEnv(storage, "SERVER_PORT", ss.str());
 	addEnv(storage, "GATEWAY_INTERFACE", "CGI/1.1");
 	addEnv(storage, "REMOTE_ADDR", connection.getIpv4());
