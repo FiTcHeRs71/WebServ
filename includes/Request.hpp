@@ -1,6 +1,7 @@
 #ifndef REQUEST_HPP
 # define REQUEST_HPP
 
+# include "ServerConfig.hpp"
 # include <iostream>
 # include <cstddef>
 # include <map>
@@ -49,6 +50,10 @@ class Request
 		int					_ErrorCode;		//< 0 tant que tout vas bien
 		int					_RequestOctetsSize;
 		int					_HeadersOctetsSize;
+		size_t				_MaxBodySize;        ///< limite applicable, 0 = illimite (conf)
+		size_t				_ContentLength;      ///< longueur annoncee par le header
+		bool				_HasContentLength;   ///< le header etait-il present ?
+		const ServerConfig*	_Srv;                ///< pose par B, sert a Resolve()
 
 	protected:
 

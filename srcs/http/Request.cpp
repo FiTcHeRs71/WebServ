@@ -2,9 +2,13 @@
 
 	/*===Canonical Form===*/
 Request::Request(void) : _State(ST_REQUEST_LINE),
-						 _ErrorCode(0),
-						 _RequestOctetsSize(0),
-						 _HeadersOctetsSize(0) {}
+						_ErrorCode(0),
+						_RequestOctetsSize(0),
+						_HeadersOctetsSize(0),
+						_MaxBodySize(0),
+						_ContentLength(0),
+						_HasContentLength(false),
+						_Srv(NULL){}
 
 Request::~Request(void) {}
 
@@ -19,7 +23,11 @@ Request::Request(const Request& to_copy) :
 	_Header(to_copy._Header),
 	_ErrorCode(to_copy._ErrorCode),
 	_RequestOctetsSize(to_copy._RequestOctetsSize),
-	_HeadersOctetsSize(to_copy._HeadersOctetsSize) {}
+	_HeadersOctetsSize(to_copy._HeadersOctetsSize),
+	_MaxBodySize(to_copy._MaxBodySize),
+	_ContentLength(to_copy._ContentLength),
+	_HasContentLength(to_copy._HasContentLength),
+	_Srv(to_copy._Srv) {}
 
 Request	&Request::operator=(const Request& src)
 {
@@ -36,6 +44,10 @@ Request	&Request::operator=(const Request& src)
 		this->_ErrorCode = src._ErrorCode;
 		this->_RequestOctetsSize = src._RequestOctetsSize;
 		this->_HeadersOctetsSize = src._HeadersOctetsSize;
+		this->_MaxBodySize = src._MaxBodySize;
+		this->_ContentLength = src._ContentLength;
+		this->_HasContentLength = src._HasContentLength;
+		this->_Srv = src._Srv;
 	}
 	return (*this);
 }
@@ -299,6 +311,9 @@ void Request::reset(){
 	this->_ErrorCode = 0;
 	this->_HeadersOctetsSize = 0;
 	this->_RequestOctetsSize = this->_Raw.size();
+	this->_ContentLength = 0;
+	this->_HasContentLength = false;
+
 }
 
 /**
