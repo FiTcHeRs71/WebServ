@@ -1,4 +1,7 @@
 #include "../../includes/Request.hpp"
+#include <cerrno>
+#include <cstdlib>
+#include <string>
 
 	/*===Canonical Form===*/
 Request::Request(void) : _State(ST_REQUEST_LINE),
@@ -265,12 +268,7 @@ bool	Request::findHeaders(int n){
 		return false;
 	}
 	this->_Raw.erase(0, pos + 4);
-	map<string, string>::iterator it = this->_Header.find("content-length");
-	if (it == this->_Header.end())
-		this->_State = ST_DONE;
-	else
-		this->_State = ST_BODY;
-	return true;
+	return (setUpContentLength());
 }
 
 /**
@@ -313,7 +311,6 @@ void Request::reset(){
 	this->_RequestOctetsSize = this->_Raw.size();
 	this->_ContentLength = 0;
 	this->_HasContentLength = false;
-
 }
 
 /**
@@ -387,4 +384,71 @@ ostream& operator<<(ostream& flux, Request& obj){
 		flux << "Key = " << it->first << ", Value = " << it->second << endl;
 	}
 	return flux;
+}
+
+/**
+ * @brief Determine s'il faut lire un corps, et si sa taille annoncee est acceptable.
+ *        Appelee en fin de findHeaders(), une fois les en-tetes complets.
+ * @return true si l'etat a pu etre pose (ST_BODY ou ST_DONE),
+ *         false si la requete est refusee (ST_ERROR + _ErrorCode).
+ */
+bool  Request::setUpContentLength()
+{
+	string	value = getHeader("content-length");
+	char	*p_end = NULL;
+	long	converted;
+
+	if (!value.empty() && !getHeader("transfer-encoding").empty())
+	{
+		this->_ErrorCode = 400;
+		this->_State = ST_ERROR;
+		cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+		return (false);
+	}
+	if (this->_Srv != NULL)
+	{
+		const LocationConfig	*loc = this->_Srv->Resolve(this->_Path);
+		if (loc != NULL)
+			this->_MaxBodySize = loc->getClientMaxBodySize();
+		else
+			this->_MaxBodySize = DEFAULT_BODY_SIZE;
+	}
+	if (value.empty())
+	{
+		if (this->_Method == "POST")
+		{
+			this->_ErrorCode = 411;
+			cerr << "Error: " << this->_ErrorCode << ": Length Required" << endl;
+			this->_State = ST_ERROR;
+			return (false);
+		}
+		else
+		{
+			this->_State = ST_DONE;
+			return (true);
+		}
+	}
+	errno = 0;
+	converted = strtol(value.c_str(), &p_end, 10);
+	if (p_end == value.c_str() || *p_end != '\0' || converted < 0 || errno == ERANGE)
+	{
+		this->_ErrorCode = 400;
+		this->_State = ST_ERROR;
+		cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+		return (false);
+	}
+	else
+	{
+		this->_ContentLength = static_cast<size_t>(converted);
+		this->_HasContentLength = true;
+	}
+	if (this->_MaxBodySize != 0 && this->_ContentLength > this->_MaxBodySize)
+	{
+		this->_ErrorCode = 413;
+		this->_State = ST_ERROR;
+		cerr << "Error: " << this->_ErrorCode << ": Payload Too Large" << endl;
+		return (false);
+	}
+	this->_State = (this->_ContentLength == 0) ? ST_DONE : ST_BODY;
+	return (true);
 }

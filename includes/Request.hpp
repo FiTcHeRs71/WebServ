@@ -72,6 +72,7 @@ class Request
 	const string&	getVersion() const;
 	const int&		getErrorCode() const;
 	string			getHeader(const string& key) const;
+	bool			setUpContentLength();
 	// const string&	getBody() const;		///< (C-02)
 
 	/*===Member Function===*/
