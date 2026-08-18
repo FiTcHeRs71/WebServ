@@ -68,15 +68,10 @@ int	CgiProcess::GetWriteFd(void) const
 	return (this->_WriteFd);
 }
 
-int	findScriptNameIdx(const LocationConfig &location, const string &scriptpath)
+static string	findScriptName(const string &scriptpath)
 {
-	size_t dot = scriptpath.find(location.getExt());
-	for (size_t idx = dot; idx >= 0; idx--)
-	{
-		if (scriptpath[idx] == '/')
-			return (idx);
-	}
-	return(0);
+	size_t last_slash = scriptpath.rfind('/');
+	return(scriptpath.substr(last_slash + 1));
 }
 
 	/**
@@ -99,13 +94,12 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 							const ServerConfig &server, const Connection &connection,
 							const ConfigParser &config, const string &script_path)
 {
-	(void)request;
 	char	*argv[3];
 	char	**envp;
 	int		pip_in[2];
 	int		pip_out[2];
 
-	string	scriptName = script_path.substr(findScriptNameIdx(location, script_path) + 1, script_path.find(location.getExt()) + location.getExt().length());
+	string	scriptName = findScriptName(script_path);
 	argv[0] = const_cast<char *>(location.getPass().c_str());
 	argv[1] = const_cast<char *>(scriptName.c_str());
 	argv[2] = NULL;
@@ -155,6 +149,7 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 		execve(argv[0], argv, envp);
 		_exit(1);
 	}
+	delete[] envp;
 	close(pip_in[0]);
 	close(pip_out[1]);
 	this->_WriteFd = pip_in[1];
