@@ -1,6 +1,4 @@
 #include "../../includes/EventLoop.hpp"
-#include <cstddef>
-#include <arpa/inet.h>
 
 /**
  * @brief Enregistre les sockets d'ecoute dans poll et dans _ListenFds
@@ -221,7 +219,6 @@ void	EventLoop::AcceptNewClients(int listen_fd)
 		close(clientFd);
 	_Clients[clientFd] = Connection();
 	AddFd(clientFd, POLLIN);
-	_Clients[clientFd].setIpV4(inet_ntoa(clientAddr.sin_addr));
 	// TODO:	needs to be finished when connection is done and we can add the connection state
 	//			should have these lines then :	size_t groupIndex = _ListenFds[listen_fd];
 	//											_Clients[clientFd] = Connection(clientFd, groupIndex);

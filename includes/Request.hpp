@@ -67,7 +67,6 @@ class Request
 	const string&	getVersion() const;
 	const int&		getErrorCode() const;
 	string			getHeader(const string& key) const;
-	map<string, string>	getHeaders(void) const;
 
 	// const string&	getBody() const;		///< (C-02)
 

@@ -16,24 +16,24 @@ void	addEnv(vector<string>& storage, const string &key, const string &value)
 
 string findScriptName(const Request &request, const LocationConfig &location)
 {
-	string	Path = request.getPath();
-	string	Ext = location.getExt();
+	const string	&path = request.getPath();
+	const string	&ext = location.getExt();
+	size_t			idx = path.find(ext);
 
-	size_t idx = Path.find(Ext);
-	string	ScriptName;
-	ScriptName.substr(0, idx + Ext.size() - 1);
-	return(ScriptName);
+	if (idx == string::npos)
+		return (path);
+	return(path.substr(0, idx + ext.size()));
 }
 
 string findPathInfo(const Request &request, const LocationConfig &location)
 {
-	string	Path = request.getPath();
-	string	Ext = location.getExt();
+	const string	&path = request.getPath();
+	const string	&ext = location.getExt();
+	size_t			idx = path.find(ext);
 
-	size_t idx = Path.find(Ext);
-	string	PathInfo;
-	PathInfo.substr(0, idx + Ext.size());
-	return (PathInfo);
+	if (idx == string::npos)
+		return ("");
+	return(path.substr(idx + ext.size()));
 }
 
 char	**VectorToChar(vector<string> &storage)
@@ -57,10 +57,10 @@ std::string	header_to_meta(const std::string &name)	///< "Accept-Language" -> "H
 	{
 		if (name[i] == '-')
 		{
-			meta[i] += '_';
+			meta += '_';
 			continue ;
 		}
-		meta[i] += static_cast<char>(toupper(static_cast<unsigned char>(name[i])));
+		meta += static_cast<char>(toupper(static_cast<unsigned char>(name[i])));
 	}
 	return("HTTP_" + meta);
 }
@@ -78,19 +78,24 @@ std::string	header_to_meta(const std::string &name)	///< "Accept-Language" -> "H
  * @return Le tableau char** terminé par NULL, a passer a execve().
 */
 vector<string>	build_cgi_env(const Request &request, const LocationConfig &location,
-					const ServerConfig &server, const Connection &connection, const ConfigParser &config)
+					const ServerConfig &server, const Connection &connection,
+					const ConfigParser &config, const string &script_path)
 {
 	vector<string>	storage;
 	vector<string>	serverNames = server.getServerNames();
-	string		PathTran = server.build_path(location, findPathInfo(request, location));
+	string	path_translated;
 	ostringstream	ss;
 	ss << config.getAddrPorts()[connection.getGroupIndex()].Port;
 
 	addEnv(storage, "REQUEST_METHOD", request.getMethod());
 	addEnv(storage, "SCRIPT_NAME", findScriptName(request, location));
-	addEnv(storage, "SCRIPT_FILENAME", server.build_path(location, findScriptName(request, location)));
+	addEnv(storage, "SCRIPT_FILENAME", script_path);
 	addEnv(storage, "PATH_INFO", findPathInfo(request, location));
-	addEnv(storage, "PATH_TRANSLATED", PathTran);
+	if (findPathInfo(request, location).empty())
+		path_translated = "";
+	else
+		path_translated = location.getRoot() + findPathInfo(request, location);
+	addEnv(storage, "PATH_TRANSLATED", path_translated);
 	addEnv(storage, "QUERY_STRING", request.getQuery());
 	addEnv(storage, "CONTENT_LENGTH", request.getHeader("content-length"));
 	addEnv(storage, "CONTENT_TYPE", request.getHeader("content-type"));

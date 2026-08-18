@@ -60,7 +60,8 @@ class CgiProcess
 };
 
 vector<string>	build_cgi_env(const Request &request, const LocationConfig &location,
-					const ServerConfig &server, const Connection &connection, const ConfigParser &config);
+					const ServerConfig &server, const Connection &connection,
+					const ConfigParser &config, const string &script_path);
 char	**VectorToChar(vector<string> &storage);
 
 #endif /*CGI_PROCESS_HPP*/

@@ -1,6 +1,7 @@
 #include "../../includes/CgiProcess.hpp"
 #include <csignal>
 #include <sched.h>
+#include <string>
 #include <unistd.h>
 #include <fcntl.h>
 #include <vector>
@@ -67,6 +68,17 @@ int	CgiProcess::GetWriteFd(void) const
 	return (this->_WriteFd);
 }
 
+int	findScriptNameIdx(const LocationConfig &location, const string &scriptpath)
+{
+	size_t dot = scriptpath.find(location.getExt());
+	for (size_t idx = dot; idx >= 0; idx--)
+	{
+		if (scriptpath[idx] == '/')
+			return (idx);
+	}
+	return(0);
+}
+
 	/**
 	 * @brief Retourne le PID du processus CGI
 	 * @return Le Pid, ou 0 si aucun processus n'a ete lance
@@ -93,10 +105,11 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 	int		pip_in[2];
 	int		pip_out[2];
 
+	string	scriptName = script_path.substr(findScriptNameIdx(location, script_path) + 1, script_path.find(location.getExt()) + location.getExt().length());
 	argv[0] = const_cast<char *>(location.getPass().c_str());
-	argv[1] = const_cast<char *>(script_path.c_str());
+	argv[1] = const_cast<char *>(scriptName.c_str());
 	argv[2] = NULL;
-	vector<string>	storage = build_cgi_env(request, location, server, connection, config);
+	vector<string>	storage = build_cgi_env(request, location, server, connection, config, script_path);
 	envp = VectorToChar(storage);
 
 	// Dossier du script pour le chdir() de l'enfant. Les deux cas limites
@@ -114,10 +127,11 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 
 	const char *dir_c = dir.c_str();
 	if (!this->SetupPipes(pip_in, pip_out))
+	{
 		return (false);
-
+	}
 	pid_t	pid = fork();
-
+	
 	if(pid == -1)
 	{
 		close(pip_out[0]);
@@ -128,7 +142,8 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 	}
 	if (pid == 0)
 	{
-		chdir(dir.c_str());
+		if (chdir(dir_c) < 0)
+			_exit(1);
 		if (dup2(pip_in[0], STDIN_FILENO) < 0 || dup2(pip_out[1], STDOUT_FILENO) < 0)
 			_exit(1);
 		// Fermeture en force de tout ce qui est herite du serveur : sockets
@@ -137,8 +152,6 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 		// option : le sujet limite fcntl() a F_SETFL / O_NONBLOCK.
 		for (int fd = 3; fd < 1024; fd++)
 			close(fd);
-		if (chdir(dir_c) < 0)
-			_exit(1);
 		execve(argv[0], argv, envp);
 		_exit(1);
 	}
