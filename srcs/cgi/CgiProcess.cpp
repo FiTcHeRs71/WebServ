@@ -1,8 +1,10 @@
 #include "../../includes/CgiProcess.hpp"
 #include <csignal>
 #include <sched.h>
+#include <string>
 #include <unistd.h>
 #include <fcntl.h>
+#include <vector>
 
 	/*===Canonical Form===*/
 CgiProcess::CgiProcess(void)
@@ -67,6 +69,16 @@ int	CgiProcess::GetWriteFd(void) const
 }
 
 	/**
+	 * @brief Retourne le nom du fichier contenant le script en utilisant son path.
+	 * @return Le nom du script a executer.
+	 */
+static string	findScriptName(const string &scriptpath)
+{
+	size_t last_slash = scriptpath.rfind('/');
+	return(scriptpath.substr(last_slash + 1));
+}
+
+	/**
 	 * @brief Retourne le PID du processus CGI
 	 * @return Le Pid, ou 0 si aucun processus n'a ete lance
 	 */
@@ -82,18 +94,21 @@ pid_t	CgiProcess::GetPid(void) const
  * @param location La configuration de location associee (chemin du CGI, etc.).
  * @param script_path Le path vers le script a executer
  */
-bool	CgiProcess::Start(const Request &request, const LocationConfig &location, const string &script_path)
+bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
+							const ServerConfig &server, const Connection &connection,
+							const ConfigParser &config, const string &script_path)
 {
-	(void)request;
 	char	*argv[3];
-	char	*envp[1];
+	char	**envp;
 	int		pip_in[2];
 	int		pip_out[2];
 
+	string	scriptName = findScriptName(script_path);
 	argv[0] = const_cast<char *>(location.getPass().c_str());
-	argv[1] = const_cast<char *>(script_path.c_str());
+	argv[1] = const_cast<char *>(scriptName.c_str());
 	argv[2] = NULL;
-	envp[0] = NULL; // D-02 remplira les meta-variables CGI
+	vector<string>	storage = build_cgi_env(request, location, server, connection, config, script_path);
+	envp = VectorToChar(storage);
 
 	// Dossier du script pour le chdir() de l'enfant. Les deux cas limites
 	// donnent un chemin invalide si on prend le substr tel quel :
@@ -110,12 +125,15 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location, c
 
 	const char *dir_c = dir.c_str();
 	if (!this->SetupPipes(pip_in, pip_out))
+	{
+		delete[] envp;
 		return (false);
-
+	}
 	pid_t	pid = fork();
-
+	
 	if(pid == -1)
 	{
+		delete[] envp;
 		close(pip_out[0]);
 		close(pip_out[1]);
 		close(pip_in[0]);
@@ -124,6 +142,8 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location, c
 	}
 	if (pid == 0)
 	{
+		if (chdir(dir_c) < 0)
+			_exit(1);
 		if (dup2(pip_in[0], STDIN_FILENO) < 0 || dup2(pip_out[1], STDOUT_FILENO) < 0)
 			_exit(1);
 		// Fermeture en force de tout ce qui est herite du serveur : sockets
@@ -132,11 +152,10 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location, c
 		// option : le sujet limite fcntl() a F_SETFL / O_NONBLOCK.
 		for (int fd = 3; fd < 1024; fd++)
 			close(fd);
-		if (chdir(dir_c) < 0)
-			_exit(1);
 		execve(argv[0], argv, envp);
 		_exit(1);
 	}
+	delete[] envp;
 	close(pip_in[0]);
 	close(pip_out[1]);
 	this->_WriteFd = pip_in[1];

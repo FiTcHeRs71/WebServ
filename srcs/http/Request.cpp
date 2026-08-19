@@ -346,6 +346,11 @@ const int& Request::getErrorCode() const{
 	return this->_ErrorCode;
 }
 
+map<string, string>	Request::getHeaders(void) const
+{
+	return(_Header);
+}
+
 /**
  * @brief Getters de header
  * /!\ Il est retourner par valeur et non par reference
