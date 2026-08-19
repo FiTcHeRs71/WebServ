@@ -22,7 +22,7 @@ enum EConnState
 {
 	CONN_READING,		///< on accumule la requete
 	CONN_WRITING,		///< la reponse est prete, on vide _OutBuf
-	CONN_CLOSING		///< a fermer des que _OutBuf est vide
+	CONN_CLOSING		///< a fermer des que _OutBuf est vide //? si nous gerons http1.1 ne doit pas fermer apres l'envoie
 };
 
 class Connection
@@ -49,9 +49,11 @@ class Connection
 
 	/*===Getters & Setters===*/
 	int				getFd(void) const;
+	EConnState		getState() const;
 	// time_t		getLastActivity(void) const;
 	void			setIpV4(string src);
 	const string&	getIpV4() const;
+	size_t			getGroupIndex() const;
 
 
 	/*===Member Function===*/
