@@ -1,10 +1,17 @@
 #include "../../includes/Request.hpp"
+#include <cerrno>
+#include <cstdlib>
+#include <string>
 
 	/*===Canonical Form===*/
 Request::Request(void) : _State(ST_REQUEST_LINE),
-						 _ErrorCode(0),
-						 _RequestOctetsSize(0),
-						 _HeadersOctetsSize(0) {}
+						_ErrorCode(0),
+						_RequestOctetsSize(0),
+						_HeadersOctetsSize(0),
+						_MaxBodySize(DEFAULT_BODY_SIZE),
+						_ContentLength(0),
+						_HasContentLength(false),
+						_Srv(NULL){}
 
 Request::~Request(void) {}
 
@@ -19,7 +26,11 @@ Request::Request(const Request& to_copy) :
 	_Header(to_copy._Header),
 	_ErrorCode(to_copy._ErrorCode),
 	_RequestOctetsSize(to_copy._RequestOctetsSize),
-	_HeadersOctetsSize(to_copy._HeadersOctetsSize) {}
+	_HeadersOctetsSize(to_copy._HeadersOctetsSize),
+	_MaxBodySize(to_copy._MaxBodySize),
+	_ContentLength(to_copy._ContentLength),
+	_HasContentLength(to_copy._HasContentLength),
+	_Srv(to_copy._Srv) {}
 
 Request	&Request::operator=(const Request& src)
 {
@@ -36,6 +47,10 @@ Request	&Request::operator=(const Request& src)
 		this->_ErrorCode = src._ErrorCode;
 		this->_RequestOctetsSize = src._RequestOctetsSize;
 		this->_HeadersOctetsSize = src._HeadersOctetsSize;
+		this->_MaxBodySize = src._MaxBodySize;
+		this->_ContentLength = src._ContentLength;
+		this->_HasContentLength = src._HasContentLength;
+		this->_Srv = src._Srv;
 	}
 	return (*this);
 }
@@ -76,13 +91,13 @@ EParseResult	Request::Feed(const char *data, size_t n)
 		if (!findHeaders(n))
 			if (this->_State != ST_ERROR)
 				return (REQ_INCOMPLETE);
-	// if (this->_State == ST_BODY)
-	// 	if (!findBody())					///< (C-02)
-	// 		return (REQ_INCOMPLETE);
+	if (this->_State == ST_BODY)
+		if (!findBody())
+			if (this->_State != ST_ERROR)
+				return (REQ_INCOMPLETE);
 	if (this->_State == ST_ERROR)
 		return (REQ_ERROR);
 	if (this->_State == ST_DONE){
-		this->reset();			///< Il peut rester un reste de la prochaine requete dans _Raw
 		return (REQ_COMPLETE);	///< donc REQ est incomplete, a checker si cest dans poll qu'on doit reset
 	}							///< des qu'une requette est completee
 	return (REQ_INCOMPLETE);
@@ -253,12 +268,7 @@ bool	Request::findHeaders(int n){
 		return false;
 	}
 	this->_Raw.erase(0, pos + 4);
-	map<string, string>::iterator it = this->_Header.find("content-length");
-	if (it == this->_Header.end())
-		this->_State = ST_DONE;
-	else
-		this->_State = ST_BODY;
-	return true;
+	return (setUpContentLength());
 }
 
 /**
@@ -299,6 +309,8 @@ void Request::reset(){
 	this->_ErrorCode = 0;
 	this->_HeadersOctetsSize = 0;
 	this->_RequestOctetsSize = this->_Raw.size();
+	this->_ContentLength = 0;
+	this->_HasContentLength = false;
 }
 
 /**
@@ -331,6 +343,15 @@ const string& Request::getMethod() const{
  */
 const string& Request::getPath() const{
 	return this->_Path;
+}
+
+/**
+ * @brief Le corps recu, complet uniquement apres REQ_COMPLETE.
+ * @warning Peut contenir des '\0' : toujours .size(), jamais strlen() ni c_str().
+ */
+const string	&Request::getBody() const
+{
+	return (this->_Body);
 }
 
 const string& Request::getQuery() const{
@@ -366,15 +387,120 @@ string Request::getHeader(const string& key) const{
 		return("");
 }
 
+/**
+ * @brief Pose le ServerConfig de la connexion, utilise par setUpContentLength()
+ *        pour resoudre la location et donc la limite de corps applicable.
+ * @param srv Appartient au ConfigParser : Request ne le possede pas, ne le libere pas.
+ */
+void	Request::SetServerConfig(const ServerConfig *srv)
+{
+	this->_Srv = srv;
+}
 
 ostream& operator<<(ostream& flux, Request& obj){
 	flux << "Raw = " << obj._Raw << endl;
 	flux << "Method = " << obj._Method << endl;
 	flux << "Path = " << obj._Path << endl;
 	flux << "Query = " << obj._Query << endl;
-	// flux << "Body = " << obj._Body << endl;			///< (c-02)
+	flux << "Body = " << obj._Body.size() << " octets" << endl;
 	for(map<string, string>::iterator it = obj._Header.begin(); it != obj._Header.end(); it++){
 		flux << "Key = " << it->first << ", Value = " << it->second << endl;
 	}
 	return flux;
+}
+
+/**
+ * @brief Determine s'il faut lire un corps, et si sa taille annoncee est acceptable.
+ *        Appelee en fin de findHeaders(), une fois les en-tetes complets.
+ * @return true si l'etat a pu etre pose (ST_BODY ou ST_DONE),
+ *         false si la requete est refusee (ST_ERROR + _ErrorCode).
+ */
+bool  Request::setUpContentLength()
+{
+	string	value = getHeader("content-length");
+	char	*p_end = NULL;
+	long	converted;
+
+	if (!value.empty() && !getHeader("transfer-encoding").empty())
+	{
+		this->_ErrorCode = 400;
+		this->_State = ST_ERROR;
+		cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+		return (false);
+	}
+	if (this->_Srv != NULL)
+	{
+		const LocationConfig	*loc = this->_Srv->Resolve(this->_Path);
+		if (loc != NULL)
+			this->_MaxBodySize = loc->getClientMaxBodySize();
+		else
+			this->_MaxBodySize = DEFAULT_BODY_SIZE;
+	}
+	if (value.empty())
+	{
+		if (this->_Method == "POST")
+		{
+			this->_ErrorCode = 411;
+			cerr << "Error: " << this->_ErrorCode << ": Length Required" << endl;
+			this->_State = ST_ERROR;
+			return (false);
+		}
+		else
+		{
+			this->_State = ST_DONE;
+			return (true);
+		}
+	}
+	errno = 0;
+	converted = strtol(value.c_str(), &p_end, 10);
+	if (p_end == value.c_str() || *p_end != '\0' || converted < 0 || errno == ERANGE)
+	{
+		this->_ErrorCode = 400;
+		this->_State = ST_ERROR;
+		cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+		return (false);
+	}
+	else
+	{
+		this->_ContentLength = static_cast<size_t>(converted);
+		this->_HasContentLength = true;
+	}
+	if (this->_MaxBodySize != 0 && this->_ContentLength > this->_MaxBodySize)
+	{
+		this->_ErrorCode = 413;
+		this->_State = ST_ERROR;
+		cerr << "Error: " << this->_ErrorCode << ": Payload Too Large" << endl;
+		return (false);
+	}
+	this->_State = (this->_ContentLength == 0) ? ST_DONE : ST_BODY;
+	return (true);
+}
+
+/**
+ * @brief Accumule le corps sans jamais depasser Content-Length.
+ *        Le surplus reste dans _Raw : il appartient a la requete suivante.
+ * @return true si le corps est complet (ST_DONE), false s'il en manque.
+ */
+bool	Request::findBody()
+{
+	size_t	missing;
+	size_t	take;
+
+	missing = this->_ContentLength - this->_Body.size();
+	take = (missing < this->_Raw.size()) ? missing : this->_Raw.size();
+	this->_Body.append(this->_Raw, 0, take);
+	this->_Raw.erase(0, take);
+	if (this->_MaxBodySize != 0 && this->_Body.size() > this->_MaxBodySize)
+	{
+		this->_ErrorCode = 413;
+		this->_State = ST_ERROR;
+		cerr << "Error: " << this->_ErrorCode << ": Payload Too Large" << endl;
+		return (false);
+	}
+	if (this->_Body.size() == this->_ContentLength)
+	{
+		this->_State = ST_DONE;
+		return (true);
+	}
+	return (false);
 }
