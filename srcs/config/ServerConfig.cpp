@@ -65,6 +65,16 @@ ostream		&operator<<(ostream &flux, const ServerConfig &src)
 	return (flux);
 }
 
+vector<TListenConfig>	ServerConfig::getListens() const
+{
+	return(_Listens);
+}
+
+vector<string>	ServerConfig::getServerNames() const
+{
+	return(_ServerNames);
+}
+
 	/*===Member Function===*/
 /**
  * @brief Trouve la LocationConfig de ce serveur qui matche une URI.

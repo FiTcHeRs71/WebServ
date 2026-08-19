@@ -1,5 +1,6 @@
 #include "../../includes/EventLoop.hpp"
 #include <cstddef>
+#include <arpa/inet.h>
 
 /**
  * @brief Enregistre les sockets d'ecoute dans poll et dans _ListenFds

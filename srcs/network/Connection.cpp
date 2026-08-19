@@ -46,6 +46,11 @@ void	Connection::setIpV4(string src){
 const string&	Connection::getIpV4() const{
 	return this->_IpV4;
 }
+
+size_t Connection::getGroupIndex() const{
+	return (this->_GroupIndex);
+}
+
 	/*===Member Function===*/
 
 	/**
