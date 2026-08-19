@@ -66,34 +66,37 @@ class Request
 	Request &operator=(const Request& src);
 
 	/*===Getters & Setters===*/
-	const string&	getMethod() const;
-	const string&	getPath() const;
-	const string&	getQuery() const;
-	const string&	getVersion() const;
-	const int&		getErrorCode() const;
-	string			getHeader(const string& key) const;
-	bool			setUpContentLength();
-	void			SetServerConfig(const ServerConfig *srv);
-	const string&	getBody() const;
+	const string&		getMethod() const;
+	const string&		getPath() const;
+	const string&		getQuery() const;
+	const string&		getVersion() const;
+	const int&			getErrorCode() const;
+	string				getHeader(const string& key) const;
+	bool				setUpContentLength();
+	const string&		getBody() const;
+	void				SetServerConfig(const ServerConfig *srv);
+	map<string, string>	getHeaders(void) const;
+
+	// const string&	getBody() const;		///< (C-02)
 
 	/*===Member Function===*/
-	EParseResult	Feed(const char *data, size_t n);
-	void			reset();
-	bool			setUpMethod();
-	bool			setUpPath();
-	bool			setUpVersion();
-	bool			findRequestLine(int n);
-	bool			findHeaders(int n);
-	bool			expandEncodingUrl();
-	void			trimSlash();
-	bool			findBody();
+	EParseResult		Feed(const char *data, size_t n);
+	void				reset();
+	bool				setUpMethod();
+	bool				setUpPath();
+	bool				setUpVersion();
+	bool				findRequestLine(int n);
+	bool				findHeaders(int n);
+	bool				expandEncodingUrl();
+	void				trimSlash();
+	bool				findBody();
 
 	friend ostream& operator<<(ostream& flux, Request& obj);
 };
 
-void				trim(string& s);
-void				MyToLower(string& key);
-bool				isHexa(char c, char d);
-char				convertToHexa(char c,char d);
+void					trim(string& s);
+void					MyToLower(string& key);
+bool					isHexa(char c, char d);
+char					convertToHexa(char c,char d);
 
 #endif /*REQUEST_HPP*/

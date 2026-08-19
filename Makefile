@@ -11,6 +11,7 @@ SRCS_MAIN = $(addprefix $(SRC_DIR)/, \
 	main.cpp)
 
 SRCS_CGI = $(addprefix $(SRC_DIR)/cgi/, \
+	cgi.cpp \
 	CgiProcess.cpp)
 
 SRCS_CONFIG = $(addprefix $(SRC_DIR)/config/, \

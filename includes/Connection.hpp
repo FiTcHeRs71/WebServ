@@ -1,7 +1,9 @@
 #ifndef CONNECTION_HPP
 # define CONNECTION_HPP
 
+#include <cstddef>
 # include <iostream>
+#include <string>
 
 /**
  * @brief Represente une connexion client acceptee sur un socket d'ecoute.
@@ -22,6 +24,7 @@ class Connection
 	private:
 
 	int				_Fd;
+	std::string		_IpV4;
 	std::string		_InBuf;			///< octets recus, consommes par Request::Feed()
 	std::string		_OutBuf;		///< octets a envoyer, produits par Response::Serialize()
 	EConnState		_State;
@@ -42,6 +45,9 @@ class Connection
 	int			getFd(void) const;
 	bool		HasPendingOutput(void) const;	///< pilote l'armement de POLLOUT
 	time_t		getLastActivity(void) const;
+	size_t		getGroupIndex(void) const;
+	std::string	getIpv4(void) const;
+	void		setIpV4(std::string src);
 	
 	
 	/*===Member Function===*/
