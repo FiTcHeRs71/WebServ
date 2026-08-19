@@ -50,6 +50,7 @@ class LocationConfig
 	const string	&getRoot(void) const;	///< La racine disque associee a ce bloc
 	const string	&getExt(void) const;
 	const string	&getPass(void) const;
+	const size_t	&getClientMaxBodySize(void) const;
 
 	/*===Member Function===*/
 	void	parse_location(vector<string>	&token, size_t &i);
