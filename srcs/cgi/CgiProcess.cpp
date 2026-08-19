@@ -68,6 +68,10 @@ int	CgiProcess::GetWriteFd(void) const
 	return (this->_WriteFd);
 }
 
+	/**
+	 * @brief Retourne le nom du fichier contenant le script en utilisant son path.
+	 * @return Le nom du script a executer.
+	 */
 static string	findScriptName(const string &scriptpath)
 {
 	size_t last_slash = scriptpath.rfind('/');

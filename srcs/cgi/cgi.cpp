@@ -9,11 +9,24 @@
 #include <vector>
 #include <string>
 
+/**
+ * @brief Ajouter une nouvelle valeur a l'environnement cgi.
+ *
+ * @param storage L'environnement ou ajouter la valeur.
+ * @param key Le nom ou assigner la valeur.
+ * @param value La valeur a assigner.
+ * @return Le nom du script.
+*/
 void	addEnv(vector<string>& storage, const string &key, const string &value)
 {
 	storage.push_back(key + "=" + value);
 }
 
+/**
+ * @brief Trouver le nom du script.
+ *
+ * @return Le nom du script.
+*/
 string findScriptName(const Request &request, const LocationConfig &location)
 {
 	const string	&path = request.getPath();
@@ -25,6 +38,11 @@ string findScriptName(const Request &request, const LocationConfig &location)
 	return(path.substr(0, idx + ext.size()));
 }
 
+/**
+ * @brief Trouver les infomations contenant le chemin vers le script.
+ *
+ * @return Le chemin vers le script.
+*/
 string findPathInfo(const Request &request, const LocationConfig &location)
 {
 	const string	&path = request.getPath();
@@ -36,6 +54,13 @@ string findPathInfo(const Request &request, const LocationConfig &location)
 	return(path.substr(idx + ext.size()));
 }
 
+/**
+ * @brief Converti un vecteur de string en tableau de char*.
+ *
+ * @param strorage Le vecteur.
+ * @param envp Le tableau contenant les valeurs du vecteur.
+ * @return Le tableau contenant l'env final.
+*/
 char	**VectorToChar(vector<string> &storage)
 {
 	char **envp = new char*[storage.size() + 1];
@@ -48,6 +73,16 @@ char	**VectorToChar(vector<string> &storage)
 	return (envp);
 }
 
+/**
+ * @brief Transforme les headers dans le bon format de l'env.
+ *
+ * On prend le nom du header puis on ajoute "HTTP_" au debut du string,
+ * les '-' deviennent '_' et tous les caracteres deviennent majuscule.
+ *
+ * @param name Le nom du header.
+ * @param meta Name mis en majuscule avec des '_'.
+ * @return "HTTP_" joint au nom transforme.
+*/
 std::string	header_to_meta(const std::string &name)	///< "Accept-Language" -> "HTTP_ACCEPT_LANGUAGE"
 {
 	string	meta;
