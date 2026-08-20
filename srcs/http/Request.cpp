@@ -1,5 +1,6 @@
 #include "../../includes/Request.hpp"
 #include <cerrno>
+#include <cstddef>
 #include <cstdlib>
 #include <string>
 
@@ -11,6 +12,10 @@ Request::Request(void) : _State(ST_REQUEST_LINE),
 						_MaxBodySize(DEFAULT_BODY_SIZE),
 						_ContentLength(0),
 						_HasContentLength(false),
+						_CurrentChunkRead(0),
+						_CurrentChunkSize(0),
+						_TotalDechunked(0),
+						_IsChunked(false),
 						_Srv(NULL){}
 
 Request::~Request(void) {}
@@ -30,6 +35,10 @@ Request::Request(const Request& to_copy) :
 	_MaxBodySize(to_copy._MaxBodySize),
 	_ContentLength(to_copy._ContentLength),
 	_HasContentLength(to_copy._HasContentLength),
+	_CurrentChunkRead(to_copy._CurrentChunkRead),
+	_CurrentChunkSize(to_copy._CurrentChunkSize),
+	_TotalDechunked(to_copy._TotalDechunked),
+	_IsChunked(to_copy._IsChunked),
 	_Srv(to_copy._Srv) {}
 
 Request	&Request::operator=(const Request& src)
@@ -50,6 +59,10 @@ Request	&Request::operator=(const Request& src)
 		this->_MaxBodySize = src._MaxBodySize;
 		this->_ContentLength = src._ContentLength;
 		this->_HasContentLength = src._HasContentLength;
+		_CurrentChunkRead = src._CurrentChunkRead;
+		_CurrentChunkSize = src._CurrentChunkSize;
+		_TotalDechunked = src._TotalDechunked;
+		_IsChunked = src._IsChunked;
 		this->_Srv = src._Srv;
 	}
 	return (*this);
@@ -524,5 +537,32 @@ bool	Request::findBody()
 
 bool	Request::findChunkSize()
 {
-	
+	while(true)
+	{
+		size_t	pos = _Raw.find("\r\n");
+		if (pos == string::npos)
+			return (false);
+		string	chunkSize = _Raw.substr(0, pos);
+		if(size_t semiColonPos = chunkSize.find(";"))
+			chunkSize.erase(semiColonPos, chunkSize.size());
+		trim(chunkSize);
+		char	*end;
+		errno = 0;
+		_CurrentChunkSize = strtol(chunkSize.c_str(), &end, 16);
+		if (_CurrentChunkSize == 0)
+		{
+			// lire trailers restant jusqu'a ligne vide et break ;
+		}
+		_Raw.erase(0, pos + 2);
+		_Body += _Raw.substr(0, _CurrentChunkSize);
+		if (_Raw.find("\r\n") == 0)
+			_Raw.erase(0, _CurrentChunkSize + 2);
+		else
+			return (false);
+		
+		if (_TotalDechunked + _CurrentChunkSize >= _MaxBodySize)
+			return (false);
+		_TotalDechunked += _CurrentChunkSize;
+	}
+	return(true);
 }
