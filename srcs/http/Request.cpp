@@ -257,7 +257,7 @@ bool	Request::findHeaders(int n){
 				return false;
 			}
 			else{
-				it->second += ", " + value;
+				it->second += "," + value;
 			}
 		}
 	}

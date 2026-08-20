@@ -4,7 +4,6 @@
 #include "../includes/EventLoop.hpp"
 #include <iostream>
 #include <exception>
-#include <signal.h>
 
 using namespace std;
 
