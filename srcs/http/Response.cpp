@@ -89,6 +89,9 @@ int	Response::getStatus(void) const
 
 	/*===Member Function===*/
 
+	/**
+ * @brief Reset les valeurs de la class Response pour reprendre la prochaine serialization.
+ */
 void	Response::Reset(void)
 {
 	_StatusCode = 0;
@@ -97,6 +100,9 @@ void	Response::Reset(void)
 	_Headers.clear();
 }
 
+/**
+ * @brief Calcule et ajoute aux headers la date en anglais a l'instant T.
+ */
 void	Response::setDate(void)
 {
 	char		date[64];
