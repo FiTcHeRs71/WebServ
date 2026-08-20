@@ -30,7 +30,6 @@ class Connection
 	int				_Fd;
 	Request			_Req;
 	string			_IpV4;
-	string			_InBuf;			///< octets recus, consommes par Request::Feed()
 	string			_OutBuf;		///< octets a envoyer, produits par Response::Serialize()
 	EConnState		_State;
 	time_t			_LastActivity;	///< utilise par B-05 pour les timeouts

@@ -20,7 +20,6 @@ Connection::Connection(const Connection& to_copy)
 	this->_Fd = to_copy._Fd;
 	this->_Req = to_copy._Req;
 	this->_IpV4 = to_copy._IpV4;
-	this->_InBuf = to_copy._InBuf;
 	this->_OutBuf = to_copy._OutBuf;
 	this->_State = to_copy._State;
 	this->_LastActivity = to_copy._LastActivity;
@@ -34,7 +33,6 @@ Connection	&Connection::operator=(const Connection& src)
 		this->_Fd = src._Fd;
 		this->_Req = src._Req;
 		this->_IpV4 = src._IpV4;
-		this->_InBuf= src._InBuf;
 		this->_OutBuf = src._OutBuf;
 		this->_State = src._State;
 		this->_LastActivity = src._LastActivity;
@@ -73,7 +71,7 @@ time_t Connection::getLastActivity() const{
 
 /**
  * @brief Call and check the return from recv()
- * Add the buffer in _InBuf then feed the request, check the return from it
+ * feed the Request::feed buffer with octet sended, check the return from it
  * and if the request is completed it will append in the fonction
  * QueueOutput
  *
@@ -88,9 +86,7 @@ ssize_t	Connection::OnReadable(){
 			return (r);
 	}
 	else{
-		_InBuf.append(buffer, r);
-		EParseResult res = _Req.Feed(_InBuf.c_str(), _InBuf.size());
-		_InBuf.erase(0, r);
+		EParseResult	res = _Req.Feed(buffer, r);
 		if (res == REQ_ERROR)
 			this->_State = CONN_CLOSING;
 		else if (res == REQ_COMPLETE){
