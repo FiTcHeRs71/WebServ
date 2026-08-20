@@ -1,4 +1,5 @@
 #include "../../includes/Response.hpp"
+#include <string>
 
 	/*===Canonical Form===*/
 Response::Response(void)
@@ -90,12 +91,14 @@ int	Response::getStatus(void) const
  */
 bool	Response::Serialize(std::string &out)
 {
-	cout << "HTTP/1.1 " << this->_StatusCode << this->_StatusText << "\r\n";
+	out += "HTTP/1.1 ";
+	out.push_back(_StatusCode);
+	out += " " + _StatusText + "\r\n";
 	for (map<string, string>::iterator it = _Headers.begin(); it != _Headers.end(); it++)
 	{
-		cout << it->first << ": " << it->second << "\r\n";
+		out += it->first + ": "  + it->second  + "\r\n";
 	}
-	cout << "\r\n";
-	cout << _Body << endl;
+	out += "\r\n";
+	out += _Body + "\r\n";
 	return (true);
 }
