@@ -1,6 +1,7 @@
 #include "../../includes/EventLoop.hpp"
 #include <cstddef>
 #include <arpa/inet.h>
+#include <sys/poll.h>
 
 /**
  * @brief Enregistre les sockets d'ecoute dans poll et dans _ListenFds
@@ -257,10 +258,14 @@ void	EventLoop::AcceptNewClients(int listen_fd)
  */
 bool	EventLoop::HandleClientEvent(size_t index)
 {
-	int fd = _Pollfds[index].fd;
+	int		fd = _Pollfds[index].fd;
+	short	revents = _Pollfds[index].revents;
+
 	map<int, Connection>::iterator it = _Clients.find(fd);
 	if (it == _Clients.end())
 		return true;
+	if (revents & (POLLERR | POLLNVAL))
+		return (false);
 	if (_Pollfds[index].revents & POLLIN){
 		it->second.OnReadable();
 		if (it->second.HasPendingOutput())
@@ -271,6 +276,8 @@ bool	EventLoop::HandleClientEvent(size_t index)
 		if (!it->second.HasPendingOutput())
 			SetEvents(fd, POLLIN);
 	}
+	if (revents & POLLHUP)
+		return (false);
 	if (it->second.getState() == CONN_CLOSING && !it->second.HasPendingOutput())
 		return false;
 	return true;
