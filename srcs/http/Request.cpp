@@ -321,6 +321,7 @@ void Request::reset(){
 	this->_ContentLength = 0;
 	this->_HasContentLength = false;
 	this->_Srv = NULL;
+	this->_MaxBodySize = DEFAULT_BODY_SIZE;
 }
 
 /**

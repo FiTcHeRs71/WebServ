@@ -24,11 +24,13 @@ static string	split_host_port(const string &host_header)
 	return (host_header.substr(0, flag));
 }
 /**
- * @brief renvoie le serveur demande dans la requette HTTP.
+ * @brief renvoie le serveur demande dans la requete HTTP ou le default serveur..
  *
- * @param config L'objet contenant tous les serveurs declarer dans le .conf
- * @param group_index L'index de vector<TAddrPortGroup> _AddrPorts du port ou la tentantive de connexion a lieu
- * @param host_header Le host:port issue du header de la requette HTPP
+ * La comparaison avec les server_name est insensible a la casse et ignore le :port
+ *
+ * @param config L'objet contenant tous les serveurs declares dans le .conf
+ * @param group_index L'index de vector<TAddrPortGroup> _AddrPorts du port ou la tentative de connexion a lieu
+ * @param host_header Le host:port issu du header de la requette HTTP
  * @return le ServerConfig du groupe dont un server_name correspond au header Host:, sinon le default_server du groupe ; jamais NULL
 */
 const ServerConfig	&SelectServer(const ConfigParser &config, size_t group_index, const string &host_header)
