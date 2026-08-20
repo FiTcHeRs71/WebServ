@@ -3,6 +3,9 @@
 
 # include <iostream>
 # include <string>
+# include <map>
+
+using namespace std;
 
 /**
  * @brief Represente une reponse HTTP a construire et a envoyer au client.
@@ -14,6 +17,10 @@ class Response
 {
 	private:
 
+	int									_StatusCode;	///< 200, 404, 500...
+	std::string							_StatusText;	///< "OK", "Not Found"...
+	std::map<std::string, std::string>	_Headers;	///< cles telles quelles ("Content-Type")
+	std::string							_Body;
 
 
 	protected:
@@ -29,10 +36,15 @@ class Response
 	Response &operator=(const Response& src);
 
 	/*===Getters & Setters===*/
-
+	void				SetStatus(int code);					///< pose _StatusCode ET _StatusText
+	void				SetHeader(const std::string &key, const std::string &value);
+	void				SetBody(const std::string &body);	///< pose aussi Content-Length
+	const std::string	&getBody(void) const;
+	int					getStatus(void) const;
 
 	/*===Member Function===*/
 	bool	Serialize(std::string &out);
+	void	Reset(void);
 };
 
 #endif /*RESPONSE_HPP*/
