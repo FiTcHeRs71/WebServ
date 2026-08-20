@@ -70,6 +70,7 @@ void	EventLoop::Run(void)
 	int	status;
 	while (_Running)
 	{
+		vector<int> toClose;
 		status = poll(&_Pollfds[0], _Pollfds.size(), -1);
 		if (status == 0)
 			continue ;
@@ -83,19 +84,21 @@ void	EventLoop::Run(void)
 		for (size_t i = 0; i < _Pollfds.size(); i++)
 		{
 			if (_Pollfds[i].revents == 0)
-			{
-				i++;
 				continue ;
-			}
 			int	fd = _Pollfds[i].fd;
 			if (_ListenFds.count(fd)) ///< 1 is a listen fd so we accept, 0 isn't, its a client so we handle
 			{
 				if (_Pollfds[i].revents & POLLIN)
 					AcceptNewClients(fd);
-				i++;
+				continue;
 			}
-			else
-				HandleClientEvent(i);
+			else{
+				if (!HandleClientEvent(i))
+					toClose.push_back(_Pollfds[i].fd);
+			}
+		}
+		if (!toClose.empty()){
+			CleanClients(toClose);
 		}
 	}
 }
@@ -169,6 +172,20 @@ void	EventLoop::RemoveFd(int fd)
 }
 
 /**
+ * @brief Cleans up clients that have closed their connections
+ *
+ * @param toClose vector containing all the file descriptors
+ */
+void	EventLoop::CleanClients(vector<int>& toClose){
+	for(size_t i = 0; i < toClose.size(); i++){
+		this->RemoveFd(toClose[i]);
+		if (close(toClose[i]) < 0)
+			std::cout << "Error: close failed on " << toClose[i] << endl;
+		_Clients.erase(toClose[i]);
+	}
+}
+
+/**
  * @brief Change le masque d'events d'un fd deja present dans _Pollfds
  *
  * POLLOUT ne doit etre arme que si le client a des octets a envoyer (B-03).
@@ -217,14 +234,14 @@ void	EventLoop::AcceptNewClients(int listen_fd)
 		cerr << "Error: accept() failure." << endl;
 		return ;
 	}
-	if (fcntl(clientFd, F_SETFL, O_NONBLOCK) < 0)
+	if (fcntl(clientFd, F_SETFL, O_NONBLOCK) < 0){
 		close(clientFd);
-	_Clients[clientFd] = Connection();
+		return;
+	}
+	size_t groupIndex = _ListenFds[listen_fd];
+	_Clients[clientFd] = Connection(clientFd, groupIndex);
 	AddFd(clientFd, POLLIN);
 	_Clients[clientFd].setIpV4(inet_ntoa(clientAddr.sin_addr));
-	// TODO:	needs to be finished when connection is done and we can add the connection state
-	//			should have these lines then :	size_t groupIndex = _ListenFds[listen_fd];
-	//											_Clients[clientFd] = Connection(clientFd, groupIndex);
 }
 
 
@@ -235,10 +252,27 @@ void	EventLoop::AcceptNewClients(int listen_fd)
  * B-04 : POLLHUP / POLLERR / recv == 0 -> close + RemoveFd.
  *
  * @param index Index du pollfd client dans _Pollfds.
- * @return void
+ * @return true when all is ok
+ * @return false when the fd need to be closed
  */
-void	EventLoop::HandleClientEvent(size_t index)
+bool	EventLoop::HandleClientEvent(size_t index)
 {
-	(void)index;
+	int fd = _Pollfds[index].fd;
+	map<int, Connection>::iterator it = _Clients.find(fd);
+	if (it == _Clients.end())
+		return true;
+	if (_Pollfds[index].revents & POLLIN){
+		it->second.OnReadable();
+		if (it->second.HasPendingOutput())
+			SetEvents(fd, POLLIN | POLLOUT);
+	}
+	if (_Pollfds[index].revents & POLLOUT){
+		it->second.OnWritable();
+		if (!it->second.HasPendingOutput())
+			SetEvents(fd, POLLIN);
+	}
+	if (it->second.getState() == CONN_CLOSING && !it->second.HasPendingOutput())
+		return false;
+	return true;
+	//TODO Interception des POLLHUP POLLERR POLLNVAL et si recv == 0 pour ticket (B-04)
 }
-
