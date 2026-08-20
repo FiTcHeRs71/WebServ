@@ -1,4 +1,6 @@
 #include "../../includes/Response.hpp"
+#include <ctime>
+#include <sstream>
 #include <string>
 
 	/*===Canonical Form===*/
@@ -50,7 +52,7 @@ static std::string	StatusText(int code)
 		case 413: return "Payload Too Large";
 		case 500: return "Internal Server Error";
 		case 501: return "Not Implemented";
-		case 504: return "Gateaway Timeout";
+		case 504: return "Gateway Timeout";
 		case 505: return "HTTP Version Not Supported";
 		default: return "Unknown";
 	}
@@ -70,6 +72,9 @@ void	Response::SetHeader(const std::string &key, const std::string &value)
 void	Response::SetBody(const std::string &body)
 {
 	this->_Body = body;
+	ostringstream oss;
+	oss << body.size();
+	SetHeader("Content-length", oss.str());
 }
 
 const std::string	&Response::getBody(void) const
@@ -84,6 +89,23 @@ int	Response::getStatus(void) const
 
 	/*===Member Function===*/
 
+
+char	*Response::setDate(void)
+{
+	char		date[64];
+	time_t		now;
+	struct tm	*gmt;
+	now = time(NULL);
+	gmt = gmtime(&now);
+	if (gmt != NULL)
+	{
+		setlocale(LC_TIME, "C");
+		strftime(date, sizeof(date), "%a, %d %b %Y %H:%M:%S GMT", gmt);
+		SetHeader("Date", date);
+	}
+	return (NULL);
+}
+
 /**
  * @brief Serialise la reponse HTTP en une chaine prete a etre envoyee sur le socket.
  * @param out Chaine dans laquelle la reponse serialisee sera ecrite.
@@ -91,14 +113,17 @@ int	Response::getStatus(void) const
  */
 bool	Response::Serialize(std::string &out)
 {
-	out += "HTTP/1.1 ";
-	out.push_back(_StatusCode);
-	out += " " + _StatusText + "\r\n";
+	out.clear();
+	ostringstream oss;
+	oss << _StatusCode;
+	out += "HTTP/1.1 " + oss.str() + " " + _StatusText + "\r\n";
+	SetHeader("Server", "webserv");
+	setDate();
 	for (map<string, string>::iterator it = _Headers.begin(); it != _Headers.end(); it++)
 	{
 		out += it->first + ": "  + it->second  + "\r\n";
 	}
 	out += "\r\n";
-	out += _Body + "\r\n";
+	out += _Body;
 	return (true);
 }

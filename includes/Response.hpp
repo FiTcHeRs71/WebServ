@@ -45,6 +45,7 @@ class Response
 	/*===Member Function===*/
 	bool	Serialize(std::string &out);
 	void	Reset(void);
+	char	*setDate(void);
 };
 
 #endif /*RESPONSE_HPP*/
