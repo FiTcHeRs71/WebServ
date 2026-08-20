@@ -2,15 +2,6 @@
 #include <cstddef>
 #include <arpa/inet.h>
 
-
-// extern int _Signal = 0;
-
-// void	_SignalHandler(int sig){
-// 	_Signal = sig;
-// }
-
-
-
 /**
  * @brief Enregistre les sockets d'ecoute dans poll et dans _ListenFds
  *
@@ -76,7 +67,6 @@ EventLoop &EventLoop::operator=(const EventLoop& src)
  */
 void	EventLoop::Run(void)
 {
-	// signal(SIGINT, _SignalHandler);
 	int	status;
 	while (_Running)
 	{
@@ -93,13 +83,16 @@ void	EventLoop::Run(void)
 		for (size_t i = 0; i < _Pollfds.size(); i++)
 		{
 			if (_Pollfds[i].revents == 0)
+			{
+				i++;
 				continue ;
+			}
 			int	fd = _Pollfds[i].fd;
 			if (_ListenFds.count(fd)) ///< 1 is a listen fd so we accept, 0 isn't, its a client so we handle
 			{
 				if (_Pollfds[i].revents & POLLIN)
 					AcceptNewClients(fd);
-				continue;
+				i++;
 			}
 			else
 				HandleClientEvent(i);
@@ -224,14 +217,14 @@ void	EventLoop::AcceptNewClients(int listen_fd)
 		cerr << "Error: accept() failure." << endl;
 		return ;
 	}
-	if (fcntl(clientFd, F_SETFL, O_NONBLOCK) < 0){
+	if (fcntl(clientFd, F_SETFL, O_NONBLOCK) < 0)
 		close(clientFd);
-		return;
-	}
-	size_t groupIndex = _ListenFds[listen_fd];
-	_Clients[clientFd] = Connection(clientFd, groupIndex);
+	_Clients[clientFd] = Connection();
 	AddFd(clientFd, POLLIN);
 	_Clients[clientFd].setIpV4(inet_ntoa(clientAddr.sin_addr));
+	// TODO:	needs to be finished when connection is done and we can add the connection state
+	//			should have these lines then :	size_t groupIndex = _ListenFds[listen_fd];
+	//											_Clients[clientFd] = Connection(clientFd, groupIndex);
 }
 
 
@@ -246,25 +239,6 @@ void	EventLoop::AcceptNewClients(int listen_fd)
  */
 void	EventLoop::HandleClientEvent(size_t index)
 {
-	int fd = _Pollfds[index].fd;
-	map<int, Connection>::iterator it = _Clients.find(fd);
-	if (it == _Clients.end())
-		return;
-	if (_Pollfds[index].revents & POLLIN){
-		it->second.OnReadable();
-		if (it->second.HasPendingOutput())
-			SetEvents(fd, POLLIN | POLLOUT);
-	}
-	if (_Pollfds[index].revents & POLLOUT){
-		it->second.OnWritable();
-		if (!it->second.HasPendingOutput())
-			SetEvents(fd, POLLIN);
-	}
-	if (it->second.getState() == CONN_CLOSING){
-		if (close(fd) < 0)
-			cerr << "Error: " << strerror(errno) << endl;
-		RemoveFd(fd);
-	}
-	//TODO Interception des POLLHUP POLLERR POLLNVAL et si recv == 0 pour ticket (B-04)
+	(void)index;
 }
 
