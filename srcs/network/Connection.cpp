@@ -87,12 +87,13 @@ ssize_t	Connection::OnReadable(){
 	}
 	else{
 		EParseResult	res = _Req.Feed(buffer, r);
-		if (res == REQ_ERROR)
-			this->_State = CONN_CLOSING;
-		else if (res == REQ_COMPLETE){
+		while (res == REQ_COMPLETE){
 			QueueOutput("HTTP/1.1 200 OK\r\nContent-Length: 13\r\n\r\nHello world!\n");	//TODO (c-05)
 			_Req.reset();
+			res = _Req.Feed("", 0);
 		}
+		if (res == REQ_ERROR)
+			this->_State = CONN_CLOSING;
 	}
 	return (r);
 }
