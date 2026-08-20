@@ -1,11 +1,11 @@
 #include "../../includes/Response.hpp"
-#include <ctime>
-#include <sstream>
-#include <string>
 
 	/*===Canonical Form===*/
 Response::Response(void)
 {
+	_StatusCode = 0;
+	_StatusText = "";
+	_Body = "";
 	//std::cout << "Response default constructor called" << std::endl;
 }
 
@@ -74,7 +74,7 @@ void	Response::SetBody(const std::string &body)
 	this->_Body = body;
 	ostringstream oss;
 	oss << body.size();
-	SetHeader("Content-length", oss.str());
+	SetHeader("Content-Length", oss.str());
 }
 
 const std::string	&Response::getBody(void) const
@@ -89,8 +89,15 @@ int	Response::getStatus(void) const
 
 	/*===Member Function===*/
 
+void	Response::Reset(void)
+{
+	_StatusCode = 0;
+	_StatusText.clear();
+	_Body.clear();
+	_Headers.clear();
+}
 
-char	*Response::setDate(void)
+void	Response::setDate(void)
 {
 	char		date[64];
 	time_t		now;
@@ -103,7 +110,6 @@ char	*Response::setDate(void)
 		strftime(date, sizeof(date), "%a, %d %b %Y %H:%M:%S GMT", gmt);
 		SetHeader("Date", date);
 	}
-	return (NULL);
 }
 
 /**

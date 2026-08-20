@@ -4,6 +4,9 @@
 # include <iostream>
 # include <string>
 # include <map>
+# include <ctime>
+# include <clocale>
+# include <sstream>
 
 using namespace std;
 
@@ -22,6 +25,7 @@ class Response
 	std::map<std::string, std::string>	_Headers;	///< cles telles quelles ("Content-Type")
 	std::string							_Body;
 
+	void	setDate(void);
 
 	protected:
 
@@ -45,7 +49,6 @@ class Response
 	/*===Member Function===*/
 	bool	Serialize(std::string &out);
 	void	Reset(void);
-	char	*setDate(void);
 };
 
 #endif /*RESPONSE_HPP*/

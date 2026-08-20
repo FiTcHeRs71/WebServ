@@ -15,17 +15,17 @@ SRCS_CGI = $(addprefix $(SRC_DIR)/cgi/, \
 	CgiProcess.cpp)
 
 SRCS_CONFIG = $(addprefix $(SRC_DIR)/config/, \
-	LocationConfig.cpp \
-	ServerConfig.cpp \
 	config.cpp \
 	listen.cpp \
+	LocationConfig.cpp \
+	ServerConfig.cpp \
 	utils.cpp)
 
 SRCS_HTTP = $(addprefix $(SRC_DIR)/http/, \
-	Request.cpp \
-	Response.cpp \
 	http.cpp \
-	httpUtils.cpp)
+	httpUtils.cpp \
+	Request.cpp \
+	Response.cpp)
 
 SRCS_NETWORK = $(addprefix $(SRC_DIR)/network/, \
 	Connection.cpp \
