@@ -142,7 +142,7 @@ vector<string>	build_cgi_env(const Request &request, const LocationConfig &locat
 		addEnv(storage, "SERVER_NAME", request.getHeader("host"));
 	addEnv(storage, "SERVER_PORT", ss.str());
 	addEnv(storage, "GATEWAY_INTERFACE", "CGI/1.1");
-	addEnv(storage, "REMOTE_ADDR", connection.getIpv4());
+	addEnv(storage, "REMOTE_ADDR", connection.getIpV4());
 	addEnv(storage, "REDIRECT_STATUS", "200");
 
 	const map<string, string>	headers = request.getHeaders();
