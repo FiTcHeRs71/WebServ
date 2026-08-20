@@ -79,5 +79,6 @@ int						parser_return_code(const string &value, const size_t nb_args);
 string					parse_upload_store(const vector<string> &value);
 vector<TListenConfig>	parse_listen_directive(const vector<string> &tokens);
 string					to_absolute(const string &path, const string &cwd);
+const ServerConfig		&SelectServer(const ConfigParser &config, size_t group_index, const string &host_header);
 
 #endif /*CONFIG_HPP*/
