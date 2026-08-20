@@ -19,12 +19,6 @@ Connection::Connection(int fd, size_t group_index, const ConfigParser *config)
 	_Req.SetConnectionContext(config, group_index);
 }
 
-Connection::Connection(int fd, size_t group_index) :
-_Fd(fd),
-_State(CONN_READING),
-_LastActivity(time(NULL)),
-_GroupIndex(group_index) {}
-
 Connection::Connection(const Connection& to_copy)
 {
 	this->_Fd = to_copy._Fd;
