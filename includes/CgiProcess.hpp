@@ -2,6 +2,9 @@
 # define CGI_PROCESS_HPP
 
 # include "./LocationConfig.hpp"
+# include "./ServerConfig.hpp"
+#include "./Connection.hpp"
+#include "./Config.hpp"
 # include <ctime>
 # include <iostream>
 # include <sys/types.h>
@@ -48,10 +51,17 @@ class CgiProcess
 	pid_t	GetPid(void) const;
 
 	/*===Member Function===*/
-	bool	Start(const Request &request, const LocationConfig &location, const string &script_path);
+	bool	Start(const Request &request, const LocationConfig &location,
+					const ServerConfig &server, const Connection &connection,
+					const ConfigParser &config, const string &script_path);
 	void	Kill(void);				///< D-05
 	void	CloseFds(void);			///< Ferme les 2 pipes. Idempotente.
 	void	CloseWriteFd(void);		///< Ferme le stdin du CGI : D-03, quand le body est entierement ecrit.
 };
+
+vector<string>	build_cgi_env(const Request &request, const LocationConfig &location,
+					const ServerConfig &server, const Connection &connection,
+					const ConfigParser &config, const string &script_path);
+char	**VectorToChar(vector<string> &storage);
 
 #endif /*CGI_PROCESS_HPP*/
