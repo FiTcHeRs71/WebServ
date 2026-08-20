@@ -91,6 +91,10 @@ EParseResult	Request::Feed(const char *data, size_t n)
 		if (!findHeaders(n))
 			if (this->_State != ST_ERROR)
 				return (REQ_INCOMPLETE);
+	if (this->_State == ST_CHUNK_SIZE)
+		if (!findChunkSize())
+			if(this->_State == ST_ERROR)
+				return (REQ_INCOMPLETE);
 	if (this->_State == ST_BODY)
 		if (!findBody())
 			if (this->_State != ST_ERROR)
@@ -436,6 +440,19 @@ bool  Request::setUpContentLength()
 		else
 			this->_MaxBodySize = DEFAULT_BODY_SIZE;
 	}
+	if (getHeader("transfer-encoding") != "chunked")
+	{
+		this->_ErrorCode = 501;
+		cerr << "Error: " << this->_ErrorCode << ": Not Implemented" << endl;
+		this->_State = ST_ERROR;
+		return (false);
+	}
+	else
+	{
+		_IsChunked = true;
+		this->_State = ST_CHUNK_SIZE;
+		return(true);
+	}
 	if (value.empty())
 	{
 		if (this->_Method == "POST")
@@ -503,4 +520,9 @@ bool	Request::findBody()
 		return (true);
 	}
 	return (false);
+}
+
+bool	Request::findChunkSize()
+{
+	
 }

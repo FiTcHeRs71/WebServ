@@ -25,6 +25,7 @@ enum EParseState
 	ST_REQUEST_LINE,
 	ST_HEADERS,
 	ST_BODY,
+	ST_CHUNK_SIZE,
 	ST_DONE,
 	ST_ERROR
 };
@@ -54,6 +55,11 @@ class Request
 		size_t				_ContentLength;      ///< longueur annoncee par le header
 		bool				_HasContentLength;   ///< le header etait-il present ?
 		const ServerConfig*	_Srv;                ///< pose par B, sert a Resolve()
+
+		bool	_IsChunked;
+		size_t	_CurrentChunkSize;		///< taille du chunk en cours de lecture
+		size_t	_CurrentChunkRead;		///< octets deja lus de ce chunk
+		size_t	_TotalDechunked;		///< cumul, compare a _MaxBodySize
 
 	protected:
 
@@ -90,6 +96,7 @@ class Request
 	bool				expandEncodingUrl();
 	void				trimSlash();
 	bool				findBody();
+	bool				findChunkSize();
 
 	friend ostream& operator<<(ostream& flux, Request& obj);
 };
