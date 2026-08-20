@@ -1,4 +1,5 @@
 #include "../../includes/Connection.hpp"
+#include <ctime>
 
 	/*===Canonical Form===*/
 Connection::Connection(void) :
@@ -8,6 +9,15 @@ _LastActivity(time(NULL)),
 _GroupIndex(0) {}
 
 Connection::~Connection(void) {}
+
+Connection::Connection(int fd, size_t group_index, const ConfigParser *config)
+	:_Fd(fd),
+	_State(CONN_READING)
+	,_LastActivity(time(NULL))
+	,_GroupIndex(group_index)
+{
+	_Req.SetConnectionContext(config, group_index);
+}
 
 Connection::Connection(int fd, size_t group_index) :
 _Fd(fd),
