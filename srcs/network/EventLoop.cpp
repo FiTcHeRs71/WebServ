@@ -39,6 +39,7 @@ EventLoop::EventLoop(const EventLoop& to_copy)
 	,_ListenFds(to_copy._ListenFds)
 	,_Config(to_copy._Config)
 	,_Running(to_copy._Running)
+	,_CgiToClient(to_copy._CgiToClient)
 {
 	//cout << "EventLoop copy constructor called." << endl;
 }
@@ -52,6 +53,7 @@ EventLoop &EventLoop::operator=(const EventLoop& src)
 		this->_ListenFds = src._ListenFds;
 		this->_Config = src._Config;
 		this->_Running = src._Running;
+		this->_CgiToClient = src._CgiToClient;
 	}
 	//cout << "EventLoop copy assignment operator called." << endl;
 	return (*this);
@@ -93,10 +95,10 @@ void	EventLoop::Run(void)
 					AcceptNewClients(fd);
 				continue;
 			}
-			else{
-				if (!HandleClientEvent(i))
-					toClose.push_back(_Pollfds[i].fd);
-			}
+			else if (_CgiToClient.count(fd))
+				HandleCgiEvent(fd, _Pollfds[i].revents);
+			else if (!HandleClientEvent(i))
+				toClose.push_back(_Pollfds[i].fd);
 		}
 		if (!toClose.empty()){
 			CleanClients(toClose);
@@ -282,4 +284,54 @@ bool	EventLoop::HandleClientEvent(size_t index)
 		return false;
 	return true;
 	//TODO Interception des POLLHUP POLLERR POLLNVAL et si recv == 0 pour ticket (B-04)
+}
+
+/**
+ * @brief Branche les pipes d'un CGI fraichement forke sur le poll (STUB B-07)
+ *
+ * Ajoute les deux pipes a _Pollfds et les associe au client dans
+ * _CgiToClient, pour que HandleCgiEvent() sache a qui rendre la reponse.
+ *
+ * @param client_fd Le client qui attend la sortie du script.
+ * @param cgi_read_fd Pipe de lecture (sortie du script), surveille en POLLIN.
+ * @param cgi_write_fd Pipe d'ecriture (corps de la requete), POLLOUT. -1 si rien a envoyer.
+ * @return void
+ */
+void	EventLoop::RegisterCgi(int client_fd, int cgi_read_fd, int cgi_write_fd)
+{
+	(void)client_fd;
+	(void)cgi_read_fd;
+	(void)cgi_write_fd;
+}
+
+/**
+ * @brief Debranche les pipes d'un CGI termine ou abandonne (STUB B-07)
+ *
+ * A appeler a la fin du script comme a la deconnexion prematuree du client.
+ * Sans ca, un fd recycle par le noyau retomberait dans la branche CGI du
+ * dispatch. RemoveFd() invalide les index : purger apres la boucle de Run().
+ *
+ * @param client_fd Le client dont il faut fermer les pipes.
+ * @return void
+ */
+void	EventLoop::UnregisterCgi(int client_fd)
+{
+	(void)client_fd;
+}
+
+/**
+ * @brief Traite un evenement sur un pipe CGI (STUB B-07)
+ *
+ * Remonte au client via _CgiToClient : POLLIN -> lire la sortie du script
+ * vers son outBuf, POLLOUT -> pousser le corps de la requete dans le script.
+ * POLLHUP sur le pipe de lecture = script fini, la reponse est complete.
+ *
+ * @param fd Le pipe signale pret par poll().
+ * @param revents Masque retourne par poll() pour ce pipe.
+ * @return void
+ */
+void	EventLoop::HandleCgiEvent(int fd, short revents)
+{
+	(void)fd;
+	(void)revents;
 }

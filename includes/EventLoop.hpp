@@ -24,16 +24,16 @@ using namespace std;
  * ou une I/O peut etre declenchee. Le dispatch se fait par appartenance
  * du fd a _ListenFds (accept) ou a _Clients (HandleClientEvent).
  */
-
 class EventLoop
 {
 	private:
 
-	std::vector<struct pollfd>	_Pollfds;		///< Le tableau passe a poll(), index volatile
-	std::map<int, Connection>	_Clients;		///< fd client -> etat de la connexion
-	std::map<int, size_t>		_ListenFds;		///< fd d'ecoute -> index dans _AddrPorts
-	const ConfigParser			*_Config;		///< Conf parse, pour retrouver le TAddrPortGroup d'un client
-	bool						_Running;		///< Garde Run() en vie tant qu'il est true
+	vector<struct pollfd>	_Pollfds;		///< Le tableau passe a poll(), index volatile
+	map<int, Connection>	_Clients;		///< fd client -> etat de la connexion
+	map<int, size_t>		_ListenFds;		///< fd d'ecoute -> index dans _AddrPorts
+	const ConfigParser		*_Config;		///< Conf parse, pour retrouver le TAddrPortGroup d'un client
+	bool					_Running;		///< Garde Run() en vie tant qu'il est true
+	map<int, int>			_CgiToClient;	///< fd de pipe -> fd du client qui attend la reponse
 
 	public:
 
@@ -47,13 +47,15 @@ class EventLoop
 	void	RemoveFd(int fd);					///< Retire fd de _Pollfds, n'invalide pas _Clients
 	void	SetEvents(int fd, short events);	///< Re-arme POLLIN / POLLOUT sur un fd deja surveille
 	void	CleanClients(vector<int>& toClose);
+	void	RegisterCgi(int client_fd, int cgi_read_fd, int cgi_write_fd);	///< Branche les pipes CGI sur le poll (B-07)
+	void	UnregisterCgi(int client_fd);		///< Ferme et oublie les pipes d'un CGI fini (B-07)
 
 	private:
 
 	void	AcceptNewClients(int listen_fd);	///< accept() sur un listen-fd pret, O_NONBLOCK immediat
 	bool	HandleClientEvent(size_t index);	///< I/O client (B-03) : recv/send selon revents
 	int		FindFd(int fd);						///< Index de fd dans _Pollfds, -1 si absent
-
+	void	HandleCgiEvent(int fd, short revents);	///< I/O pipe CGI (B-07) : lit/ecrit selon revents
 };
 
 #endif
