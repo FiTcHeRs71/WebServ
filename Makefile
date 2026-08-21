@@ -18,6 +18,7 @@ SRCS_CONFIG = $(addprefix $(SRC_DIR)/config/, \
 	config.cpp \
 	listen.cpp \
 	LocationConfig.cpp \
+	resolve_server.cpp \
 	ServerConfig.cpp \
 	utils.cpp)
 

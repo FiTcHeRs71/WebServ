@@ -1,4 +1,5 @@
 #include "../../includes/Request.hpp"
+#include "../../includes/Config.hpp"
 #include <cerrno>
 #include <cstdlib>
 #include <string>
@@ -11,7 +12,9 @@ Request::Request(void) : _State(ST_REQUEST_LINE),
 						_MaxBodySize(DEFAULT_BODY_SIZE),
 						_ContentLength(0),
 						_HasContentLength(false),
-						_Srv(NULL){}
+						_Srv(NULL),
+						_Config(NULL),
+						_GroupIndex(0){}
 
 Request::~Request(void) {}
 
@@ -30,7 +33,9 @@ Request::Request(const Request& to_copy) :
 	_MaxBodySize(to_copy._MaxBodySize),
 	_ContentLength(to_copy._ContentLength),
 	_HasContentLength(to_copy._HasContentLength),
-	_Srv(to_copy._Srv) {}
+	_Srv(to_copy._Srv),
+	_Config(to_copy._Config),
+	_GroupIndex(to_copy._GroupIndex){}
 
 Request	&Request::operator=(const Request& src)
 {
@@ -51,6 +56,8 @@ Request	&Request::operator=(const Request& src)
 		this->_ContentLength = src._ContentLength;
 		this->_HasContentLength = src._HasContentLength;
 		this->_Srv = src._Srv;
+		this->_Config = src._Config;
+		this->_GroupIndex = src._GroupIndex;
 	}
 	return (*this);
 }
@@ -268,6 +275,8 @@ bool	Request::findHeaders(int n){
 		return false;
 	}
 	this->_Raw.erase(0, pos + 4);
+	if (this->_Config != NULL)
+		SetServerConfig(&SelectServer(*this->_Config, this->_GroupIndex, getHeader("host")));
 	return (setUpContentLength());
 }
 
@@ -311,6 +320,8 @@ void Request::reset(){
 	this->_RequestOctetsSize = this->_Raw.size();
 	this->_ContentLength = 0;
 	this->_HasContentLength = false;
+	this->_Srv = NULL;
+	this->_MaxBodySize = DEFAULT_BODY_SIZE;
 }
 
 /**
@@ -370,6 +381,12 @@ const int& Request::getErrorCode() const{
 map<string, string>	Request::getHeaders(void) const
 {
 	return(_Header);
+}
+
+void	Request::SetConnectionContext(const ConfigParser *config, size_t group_index)
+{
+	this->_Config = config;
+	this->_GroupIndex = group_index;
 }
 
 /**

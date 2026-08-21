@@ -240,7 +240,7 @@ void	EventLoop::AcceptNewClients(int listen_fd)
 		return;
 	}
 	size_t groupIndex = _ListenFds[listen_fd];
-	_Clients[clientFd] = Connection(clientFd, groupIndex);
+	_Clients[clientFd] = Connection(clientFd, groupIndex, _Config);
 	AddFd(clientFd, POLLIN);
 	_Clients[clientFd].setIpV4(inet_ntoa(clientAddr.sin_addr));
 }

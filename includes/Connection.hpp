@@ -23,6 +23,8 @@ enum EConnState
 	CONN_CLOSING		///< a fermer des que _OutBuf est vide //? si nous gerons http1.1 ne doit pas fermer apres l'envoie
 };
 
+class ConfigParser;
+
 class Connection
 {
 	private:
@@ -39,10 +41,10 @@ class Connection
 
 	/*===Canonical Form===*/
 	Connection(void);
-	Connection(int fd, size_t group_index);
 	~Connection(void);
 	Connection(const Connection& to_copy);
 	Connection &operator=(const Connection& src);
+	Connection(int fd, size_t group_index, const ConfigParser *config);
 
 	/*===Getters & Setters===*/
 	int				getFd(void) const;
@@ -58,7 +60,6 @@ class Connection
 	ssize_t		OnReadable(void);				///< un seul recv(), renvoie ce que recv() a rendu
 	ssize_t		OnWritable(void);				///< un seul send() partiel
 	void		QueueOutput(const string& data);
-
 };
 
 #endif /*CONNECTION_HPP*/

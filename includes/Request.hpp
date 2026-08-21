@@ -29,6 +29,8 @@ enum EParseState
 	ST_ERROR
 };
 
+class ConfigParser;
+
 /**
  * @brief Represente une requete HTTP recue par le serveur.
  *
@@ -54,6 +56,8 @@ class Request
 		size_t				_ContentLength;      ///< longueur annoncee par le header
 		bool				_HasContentLength;   ///< le header etait-il present ?
 		const ServerConfig*	_Srv;                ///< pose par B, sert a Resolve()
+		const ConfigParser*	_Config;
+		size_t				_GroupIndex;
 
 	protected:
 
@@ -76,6 +80,7 @@ class Request
 	const string&		getBody() const;
 	void				SetServerConfig(const ServerConfig *srv);
 	map<string, string>	getHeaders(void) const;
+	void				SetConnectionContext(const ConfigParser *config, size_t group_index);
 
 	// const string&	getBody() const;		///< (C-02)
 
