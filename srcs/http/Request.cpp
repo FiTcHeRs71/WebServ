@@ -110,7 +110,8 @@ EParseResult	Request::Feed(const char *data, size_t n)
 		if (!findHeaders(n))
 			if (this->_State != ST_ERROR)
 				return (REQ_INCOMPLETE);
-	while (this->_State >= 3 && this->_State <= 6)
+	while (this->_State == ST_CHUNK_SIZE || this->_State == ST_CHUNK_DATA
+		|| this->_State == ST_CHUNK_CRLF || this->_State == ST_CHUNK_TRAILER)
 	{
 		if (this->_State == ST_CHUNK_SIZE)
 			if (!findChunkSize())
@@ -486,17 +487,19 @@ bool  Request::setUpContentLength()
 		else
 			this->_MaxBodySize = DEFAULT_BODY_SIZE;
 	}
-	if (getHeader("transfer-encoding") == "chunked")
+	string	te = getHeader("transfer-encoding");
+	if (!te.empty())
 	{
+		if(te != "chunked")
+		{
+			_ErrorCode = 501;
+			cerr << "Error: " << this->_ErrorCode << ": Not Implemented" << endl;
+			_State = ST_ERROR;
+			return(false);
+		}
 		_IsChunked = true;
-		this->_State = ST_CHUNK_SIZE;
-		return(true);
-	}
-	else
-	{
-		_IsChunked = true;
-		this->_State = ST_CHUNK_SIZE;
-		return(true);
+		_State = ST_CHUNK_SIZE;
+		return (true);
 	}
 	if (value.empty())
 	{
@@ -580,7 +583,7 @@ bool	Request::findChunkSize()
 	char	*end;
 	errno = 0;
 	long n = strtol(chunkSize.c_str(), &end, 16);
-	if (errno == ERANGE || *end != '\0' || end == chunkSize.c_str())
+	if (n < 0 || errno == ERANGE || *end != '\0' || end == chunkSize.c_str())
 	{
 		_State = ST_ERROR;
 		_ErrorCode = 400;
