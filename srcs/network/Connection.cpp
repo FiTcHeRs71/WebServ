@@ -96,9 +96,14 @@ ssize_t	Connection::OnReadable(){
 		while (res == REQ_COMPLETE){
 			string	out;
 			const ServerConfig *srv = _Req.getServerConfig();
-			Response	rep = HandleRequest(_Req, *srv);
+			if (srv == NULL)
+			{
+				_State = CONN_CLOSING;
+				break ;
+			}
+			Response	rep = HandleRequest(_Req, *srv, *this);
 			rep.Serialize(out);
-			QueueOutput(out);	//TODO (c-05)
+			QueueOutput(out);
 			_Req.reset();
 			res = _Req.Feed("", 0);
 		}
