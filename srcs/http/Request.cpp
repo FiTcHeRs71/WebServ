@@ -40,6 +40,8 @@ Request::Request(const Request& to_copy) :
 	_ContentLength(to_copy._ContentLength),
 	_HasContentLength(to_copy._HasContentLength),
 	_Srv(to_copy._Srv),
+	_Config(to_copy._Config),
+	_GroupIndex(to_copy._GroupIndex),
 	_IsChunked(to_copy._IsChunked),
 	_CurrentChunkSize(to_copy._CurrentChunkSize),
 	_CurrentChunkRead(to_copy._CurrentChunkRead),
@@ -374,6 +376,8 @@ void Request::reset(){
 	this->_CurrentChunkRead = 0;
 	this->_CurrentChunkSize = 0;
 	this->_TotalDechunked = 0;
+	this->_Srv = NULL;
+	this->_MaxBodySize = DEFAULT_BODY_SIZE;
 }
 
 /**
@@ -508,7 +512,7 @@ bool  Request::setUpContentLength()
 	string	te = getHeader("transfer-encoding");
 	if (!te.empty())
 	{
-		if(te != "chunked")
+		if(te != "chunked" || te != "Chunked")
 		{
 			_ErrorCode = 501;
 			cerr << "Error: " << this->_ErrorCode << ": Not Implemented" << endl;
@@ -598,12 +602,28 @@ bool	Request::findChunkSize()
 {
 	size_t	pos = _Raw.find("\r\n");
 	if (pos == string::npos)
+	{
+		if(_Raw.size() > 32)
+		{
+			_State = ST_ERROR;
+			_ErrorCode = 400;
+			cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+			return(false);
+		}
 		return(false);
+	}
 	string	chunkSize = _Raw.substr(0, pos);
 	size_t semi = chunkSize.find(";");
 	if(semi != string::npos)
 		chunkSize.erase(semi);
 	trim(chunkSize);
+	if (chunkSize.empty() || chunkSize.find_first_not_of("0123456789abcdefABCDEF") != string::npos)
+	{
+		_State = ST_ERROR;
+		_ErrorCode = 400;
+		cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+		return(false);
+	}
 	char	*end;
 	errno = 0;
 	long n = strtol(chunkSize.c_str(), &end, 16);
@@ -694,7 +714,16 @@ bool	Request::findChunkTrailer()
 	}
 	size_t pos = _Raw.find("\r\n\r\n");
 	if (pos == string::npos)
+	{
+		if (_Raw.size() > REQUESTMAXSIZE)
+		{
+			_State = ST_ERROR;
+			_ErrorCode = 400;
+			cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+			return(false);	
+		}
 		return(false);
+	}
 	_Raw.erase(0, pos + 4);
 	_Header["content-length"] = oss.str();
 	_Header.erase("transfer-encoding");
