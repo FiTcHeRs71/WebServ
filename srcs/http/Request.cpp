@@ -150,7 +150,7 @@ EParseResult	Request::Feed(const char *data, size_t n)
  */
 bool Request::findRequestLine(int n){
 	(void)n;
-	size_t pos = this->_Raw.find("\r\n");
+	size_t	pos = this->_Raw.find("\r\n");
 	if (pos == string::npos)
 	{
 		if (this->_Raw.size() > REQUESTMAXSIZE)
@@ -167,8 +167,6 @@ bool Request::findRequestLine(int n){
 		this->_State = ST_ERROR;
 		return (false);
 	}
-	if (pos == string::npos)
-		return false;
 	if (!setUpMethod())
 		return false;
 	if (!setUpPath())
@@ -269,7 +267,7 @@ bool	Request::setUpVersion(){
  */
 bool	Request::findHeaders(int n){
 	(void)n;
-	size_t    pos = this->_Raw.find("\r\n\r\n");
+	size_t	pos = this->_Raw.find("\r\n\r\n");
 	if (pos == string::npos)
 	{
 		if (this->_Raw.size() > REQUESTMAXSIZE)
@@ -288,8 +286,6 @@ bool	Request::findHeaders(int n){
 		cerr << "Error: " << this->_ErrorCode << ": Request Header Fields Too Large" << endl;
 		return (false);
 	}
-	if (pos == string::npos)
-		return false;
 	stringstream ss(_Raw);
 	string line;
 	while(getline(ss, line)){
@@ -638,7 +634,6 @@ bool	Request::findChunkData()
 	}
 	if (_CurrentChunkRead < _CurrentChunkSize)
 		return(false); // reste des octets a lire.
-	_TotalDechunked += take;
 	this->_State = ST_CHUNK_CRLF;
 	return (true);
 }
