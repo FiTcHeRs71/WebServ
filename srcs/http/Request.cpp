@@ -3,6 +3,7 @@
 #include <cerrno>
 #include <cstddef>
 #include <cstdlib>
+#include <sstream>
 #include <string>
 
 	/*===Canonical Form===*/
@@ -38,6 +39,10 @@ Request::Request(const Request& to_copy) :
 	_MaxBodySize(to_copy._MaxBodySize),
 	_ContentLength(to_copy._ContentLength),
 	_HasContentLength(to_copy._HasContentLength),
+	_CurrentChunkRead(to_copy._CurrentChunkRead),
+	_CurrentChunkSize(to_copy._CurrentChunkSize),
+	_TotalDechunked(to_copy._TotalDechunked),
+	_IsChunked(to_copy._IsChunked),
 	_Srv(to_copy._Srv) {}
 
 Request	&Request::operator=(const Request& src)
@@ -58,10 +63,10 @@ Request	&Request::operator=(const Request& src)
 		this->_MaxBodySize = src._MaxBodySize;
 		this->_ContentLength = src._ContentLength;
 		this->_HasContentLength = src._HasContentLength;
-		_CurrentChunkRead = src._CurrentChunkRead;
-		_CurrentChunkSize = src._CurrentChunkSize;
-		_TotalDechunked = src._TotalDechunked;
-		_IsChunked = src._IsChunked;
+		this->_CurrentChunkRead = src._CurrentChunkRead;
+		this->_CurrentChunkSize = src._CurrentChunkSize;
+		this->_TotalDechunked = src._TotalDechunked;
+		this->_IsChunked = src._IsChunked;
 		this->_Srv = src._Srv;
 		this->_Config = src._Config;
 		this->_GroupIndex = src._GroupIndex;
@@ -105,22 +110,25 @@ EParseResult	Request::Feed(const char *data, size_t n)
 		if (!findHeaders(n))
 			if (this->_State != ST_ERROR)
 				return (REQ_INCOMPLETE);
-	if (this->_State == ST_CHUNK_SIZE)
-		if (!findChunkSize())
-			if(this->_State != ST_ERROR)
-				return (REQ_INCOMPLETE);
-	if (this->_State == ST_CHUNK_DATA)
-		if (!findChunkData())
-			if(this->_State != ST_ERROR)
-				return (REQ_INCOMPLETE);
-	if (this->_State == ST_CHUNK_TRAILER)
-		if (!findChunkTrailer())
-			if(this->_State != ST_ERROR)
-				return (REQ_INCOMPLETE);
-	if (this->_State == ST_CHUNK_CRLF)
-		if (!findChunkCrlf())
-			if(this->_State != ST_ERROR)
-				return (REQ_INCOMPLETE);
+	while (this->_State >= 3 && this->_State <= 6)
+	{
+		if (this->_State == ST_CHUNK_SIZE)
+			if (!findChunkSize())
+				if(this->_State != ST_ERROR)
+					return (REQ_INCOMPLETE);
+		if (this->_State == ST_CHUNK_DATA)
+			if (!findChunkData())
+				if(this->_State != ST_ERROR)
+					return (REQ_INCOMPLETE);
+		if (this->_State == ST_CHUNK_TRAILER)
+			if (!findChunkTrailer())
+				if(this->_State != ST_ERROR)
+					return (REQ_INCOMPLETE);
+		if (this->_State == ST_CHUNK_CRLF)
+			if (!findChunkCrlf())
+				if(this->_State != ST_ERROR)
+					return (REQ_INCOMPLETE);
+	}
 	if (this->_State == ST_BODY)
 		if (!findBody())
 			if (this->_State != ST_ERROR)
@@ -343,6 +351,10 @@ void Request::reset(){
 	this->_RequestOctetsSize = this->_Raw.size();
 	this->_ContentLength = 0;
 	this->_HasContentLength = false;
+	this->_IsChunked = false;
+	this->_CurrentChunkRead = 0;
+	this->_CurrentChunkSize = 0;
+	this->_TotalDechunked = 0;
 }
 
 /**
@@ -459,7 +471,7 @@ bool  Request::setUpContentLength()
 	char	*p_end = NULL;
 	long	converted;
 
-	if (!value.empty() && getHeader("transfer-encoding").empty())
+	if (!value.empty() && !getHeader("transfer-encoding").empty())
 	{
 		this->_ErrorCode = 400;
 		this->_State = ST_ERROR;
@@ -474,12 +486,11 @@ bool  Request::setUpContentLength()
 		else
 			this->_MaxBodySize = DEFAULT_BODY_SIZE;
 	}
-	if (getHeader("transfer-encoding") != "chunked")
+	if (getHeader("transfer-encoding") == "chunked")
 	{
-		this->_ErrorCode = 501;
-		cerr << "Error: " << this->_ErrorCode << ": Not Implemented" << endl;
-		this->_State = ST_ERROR;
-		return (false);
+		_IsChunked = true;
+		this->_State = ST_CHUNK_SIZE;
+		return(true);
 	}
 	else
 	{
@@ -568,8 +579,8 @@ bool	Request::findChunkSize()
 	trim(chunkSize);
 	char	*end;
 	errno = 0;
-	size_t n = strtol(chunkSize.c_str(), &end, 16);
-	if (n < 0 || errno == ERANGE || *end != '\0')
+	long n = strtol(chunkSize.c_str(), &end, 16);
+	if (errno == ERANGE || *end != '\0' || end == chunkSize.c_str())
 	{
 		_State = ST_ERROR;
 		_ErrorCode = 400;
@@ -578,7 +589,7 @@ bool	Request::findChunkSize()
 	}
 	_CurrentChunkRead = 0;
 	_CurrentChunkSize = n;
-	_Raw.erase(0, _CurrentChunkSize + 2);
+	_Raw.erase(0, pos + 2);
 	if (_CurrentChunkSize == 0)
 		_State = ST_CHUNK_TRAILER;
 	else
@@ -591,11 +602,8 @@ bool	Request::findChunkData()
 	size_t missing = _CurrentChunkSize - _CurrentChunkRead;
 	size_t take = (missing < this->_Raw.size()) ? missing : this->_Raw.size();
 	_Body.append(_Raw, 0, take);
-	_Raw.erase(take);
+	_Raw.erase(0,take);
 	_CurrentChunkRead += take;
-	_CurrentChunkSize += take;
-	if (_CurrentChunkRead < _CurrentChunkSize)
-		return(false); // reste des octets a lire.
 	if (this->_MaxBodySize != 0 && this->_Body.size() > this->_MaxBodySize)
 	{
 		this->_ErrorCode = 413;
@@ -603,14 +611,19 @@ bool	Request::findChunkData()
 		cerr << "Error: " << this->_ErrorCode << ": Payload Too Large" << endl;
 		return (false);
 	}
-	_TotalDechunked += _CurrentChunkSize;
+	if (_CurrentChunkRead < _CurrentChunkSize)
+		return(false); // reste des octets a lire.
+	_TotalDechunked += take;
 	this->_State = ST_CHUNK_CRLF;
 	return (true);
 }
 
 bool	Request::findChunkCrlf()
 {
-	if (_Raw.find("\r\n") != 0)
+	size_t pos = _Raw.find("\r\n");
+	if (pos == string ::npos)
+		return(false);
+	else if (pos != 0)
 	{
 		_State = ST_ERROR;
 		_ErrorCode = 400;
@@ -618,16 +631,19 @@ bool	Request::findChunkCrlf()
 		return(false);
 	}
 	_Raw.erase(0, 2);
+	_State = ST_CHUNK_SIZE;
 	return(true);
 }
 
 bool	Request::findChunkTrailer()
 {
+	ostringstream oss;
+	oss << _Body.size();
 	if (_Raw.size() >= 2 && !_Raw.compare(0, 2, "\r\n"))
 	{
 		_Raw.erase(0, 2);
-		_Header["content-length"] = _Body.size();
-		_Header.erase(_Header.at("transfer-encoding"));
+		_Header["content-length"] = oss.str();
+		_Header.erase("transfer-encoding");
 		_State = ST_DONE;
 		return(true);
 	}
@@ -635,8 +651,8 @@ bool	Request::findChunkTrailer()
 	if (pos == string::npos)
 		return(false);
 	_Raw.erase(0, pos + 4);
-	_Header["content-length"] = _Body.size();
-	_Header.erase(_Header.at("transfer-encoding"));
+	_Header["content-length"] = oss.str();
+	_Header.erase("transfer-encoding");
 	_State = ST_DONE;
 	return(true);
 }
