@@ -459,7 +459,7 @@ bool  Request::setUpContentLength()
 	char	*p_end = NULL;
 	long	converted;
 
-	if (!value.empty() && !getHeader("transfer-encoding").empty())
+	if (!value.empty() && getHeader("transfer-encoding").empty())
 	{
 		this->_ErrorCode = 400;
 		this->_State = ST_ERROR;
@@ -562,8 +562,9 @@ bool	Request::findChunkSize()
 	if (pos == string::npos)
 		return(false);
 	string	chunkSize = _Raw.substr(0, pos);
-	if(size_t semiColonPos = chunkSize.find(";"))
-		chunkSize.erase(semiColonPos, chunkSize.size());
+	size_t semi = chunkSize.find(";");
+	if(semi != string::npos)
+		chunkSize.erase(semi);
 	trim(chunkSize);
 	char	*end;
 	errno = 0;
