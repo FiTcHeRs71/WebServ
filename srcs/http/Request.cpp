@@ -1,7 +1,9 @@
 #include "../../includes/Request.hpp"
 #include "../../includes/Config.hpp"
 #include <cerrno>
+#include <cstddef>
 #include <cstdlib>
+#include <sstream>
 #include <string>
 
 	/*===Canonical Form===*/
@@ -14,7 +16,10 @@ Request::Request(void) : _State(ST_REQUEST_LINE),
 						_HasContentLength(false),
 						_Srv(NULL),
 						_Config(NULL),
-						_GroupIndex(0){}
+						_GroupIndex(0),
+						_IsChunked(false),
+						_CurrentChunkSize(0),
+						_CurrentChunkRead(0){}
 
 Request::~Request(void) {}
 
@@ -35,7 +40,10 @@ Request::Request(const Request& to_copy) :
 	_HasContentLength(to_copy._HasContentLength),
 	_Srv(to_copy._Srv),
 	_Config(to_copy._Config),
-	_GroupIndex(to_copy._GroupIndex){}
+	_GroupIndex(to_copy._GroupIndex),
+	_IsChunked(to_copy._IsChunked),
+	_CurrentChunkSize(to_copy._CurrentChunkSize),
+	_CurrentChunkRead(to_copy._CurrentChunkRead) {}
 
 Request	&Request::operator=(const Request& src)
 {
@@ -58,6 +66,9 @@ Request	&Request::operator=(const Request& src)
 		this->_Srv = src._Srv;
 		this->_Config = src._Config;
 		this->_GroupIndex = src._GroupIndex;
+		this->_IsChunked = src._IsChunked;
+		this->_CurrentChunkSize = src._CurrentChunkSize;
+		this->_CurrentChunkRead = src._CurrentChunkRead;
 	}
 	return (*this);
 }
@@ -98,6 +109,26 @@ EParseResult	Request::Feed(const char *data, size_t n)
 		if (!findHeaders(n))
 			if (this->_State != ST_ERROR)
 				return (REQ_INCOMPLETE);
+	while (this->_State == ST_CHUNK_SIZE || this->_State == ST_CHUNK_DATA
+		|| this->_State == ST_CHUNK_CRLF || this->_State == ST_CHUNK_TRAILER)
+	{
+		if (this->_State == ST_CHUNK_SIZE)
+			if (!findChunkSize())
+				if(this->_State != ST_ERROR)
+					return (REQ_INCOMPLETE);
+		if (this->_State == ST_CHUNK_DATA)
+			if (!findChunkData())
+				if(this->_State != ST_ERROR)
+					return (REQ_INCOMPLETE);
+		if (this->_State == ST_CHUNK_TRAILER)
+			if (!findChunkTrailer())
+				if(this->_State != ST_ERROR)
+					return (REQ_INCOMPLETE);
+		if (this->_State == ST_CHUNK_CRLF)
+			if (!findChunkCrlf())
+				if(this->_State != ST_ERROR)
+					return (REQ_INCOMPLETE);
+	}
 	if (this->_State == ST_BODY)
 		if (!findBody())
 			if (this->_State != ST_ERROR)
@@ -117,16 +148,24 @@ EParseResult	Request::Feed(const char *data, size_t n)
  * @return false si erreur lors du parsing
  */
 bool Request::findRequestLine(int n){
-	this->_RequestOctetsSize += n;
-	if (this->_RequestOctetsSize > REQUESTMAXSIZE){
+	(void)n;
+	size_t	pos = this->_Raw.find("\r\n");
+	if (pos == string::npos)
+	{
+		if (this->_Raw.size() > REQUESTMAXSIZE)
+		{
+			this->_ErrorCode = 414;
+			this->_State = ST_ERROR;
+			return (false);
+		}
+		return (false);
+	}
+	if (pos > REQUESTMAXSIZE)
+	{
 		this->_ErrorCode = 414;
 		this->_State = ST_ERROR;
-		cerr << "Error :" << this->_ErrorCode << ": URI Too Long" << endl;
-		return false;
+		return (false);
 	}
-	size_t pos = this->_Raw.find("\r\n");
-	if (pos == string::npos)
-		return false;
 	if (!setUpMethod())
 		return false;
 	if (!setUpPath())
@@ -226,16 +265,26 @@ bool	Request::setUpVersion(){
  * @return false si erreur trouver
  */
 bool	Request::findHeaders(int n){
-	this->_HeadersOctetsSize += n;
-	if (this->_HeadersOctetsSize > REQUESTMAXSIZE){
+	(void)n;
+	size_t	pos = this->_Raw.find("\r\n\r\n");
+	if (pos == string::npos)
+	{
+		if (this->_Raw.size() > REQUESTMAXSIZE)
+		{
+			this->_State = ST_ERROR;
+			this->_ErrorCode = 431;
+			cerr << "Error: " << this->_ErrorCode << ": Request Header Fields Too Large" << endl;
+			return (false);
+		}
+		return (false);
+	}
+	if (pos > REQUESTMAXSIZE)
+	{
 		this->_State = ST_ERROR;
 		this->_ErrorCode = 431;
 		cerr << "Error: " << this->_ErrorCode << ": Request Header Fields Too Large" << endl;
-		return false;
+		return (false);
 	}
-	size_t pos = this->_Raw.find("\r\n\r\n");
-	if (pos == string::npos)
-		return false;
 	stringstream ss(_Raw);
 	string line;
 	while(getline(ss, line)){
@@ -320,6 +369,9 @@ void Request::reset(){
 	this->_RequestOctetsSize = this->_Raw.size();
 	this->_ContentLength = 0;
 	this->_HasContentLength = false;
+	this->_IsChunked = false;
+	this->_CurrentChunkRead = 0;
+	this->_CurrentChunkSize = 0;
 	this->_Srv = NULL;
 	this->_MaxBodySize = DEFAULT_BODY_SIZE;
 }
@@ -453,6 +505,20 @@ bool  Request::setUpContentLength()
 		else
 			this->_MaxBodySize = DEFAULT_BODY_SIZE;
 	}
+	string	te = getHeader("transfer-encoding");
+	if (!te.empty())
+	{
+		if(te != "chunked" && te != "Chunked")
+		{
+			_ErrorCode = 501;
+			cerr << "Error: " << this->_ErrorCode << ": Not Implemented" << endl;
+			_State = ST_ERROR;
+			return(false);
+		}
+		_IsChunked = true;
+		_State = ST_CHUNK_SIZE;
+		return (true);
+	}
 	if (value.empty())
 	{
 		if (this->_Method == "POST")
@@ -520,4 +586,151 @@ bool	Request::findBody()
 		return (true);
 	}
 	return (false);
+}
+
+/**
+ * @brief Lit la ligne de taille du chunk courant (hex), extensions ignorees.
+ *        Consomme uniquement "taille[;ext]\r\n" dans _Raw.
+ * @return true si la taille est valide (passage a ST_CHUNK_DATA ou ST_CHUNK_TRAILER),
+ *        false si la ligne est incomplete, ou ST_ERROR / 400 si elle est malformee.
+*/
+bool	Request::findChunkSize()
+{
+	size_t	pos = _Raw.find("\r\n");
+	if (pos == string::npos)
+	{
+		if(_Raw.size() > 32)
+		{
+			_State = ST_ERROR;
+			_ErrorCode = 400;
+			cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+			return(false);
+		}
+		return(false);
+	}
+	string	chunkSize = _Raw.substr(0, pos);
+	size_t semi = chunkSize.find(";");
+	if(semi != string::npos)
+		chunkSize.erase(semi);
+	trim(chunkSize);
+	if (chunkSize.empty() || chunkSize.find_first_not_of("0123456789abcdefABCDEF") != string::npos)
+	{
+		_State = ST_ERROR;
+		_ErrorCode = 400;
+		cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+		return(false);
+	}
+	char	*end;
+	errno = 0;
+	long n = strtol(chunkSize.c_str(), &end, 16);
+	if (n < 0 || errno == ERANGE || *end != '\0' || end == chunkSize.c_str())
+	{
+		_State = ST_ERROR;
+		_ErrorCode = 400;
+		cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+		return(false);
+	}
+	_CurrentChunkRead = 0;
+	_CurrentChunkSize = n;
+	_Raw.erase(0, pos + 2);
+	if (_CurrentChunkSize == 0)
+		_State = ST_CHUNK_TRAILER;
+	else
+		_State = ST_CHUNK_DATA;
+	return(true);
+}
+
+/**
+ * @brief Accumule les octets de payload du chunk, comme findBody().
+ *        Prend min(reste du chunk, _Raw.size()) ; le surplus (CRLF, chunk suivant)
+ *        reste dans _Raw. Verifie client_max_body_size au fur et a mesure (413).
+ * @return true si les _CurrentChunkSize octets sont lus (passage a ST_CHUNK_CRLF),
+ *        false s'il en manque, ou ST_ERROR / 413 si la limite est depassee.
+*/
+bool	Request::findChunkData()
+{
+	size_t missing = _CurrentChunkSize - _CurrentChunkRead;
+	size_t take = (missing < this->_Raw.size()) ? missing : this->_Raw.size();
+	_Body.append(_Raw, 0, take);
+	_Raw.erase(0,take);
+	_CurrentChunkRead += take;
+	if (this->_MaxBodySize != 0 && this->_Body.size() > this->_MaxBodySize)
+	{
+		this->_ErrorCode = 413;
+		this->_State = ST_ERROR;
+		cerr << "Error: " << this->_ErrorCode << ": Payload Too Large" << endl;
+		return (false);
+	}
+	if (_CurrentChunkRead < _CurrentChunkSize)
+		return(false); // reste des octets a lire.
+	this->_State = ST_CHUNK_CRLF;
+	return (true);
+}
+
+/**
+ * @brief Consomme le \r\n qui suit les donnees du chunk (hors taille).
+ * @return true si le CRLF est present en tete de _Raw (retour a ST_CHUNK_SIZE),
+ *         false s'il est incomplet, ou ST_ERROR / 400 s'il est absent/mal place.
+*/
+bool	Request::findChunkCrlf()
+{
+	if (_Raw.empty())
+		return(false);
+	if (_Raw[0] != '\r')
+	{
+		_State = ST_ERROR;
+		_ErrorCode = 400;
+		cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+		return(false);
+	}
+	if (_Raw.size() < 2)
+		return(false);
+	if (_Raw[1] != '\n')
+	{
+		_State = ST_ERROR;
+		_ErrorCode = 400;
+		cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+		return(false);
+	}
+	_Raw.erase(0, 2);
+	_State = ST_CHUNK_SIZE;
+	return(true);
+}
+
+/**
+ * @brief Lit et jette les trailers apres un chunk de taille 0, jusqu'a la ligne vide.
+ *        Ne les fusionne pas dans _Headers. Pose Content-Length sur la taille
+ *        de-chunkee et retire Transfer-Encoding.
+ * @return true si le bloc trailers est complet (ST_DONE),
+ *         false s'il manque encore des octets.
+*/
+bool	Request::findChunkTrailer()
+{
+	ostringstream oss;
+	oss << _Body.size();
+	if (_Raw.size() >= 2 && !_Raw.compare(0, 2, "\r\n"))
+	{
+		_Raw.erase(0, 2);
+		_Header["content-length"] = oss.str();
+		_Header.erase("transfer-encoding");
+		_State = ST_DONE;
+		return(true);
+	}
+	size_t pos = _Raw.find("\r\n\r\n");
+	if (pos == string::npos)
+	{
+		if (_Raw.size() > REQUESTMAXSIZE)
+		{
+			_State = ST_ERROR;
+			_ErrorCode = 400;
+			cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+			return(false);	
+		}
+		return(false);
+	}
+	_Raw.erase(0, pos + 4);
+	_Header["content-length"] = oss.str();
+	_Header.erase("transfer-encoding");
+	_State = ST_DONE;
+	return(true);
 }

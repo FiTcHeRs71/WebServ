@@ -25,6 +25,10 @@ enum EParseState
 	ST_REQUEST_LINE,
 	ST_HEADERS,
 	ST_BODY,
+	ST_CHUNK_SIZE,
+	ST_CHUNK_TRAILER,
+	ST_CHUNK_DATA,
+	ST_CHUNK_CRLF,
 	ST_DONE,
 	ST_ERROR
 };
@@ -58,6 +62,10 @@ class Request
 		const ServerConfig*	_Srv;                ///< pose par B, sert a Resolve()
 		const ConfigParser*	_Config;
 		size_t				_GroupIndex;
+
+		bool				_IsChunked;
+		size_t				_CurrentChunkSize;		///< taille du chunk en cours de lecture
+		size_t				_CurrentChunkRead;		///< octets deja lus de ce chunk
 
 	protected:
 
@@ -95,6 +103,10 @@ class Request
 	bool				expandEncodingUrl();
 	void				trimSlash();
 	bool				findBody();
+	bool				findChunkSize();
+	bool				findChunkData();
+	bool				findChunkTrailer();
+	bool				findChunkCrlf();
 
 	friend ostream& operator<<(ostream& flux, Request& obj);
 };
