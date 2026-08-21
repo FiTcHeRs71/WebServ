@@ -588,6 +588,12 @@ bool	Request::findBody()
 	return (false);
 }
 
+/**
+ * @brief Lit la ligne de taille du chunk courant (hex), extensions ignorees.
+ *        Consomme uniquement "taille[;ext]\r\n" dans _Raw.
+ * @return true si la taille est valide (passage a ST_CHUNK_DATA ou ST_CHUNK_TRAILER),
+ *        false si la ligne est incomplete, ou ST_ERROR / 400 si elle est malformee.
+*/
 bool	Request::findChunkSize()
 {
 	size_t	pos = _Raw.find("\r\n");
@@ -618,6 +624,13 @@ bool	Request::findChunkSize()
 	return(true);
 }
 
+/**
+ * @brief Accumule les octets de payload du chunk, comme findBody().
+ *        Prend min(reste du chunk, _Raw.size()) ; le surplus (CRLF, chunk suivant)
+ *        reste dans _Raw. Verifie client_max_body_size au fur et a mesure (413).
+ * @return true si les _CurrentChunkSize octets sont lus (passage a ST_CHUNK_CRLF),
+ *        false s'il en manque, ou ST_ERROR / 413 si la limite est depassee.
+*/
 bool	Request::findChunkData()
 {
 	size_t missing = _CurrentChunkSize - _CurrentChunkRead;
@@ -638,6 +651,11 @@ bool	Request::findChunkData()
 	return (true);
 }
 
+/**
+ * @brief Consomme le \r\n qui suit les donnees du chunk (hors taille).
+ * @return true si le CRLF est present en tete de _Raw (retour a ST_CHUNK_SIZE),
+ *         false s'il est incomplet, ou ST_ERROR / 400 s'il est absent/mal place.
+*/
 bool	Request::findChunkCrlf()
 {
 	size_t pos = _Raw.find("\r\n");
@@ -655,6 +673,13 @@ bool	Request::findChunkCrlf()
 	return(true);
 }
 
+/**
+ * @brief Lit et jette les trailers apres un chunk de taille 0, jusqu'a la ligne vide.
+ *        Ne les fusionne pas dans _Headers. Pose Content-Length sur la taille
+ *        de-chunkee et retire Transfer-Encoding.
+ * @return true si le bloc trailers est complet (ST_DONE),
+ *         false s'il manque encore des octets.
+*/
 bool	Request::findChunkTrailer()
 {
 	ostringstream oss;
