@@ -1,5 +1,7 @@
 #include "../../includes/Connection.hpp"
+#include "../../includes/http.hpp"
 #include <ctime>
+#include <string>
 
 	/*===Canonical Form===*/
 Connection::Connection(void) :
@@ -92,7 +94,11 @@ ssize_t	Connection::OnReadable(){
 	else{
 		EParseResult	res = _Req.Feed(buffer, r);
 		while (res == REQ_COMPLETE){
-			QueueOutput("HTTP/1.1 200 OK\r\nContent-Length: 13\r\n\r\nHello world!\n");	//TODO (c-05)
+			string	out;
+			const ServerConfig *srv = _Req.getServerConfig();
+			Response	rep = HandleRequest(_Req, *srv);
+			rep.Serialize(out);
+			QueueOutput(out);	//TODO (c-05)
 			_Req.reset();
 			res = _Req.Feed("", 0);
 		}

@@ -383,6 +383,11 @@ map<string, string>	Request::getHeaders(void) const
 	return(_Header);
 }
 
+const ServerConfig		*Request::getServerConfig() const
+{
+	return(_Srv);
+}
+
 void	Request::SetConnectionContext(const ConfigParser *config, size_t group_index)
 {
 	this->_Config = config;

@@ -1,8 +1,7 @@
 #include "../../includes/http.hpp"
 
 Response	HandleRequest(const Request &request,
-					const ServerConfig &server,
-					const Connection &connection)
+					const ServerConfig &server)
 {
 	Response	response;
 	response.SetStatus(200);

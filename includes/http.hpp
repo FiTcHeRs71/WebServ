@@ -8,7 +8,6 @@
 # include <iostream>
 
 Response	HandleRequest(const Request &request,
-					const ServerConfig &server,
-					const Connection &connection);
+					const ServerConfig &server);
 
 #endif
