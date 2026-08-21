@@ -1,6 +1,7 @@
 #include "../../includes/EventLoop.hpp"
 #include <cstddef>
 #include <arpa/inet.h>
+#include <sys/poll.h>
 
 /**
  * @brief Enregistre les sockets d'ecoute dans poll et dans _ListenFds
@@ -38,6 +39,7 @@ EventLoop::EventLoop(const EventLoop& to_copy)
 	,_ListenFds(to_copy._ListenFds)
 	,_Config(to_copy._Config)
 	,_Running(to_copy._Running)
+	,_CgiToClient(to_copy._CgiToClient)
 {
 	//cout << "EventLoop copy constructor called." << endl;
 }
@@ -51,6 +53,7 @@ EventLoop &EventLoop::operator=(const EventLoop& src)
 		this->_ListenFds = src._ListenFds;
 		this->_Config = src._Config;
 		this->_Running = src._Running;
+		this->_CgiToClient = src._CgiToClient;
 	}
 	//cout << "EventLoop copy assignment operator called." << endl;
 	return (*this);
@@ -70,6 +73,7 @@ void	EventLoop::Run(void)
 	int	status;
 	while (_Running)
 	{
+		vector<int> toClose;
 		status = poll(&_Pollfds[0], _Pollfds.size(), -1);
 		if (status == 0)
 			continue ;
@@ -83,19 +87,21 @@ void	EventLoop::Run(void)
 		for (size_t i = 0; i < _Pollfds.size(); i++)
 		{
 			if (_Pollfds[i].revents == 0)
-			{
-				i++;
 				continue ;
-			}
 			int	fd = _Pollfds[i].fd;
 			if (_ListenFds.count(fd)) ///< 1 is a listen fd so we accept, 0 isn't, its a client so we handle
 			{
 				if (_Pollfds[i].revents & POLLIN)
 					AcceptNewClients(fd);
-				i++;
+				continue;
 			}
-			else
-				HandleClientEvent(i);
+			else if (_CgiToClient.count(fd))
+				HandleCgiEvent(fd, _Pollfds[i].revents);
+			else if (!HandleClientEvent(i))
+				toClose.push_back(_Pollfds[i].fd);
+		}
+		if (!toClose.empty()){
+			CleanClients(toClose);
 		}
 	}
 }
@@ -169,6 +175,20 @@ void	EventLoop::RemoveFd(int fd)
 }
 
 /**
+ * @brief Cleans up clients that have closed their connections
+ *
+ * @param toClose vector containing all the file descriptors
+ */
+void	EventLoop::CleanClients(vector<int>& toClose){
+	for(size_t i = 0; i < toClose.size(); i++){
+		this->RemoveFd(toClose[i]);
+		if (close(toClose[i]) < 0)
+			std::cout << "Error: close failed on " << toClose[i] << endl;
+		_Clients.erase(toClose[i]);
+	}
+}
+
+/**
  * @brief Change le masque d'events d'un fd deja present dans _Pollfds
  *
  * POLLOUT ne doit etre arme que si le client a des octets a envoyer (B-03).
@@ -217,14 +237,14 @@ void	EventLoop::AcceptNewClients(int listen_fd)
 		cerr << "Error: accept() failure." << endl;
 		return ;
 	}
-	if (fcntl(clientFd, F_SETFL, O_NONBLOCK) < 0)
+	if (fcntl(clientFd, F_SETFL, O_NONBLOCK) < 0){
 		close(clientFd);
-	_Clients[clientFd] = Connection();
+		return;
+	}
+	size_t groupIndex = _ListenFds[listen_fd];
+	_Clients[clientFd] = Connection(clientFd, groupIndex, _Config);
 	AddFd(clientFd, POLLIN);
 	_Clients[clientFd].setIpV4(inet_ntoa(clientAddr.sin_addr));
-	// TODO:	needs to be finished when connection is done and we can add the connection state
-	//			should have these lines then :	size_t groupIndex = _ListenFds[listen_fd];
-	//											_Clients[clientFd] = Connection(clientFd, groupIndex);
 }
 
 
@@ -235,10 +255,83 @@ void	EventLoop::AcceptNewClients(int listen_fd)
  * B-04 : POLLHUP / POLLERR / recv == 0 -> close + RemoveFd.
  *
  * @param index Index du pollfd client dans _Pollfds.
- * @return void
+ * @return true when all is ok
+ * @return false when the fd need to be closed
  */
-void	EventLoop::HandleClientEvent(size_t index)
+bool	EventLoop::HandleClientEvent(size_t index)
 {
-	(void)index;
+	int		fd = _Pollfds[index].fd;
+	short	revents = _Pollfds[index].revents;
+
+	map<int, Connection>::iterator it = _Clients.find(fd);
+	if (it == _Clients.end())
+		return true;
+	if (revents & (POLLERR | POLLNVAL))
+		return (false);
+	if (_Pollfds[index].revents & POLLIN){
+		it->second.OnReadable();
+		if (it->second.HasPendingOutput())
+			SetEvents(fd, POLLIN | POLLOUT);
+	}
+	if (_Pollfds[index].revents & POLLOUT){
+		it->second.OnWritable();
+		if (!it->second.HasPendingOutput())
+			SetEvents(fd, POLLIN);
+	}
+	if (revents & POLLHUP)
+		return (false);
+	if (it->second.getState() == CONN_CLOSING && !it->second.HasPendingOutput())
+		return false;
+	return true;
+	//TODO Interception des POLLHUP POLLERR POLLNVAL et si recv == 0 pour ticket (B-04)
 }
 
+/**
+ * @brief Branche les pipes d'un CGI fraichement forke sur le poll (STUB B-07)
+ *
+ * Ajoute les deux pipes a _Pollfds et les associe au client dans
+ * _CgiToClient, pour que HandleCgiEvent() sache a qui rendre la reponse.
+ *
+ * @param client_fd Le client qui attend la sortie du script.
+ * @param cgi_read_fd Pipe de lecture (sortie du script), surveille en POLLIN.
+ * @param cgi_write_fd Pipe d'ecriture (corps de la requete), POLLOUT. -1 si rien a envoyer.
+ * @return void
+ */
+void	EventLoop::RegisterCgi(int client_fd, int cgi_read_fd, int cgi_write_fd)
+{
+	(void)client_fd;
+	(void)cgi_read_fd;
+	(void)cgi_write_fd;
+}
+
+/**
+ * @brief Debranche les pipes d'un CGI termine ou abandonne (STUB B-07)
+ *
+ * A appeler a la fin du script comme a la deconnexion prematuree du client.
+ * Sans ca, un fd recycle par le noyau retomberait dans la branche CGI du
+ * dispatch. RemoveFd() invalide les index : purger apres la boucle de Run().
+ *
+ * @param client_fd Le client dont il faut fermer les pipes.
+ * @return void
+ */
+void	EventLoop::UnregisterCgi(int client_fd)
+{
+	(void)client_fd;
+}
+
+/**
+ * @brief Traite un evenement sur un pipe CGI (STUB B-07)
+ *
+ * Remonte au client via _CgiToClient : POLLIN -> lire la sortie du script
+ * vers son outBuf, POLLOUT -> pousser le corps de la requete dans le script.
+ * POLLHUP sur le pipe de lecture = script fini, la reponse est complete.
+ *
+ * @param fd Le pipe signale pret par poll().
+ * @param revents Masque retourne par poll() pour ce pipe.
+ * @return void
+ */
+void	EventLoop::HandleCgiEvent(int fd, short revents)
+{
+	(void)fd;
+	(void)revents;
+}

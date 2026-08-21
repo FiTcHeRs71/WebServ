@@ -130,7 +130,7 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 		return (false);
 	}
 	pid_t	pid = fork();
-	
+
 	if(pid == -1)
 	{
 		delete[] envp;
