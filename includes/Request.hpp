@@ -66,7 +66,6 @@ class Request
 		bool				_IsChunked;
 		size_t				_CurrentChunkSize;		///< taille du chunk en cours de lecture
 		size_t				_CurrentChunkRead;		///< octets deja lus de ce chunk
-		size_t				_TotalDechunked;		///< cumul, compare a _MaxBodySize
 
 	protected:
 

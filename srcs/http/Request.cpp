@@ -19,8 +19,7 @@ Request::Request(void) : _State(ST_REQUEST_LINE),
 						_GroupIndex(0),
 						_IsChunked(false),
 						_CurrentChunkSize(0),
-						_CurrentChunkRead(0),
-						_TotalDechunked(0){}
+						_CurrentChunkRead(0){}
 
 Request::~Request(void) {}
 
@@ -44,8 +43,7 @@ Request::Request(const Request& to_copy) :
 	_GroupIndex(to_copy._GroupIndex),
 	_IsChunked(to_copy._IsChunked),
 	_CurrentChunkSize(to_copy._CurrentChunkSize),
-	_CurrentChunkRead(to_copy._CurrentChunkRead),
-	_TotalDechunked(to_copy._TotalDechunked) {}
+	_CurrentChunkRead(to_copy._CurrentChunkRead) {}
 
 Request	&Request::operator=(const Request& src)
 {
@@ -71,7 +69,6 @@ Request	&Request::operator=(const Request& src)
 		this->_IsChunked = src._IsChunked;
 		this->_CurrentChunkSize = src._CurrentChunkSize;
 		this->_CurrentChunkRead = src._CurrentChunkRead;
-		this->_TotalDechunked = src._TotalDechunked;
 	}
 	return (*this);
 }
@@ -375,7 +372,6 @@ void Request::reset(){
 	this->_IsChunked = false;
 	this->_CurrentChunkRead = 0;
 	this->_CurrentChunkSize = 0;
-	this->_TotalDechunked = 0;
 	this->_Srv = NULL;
 	this->_MaxBodySize = DEFAULT_BODY_SIZE;
 }
