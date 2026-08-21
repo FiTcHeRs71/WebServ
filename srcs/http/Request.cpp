@@ -508,7 +508,7 @@ bool  Request::setUpContentLength()
 	string	te = getHeader("transfer-encoding");
 	if (!te.empty())
 	{
-		if(te != "chunked" || te != "Chunked")
+		if(te != "chunked" && te != "Chunked")
 		{
 			_ErrorCode = 501;
 			cerr << "Error: " << this->_ErrorCode << ": Not Implemented" << endl;
@@ -674,10 +674,18 @@ bool	Request::findChunkData()
 */
 bool	Request::findChunkCrlf()
 {
-	size_t pos = _Raw.find("\r\n");
-	if (pos == string ::npos)
+	if (_Raw.empty())
 		return(false);
-	else if (pos != 0)
+	if (_Raw[0] != '\r')
+	{
+		_State = ST_ERROR;
+		_ErrorCode = 400;
+		cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+		return(false);
+	}
+	if (_Raw.size() < 2)
+		return(false);
+	if (_Raw[1] != '\n')
 	{
 		_State = ST_ERROR;
 		_ErrorCode = 400;
