@@ -130,6 +130,39 @@ run("RST avant de lire la reponse",   200, hdr, hold=0.0)
 run("shutdown(WR) propre",            200, finwr, brutal=False, hold=0.5)
 run("pipelining x10 puis RST",        100, pipeline)
 
+# --- Informatif : requetes en erreur (B-04 point 7, pas encore fait) --------
+print("\n[ requetes en erreur - B-04 point 7 ]")
+probes = [
+	("methode inconnue",      b"BREW / HTTP/1.1\r\nHost: x\r\n\r\n"),
+	("request-line cassee",   b"GARBAGE\r\n\r\n"),
+	("Content-Length non num", b"POST / HTTP/1.1\r\nHost: x\r\nContent-Length: abc\r\n\r\nXXXX"),
+]
+for tag, payload in probes:
+	s = conn()
+	s.sendall(payload)
+	time.sleep(0.4)
+	s.settimeout(1.5)
+	try:
+		data = s.recv(65536)
+		verdict = "ferme sans reponse" if data == b"" else "repond: %r" % data[:40]
+	except socket.timeout:
+		verdict = ">>> ni reponse ni fermeture, fd tenu <<<"
+	print("  %-34s %s" % (tag, verdict))
+	s.close()
+
+# Un fd tenu par une requete malformee : le serveur ne le libere jamais seul.
+before = fds()
+socks = [conn() for _ in range(30)]
+for s in socks:
+	s.sendall(b"GARBAGE\r\n\r\n")
+time.sleep(8)
+held = fds()
+for s in socks:
+	s.close()
+time.sleep(1)
+print("  %-34s %s" % ("30 requetes malformees, +8s",
+      "%d fds toujours tenus" % (held - before) if held > before else "liberes"))
+
 # --- Informatif : timeout d'inactivite (B-05, pas encore implemente) --------
 print("\n[ timeout d'inactivite - B-05 ]")
 before = fds()
