@@ -1,4 +1,5 @@
 #include "../../includes/Request.hpp"
+#include "../../includes/Config.hpp"
 #include <cerrno>
 #include <cstddef>
 #include <cstdlib>
@@ -16,7 +17,9 @@ Request::Request(void) : _State(ST_REQUEST_LINE),
 						_CurrentChunkSize(0),
 						_TotalDechunked(0),
 						_IsChunked(false),
-						_Srv(NULL){}
+						_Srv(NULL),
+						_Config(NULL),
+						_GroupIndex(0){}
 
 Request::~Request(void) {}
 
@@ -35,10 +38,6 @@ Request::Request(const Request& to_copy) :
 	_MaxBodySize(to_copy._MaxBodySize),
 	_ContentLength(to_copy._ContentLength),
 	_HasContentLength(to_copy._HasContentLength),
-	_CurrentChunkRead(to_copy._CurrentChunkRead),
-	_CurrentChunkSize(to_copy._CurrentChunkSize),
-	_TotalDechunked(to_copy._TotalDechunked),
-	_IsChunked(to_copy._IsChunked),
 	_Srv(to_copy._Srv) {}
 
 Request	&Request::operator=(const Request& src)
@@ -64,6 +63,8 @@ Request	&Request::operator=(const Request& src)
 		_TotalDechunked = src._TotalDechunked;
 		_IsChunked = src._IsChunked;
 		this->_Srv = src._Srv;
+		this->_Config = src._Config;
+		this->_GroupIndex = src._GroupIndex;
 	}
 	return (*this);
 }
@@ -297,6 +298,8 @@ bool	Request::findHeaders(int n){
 		return false;
 	}
 	this->_Raw.erase(0, pos + 4);
+	if (this->_Config != NULL)
+		SetServerConfig(&SelectServer(*this->_Config, this->_GroupIndex, getHeader("host")));
 	return (setUpContentLength());
 }
 
@@ -340,10 +343,6 @@ void Request::reset(){
 	this->_RequestOctetsSize = this->_Raw.size();
 	this->_ContentLength = 0;
 	this->_HasContentLength = false;
-	this->_IsChunked = false;
-	this->_CurrentChunkRead = 0;
-	this->_CurrentChunkSize = 0;
-	this->_TotalDechunked = 0;
 }
 
 /**
@@ -403,6 +402,12 @@ const int& Request::getErrorCode() const{
 map<string, string>	Request::getHeaders(void) const
 {
 	return(_Header);
+}
+
+void	Request::SetConnectionContext(const ConfigParser *config, size_t group_index)
+{
+	this->_Config = config;
+	this->_GroupIndex = group_index;
 }
 
 /**

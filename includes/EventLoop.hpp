@@ -46,11 +46,12 @@ class EventLoop
 	void	AddFd(int fd, short events);		///< Utilise aussi par B-07 pour les pipes CGI
 	void	RemoveFd(int fd);					///< Retire fd de _Pollfds, n'invalide pas _Clients
 	void	SetEvents(int fd, short events);	///< Re-arme POLLIN / POLLOUT sur un fd deja surveille
+	void	CleanClients(vector<int>& toClose);
 
 	private:
 
 	void	AcceptNewClients(int listen_fd);	///< accept() sur un listen-fd pret, O_NONBLOCK immediat
-	void	HandleClientEvent(size_t index);	///< I/O client (B-03) : recv/send selon revents
+	bool	HandleClientEvent(size_t index);	///< I/O client (B-03) : recv/send selon revents
 	int		FindFd(int fd);						///< Index de fd dans _Pollfds, -1 si absent
 
 };
