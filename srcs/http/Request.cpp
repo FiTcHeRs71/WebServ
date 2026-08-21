@@ -14,13 +14,13 @@ Request::Request(void) : _State(ST_REQUEST_LINE),
 						_MaxBodySize(DEFAULT_BODY_SIZE),
 						_ContentLength(0),
 						_HasContentLength(false),
-						_CurrentChunkRead(0),
-						_CurrentChunkSize(0),
-						_TotalDechunked(0),
-						_IsChunked(false),
 						_Srv(NULL),
 						_Config(NULL),
-						_GroupIndex(0){}
+						_GroupIndex(0),
+						_IsChunked(false),
+						_CurrentChunkSize(0),
+						_CurrentChunkRead(0),
+						_TotalDechunked(0){}
 
 Request::~Request(void) {}
 
@@ -39,11 +39,11 @@ Request::Request(const Request& to_copy) :
 	_MaxBodySize(to_copy._MaxBodySize),
 	_ContentLength(to_copy._ContentLength),
 	_HasContentLength(to_copy._HasContentLength),
-	_CurrentChunkRead(to_copy._CurrentChunkRead),
-	_CurrentChunkSize(to_copy._CurrentChunkSize),
-	_TotalDechunked(to_copy._TotalDechunked),
+	_Srv(to_copy._Srv),
 	_IsChunked(to_copy._IsChunked),
-	_Srv(to_copy._Srv) {}
+	_CurrentChunkSize(to_copy._CurrentChunkSize),
+	_CurrentChunkRead(to_copy._CurrentChunkRead),
+	_TotalDechunked(to_copy._TotalDechunked) {}
 
 Request	&Request::operator=(const Request& src)
 {
@@ -63,13 +63,13 @@ Request	&Request::operator=(const Request& src)
 		this->_MaxBodySize = src._MaxBodySize;
 		this->_ContentLength = src._ContentLength;
 		this->_HasContentLength = src._HasContentLength;
-		this->_CurrentChunkRead = src._CurrentChunkRead;
-		this->_CurrentChunkSize = src._CurrentChunkSize;
-		this->_TotalDechunked = src._TotalDechunked;
-		this->_IsChunked = src._IsChunked;
 		this->_Srv = src._Srv;
 		this->_Config = src._Config;
 		this->_GroupIndex = src._GroupIndex;
+		this->_IsChunked = src._IsChunked;
+		this->_CurrentChunkSize = src._CurrentChunkSize;
+		this->_CurrentChunkRead = src._CurrentChunkRead;
+		this->_TotalDechunked = src._TotalDechunked;
 	}
 	return (*this);
 }
@@ -149,14 +149,24 @@ EParseResult	Request::Feed(const char *data, size_t n)
  * @return false si erreur lors du parsing
  */
 bool Request::findRequestLine(int n){
-	this->_RequestOctetsSize += n;
-	if (this->_RequestOctetsSize > REQUESTMAXSIZE){
+	(void)n;
+	size_t pos = this->_Raw.find("\r\n");
+	if (pos == string::npos)
+	{
+		if (this->_Raw.size() > REQUESTMAXSIZE)
+		{
+			this->_ErrorCode = 414;
+			this->_State = ST_ERROR;
+			return (false);
+		}
+		return (false);
+	}
+	if (pos > REQUESTMAXSIZE)
+	{
 		this->_ErrorCode = 414;
 		this->_State = ST_ERROR;
-		cerr << "Error :" << this->_ErrorCode << ": URI Too Long" << endl;
-		return false;
+		return (false);
 	}
-	size_t pos = this->_Raw.find("\r\n");
 	if (pos == string::npos)
 		return false;
 	if (!setUpMethod())
@@ -258,14 +268,26 @@ bool	Request::setUpVersion(){
  * @return false si erreur trouver
  */
 bool	Request::findHeaders(int n){
-	this->_HeadersOctetsSize += n;
-	if (this->_HeadersOctetsSize > REQUESTMAXSIZE){
+	(void)n;
+	size_t    pos = this->_Raw.find("\r\n\r\n");
+	if (pos == string::npos)
+	{
+		if (this->_Raw.size() > REQUESTMAXSIZE)
+		{
+			this->_State = ST_ERROR;
+			this->_ErrorCode = 431;
+			cerr << "Error: " << this->_ErrorCode << ": Request Header Fields Too Large" << endl;
+			return (false);
+		}
+		return (false);
+	}
+	if (pos > REQUESTMAXSIZE)
+	{
 		this->_State = ST_ERROR;
 		this->_ErrorCode = 431;
 		cerr << "Error: " << this->_ErrorCode << ": Request Header Fields Too Large" << endl;
-		return false;
+		return (false);
 	}
-	size_t pos = this->_Raw.find("\r\n\r\n");
 	if (pos == string::npos)
 		return false;
 	stringstream ss(_Raw);
