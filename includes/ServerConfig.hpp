@@ -48,17 +48,17 @@ class ServerConfig
 	vector<string>			getServerNames() const;
 
 	/*===Member Function===*/
-	const LocationConfig		*Resolve(const std::string &uri)const;	///< La location matchant l'URI, prefixe le plus long
-	string						build_path(const LocationConfig &location, const string &uri)const;	///< Traduit une URI en chemin disque via le root de la location
+	const LocationConfig	*Resolve(const std::string &uri)const;	///< La location matchant l'URI, prefixe le plus long
+	string					build_path(const LocationConfig &location, const string &uri)const;	///< Traduit une URI en chemin disque via le root de la location
 
 	/*===Friends===*/
-	friend ostream				&operator<<(ostream &flux, const ServerConfig &src);
+	friend ostream			&operator<<(ostream &flux, const ServerConfig &src);
 };
 
 /*=== HELPERS ===*/
-bool	is_segment_boundary(const string &uri, const string &path);
-bool	is_all_digits(const string &s);
-bool	is_valid_ipv4(const string &host);
-bool	operator==(const TListenConfig &Listen_a, const TListenConfig &Listen_b);
+bool						is_segment_boundary(const string &uri, const string &path);
+bool						is_all_digits(const string &s);
+bool						is_valid_ipv4(const string &host);
+bool						operator==(const TListenConfig &Listen_a, const TListenConfig &Listen_b);
 
 #endif /*SERVER_CONFIG_HPP*/

@@ -4,11 +4,11 @@
 #include <string>
 
 	/*===Canonical Form===*/
-Connection::Connection(void) :
-_Fd(0),
-_State(CONN_READING),
-_LastActivity(time(NULL)),
-_GroupIndex(0) {}
+Connection::Connection(void)
+	:_Fd(0),
+	_State(CONN_READING),
+	_LastActivity(time(NULL)),
+	_GroupIndex(0) {}
 
 Connection::~Connection(void) {}
 
