@@ -13,8 +13,8 @@ _GroupIndex(0) {}
 Connection::~Connection(void) {}
 
 Connection::Connection(int fd, size_t group_index, const ConfigParser *config)
-	:_Fd(fd),
-	_State(CONN_READING)
+	:_Fd(fd)
+	,_State(CONN_READING)
 	,_LastActivity(time(NULL))
 	,_GroupIndex(group_index)
 {
@@ -84,6 +84,8 @@ time_t Connection::getLastActivity() const{
  * @return ssize_t
  */
 ssize_t	Connection::OnReadable(){
+	if (_State == CONN_CLOSING) ///< B-04 : plus rien a lire, le flux est desynchronise
+		return (0);
 	_LastActivity = time(NULL);
 	char	buffer[BUFFER_SIZE];
 	ssize_t r = recv(_Fd, buffer, sizeof(buffer), 0);
@@ -98,7 +100,7 @@ ssize_t	Connection::OnReadable(){
 			const ServerConfig *srv = _Req.getServerConfig();
 			if (srv == NULL)
 			{
-				_State = CONN_CLOSING;
+				SendErrorAndClose(500);
 				break ;
 			}
 			Response	rep = HandleRequest(_Req, *srv, *this);
@@ -152,4 +154,23 @@ void Connection::QueueOutput(const string& data){
  */
 bool Connection::HasPendingOutput() const{
 	return !(_OutBuf.empty());
+}
+
+/**
+ * @brief Renvoie une reponse d'erreur puis ferme.
+ *
+ * Le flux est desynchronise (le body de la requete refusee est encore
+ * dans le socket) : on ne peut pas garder la connexion vivante.
+ *
+ * @param code Le status HTTP a renvoyer (400, 411, 413, 500...)
+ */
+void	Connection::SendErrorAndClose(int code)
+{
+	Response	response;
+	string		out;
+
+	
+	response.Serialize(out);
+	QueueOutput(out);
+	this->_State = CONN_CLOSING;
 }
