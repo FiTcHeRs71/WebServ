@@ -156,6 +156,7 @@ bool Request::findRequestLine(int n){
 		{
 			this->_ErrorCode = 414;
 			this->_State = ST_ERROR;
+			cerr << "Error: " << this->_ErrorCode << ": URI Too Long" << endl;
 			return (false);
 		}
 		return (false);
@@ -164,6 +165,7 @@ bool Request::findRequestLine(int n){
 	{
 		this->_ErrorCode = 414;
 		this->_State = ST_ERROR;
+		cerr << "Error: " << this->_ErrorCode << ": URI Too Long" << endl;
 		return (false);
 	}
 	if (!setUpMethod())
