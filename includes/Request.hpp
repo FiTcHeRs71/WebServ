@@ -65,7 +65,6 @@ class Request
 		bool				_IsChunked;
 		size_t				_CurrentChunkSize;		///< taille du chunk en cours de lecture
 		size_t				_CurrentChunkRead;		///< octets deja lus de ce chunk
-		size_t				_TotalDechunked;		///< cumul, compare a _MaxBodySize
 
 	public:
 
@@ -87,6 +86,7 @@ class Request
 	void				SetServerConfig(const ServerConfig *srv);
 	map<string, string>	getHeaders(void) const;
 	void				SetConnectionContext(const ConfigParser *config, size_t group_index);
+	const ServerConfig	*getServerConfig() const;
 
 	/*===Member Function===*/
 	EParseResult		Feed(const char *data, size_t n);

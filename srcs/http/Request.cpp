@@ -19,8 +19,7 @@ Request::Request(void) : _State(ST_REQUEST_LINE),
 						_GroupIndex(0),
 						_IsChunked(false),
 						_CurrentChunkSize(0),
-						_CurrentChunkRead(0),
-						_TotalDechunked(0){}
+						_CurrentChunkRead(0){}
 
 Request::~Request(void) {}
 
@@ -40,10 +39,11 @@ Request::Request(const Request& to_copy) :
 	_ContentLength(to_copy._ContentLength),
 	_HasContentLength(to_copy._HasContentLength),
 	_Srv(to_copy._Srv),
+	_Config(to_copy._Config),
+	_GroupIndex(to_copy._GroupIndex),
 	_IsChunked(to_copy._IsChunked),
 	_CurrentChunkSize(to_copy._CurrentChunkSize),
-	_CurrentChunkRead(to_copy._CurrentChunkRead),
-	_TotalDechunked(to_copy._TotalDechunked) {}
+	_CurrentChunkRead(to_copy._CurrentChunkRead) {}
 
 Request	&Request::operator=(const Request& src)
 {
@@ -69,7 +69,6 @@ Request	&Request::operator=(const Request& src)
 		this->_IsChunked = src._IsChunked;
 		this->_CurrentChunkSize = src._CurrentChunkSize;
 		this->_CurrentChunkRead = src._CurrentChunkRead;
-		this->_TotalDechunked = src._TotalDechunked;
 	}
 	return (*this);
 }
@@ -373,7 +372,8 @@ void Request::reset(){
 	this->_IsChunked = false;
 	this->_CurrentChunkRead = 0;
 	this->_CurrentChunkSize = 0;
-	this->_TotalDechunked = 0;
+	this->_Srv = NULL;
+	this->_MaxBodySize = DEFAULT_BODY_SIZE;
 }
 
 /**
@@ -433,6 +433,11 @@ const int& Request::getErrorCode() const{
 map<string, string>	Request::getHeaders(void) const
 {
 	return(_Header);
+}
+
+const ServerConfig		*Request::getServerConfig() const
+{
+	return(_Srv);
 }
 
 void	Request::SetConnectionContext(const ConfigParser *config, size_t group_index)
@@ -508,7 +513,7 @@ bool  Request::setUpContentLength()
 	string	te = getHeader("transfer-encoding");
 	if (!te.empty())
 	{
-		if(te != "chunked")
+		if(te != "chunked" && te != "Chunked")
 		{
 			_ErrorCode = 501;
 			cerr << "Error: " << this->_ErrorCode << ": Not Implemented" << endl;
@@ -588,16 +593,38 @@ bool	Request::findBody()
 	return (false);
 }
 
+/**
+ * @brief Lit la ligne de taille du chunk courant (hex), extensions ignorees.
+ *        Consomme uniquement "taille[;ext]\r\n" dans _Raw.
+ * @return true si la taille est valide (passage a ST_CHUNK_DATA ou ST_CHUNK_TRAILER),
+ *        false si la ligne est incomplete, ou ST_ERROR / 400 si elle est malformee.
+*/
 bool	Request::findChunkSize()
 {
 	size_t	pos = _Raw.find("\r\n");
 	if (pos == string::npos)
+	{
+		if(_Raw.size() > 32)
+		{
+			_State = ST_ERROR;
+			_ErrorCode = 400;
+			cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+			return(false);
+		}
 		return(false);
+	}
 	string	chunkSize = _Raw.substr(0, pos);
 	size_t semi = chunkSize.find(";");
 	if(semi != string::npos)
 		chunkSize.erase(semi);
 	trim(chunkSize);
+	if (chunkSize.empty() || chunkSize.find_first_not_of("0123456789abcdefABCDEF") != string::npos)
+	{
+		_State = ST_ERROR;
+		_ErrorCode = 400;
+		cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+		return(false);
+	}
 	char	*end;
 	errno = 0;
 	long n = strtol(chunkSize.c_str(), &end, 16);
@@ -618,6 +645,13 @@ bool	Request::findChunkSize()
 	return(true);
 }
 
+/**
+ * @brief Accumule les octets de payload du chunk, comme findBody().
+ *        Prend min(reste du chunk, _Raw.size()) ; le surplus (CRLF, chunk suivant)
+ *        reste dans _Raw. Verifie client_max_body_size au fur et a mesure (413).
+ * @return true si les _CurrentChunkSize octets sont lus (passage a ST_CHUNK_CRLF),
+ *        false s'il en manque, ou ST_ERROR / 413 si la limite est depassee.
+*/
 bool	Request::findChunkData()
 {
 	size_t missing = _CurrentChunkSize - _CurrentChunkRead;
@@ -638,12 +672,25 @@ bool	Request::findChunkData()
 	return (true);
 }
 
+/**
+ * @brief Consomme le \r\n qui suit les donnees du chunk (hors taille).
+ * @return true si le CRLF est present en tete de _Raw (retour a ST_CHUNK_SIZE),
+ *         false s'il est incomplet, ou ST_ERROR / 400 s'il est absent/mal place.
+*/
 bool	Request::findChunkCrlf()
 {
-	size_t pos = _Raw.find("\r\n");
-	if (pos == string ::npos)
+	if (_Raw.empty())
 		return(false);
-	else if (pos != 0)
+	if (_Raw[0] != '\r')
+	{
+		_State = ST_ERROR;
+		_ErrorCode = 400;
+		cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+		return(false);
+	}
+	if (_Raw.size() < 2)
+		return(false);
+	if (_Raw[1] != '\n')
 	{
 		_State = ST_ERROR;
 		_ErrorCode = 400;
@@ -655,6 +702,13 @@ bool	Request::findChunkCrlf()
 	return(true);
 }
 
+/**
+ * @brief Lit et jette les trailers apres un chunk de taille 0, jusqu'a la ligne vide.
+ *        Ne les fusionne pas dans _Headers. Pose Content-Length sur la taille
+ *        de-chunkee et retire Transfer-Encoding.
+ * @return true si le bloc trailers est complet (ST_DONE),
+ *         false s'il manque encore des octets.
+*/
 bool	Request::findChunkTrailer()
 {
 	ostringstream oss;
@@ -669,7 +723,16 @@ bool	Request::findChunkTrailer()
 	}
 	size_t pos = _Raw.find("\r\n\r\n");
 	if (pos == string::npos)
+	{
+		if (_Raw.size() > REQUESTMAXSIZE)
+		{
+			_State = ST_ERROR;
+			_ErrorCode = 400;
+			cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+			return(false);	
+		}
 		return(false);
+	}
 	_Raw.erase(0, pos + 4);
 	_Header["content-length"] = oss.str();
 	_Header.erase("transfer-encoding");
