@@ -113,14 +113,13 @@ std::string	header_to_meta(const std::string &name)	///< "Accept-Language" -> "H
  * @return Le tableau char** terminé par NULL, a passer a execve().
 */
 vector<string>	build_cgi_env(const Request &request, const LocationConfig &location,
-					const ServerConfig &server, const Connection &connection,
-					const ConfigParser &config, const string &script_path)
+					const Connection &connection, const string &script_path)
 {
 	vector<string>	storage;
-	vector<string>	serverNames = server.getServerNames();
+	vector<string>	serverNames = request.getServerConfig()->getServerNames();
 	string	path_translated;
 	ostringstream	ss;
-	ss << config.getAddrPorts()[connection.getGroupIndex()].Port;
+	ss << request.getConfigParser()->getAddrPorts()[connection.getGroupIndex()].Port;
 
 	addEnv(storage, "REQUEST_METHOD", request.getMethod());
 	addEnv(storage, "SCRIPT_NAME", findScriptName(request, location));

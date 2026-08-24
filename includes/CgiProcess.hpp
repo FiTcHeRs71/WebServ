@@ -52,16 +52,15 @@ class CgiProcess
 
 	/*===Member Function===*/
 	bool	Start(const Request &request, const LocationConfig &location,
-					const ServerConfig &server, const Connection &connection,
-					const ConfigParser &config, const string &script_path);
+					const Connection &connection, const string &script_path);
 	void	Kill(void);				///< D-05
 	void	CloseFds(void);			///< Ferme les 2 pipes. Idempotente.
+	void	OnWritableCgi(void);
 	void	CloseWriteFd(void);		///< Ferme le stdin du CGI : D-03, quand le body est entierement ecrit.
 };
 
 vector<string>	build_cgi_env(const Request &request, const LocationConfig &location,
-					const ServerConfig &server, const Connection &connection,
-					const ConfigParser &config, const string &script_path);
+					const Connection &connection, const string &script_path);
 char	**VectorToChar(vector<string> &storage);
 
 #endif /*CGI_PROCESS_HPP*/

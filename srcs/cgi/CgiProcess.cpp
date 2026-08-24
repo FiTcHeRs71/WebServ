@@ -95,20 +95,19 @@ pid_t	CgiProcess::GetPid(void) const
  * @param script_path Le path vers le script a executer
  */
 bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
-							const ServerConfig &server, const Connection &connection,
-							const ConfigParser &config, const string &script_path)
+							const Connection &connection, const string &script_path)
 {
-	char	*argv[3];
-	char	**envp;
-	int		pip_in[2];
-	int		pip_out[2];
+	string			scriptName = findScriptName(script_path);
+	char			*argv[3];
+	int				pip_in[2];
+	int				pip_out[2];
+	vector<string>	storage = build_cgi_env(request, location, connection, script_path);
+	char			**envp = VectorToChar(storage);
 
-	string	scriptName = findScriptName(script_path);
 	argv[0] = const_cast<char *>(location.getPass().c_str());
 	argv[1] = const_cast<char *>(scriptName.c_str());
 	argv[2] = NULL;
-	vector<string>	storage = build_cgi_env(request, location, server, connection, config, script_path);
-	envp = VectorToChar(storage);
+	this->_InBuf = request.getBody();
 
 	// Dossier du script pour le chdir() de l'enfant. Les deux cas limites
 	// donnent un chemin invalide si on prend le substr tel quel :
@@ -130,6 +129,8 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 		return (false);
 	}
 	pid_t	pid = fork();
+	if (this->_InBuf.empty())
+		CloseWriteFd();
 
 	if(pid == -1)
 	{
@@ -225,6 +226,18 @@ void	CgiProcess::CloseFds(void)
 	}
 }
 
+void	CgiProcess::OnWritableCgi(void)
+{
+	if (_WriteFd < 0 || _InBuf.empty())
+		return ;
+	size_t	n = write(_WriteFd, &_InBuf, _InBuf.size());
+	if (n <= 0)
+		CloseWriteFd();
+	_InBuf.erase(0, n);
+	if (_InBuf.empty())
+		CloseWriteFd();
+}
+
 	/**
 	 * @brief Ferme le stdin du CGI pour lui signaler la fin du body.
 	 *
@@ -234,7 +247,7 @@ void	CgiProcess::CloseFds(void)
 	 */
 void	CgiProcess::CloseWriteFd(void)
 {
-		if (this->_WriteFd != -1)
+	if (this->_WriteFd != -1)
 	{
 		close(this->_WriteFd);
 		this->_WriteFd = -1;
