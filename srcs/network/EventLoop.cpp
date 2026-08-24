@@ -283,7 +283,6 @@ bool	EventLoop::HandleClientEvent(size_t index)
 	if (it->second.getState() == CONN_CLOSING && !it->second.HasPendingOutput())
 		return false;
 	return true;
-	//TODO Interception des POLLHUP POLLERR POLLNVAL et si recv == 0 pour ticket (B-04)
 }
 
 /**

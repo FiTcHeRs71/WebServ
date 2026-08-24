@@ -53,7 +53,7 @@ class LocationConfig
 	const size_t	&getClientMaxBodySize(void) const;
 
 	/*===Member Function===*/
-	void	parse_location(vector<string>	&token, size_t &i);
+	void			parse_location(vector<string>	&token, size_t &i);
 
 	friend ostream	&operator<<(ostream &flux, const LocationConfig &src);
 };

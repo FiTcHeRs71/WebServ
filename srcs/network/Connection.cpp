@@ -2,19 +2,20 @@
 #include "../../includes/http.hpp"
 #include <ctime>
 #include <string>
+#include <sstream>
 
 	/*===Canonical Form===*/
-Connection::Connection(void) :
-_Fd(0),
-_State(CONN_READING),
-_LastActivity(time(NULL)),
-_GroupIndex(0) {}
+Connection::Connection(void)
+	:_Fd(0),
+	_State(CONN_READING),
+	_LastActivity(time(NULL)),
+	_GroupIndex(0) {}
 
 Connection::~Connection(void) {}
 
 Connection::Connection(int fd, size_t group_index, const ConfigParser *config)
-	:_Fd(fd),
-	_State(CONN_READING)
+	:_Fd(fd)
+	,_State(CONN_READING)
 	,_LastActivity(time(NULL))
 	,_GroupIndex(group_index)
 {
@@ -84,6 +85,10 @@ time_t Connection::getLastActivity() const{
  * @return ssize_t
  */
 ssize_t	Connection::OnReadable(){
+	int	code;
+
+	if (_State == CONN_CLOSING) ///< B-04 : plus rien a lire, le flux est desynchronise
+		return (0);
 	_LastActivity = time(NULL);
 	char	buffer[BUFFER_SIZE];
 	ssize_t r = recv(_Fd, buffer, sizeof(buffer), 0);
@@ -98,7 +103,7 @@ ssize_t	Connection::OnReadable(){
 			const ServerConfig *srv = _Req.getServerConfig();
 			if (srv == NULL)
 			{
-				_State = CONN_CLOSING;
+				SendErrorAndClose(500);
 				break ;
 			}
 			Response	rep = HandleRequest(_Req, *srv, *this);
@@ -108,7 +113,10 @@ ssize_t	Connection::OnReadable(){
 			res = _Req.Feed("", 0);
 		}
 		if (res == REQ_ERROR)
-			this->_State = CONN_CLOSING;
+		{
+			code = _Req.getErrorCode();
+			SendErrorAndClose(code);
+		}
 	}
 	return (r);
 }
@@ -152,4 +160,34 @@ void Connection::QueueOutput(const string& data){
  */
 bool Connection::HasPendingOutput() const{
 	return !(_OutBuf.empty());
+}
+
+/**
+ * @brief Envoie une reponse d'erreur puis programme la fermeture.
+ *
+ * Une requete refusee (400, 411, 413, 501...) laisse le flux desynchronise :
+ * les octets du body sont encore dans le socket et seraient relus comme la
+ * requete suivante. On repond, on annonce Connection: close, on ferme.
+ *
+ * La fermeture effective est faite par EventLoop::HandleClientEvent
+ * (EventLoop.cpp:283) quand _OutBuf est vide : la reponse part en entier.
+ *
+ * @param code Le status HTTP a renvoyer.
+ */
+void	Connection::SendErrorAndClose(int code)
+{
+	Response		response;
+	string			out;
+	ostringstream	oss;
+	
+	if (code < 400)
+		code = 500;
+	response.SetStatus(code);
+	oss << "<html><body><h1>" << code << "</h1></body></html>";
+	response.SetBody(oss.str());
+	response.SetHeader("Content-Type", "text/html");
+	response.SetHeader("Connection", "close");
+	response.Serialize(out);
+	QueueOutput(out);
+	this->_State = CONN_CLOSING;
 }
