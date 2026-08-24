@@ -2,7 +2,6 @@
 # define EVENTLOOP_HPP
 
 # include <iostream>
-#include <type_traits>
 # include <vector>
 # include <map>
 # include <sys/poll.h>

@@ -293,23 +293,24 @@ int	EventLoop::ComputeTimeout(void) const
 		return(-1);
 	time_t	next_up = 100000;
 	time_t	remain;
-	for(map<int, Connection>::iterator it; it != _Clients.end(); it++)
+	for(map<int, Connection>::const_iterator it = _Clients.begin(); it != _Clients.end(); it++)
 	{
-		Request	req = it->second.getRequest();
 		if (it->second.getState() == CONN_READING)
 		{
 			remain = (TIMEOUT_HEADER - (time(NULL) - it->second.getLastActivity())) * 1000;
 			if (remain < next_up)
 				next_up = remain;
 		}
-		else if(req.getState() == ST_DONE)
+		else if(it->second.getReqComplete())
 		{
 			remain = (TIMEOUT_IDLE - (time(NULL) - it->second.getLastActivity())) * 1000;
 			if (remain < next_up)
 				next_up = remain;
 		}
 	}
-	if (next_up < 1000)
+	if (next_up < 0)
+		return(0);
+	else if (next_up < 1000)
 		return(static_cast<int>(next_up));
 	else
 		return(1000);

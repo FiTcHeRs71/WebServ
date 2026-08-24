@@ -9,7 +9,8 @@ Connection::Connection(void)
 	:_Fd(0),
 	_State(CONN_READING),
 	_LastActivity(time(NULL)),
-	_GroupIndex(0) {}
+	_GroupIndex(0),
+	_ReqComplete(false) {}
 
 Connection::~Connection(void) {}
 
@@ -18,6 +19,7 @@ Connection::Connection(int fd, size_t group_index, const ConfigParser *config)
 	,_State(CONN_READING)
 	,_LastActivity(time(NULL))
 	,_GroupIndex(group_index)
+	,_ReqComplete(false)
 {
 	_Req.SetConnectionContext(config, group_index);
 }
@@ -31,6 +33,7 @@ Connection::Connection(const Connection& to_copy)
 	this->_State = to_copy._State;
 	this->_LastActivity = to_copy._LastActivity;
 	this->_GroupIndex = to_copy._GroupIndex;
+	this->_ReqComplete = to_copy._ReqComplete;
 }
 
 Connection	&Connection::operator=(const Connection& src)
@@ -44,6 +47,7 @@ Connection	&Connection::operator=(const Connection& src)
 		this->_State = src._State;
 		this->_LastActivity = src._LastActivity;
 		this->_GroupIndex = src._GroupIndex;
+		this->_ReqComplete = src._ReqComplete;
 	}
 	return (*this);
 }
@@ -80,9 +84,9 @@ void	Connection::setLastActivity()
 	this->_LastActivity = time(NULL);
 }
 
-Request	Connection::getRequest(void) const
+bool	Connection::getReqComplete(void) const
 {
-	return(_Req);
+	return(_ReqComplete);
 }
 
 	/*===Member Function===*/
@@ -110,6 +114,7 @@ ssize_t	Connection::OnReadable(){
 		_LastActivity = time(NULL);
 		EParseResult	res = _Req.Feed(buffer, r);
 		while (res == REQ_COMPLETE){
+			_ReqComplete = true;
 			string	out;
 			const ServerConfig *srv = _Req.getServerConfig();
 			if (srv == NULL)

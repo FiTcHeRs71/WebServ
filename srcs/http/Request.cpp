@@ -452,11 +452,6 @@ const ServerConfig		*Request::getServerConfig() const
 	return(_Srv);
 }
 
-EParseState	Request::getState() const
-{
-	return(_State);
-}
-
 void	Request::SetConnectionContext(const ConfigParser *config, size_t group_index)
 {
 	this->_Config = config;

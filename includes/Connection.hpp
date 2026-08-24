@@ -36,6 +36,7 @@ class Connection
 	EConnState		_State;
 	time_t			_LastActivity;	///< utilise par B-05 pour les timeouts
 	size_t			_GroupIndex;	///< index dans _AddrPorts : quel ServerConfig repond
+	bool			_ReqComplete;
 
 	void			SendErrorAndClose(int code);
 
@@ -56,7 +57,7 @@ class Connection
 	const string&	getIpV4() const;
 	size_t			getGroupIndex() const;
 	void			setLastActivity();
-	Request			getRequest(void) const;
+	bool			getReqComplete(void) const;
 
 
 	/*===Member Function===*/
