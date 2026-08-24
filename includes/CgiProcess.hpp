@@ -35,7 +35,7 @@ class CgiProcess
 	string	_OutBuf;	///< sortie brute accumulee (D-04)
 	bool	_Finished;
 
-	bool	SetupPipes(int pip_in[2], int pip_out[2]);
+	bool		SetupPipes(int pip_in[2], int pip_out[2]);
 
 	public:
 
@@ -46,9 +46,9 @@ class CgiProcess
 	CgiProcess &operator=(const CgiProcess& src);
 
 	/*===Getters & Setters===*/
-	int		GetReadFd(void) const;
-	int		GetWriteFd(void) const;
-	pid_t	GetPid(void) const;
+	int			GetReadFd(void) const;
+	int			GetWriteFd(void) const;
+	pid_t		GetPid(void) const;
 
 	/*===Member Function===*/
 	bool	Start(const Request &request, const LocationConfig &location,

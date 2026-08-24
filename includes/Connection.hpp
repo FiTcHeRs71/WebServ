@@ -37,6 +37,8 @@ class Connection
 	time_t			_LastActivity;	///< utilise par B-05 pour les timeouts
 	size_t			_GroupIndex;	///< index dans _AddrPorts : quel ServerConfig repond
 
+	void			SendErrorAndClose(int code);
+
 	public:
 
 	/*===Canonical Form===*/
@@ -56,10 +58,10 @@ class Connection
 
 
 	/*===Member Function===*/
-	bool		HasPendingOutput(void) const;	///< pilote l'armement de POLLOUT
-	ssize_t		OnReadable(void);				///< un seul recv(), renvoie ce que recv() a rendu
-	ssize_t		OnWritable(void);				///< un seul send() partiel
-	void		QueueOutput(const string& data);
+	bool			HasPendingOutput(void) const;	///< pilote l'armement de POLLOUT
+	ssize_t			OnReadable(void);				///< un seul recv(), renvoie ce que recv() a rendu
+	ssize_t			OnWritable(void);				///< un seul send() partiel
+	void			QueueOutput(const string& data);
 };
 
 #endif /*CONNECTION_HPP*/
