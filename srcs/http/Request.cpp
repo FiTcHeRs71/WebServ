@@ -152,7 +152,7 @@ bool Request::findRequestLine(int n){
 	size_t	pos = this->_Raw.find("\r\n");
 	if (pos == string::npos)
 	{
-		if (this->_Raw.size() > REQUESTMAXSIZE)
+		if (this->_Raw.size() > MAX_URI_LENGTH)
 		{
 			this->_ErrorCode = 414;
 			this->_State = ST_ERROR;
@@ -161,7 +161,7 @@ bool Request::findRequestLine(int n){
 		}
 		return (false);
 	}
-	if (pos > REQUESTMAXSIZE)
+	if (pos > MAX_URI_LENGTH)
 	{
 		this->_ErrorCode = 414;
 		this->_State = ST_ERROR;
@@ -196,7 +196,7 @@ bool	Request::setUpMethod(){
 		return false;
 	}
 	if (this->_Method != "GET" && this->_Method != "POST" && this->_Method != "DELETE"){
-		this->_ErrorCode = 405;
+		this->_ErrorCode = 501; //TODO (C-09) si la method existe mais n'est pas handle -> 405 : Method not allowed
 		this->_State = ST_ERROR;
 		cerr << "Error :" << this->_ErrorCode << ": Method Not Allowed" << endl;
 		return false;
@@ -281,7 +281,7 @@ bool	Request::findHeaders(int n){
 	size_t	pos = this->_Raw.find("\r\n\r\n");
 	if (pos == string::npos)
 	{
-		if (this->_Raw.size() > REQUESTMAXSIZE)
+		if (this->_Raw.size() > MAX_HEADER_LENGTH)
 		{
 			this->_State = ST_ERROR;
 			this->_ErrorCode = 431;
@@ -290,7 +290,7 @@ bool	Request::findHeaders(int n){
 		}
 		return (false);
 	}
-	if (pos > REQUESTMAXSIZE)
+	if (pos > MAX_HEADER_LENGTH)
 	{
 		this->_State = ST_ERROR;
 		this->_ErrorCode = 431;
@@ -333,6 +333,12 @@ bool	Request::findHeaders(int n){
 		this->_State = ST_ERROR;
 		this->_ErrorCode = 431;
 		cerr << "Error: " << this->_ErrorCode << ": Request Header Fields Too Large" << endl;
+		return false;
+	}
+	if (this->_Header.find("host") == this->_Header.end()){
+		this->_State = ST_ERROR;
+		this->_ErrorCode = 400;
+		cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
 		return false;
 	}
 	this->_Raw.erase(0, pos + 4);
@@ -736,7 +742,7 @@ bool	Request::findChunkTrailer()
 	size_t pos = _Raw.find("\r\n\r\n");
 	if (pos == string::npos)
 	{
-		if (_Raw.size() > REQUESTMAXSIZE)
+		if (_Raw.size() > MAX_URI_LENGTH)
 		{
 			_State = ST_ERROR;
 			_ErrorCode = 400;
