@@ -1,6 +1,7 @@
 #ifndef DEFAULT_HPP
 # define DEFAULT_HPP
 
+#include <ctime>
 # include <iostream>
 
 using namespace std;
@@ -21,4 +22,7 @@ const char *const	LOC_NO_SUPPORTED	= "=~^@";		///< Arguments de location non sup
 const char *const	DEFAULT_HOST		= "0.0.0.0";	///< Toutes les interfaces, valeur d'un listen implicite
 const size_t		DEFAULT_BODY_SIZE	= 1048576;		///< 1 Mo, comme la directive client_max_body_size de NGINX
 const int			DEFAULT_PORT		= 80;			///< Port d'un listen sans port explicite
+const time_t		TIMEOUT_HEADER		= 30;			///< requete incomplete -> 408
+const time_t		TIMEOUT_IDLE		= 60;			///< keep-alive inactif -> close silencieux
+
 #endif

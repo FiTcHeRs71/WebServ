@@ -55,6 +55,8 @@ class Connection
 	void			setIpV4(string src);
 	const string&	getIpV4() const;
 	size_t			getGroupIndex() const;
+	void			setLastActivity();
+	Request			getRequest(void) const;
 
 
 	/*===Member Function===*/

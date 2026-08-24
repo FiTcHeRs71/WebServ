@@ -74,6 +74,17 @@ EConnState Connection::getState() const{
 time_t Connection::getLastActivity() const{
 	return (this->_LastActivity);
 }
+
+void	Connection::setLastActivity()
+{
+	this->_LastActivity = time(NULL);
+}
+
+Request	Connection::getRequest(void) const
+{
+	return(_Req);
+}
+
 	/*===Member Function===*/
 
 /**
@@ -89,14 +100,14 @@ ssize_t	Connection::OnReadable(){
 
 	if (_State == CONN_CLOSING) ///< B-04 : plus rien a lire, le flux est desynchronise
 		return (0);
-	_LastActivity = time(NULL);
 	char	buffer[BUFFER_SIZE];
 	ssize_t r = recv(_Fd, buffer, sizeof(buffer), 0);
 	if (r <= 0){
-			_State = CONN_CLOSING;
-			return (r);
+		_State = CONN_CLOSING;
+		return (r);
 	}
 	else{
+		_LastActivity = time(NULL);
 		EParseResult	res = _Req.Feed(buffer, r);
 		while (res == REQ_COMPLETE){
 			string	out;
@@ -128,7 +139,6 @@ ssize_t	Connection::OnReadable(){
  * @return ssize_t the size of the return from send()
  */
 ssize_t Connection::OnWritable(){
-	_LastActivity = time(NULL);
 	if (_OutBuf.empty())
 		return (0);
 	ssize_t s = send(_Fd, _OutBuf.c_str(), _OutBuf.size(), 0);
@@ -136,8 +146,10 @@ ssize_t Connection::OnWritable(){
 			_State = CONN_CLOSING;
 			return (s);
 	}
-	else
+	else{
+		_LastActivity = time(NULL);
 		_OutBuf.erase(0, s);
+	}
 	return (s);
 }
 

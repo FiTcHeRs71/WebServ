@@ -1,6 +1,7 @@
 #include "../../includes/EventLoop.hpp"
 #include <cstddef>
 #include <arpa/inet.h>
+#include <ctime>
 #include <sys/poll.h>
 
 /**
@@ -74,7 +75,7 @@ void	EventLoop::Run(void)
 	while (_Running)
 	{
 		vector<int> toClose;
-		status = poll(&_Pollfds[0], _Pollfds.size(), -1);
+		status = poll(&_Pollfds[0], _Pollfds.size(), ComputeTimeout());
 		if (status == 0)
 			continue ;
 		else if (status < 0)
@@ -243,6 +244,7 @@ void	EventLoop::AcceptNewClients(int listen_fd)
 	}
 	size_t groupIndex = _ListenFds[listen_fd];
 	_Clients[clientFd] = Connection(clientFd, groupIndex, _Config);
+	_Clients[clientFd].setLastActivity();
 	AddFd(clientFd, POLLIN);
 	_Clients[clientFd].setIpV4(inet_ntoa(clientAddr.sin_addr));
 }
@@ -283,6 +285,39 @@ bool	EventLoop::HandleClientEvent(size_t index)
 	if (it->second.getState() == CONN_CLOSING && !it->second.HasPendingOutput())
 		return false;
 	return true;
+}
+
+int	EventLoop::ComputeTimeout(void) const
+{
+	if (_Clients.empty())
+		return(-1);
+	time_t	next_up = 100000;
+	time_t	remain;
+	for(map<int, Connection>::iterator it; it != _Clients.end(); it++)
+	{
+		Request	req = it->second.getRequest();
+		if (it->second.getState() == CONN_READING)
+		{
+			remain = (TIMEOUT_HEADER - (time(NULL) - it->second.getLastActivity())) * 1000;
+			if (remain < next_up)
+				next_up = remain;
+		}
+		else if(req.getState() == ST_DONE)
+		{
+			remain = (TIMEOUT_IDLE - (time(NULL) - it->second.getLastActivity())) * 1000;
+			if (remain < next_up)
+				next_up = remain;
+		}
+	}
+	if (next_up < 1000)
+		return(static_cast<int>(next_up));
+	else
+		return(1000);
+}
+
+void	EventLoop::SweepTimeouts(void)
+{
+
 }
 
 /**

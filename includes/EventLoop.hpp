@@ -2,6 +2,7 @@
 # define EVENTLOOP_HPP
 
 # include <iostream>
+#include <type_traits>
 # include <vector>
 # include <map>
 # include <sys/poll.h>
@@ -52,10 +53,12 @@ class EventLoop
 
 	private:
 
-	void	AcceptNewClients(int listen_fd);	///< accept() sur un listen-fd pret, O_NONBLOCK immediat
-	bool	HandleClientEvent(size_t index);	///< I/O client (B-03) : recv/send selon revents
-	int		FindFd(int fd);						///< Index de fd dans _Pollfds, -1 si absent
+	void	AcceptNewClients(int listen_fd);		///< accept() sur un listen-fd pret, O_NONBLOCK immediat
+	bool	HandleClientEvent(size_t index);		///< I/O client (B-03) : recv/send selon revents
+	int		FindFd(int fd);							///< Index de fd dans _Pollfds, -1 si absent
 	void	HandleCgiEvent(int fd, short revents);	///< I/O pipe CGI (B-07) : lit/ecrit selon revents
+	int		ComputeTimeout(void) const;				///< millisecondes a passer a poll()
+	void	SweepTimeouts(void);					///< appele a CHAQUE retour de poll(), meme sur 0
 };
 
 #endif
