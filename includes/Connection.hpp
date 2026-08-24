@@ -60,6 +60,7 @@ class Connection
 	ssize_t		OnReadable(void);				///< un seul recv(), renvoie ce que recv() a rendu
 	ssize_t		OnWritable(void);				///< un seul send() partiel
 	void		QueueOutput(const string& data);
+	void		HandleErrorCode();
 };
 
 #endif /*CONNECTION_HPP*/

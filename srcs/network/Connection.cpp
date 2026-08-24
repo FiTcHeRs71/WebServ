@@ -93,6 +93,8 @@ ssize_t	Connection::OnReadable(){
 	}
 	else{
 		EParseResult	res = _Req.Feed(buffer, r);
+		if (_Req.getErrorCode() > 0)
+			HandleErrorCode();
 		while (res == REQ_COMPLETE){
 			string	out;
 			const ServerConfig *srv = _Req.getServerConfig();
@@ -152,4 +154,10 @@ void Connection::QueueOutput(const string& data){
  */
 bool Connection::HasPendingOutput() const{
 	return !(_OutBuf.empty());
+}
+
+void	Connection::HandleErrorCode(){
+	if(_Req.getErrorCode() == 400){
+
+	}
 }

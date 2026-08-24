@@ -729,7 +729,7 @@ bool	Request::findChunkTrailer()
 			_State = ST_ERROR;
 			_ErrorCode = 400;
 			cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
-			return(false);	
+			return(false);
 		}
 		return(false);
 	}
