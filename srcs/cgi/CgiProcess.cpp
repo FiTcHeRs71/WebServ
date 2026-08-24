@@ -95,13 +95,14 @@ pid_t	CgiProcess::GetPid(void) const
  * @param script_path Le path vers le script a executer
  */
 bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
-							const Connection &connection, const string &script_path)
+							const ServerConfig &server, const Connection &connection,
+							const ConfigParser &config, const string &script_path)
 {
 	string			scriptName = findScriptName(script_path);
 	char			*argv[3];
 	int				pip_in[2];
 	int				pip_out[2];
-	vector<string>	storage = build_cgi_env(request, location, connection, script_path);
+	vector<string>	storage = build_cgi_env(request, location, server, connection, config, script_path);
 	char			**envp = VectorToChar(storage);
 
 	argv[0] = const_cast<char *>(location.getPass().c_str());
@@ -129,8 +130,6 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 		return (false);
 	}
 	pid_t	pid = fork();
-	if (this->_InBuf.empty())
-		CloseWriteFd();
 
 	if(pid == -1)
 	{
@@ -160,6 +159,8 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 	close(pip_in[0]);
 	close(pip_out[1]);
 	this->_WriteFd = pip_in[1];
+	if (this->_InBuf.empty())
+		CloseWriteFd();
 	this->_ReadFd = pip_out[0];
 	this->_Pid = pid;
 	this->_StartTime = time(NULL);
@@ -230,10 +231,10 @@ void	CgiProcess::OnWritableCgi(void)
 {
 	if (_WriteFd < 0 || _InBuf.empty())
 		return ;
-	size_t	n = write(_WriteFd, &_InBuf, _InBuf.size());
+	ssize_t	n = write(_WriteFd, &_InBuf[0], _InBuf.size());
 	if (n <= 0)
 		CloseWriteFd();
-	_InBuf.erase(0, n);
+	_InBuf.erase(0, static_cast<size_t>(n));
 	if (_InBuf.empty())
 		CloseWriteFd();
 }
@@ -252,4 +253,5 @@ void	CgiProcess::CloseWriteFd(void)
 		close(this->_WriteFd);
 		this->_WriteFd = -1;
 	}
+	// TODO: B-07 devra utiliser Eventloop::RemoveFd() ici.
 }

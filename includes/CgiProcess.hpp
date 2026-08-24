@@ -52,7 +52,8 @@ class CgiProcess
 
 	/*===Member Function===*/
 	bool	Start(const Request &request, const LocationConfig &location,
-					const Connection &connection, const string &script_path);
+				const ServerConfig &server, const Connection &connection,
+				const ConfigParser &config, const string &script_path);
 	void	Kill(void);				///< D-05
 	void	CloseFds(void);			///< Ferme les 2 pipes. Idempotente.
 	void	OnWritableCgi(void);
@@ -60,7 +61,8 @@ class CgiProcess
 };
 
 vector<string>	build_cgi_env(const Request &request, const LocationConfig &location,
-					const Connection &connection, const string &script_path);
+							const ServerConfig &server, const Connection &connection,
+							const ConfigParser &config, const string &script_path);
 char	**VectorToChar(vector<string> &storage);
 
 #endif /*CGI_PROCESS_HPP*/
