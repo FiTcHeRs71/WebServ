@@ -98,17 +98,17 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 							const ServerConfig &server, const Connection &connection,
 							const ConfigParser &config, const string &script_path)
 {
-	char	*argv[3];
-	char	**envp;
-	int		pip_in[2];
-	int		pip_out[2];
+	string			scriptName = findScriptName(script_path);
+	char			*argv[3];
+	int				pip_in[2];
+	int				pip_out[2];
+	vector<string>	storage = build_cgi_env(request, location, server, connection, config, script_path);
+	char			**envp = VectorToChar(storage);
 
-	string	scriptName = findScriptName(script_path);
 	argv[0] = const_cast<char *>(location.getPass().c_str());
 	argv[1] = const_cast<char *>(scriptName.c_str());
 	argv[2] = NULL;
-	vector<string>	storage = build_cgi_env(request, location, server, connection, config, script_path);
-	envp = VectorToChar(storage);
+	this->_InBuf = request.getBody();
 
 	// Dossier du script pour le chdir() de l'enfant. Les deux cas limites
 	// donnent un chemin invalide si on prend le substr tel quel :
@@ -159,6 +159,8 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 	close(pip_in[0]);
 	close(pip_out[1]);
 	this->_WriteFd = pip_in[1];
+	if (this->_InBuf.empty())
+		CloseWriteFd();
 	this->_ReadFd = pip_out[0];
 	this->_Pid = pid;
 	this->_StartTime = time(NULL);
@@ -225,6 +227,21 @@ void	CgiProcess::CloseFds(void)
 	}
 }
 
+void	CgiProcess::OnWritableCgi(void)
+{
+	if (_WriteFd < 0 || _InBuf.empty())
+		return ;
+	ssize_t	n = write(_WriteFd, &_InBuf[0], _InBuf.size());
+	if (n <= 0)
+	{
+		CloseWriteFd();
+		return ;
+	}
+	_InBuf.erase(0, static_cast<size_t>(n));
+	if (_InBuf.empty())
+		CloseWriteFd();
+}
+
 	/**
 	 * @brief Ferme le stdin du CGI pour lui signaler la fin du body.
 	 *
@@ -234,9 +251,14 @@ void	CgiProcess::CloseFds(void)
 	 */
 void	CgiProcess::CloseWriteFd(void)
 {
-		if (this->_WriteFd != -1)
+	if (this->_WriteFd != -1)
 	{
-		close(this->_WriteFd);
+		if (close(this->_WriteFd) < 0)
+		{
+			cerr << "Error: couldn't close _WriteFd." << endl;
+			return ; // erreur a definir
+		}
 		this->_WriteFd = -1;
 	}
+	// TODO: B-07 devra utiliser Eventloop::RemoveFd() ici.
 }
