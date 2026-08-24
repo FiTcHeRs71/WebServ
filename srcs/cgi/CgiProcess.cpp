@@ -253,7 +253,11 @@ void	CgiProcess::CloseWriteFd(void)
 {
 	if (this->_WriteFd != -1)
 	{
-		close(this->_WriteFd);
+		if (close(this->_WriteFd) < 0)
+		{
+			cerr << "Error: couldn't close _WriteFd." << endl;
+			return ; // erreur a definir
+		}
 		this->_WriteFd = -1;
 	}
 	// TODO: B-07 devra utiliser Eventloop::RemoveFd() ici.
