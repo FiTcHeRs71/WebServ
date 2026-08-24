@@ -156,6 +156,7 @@ bool Request::findRequestLine(int n){
 		{
 			this->_ErrorCode = 414;
 			this->_State = ST_ERROR;
+			cerr << "Error: " << this->_ErrorCode << ": URI Too Long" << endl;
 			return (false);
 		}
 		return (false);
@@ -164,6 +165,7 @@ bool Request::findRequestLine(int n){
 	{
 		this->_ErrorCode = 414;
 		this->_State = ST_ERROR;
+		cerr << "Error: " << this->_ErrorCode << ": URI Too Long" << endl;
 		return (false);
 	}
 	if (!setUpMethod())
@@ -179,7 +181,12 @@ bool Request::findRequestLine(int n){
 bool	Request::setUpMethod(){
 	size_t pos = this->_Raw.find_first_of(" ");
 	if (pos == string::npos)
+	{
+		this->_ErrorCode = 400;
+		this->_State = ST_ERROR;
+		cerr << "Error :" << _ErrorCode << ": Bad Request";
 		return false;
+	}
 	this->_Method = this->_Raw.substr(0, pos);
 	this->_Raw.erase(0, pos + 1);
 	if (!this->_Raw.empty() && this->_Raw[0] == ' '){
@@ -206,7 +213,12 @@ bool	Request::setUpMethod(){
 bool	Request::setUpPath(){
 	size_t pos = this->_Raw.find_first_of(" ");
 	if (pos == string::npos)
+	{
+		this->_ErrorCode = 400;
+		this->_State = ST_ERROR;
+		cerr << "Error :" << _ErrorCode << ": Bad Request";
 		return false;
+	}
 	size_t posQuery = this->_Raw.find_first_of("?");
 	if (posQuery > pos || posQuery == string::npos){
 		this->_Path = this->_Raw.substr(0, pos);

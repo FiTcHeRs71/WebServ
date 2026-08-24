@@ -47,8 +47,8 @@ class Response
 	int					getStatus(void) const;
 
 	/*===Member Function===*/
-	bool	Serialize(std::string &out);
-	void	Reset(void);
+	bool				Serialize(std::string &out);
+	void				Reset(void);
 };
 
 #endif /*RESPONSE_HPP*/

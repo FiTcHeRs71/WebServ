@@ -62,12 +62,9 @@ class Request
 		const ServerConfig*	_Srv;                ///< pose par B, sert a Resolve()
 		const ConfigParser*	_Config;
 		size_t				_GroupIndex;
-
 		bool				_IsChunked;
 		size_t				_CurrentChunkSize;		///< taille du chunk en cours de lecture
 		size_t				_CurrentChunkRead;		///< octets deja lus de ce chunk
-
-	protected:
 
 	public:
 
@@ -90,8 +87,6 @@ class Request
 	map<string, string>	getHeaders(void) const;
 	void				SetConnectionContext(const ConfigParser *config, size_t group_index);
 	const ServerConfig	*getServerConfig() const;
-
-	// const string&	getBody() const;		///< (C-02)
 
 	/*===Member Function===*/
 	EParseResult		Feed(const char *data, size_t n);
