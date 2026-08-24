@@ -295,13 +295,13 @@ int	EventLoop::ComputeTimeout(void) const
 	time_t	remain;
 	for(map<int, Connection>::const_iterator it = _Clients.begin(); it != _Clients.end(); it++)
 	{
-		if (it->second.getState() == CONN_READING)
+		if (!it->second.getReqComplete() && it->second.getState() == CONN_READING)
 		{
 			remain = (TIMEOUT_HEADER - (time(NULL) - it->second.getLastActivity())) * 1000;
 			if (remain < next_up)
 				next_up = remain;
 		}
-		else if(it->second.getReqComplete())
+		else if(it->second.getReqComplete() && it->second.getState() == CONN_READING)
 		{
 			remain = (TIMEOUT_IDLE - (time(NULL) - it->second.getLastActivity())) * 1000;
 			if (remain < next_up)

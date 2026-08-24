@@ -111,6 +111,7 @@ ssize_t	Connection::OnReadable(){
 		return (r);
 	}
 	else{
+		_ReqComplete = false;
 		_LastActivity = time(NULL);
 		EParseResult	res = _Req.Feed(buffer, r);
 		while (res == REQ_COMPLETE){
