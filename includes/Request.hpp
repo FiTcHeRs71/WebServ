@@ -90,7 +90,6 @@ class Request
 	map<string, string>	getHeaders(void) const;
 	void				SetConnectionContext(const ConfigParser *config, size_t group_index);
 	const ServerConfig	*getServerConfig() const;
-	const ConfigParser	*getConfigParser() const;
 
 	// const string&	getBody() const;		///< (C-02)
 

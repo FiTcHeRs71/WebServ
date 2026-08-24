@@ -440,11 +440,6 @@ const ServerConfig		*Request::getServerConfig() const
 	return(_Srv);
 }
 
-const ConfigParser	*Request::getConfigParser() const
-{
-	return(_Config);
-}
-
 void	Request::SetConnectionContext(const ConfigParser *config, size_t group_index)
 {
 	this->_Config = config;

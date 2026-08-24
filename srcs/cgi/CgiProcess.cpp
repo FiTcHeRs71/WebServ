@@ -233,7 +233,10 @@ void	CgiProcess::OnWritableCgi(void)
 		return ;
 	ssize_t	n = write(_WriteFd, &_InBuf[0], _InBuf.size());
 	if (n <= 0)
+	{
 		CloseWriteFd();
+		return ;
+	}
 	_InBuf.erase(0, static_cast<size_t>(n));
 	if (_InBuf.empty())
 		CloseWriteFd();
