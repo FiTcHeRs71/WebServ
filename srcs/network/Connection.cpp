@@ -98,8 +98,6 @@ ssize_t	Connection::OnReadable(){
 	}
 	else{
 		EParseResult	res = _Req.Feed(buffer, r);
-		if (_Req.getErrorCode() > 0)
-			SendErrorAndClose(_Req.getErrorCode());
 		while (res == REQ_COMPLETE){
 			string	out;
 			const ServerConfig *srv = _Req.getServerConfig();
