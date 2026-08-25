@@ -1,8 +1,10 @@
 #include "../../includes/EventLoop.hpp"
+#include "../../includes/Network.hpp"
 #include <cstddef>
 #include <arpa/inet.h>
 #include <ctime>
 #include <sys/poll.h>
+#include <sys/socket.h>
 
 /**
  * @brief Enregistre les sockets d'ecoute dans poll et dans _ListenFds
@@ -68,7 +70,7 @@ EventLoop &EventLoop::operator=(const EventLoop& src)
 void	EventLoop::Run(void)
 {
 	int	status;
-	while (_Running)
+	while (_Running && !g_StopRequested)
 	{
 		status = poll(&_Pollfds[0], _Pollfds.size(), ComputeTimeout());
 		SweepTimeouts();
@@ -106,6 +108,7 @@ void	EventLoop::Run(void)
 			CloseConnection(_toClose[i]);
 		_toClose.clear();
 	}
+	//Shutdown();
 }
 
 /**
