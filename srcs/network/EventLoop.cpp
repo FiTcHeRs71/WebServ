@@ -63,10 +63,6 @@ EventLoop &EventLoop::operator=(const EventLoop& src)
 /**
  * @brief Boucle unique : poll() puis dispatch listen-fd / client-fd
  *
- * timeout = -1 tant que B-05 n'a pas de ComputeTimeout(). Un retour 0
- * (timeout) est ignore. Un retour < 0 avec EINTR relance la boucle ;
- * toute autre erreur arrete Run().
- *
  * @return void
  */
 void	EventLoop::Run(void)
@@ -77,11 +73,15 @@ void	EventLoop::Run(void)
 		status = poll(&_Pollfds[0], _Pollfds.size(), ComputeTimeout());
 		SweepTimeouts();
 		if (status == 0)
+		{
+			for (size_t i = 0; i < _toClose.size(); i++)
+				CloseConnection(_toClose[i]);
 			continue ;
+		}
 		else if (status < 0)
 		{
-			if (errno == EINTR) ///< errno is okay, subject says forbidden only after a read or write
-				continue ;
+			if (errno == EINTR)
+							continue ;
 			cerr << "Error: poll() failed." << endl;
 			break ;			//TODO: A check break ou throw ?
 		}
@@ -101,9 +101,9 @@ void	EventLoop::Run(void)
 			else if (!HandleClientEvent(i))
 				_toClose.push_back(_Pollfds[i].fd);
 		}
-		for (size_t i = 0; i < _toClose.size(); i++){
+		for (size_t i = 0; i < _toClose.size(); i++)
 			CloseConnection(_toClose[i]);
-		}
+		_toClose.clear();
 	}
 }
 
@@ -329,8 +329,7 @@ void	EventLoop::SweepTimeouts(void)
 				SetEvents(it->first, POLLOUT);
 			}
 			else
-				CloseConnection(it->first);
-			it->second.setState(CONN_CLOSING);
+				_toClose.push_back(it->first);
 		}
 	}
 }
