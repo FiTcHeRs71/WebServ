@@ -202,7 +202,7 @@ void	Connection::SendErrorAndClose(int code)
 	Response		response;
 	string			out;
 	ostringstream	oss;
-	
+
 	if (code < 400)
 		code = 500;
 	response.SetStatus(code);

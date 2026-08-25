@@ -152,7 +152,7 @@ bool Request::findRequestLine(int n){
 	size_t	pos = this->_Raw.find("\r\n");
 	if (pos == string::npos)
 	{
-		if (this->_Raw.size() > REQUESTMAXSIZE)
+		if (this->_Raw.size() > MAX_URI_LENGTH)
 		{
 			this->_ErrorCode = 414;
 			this->_State = ST_ERROR;
@@ -161,7 +161,7 @@ bool Request::findRequestLine(int n){
 		}
 		return (false);
 	}
-	if (pos > REQUESTMAXSIZE)
+	if (pos > MAX_URI_LENGTH)
 	{
 		this->_ErrorCode = 414;
 		this->_State = ST_ERROR;
@@ -196,7 +196,7 @@ bool	Request::setUpMethod(){
 		return false;
 	}
 	if (this->_Method != "GET" && this->_Method != "POST" && this->_Method != "DELETE"){
-		this->_ErrorCode = 405;
+		this->_ErrorCode = 501; //TODO (C-09) si la method existe mais n'est pas handle -> 405 : Method not allowed
 		this->_State = ST_ERROR;
 		cerr << "Error :" << this->_ErrorCode << ": Method Not Allowed" << endl;
 		return false;
@@ -278,10 +278,18 @@ bool	Request::setUpVersion(){
  */
 bool	Request::findHeaders(int n){
 	(void)n;
+	bool noHeaders = (_Raw.size() >= 2 && _Raw[0] == '\r' && _Raw[1] == '\n');
+	if (noHeaders){
+		this->_State = ST_ERROR;
+		this->_ErrorCode = 400;
+		cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+		_Raw.erase(0, 2);
+		return false;
+	}
 	size_t	pos = this->_Raw.find("\r\n\r\n");
 	if (pos == string::npos)
 	{
-		if (this->_Raw.size() > REQUESTMAXSIZE)
+		if (this->_Raw.size() > MAX_HEADER_LENGTH)
 		{
 			this->_State = ST_ERROR;
 			this->_ErrorCode = 431;
@@ -290,7 +298,7 @@ bool	Request::findHeaders(int n){
 		}
 		return (false);
 	}
-	if (pos > REQUESTMAXSIZE)
+	if (pos > MAX_HEADER_LENGTH)
 	{
 		this->_State = ST_ERROR;
 		this->_ErrorCode = 431;
@@ -335,6 +343,12 @@ bool	Request::findHeaders(int n){
 		cerr << "Error: " << this->_ErrorCode << ": Request Header Fields Too Large" << endl;
 		return false;
 	}
+	if (this->_Header.find("host") == this->_Header.end()){
+		this->_State = ST_ERROR;
+		this->_ErrorCode = 400;
+		cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+		return false;
+	}
 	this->_Raw.erase(0, pos + 4);
 	if (this->_Config != NULL)
 		SetServerConfig(&SelectServer(*this->_Config, this->_GroupIndex, getHeader("host")));
@@ -361,6 +375,12 @@ bool	Request::expandEncodingUrl(){
 			}
 			tmp.push_back(convertToHexa(_Path[i + 1], _Path[i + 2]));
 			i += 2;
+		}
+		else{
+			this->_ErrorCode = 400;
+			this->_State = ST_ERROR;
+			cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+			return false;
 		}
 	}
 	this->_Path.clear();
@@ -736,12 +756,12 @@ bool	Request::findChunkTrailer()
 	size_t pos = _Raw.find("\r\n\r\n");
 	if (pos == string::npos)
 	{
-		if (_Raw.size() > REQUESTMAXSIZE)
+		if (_Raw.size() > MAX_URI_LENGTH)
 		{
 			_State = ST_ERROR;
 			_ErrorCode = 400;
 			cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
-			return(false);	
+			return(false);
 		}
 		return(false);
 	}
