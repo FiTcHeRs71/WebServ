@@ -89,6 +89,11 @@ bool	Connection::getReqComplete(void) const
 	return(_ReqComplete);
 }
 
+void	Connection::setState(const EConnState state)
+{
+	_State = state;
+}
+
 	/*===Member Function===*/
 
 /**

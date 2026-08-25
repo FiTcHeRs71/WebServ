@@ -49,6 +49,7 @@ class EventLoop
 	void	CleanClients(vector<int>& toClose);
 	void	RegisterCgi(int client_fd, int cgi_read_fd, int cgi_write_fd);	///< Branche les pipes CGI sur le poll (B-07)
 	void	UnregisterCgi(int client_fd);		///< Ferme et oublie les pipes d'un CGI fini (B-07)
+	void	CloseConnection(int fd);
 
 	private:
 
@@ -58,6 +59,7 @@ class EventLoop
 	void	HandleCgiEvent(int fd, short revents);	///< I/O pipe CGI (B-07) : lit/ecrit selon revents
 	int		ComputeTimeout(void) const;				///< millisecondes a passer a poll()
 	void	SweepTimeouts(void);					///< appele a CHAQUE retour de poll(), meme sur 0
+
 };
 
 #endif

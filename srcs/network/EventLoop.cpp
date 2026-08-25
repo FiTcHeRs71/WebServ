@@ -76,6 +76,7 @@ void	EventLoop::Run(void)
 	{
 		vector<int> toClose;
 		status = poll(&_Pollfds[0], _Pollfds.size(), ComputeTimeout());
+		SweepTimeouts();
 		if (status == 0)
 			continue ;
 		else if (status < 0)
@@ -316,9 +317,38 @@ int	EventLoop::ComputeTimeout(void) const
 		return(1000);
 }
 
+void	EventLoop::CloseConnection(int fd)
+{
+	RemoveFd(fd);
+	map<int, Connection>::const_iterator	it = _Clients.find(fd);
+	if (it == _Clients.end())
+		cerr << "Error: couldn't find the fd to erase from _CLients." << endl;
+	_Clients.erase(it);
+	if (close(fd) < 0)
+		cerr << "Error: close() failed on the clients fd." << endl;
+}
+
 void	EventLoop::SweepTimeouts(void)
 {
-
+	if(_Clients.empty())
+		return ;
+	time_t	toClose = 1;
+	for(map<int, Connection>::iterator it = _Clients.begin(); it != _Clients.end(); it++)
+	{
+		if (!it->second.getReqComplete() && it->second.getState() == CONN_READING)
+			toClose = (TIMEOUT_HEADER - (time(NULL) - it->second.getLastActivity())) * 1000;
+		else if(it->second.getReqComplete() && it->second.getState() == CONN_READING)
+			toClose = (TIMEOUT_IDLE - (time(NULL) - it->second.getLastActivity())) * 1000;
+		if (toClose <= 0)
+		{
+			if(!it->second.getReqComplete())
+			{
+				// error 408;
+			}
+			it->second.setState(CONN_CLOSING);
+			SetEvents(it->first, POLLOUT);
+		}
+	}
 }
 
 /**

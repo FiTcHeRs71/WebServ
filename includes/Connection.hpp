@@ -58,6 +58,7 @@ class Connection
 	size_t			getGroupIndex() const;
 	void			setLastActivity();
 	bool			getReqComplete(void) const;
+	void			setState(EConnState state);
 
 
 	/*===Member Function===*/
