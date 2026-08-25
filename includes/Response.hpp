@@ -1,6 +1,7 @@
 #ifndef RESPONSE_HPP
 # define RESPONSE_HPP
 
+#include "ServerConfig.hpp"
 # include <iostream>
 # include <string>
 # include <map>
@@ -49,6 +50,7 @@ class Response
 	/*===Member Function===*/
 	bool				Serialize(std::string &out);
 	void				Reset(void);
+	Response			BuildError(int code, const ServerConfig &server);
 };
 
 #endif /*RESPONSE_HPP*/

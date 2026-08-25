@@ -75,6 +75,11 @@ vector<string>	ServerConfig::getServerNames() const
 	return(_ServerNames);
 }
 
+map<int, string>	ServerConfig::getErrorPages() const
+{
+	return(_ErrorPages);
+}
+
 	/*===Member Function===*/
 /**
  * @brief Trouve la LocationConfig de ce serveur qui matche une URI.
