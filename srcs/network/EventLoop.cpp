@@ -3,8 +3,8 @@
 #include <cstddef>
 #include <arpa/inet.h>
 #include <ctime>
+#include <map>
 #include <sys/poll.h>
-#include <sys/socket.h>
 
 /**
  * @brief Enregistre les sockets d'ecoute dans poll et dans _ListenFds
@@ -108,7 +108,7 @@ void	EventLoop::Run(void)
 			CloseConnection(_toClose[i]);
 		_toClose.clear();
 	}
-	//Shutdown();
+	Shutdown();
 }
 
 /**
@@ -410,4 +410,17 @@ void	EventLoop::HandleCgiEvent(int fd, short revents)
 {
 	(void)fd;
 	(void)revents;
+}
+
+void	EventLoop::Shutdown(void)
+{
+	map<int, Connection>::iterator	it;
+
+	for (it = this->_Clients.begin(); it != this->_Clients.end(); it++)
+	{
+		close(it->first);
+	}
+	this->_Clients.clear();
+	this->_Pollfds.clear();
+	// TODO B-07 : pipes de _CGIToClient + waitpid() des child
 }
