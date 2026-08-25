@@ -278,6 +278,14 @@ bool	Request::setUpVersion(){
  */
 bool	Request::findHeaders(int n){
 	(void)n;
+	bool noHeaders = (_Raw.size() >= 2 && _Raw[0] == '\r' && _Raw[1] == '\n');
+	if (noHeaders){
+		this->_State = ST_ERROR;
+		this->_ErrorCode = 400;
+		cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+		_Raw.erase(0, 2);
+		return false;
+	}
 	size_t	pos = this->_Raw.find("\r\n\r\n");
 	if (pos == string::npos)
 	{
@@ -367,6 +375,12 @@ bool	Request::expandEncodingUrl(){
 			}
 			tmp.push_back(convertToHexa(_Path[i + 1], _Path[i + 2]));
 			i += 2;
+		}
+		else{
+			this->_ErrorCode = 400;
+			this->_State = ST_ERROR;
+			cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+			return false;
 		}
 	}
 	this->_Path.clear();
