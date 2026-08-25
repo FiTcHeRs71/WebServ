@@ -9,7 +9,8 @@ Connection::Connection(void)
 	:_Fd(0),
 	_State(CONN_READING),
 	_LastActivity(time(NULL)),
-	_GroupIndex(0) {}
+	_GroupIndex(0),
+	_ReqComplete(false) {}
 
 Connection::~Connection(void) {}
 
@@ -18,6 +19,7 @@ Connection::Connection(int fd, size_t group_index, const ConfigParser *config)
 	,_State(CONN_READING)
 	,_LastActivity(time(NULL))
 	,_GroupIndex(group_index)
+	,_ReqComplete(false)
 {
 	_Req.SetConnectionContext(config, group_index);
 }
@@ -31,6 +33,7 @@ Connection::Connection(const Connection& to_copy)
 	this->_State = to_copy._State;
 	this->_LastActivity = to_copy._LastActivity;
 	this->_GroupIndex = to_copy._GroupIndex;
+	this->_ReqComplete = to_copy._ReqComplete;
 }
 
 Connection	&Connection::operator=(const Connection& src)
@@ -44,6 +47,7 @@ Connection	&Connection::operator=(const Connection& src)
 		this->_State = src._State;
 		this->_LastActivity = src._LastActivity;
 		this->_GroupIndex = src._GroupIndex;
+		this->_ReqComplete = src._ReqComplete;
 	}
 	return (*this);
 }
@@ -74,6 +78,22 @@ EConnState Connection::getState() const{
 time_t Connection::getLastActivity() const{
 	return (this->_LastActivity);
 }
+
+void	Connection::setLastActivity()
+{
+	this->_LastActivity = time(NULL);
+}
+
+bool	Connection::getReqComplete(void) const
+{
+	return(_ReqComplete);
+}
+
+void	Connection::setState(const EConnState state)
+{
+	_State = state;
+}
+
 	/*===Member Function===*/
 
 /**
@@ -89,16 +109,18 @@ ssize_t	Connection::OnReadable(){
 
 	if (_State == CONN_CLOSING) ///< B-04 : plus rien a lire, le flux est desynchronise
 		return (0);
-	_LastActivity = time(NULL);
 	char	buffer[BUFFER_SIZE];
 	ssize_t r = recv(_Fd, buffer, sizeof(buffer), 0);
 	if (r <= 0){
-			_State = CONN_CLOSING;
-			return (r);
+		_State = CONN_CLOSING;
+		return (r);
 	}
 	else{
+		_ReqComplete = false;
+		_LastActivity = time(NULL);
 		EParseResult	res = _Req.Feed(buffer, r);
 		while (res == REQ_COMPLETE){
+			_ReqComplete = true;
 			string	out;
 			const ServerConfig *srv = _Req.getServerConfig();
 			if (srv == NULL)
@@ -128,7 +150,6 @@ ssize_t	Connection::OnReadable(){
  * @return ssize_t the size of the return from send()
  */
 ssize_t Connection::OnWritable(){
-	_LastActivity = time(NULL);
 	if (_OutBuf.empty())
 		return (0);
 	ssize_t s = send(_Fd, _OutBuf.c_str(), _OutBuf.size(), 0);
@@ -136,8 +157,10 @@ ssize_t Connection::OnWritable(){
 			_State = CONN_CLOSING;
 			return (s);
 	}
-	else
+	else{
+		_LastActivity = time(NULL);
 		_OutBuf.erase(0, s);
+	}
 	return (s);
 }
 

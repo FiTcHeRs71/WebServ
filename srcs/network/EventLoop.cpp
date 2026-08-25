@@ -1,6 +1,7 @@
 #include "../../includes/EventLoop.hpp"
 #include <cstddef>
 #include <arpa/inet.h>
+#include <ctime>
 #include <sys/poll.h>
 
 /**
@@ -62,10 +63,6 @@ EventLoop &EventLoop::operator=(const EventLoop& src)
 /**
  * @brief Boucle unique : poll() puis dispatch listen-fd / client-fd
  *
- * timeout = -1 tant que B-05 n'a pas de ComputeTimeout(). Un retour 0
- * (timeout) est ignore. Un retour < 0 avec EINTR relance la boucle ;
- * toute autre erreur arrete Run().
- *
  * @return void
  */
 void	EventLoop::Run(void)
@@ -73,14 +70,19 @@ void	EventLoop::Run(void)
 	int	status;
 	while (_Running)
 	{
-		vector<int> toClose;
-		status = poll(&_Pollfds[0], _Pollfds.size(), -1);
+		status = poll(&_Pollfds[0], _Pollfds.size(), ComputeTimeout());
+		SweepTimeouts();
 		if (status == 0)
+		{
+			for (size_t i = 0; i < _toClose.size(); i++)
+				CloseConnection(_toClose[i]);
+			_toClose.clear();
 			continue ;
+		}
 		else if (status < 0)
 		{
-			if (errno == EINTR) ///< errno is okay, subject says forbidden only after a read or write
-				continue ;
+			if (errno == EINTR)
+							continue ;
 			cerr << "Error: poll() failed." << endl;
 			break ;			//TODO: A check break ou throw ?
 		}
@@ -98,11 +100,11 @@ void	EventLoop::Run(void)
 			else if (_CgiToClient.count(fd))
 				HandleCgiEvent(fd, _Pollfds[i].revents);
 			else if (!HandleClientEvent(i))
-				toClose.push_back(_Pollfds[i].fd);
+				_toClose.push_back(_Pollfds[i].fd);
 		}
-		if (!toClose.empty()){
-			CleanClients(toClose);
-		}
+		for (size_t i = 0; i < _toClose.size(); i++)
+			CloseConnection(_toClose[i]);
+		_toClose.clear();
 	}
 }
 
@@ -175,20 +177,6 @@ void	EventLoop::RemoveFd(int fd)
 }
 
 /**
- * @brief Cleans up clients that have closed their connections
- *
- * @param toClose vector containing all the file descriptors
- */
-void	EventLoop::CleanClients(vector<int>& toClose){
-	for(size_t i = 0; i < toClose.size(); i++){
-		this->RemoveFd(toClose[i]);
-		if (close(toClose[i]) < 0)
-			std::cout << "Error: close failed on " << toClose[i] << endl;
-		_Clients.erase(toClose[i]);
-	}
-}
-
-/**
  * @brief Change le masque d'events d'un fd deja present dans _Pollfds
  *
  * POLLOUT ne doit etre arme que si le client a des octets a envoyer (B-03).
@@ -243,6 +231,7 @@ void	EventLoop::AcceptNewClients(int listen_fd)
 	}
 	size_t groupIndex = _ListenFds[listen_fd];
 	_Clients[clientFd] = Connection(clientFd, groupIndex, _Config);
+	_Clients[clientFd].setLastActivity();
 	AddFd(clientFd, POLLIN);
 	_Clients[clientFd].setIpV4(inet_ntoa(clientAddr.sin_addr));
 }
@@ -283,6 +272,91 @@ bool	EventLoop::HandleClientEvent(size_t index)
 	if (it->second.getState() == CONN_CLOSING && !it->second.HasPendingOutput())
 		return false;
 	return true;
+}
+
+/**
+ * @brief Calcule le timeout (ms) a passer a poll().*
+ * Parcourt _Clients : requete incomplete (CONN_READING, !_ReqComplete)
+ * -> TIMEOUT_HEADER ; keep-alive inactif (CONN_READING, _ReqComplete)
+ * -> TIMEOUT_IDLE. Renvoie le plus petit restant, borne dans [0, 1000].
+ * -1 seulement s'il n'y a aucun client (poll peut dormir).*
+ * @return Millisecondes avant le prochain reveil, ou -1 si _Clients est vide.
+*/
+int	EventLoop::ComputeTimeout(void) const
+{
+	if (_Clients.empty())
+		return(-1);
+	time_t	next_up = 100000;
+	time_t	remain;
+	for(map<int, Connection>::const_iterator it = _Clients.begin(); it != _Clients.end(); it++)
+	{
+		if (!it->second.getReqComplete() && it->second.getState() == CONN_READING)
+		{
+			remain = (TIMEOUT_HEADER - (time(NULL) - it->second.getLastActivity())) * 1000;
+			if (remain < next_up)
+				next_up = remain;
+		}
+		else if(it->second.getReqComplete() && it->second.getState() == CONN_READING)
+		{
+			remain = (TIMEOUT_IDLE - (time(NULL) - it->second.getLastActivity())) * 1000;
+			if (remain < next_up)
+				next_up = remain;
+		}
+	}
+	if (next_up < 0)
+		return(0);
+	else if (next_up < 1000)
+		return(static_cast<int>(next_up));
+	else
+		return(1000);
+}
+
+/**
+ * @brief Point de sortie unique d'une connexion client (B-04 / B-05).*
+ * Retire fd de _Pollfds et de _Clients, puis close(fd). erase par cle :
+ * no-op si le fd n'est plus dans la map. Ne pas appeler pendant l'iteration
+ * de SweepTimeouts() sans avancer l'iterateur avant.*
+ * @param fd Le descripteur client a fermer.
+ * @return void
+*/
+void	EventLoop::CloseConnection(int fd)
+{
+	RemoveFd(fd);
+	_Clients.erase(fd);
+	if (close(fd) < 0)
+		cerr << "Error: close() failed on the clients fd." << endl;
+}
+
+/**
+ * @brief Expire les connexions inactives. A appeler a chaque retour de poll(),
+ * y compris quand poll() rend 0.*
+ * Timeout lecture : SendErrorAndClose(408) puis POLLOUT (la reponse doit partir
+ * avant CloseConnection). Timeout idle : fd pousse dans _toClose, close
+ * silencieux, pas de 408.*
+ * @return void
+*/
+void	EventLoop::SweepTimeouts(void)
+{
+	if(_Clients.empty())
+		return ;
+	for(map<int, Connection>::iterator it = _Clients.begin(); it != _Clients.end(); it++)
+	{
+		time_t	toClose = 1;
+		if (!it->second.getReqComplete() && it->second.getState() == CONN_READING)
+			toClose = (TIMEOUT_HEADER - (time(NULL) - it->second.getLastActivity())) * 1000;
+		else if(it->second.getReqComplete() && it->second.getState() == CONN_READING)
+			toClose = (TIMEOUT_IDLE - (time(NULL) - it->second.getLastActivity())) * 1000;
+		if (toClose <= 0)
+		{
+			if(!it->second.getReqComplete())
+			{
+				it->second.SendErrorAndClose(408);
+				SetEvents(it->first, POLLOUT);
+			}
+			else
+				_toClose.push_back(it->first);
+		}
+	}
 }
 
 /**

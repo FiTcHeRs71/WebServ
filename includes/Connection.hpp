@@ -36,8 +36,7 @@ class Connection
 	EConnState		_State;
 	time_t			_LastActivity;	///< utilise par B-05 pour les timeouts
 	size_t			_GroupIndex;	///< index dans _AddrPorts : quel ServerConfig repond
-
-	void			SendErrorAndClose(int code);
+	bool			_ReqComplete;
 
 	public:
 
@@ -55,6 +54,9 @@ class Connection
 	void			setIpV4(string src);
 	const string&	getIpV4() const;
 	size_t			getGroupIndex() const;
+	void			setLastActivity();
+	bool			getReqComplete(void) const;
+	void			setState(EConnState state);
 
 
 	/*===Member Function===*/
@@ -62,6 +64,7 @@ class Connection
 	ssize_t			OnReadable(void);				///< un seul recv(), renvoie ce que recv() a rendu
 	ssize_t			OnWritable(void);				///< un seul send() partiel
 	void			QueueOutput(const string& data);
+	void			SendErrorAndClose(int code);
 };
 
 #endif /*CONNECTION_HPP*/
