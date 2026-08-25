@@ -38,8 +38,6 @@ class Connection
 	size_t			_GroupIndex;	///< index dans _AddrPorts : quel ServerConfig repond
 	bool			_ReqComplete;
 
-	void			SendErrorAndClose(int code);
-
 	public:
 
 	/*===Canonical Form===*/
@@ -66,6 +64,7 @@ class Connection
 	ssize_t			OnReadable(void);				///< un seul recv(), renvoie ce que recv() a rendu
 	ssize_t			OnWritable(void);				///< un seul send() partiel
 	void			QueueOutput(const string& data);
+	void			SendErrorAndClose(int code);
 };
 
 #endif /*CONNECTION_HPP*/

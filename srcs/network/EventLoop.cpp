@@ -74,7 +74,6 @@ void	EventLoop::Run(void)
 	int	status;
 	while (_Running)
 	{
-		vector<int> toClose;
 		status = poll(&_Pollfds[0], _Pollfds.size(), ComputeTimeout());
 		SweepTimeouts();
 		if (status == 0)
@@ -100,10 +99,10 @@ void	EventLoop::Run(void)
 			else if (_CgiToClient.count(fd))
 				HandleCgiEvent(fd, _Pollfds[i].revents);
 			else if (!HandleClientEvent(i))
-				toClose.push_back(_Pollfds[i].fd);
+				_toClose.push_back(_Pollfds[i].fd);
 		}
-		if (!toClose.empty()){
-			CleanClients(toClose);
+		for (size_t i = 0; i < _toClose.size(); i++){
+			CloseConnection(_toClose[i]);
 		}
 	}
 }
@@ -174,20 +173,6 @@ void	EventLoop::RemoveFd(int fd)
 		return ;
 	}
 	cerr << "This fd wasnt found." << endl; //checker si message d'erreur necessaire ou si on skip.
-}
-
-/**
- * @brief Cleans up clients that have closed their connections
- *
- * @param toClose vector containing all the file descriptors
- */
-void	EventLoop::CleanClients(vector<int>& toClose){
-	for(size_t i = 0; i < toClose.size(); i++){
-		this->RemoveFd(toClose[i]);
-		if (close(toClose[i]) < 0)
-			std::cout << "Error: close failed on " << toClose[i] << endl;
-		_Clients.erase(toClose[i]);
-	}
 }
 
 /**
@@ -320,10 +305,7 @@ int	EventLoop::ComputeTimeout(void) const
 void	EventLoop::CloseConnection(int fd)
 {
 	RemoveFd(fd);
-	map<int, Connection>::const_iterator	it = _Clients.find(fd);
-	if (it == _Clients.end())
-		cerr << "Error: couldn't find the fd to erase from _CLients." << endl;
-	_Clients.erase(it);
+	_Clients.erase(fd);
 	if (close(fd) < 0)
 		cerr << "Error: close() failed on the clients fd." << endl;
 }
@@ -332,9 +314,9 @@ void	EventLoop::SweepTimeouts(void)
 {
 	if(_Clients.empty())
 		return ;
-	time_t	toClose = 1;
 	for(map<int, Connection>::iterator it = _Clients.begin(); it != _Clients.end(); it++)
 	{
+		time_t	toClose = 1;
 		if (!it->second.getReqComplete() && it->second.getState() == CONN_READING)
 			toClose = (TIMEOUT_HEADER - (time(NULL) - it->second.getLastActivity())) * 1000;
 		else if(it->second.getReqComplete() && it->second.getState() == CONN_READING)
@@ -343,10 +325,12 @@ void	EventLoop::SweepTimeouts(void)
 		{
 			if(!it->second.getReqComplete())
 			{
-				// error 408;
+				it->second.SendErrorAndClose(408);
+				SetEvents(it->first, POLLOUT);
 			}
+			else
+				CloseConnection(it->first);
 			it->second.setState(CONN_CLOSING);
-			SetEvents(it->first, POLLOUT);
 		}
 	}
 }

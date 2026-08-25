@@ -34,6 +34,7 @@ class EventLoop
 	const ConfigParser		*_Config;		///< Conf parse, pour retrouver le TAddrPortGroup d'un client
 	bool					_Running;		///< Garde Run() en vie tant qu'il est true
 	map<int, int>			_CgiToClient;	///< fd de pipe -> fd du client qui attend la reponse
+	vector<int>				_toClose;		///< vecteur contenant les fd cleint a fermer
 
 	public:
 
@@ -46,7 +47,6 @@ class EventLoop
 	void	AddFd(int fd, short events);		///< Utilise aussi par B-07 pour les pipes CGI
 	void	RemoveFd(int fd);					///< Retire fd de _Pollfds, n'invalide pas _Clients
 	void	SetEvents(int fd, short events);	///< Re-arme POLLIN / POLLOUT sur un fd deja surveille
-	void	CleanClients(vector<int>& toClose);
 	void	RegisterCgi(int client_fd, int cgi_read_fd, int cgi_write_fd);	///< Branche les pipes CGI sur le poll (B-07)
 	void	UnregisterCgi(int client_fd);		///< Ferme et oublie les pipes d'un CGI fini (B-07)
 	void	CloseConnection(int fd);
