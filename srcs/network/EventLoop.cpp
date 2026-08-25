@@ -412,6 +412,14 @@ void	EventLoop::HandleCgiEvent(int fd, short revents)
 	(void)revents;
 }
 
+/**
+ * @brief Close tous les connections et FD ouvert avec les clients.
+ *
+ * Objectif 0 FD ouvert apres nimporte quel type darret du WebServ.
+ * Parcours tous les Connectiosn etabli avec des cliens et close tous les FD lie
+ *
+ * @return void
+ */
 void	EventLoop::Shutdown(void)
 {
 	map<int, Connection>::iterator	it;
