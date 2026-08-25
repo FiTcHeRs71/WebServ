@@ -20,7 +20,7 @@ enum EConnState
 {
 	CONN_READING,		///< on accumule la requete
 	CONN_WRITING,		///< la reponse est prete, on vide _OutBuf
-	CONN_CLOSING		///< a fermer des que _OutBuf est vide //? si nous gerons http1.1 ne doit pas fermer apres l'envoie
+	CONN_CLOSING		///< a fermer des que _OutBuf est vide
 };
 
 class ConfigParser;

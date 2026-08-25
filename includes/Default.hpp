@@ -5,9 +5,13 @@
 
 using namespace std;
 
-# define MAXHEADERS		100		 ///< 100 Headers maximum par requetes
-# define REQUESTMAXSIZE 8000	///< 8000 octets maximum par requetes
-# define BUFFER_SIZE	8192
+# define MAXHEADERS		100			///< 100 Headers maximum
+# define MAX_URI_LENGTH 8192 		///< Maximumu octets in URI
+# define BUFFER_SIZE	8192		///< Buffer for recv
+# define MAX_METHOD_LENGTH 16
+# define MAX_HEADER_LENGTH 8192		///< maximum length for headers
+// includes/Default.hpp
+
 /**
  * @brief Valeurs appliquees quand une directive est absente du .conf
  *

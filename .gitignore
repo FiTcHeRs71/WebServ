@@ -11,3 +11,14 @@ webserv
 
 # Dossier personnel
 perso/
+
+# Docker local
+.env
+.docker/
+docker-compose.override.yml
+docker/
+docker-compose.yml
+.dockerignore
+
+# Agents Copilot personnels
+.github/agents/
