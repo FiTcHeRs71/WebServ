@@ -76,6 +76,7 @@ void	EventLoop::Run(void)
 		{
 			for (size_t i = 0; i < _toClose.size(); i++)
 				CloseConnection(_toClose[i]);
+			_toClose.clear();
 			continue ;
 		}
 		else if (status < 0)
