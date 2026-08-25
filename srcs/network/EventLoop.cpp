@@ -274,6 +274,14 @@ bool	EventLoop::HandleClientEvent(size_t index)
 	return true;
 }
 
+/**
+ * @brief Calcule le timeout (ms) a passer a poll().*
+ * Parcourt _Clients : requete incomplete (CONN_READING, !_ReqComplete)
+ * -> TIMEOUT_HEADER ; keep-alive inactif (CONN_READING, _ReqComplete)
+ * -> TIMEOUT_IDLE. Renvoie le plus petit restant, borne dans [0, 1000].
+ * -1 seulement s'il n'y a aucun client (poll peut dormir).*
+ * @return Millisecondes avant le prochain reveil, ou -1 si _Clients est vide.
+*/
 int	EventLoop::ComputeTimeout(void) const
 {
 	if (_Clients.empty())
@@ -303,6 +311,14 @@ int	EventLoop::ComputeTimeout(void) const
 		return(1000);
 }
 
+/**
+ * @brief Point de sortie unique d'une connexion client (B-04 / B-05).*
+ * Retire fd de _Pollfds et de _Clients, puis close(fd). erase par cle :
+ * no-op si le fd n'est plus dans la map. Ne pas appeler pendant l'iteration
+ * de SweepTimeouts() sans avancer l'iterateur avant.*
+ * @param fd Le descripteur client a fermer.
+ * @return void
+*/
 void	EventLoop::CloseConnection(int fd)
 {
 	RemoveFd(fd);
@@ -311,6 +327,14 @@ void	EventLoop::CloseConnection(int fd)
 		cerr << "Error: close() failed on the clients fd." << endl;
 }
 
+/**
+ * @brief Expire les connexions inactives. A appeler a chaque retour de poll(),
+ * y compris quand poll() rend 0.*
+ * Timeout lecture : SendErrorAndClose(408) puis POLLOUT (la reponse doit partir
+ * avant CloseConnection). Timeout idle : fd pousse dans _toClose, close
+ * silencieux, pas de 408.*
+ * @return void
+*/
 void	EventLoop::SweepTimeouts(void)
 {
 	if(_Clients.empty())
