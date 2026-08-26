@@ -27,7 +27,6 @@ class Response
 	std::string							_Body;
 
 	void	setDate(void);
-	void	generateBuiltInError(int code);
 
 	protected:
 
@@ -52,6 +51,7 @@ class Response
 	bool				Serialize(std::string &out);
 	void				Reset(void);
 	static Response		BuildError(int code, const ServerConfig &server);
+	void				generateBuiltInError(void);
 };
 
 #endif /*RESPONSE_HPP*/

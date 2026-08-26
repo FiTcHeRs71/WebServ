@@ -176,7 +176,7 @@ bool	Response::Serialize(std::string &out)
 	return (true);
 }
 
-void	Response::generateBuiltInError(int code)
+void	Response::generateBuiltInError(void)
 {
 	ostringstream oss;
 	oss << "<html><body><h1>" << _StatusCode
@@ -189,17 +189,17 @@ Response	Response::BuildError(int code, const ServerConfig &server)
 	Response	res;
 	res.SetStatus(code);
 	res.SetHeader("Content-Type", "text/html");
-	map<int, string>					ErrorPages = server.getErrorPages();
+	const map<int, string>				&ErrorPages = server.getErrorPages();
 	map<int, string>::const_iterator	it = ErrorPages.find(code);
 	if (it == ErrorPages.end())
 	{
-		res.generateBuiltInError(code);
+		res.generateBuiltInError();
 		return res;
 	}
 	const LocationConfig	*loc = server.Resolve(it->second);
 	if(!loc)
 	{
-		res.generateBuiltInError(code);
+		res.generateBuiltInError();
 		return res;
 	}
 	string					ErrorPath = server.build_path(*loc, it->second);
@@ -208,26 +208,26 @@ Response	Response::BuildError(int code, const ServerConfig &server)
 		int	fd = open(ErrorPath.c_str(), O_RDONLY);
 		if (fd < 0)
 		{
-			res.generateBuiltInError(code);
+			res.generateBuiltInError();
 			return res;
 		}
 		char	buf[4096];
 		ssize_t	n;
 		string	body;
-		while ((n = read(fd, &buf, sizeof(buf))) > 0)
+		while ((n = read(fd, buf, sizeof(buf))) > 0)
 		{
 			body.append(buf, static_cast<size_t>(n));
 		}
 		close(fd);
 		if (n < 0 || body.empty())
 		{
-			res.generateBuiltInError(code);
+			res.generateBuiltInError();
 			return res;
 		}
 		else
 			res.SetBody(body);
 	}
 	else
-		res.generateBuiltInError(code);
+		res.generateBuiltInError();
 	return res;
 }
