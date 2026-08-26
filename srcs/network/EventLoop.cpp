@@ -426,7 +426,7 @@ void	EventLoop::Shutdown(void)
 
 	for (it = this->_Clients.begin(); it != this->_Clients.end(); it++)
 	{
-		close(it->first);
+		CloseConnection(it->first);
 	}
 	this->_Clients.clear();
 	this->_Pollfds.clear();
