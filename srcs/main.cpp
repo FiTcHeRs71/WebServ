@@ -2,6 +2,7 @@
 #include "../includes/ListenSockets.hpp"
 #include "../includes/Request.hpp"
 #include "../includes/EventLoop.hpp"
+#include "../includes/Network.hpp"
 
 #include <iostream>
 #include <exception>
@@ -18,11 +19,12 @@ int main(int argc, char **argv)
 	}
 	try
 	{
+		setup_signals();
+
 		ConfigParser	cfg;
 		parse(argv[1], cfg);
 		ListenSockets servSock(cfg.getAddrPorts());
 		EventLoop pollLoop(cfg, servSock);
-		signal(SIGPIPE, SIG_IGN);
 		pollLoop.Run();
 	}
 	catch (exception &e)

@@ -1,7 +1,7 @@
 #ifndef DEFAULT_HPP
 # define DEFAULT_HPP
 
-#include <ctime>
+# include <ctime>
 # include <iostream>
 
 using namespace std;
