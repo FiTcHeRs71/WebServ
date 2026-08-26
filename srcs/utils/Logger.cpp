@@ -6,15 +6,20 @@ Logger::Logger(void)
 	:_SavedCout(NULL)
 	,_SavedCerr(NULL)
 	,_Redirected(false)
-{
-
-}
+{}
 
 Logger::Logger(const string &path)
 	:_SavedCout(NULL)
 	,_SavedCerr(NULL)
 	,_Redirected(false)
-{}
+{
+	this->_File.open(path.c_str(), ios::out|ios::app);
+	if (!this->_File.is_open())
+	{
+		cerr << "webserv: [warn] cannot open " << path << ", logging to terminal" << endl;
+		return ;
+	}
+}
 
 Logger::~Logger(void)
 {
@@ -28,7 +33,7 @@ Logger::~Logger(void)
 Logger::Logger(const Logger& to_copy)
 	:_SavedCout(to_copy._SavedCout)
 	,_SavedCerr(to_copy._SavedCerr)
-	,_Redirected(to_copy._Redirected)
+	,_Redirected(false)
 {}
 
 Logger	&Logger::operator=(const Logger& src)
@@ -37,7 +42,7 @@ Logger	&Logger::operator=(const Logger& src)
 	{
 		this->_SavedCout = src._SavedCout;
 		this->_SavedCerr = src._SavedCerr;
-		this->_Redirected = src._Redirected;
+		this->_Redirected = false;
 	}
 	return (*this);
 }
