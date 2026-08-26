@@ -176,6 +176,9 @@ bool	Response::Serialize(std::string &out)
 	return (true);
 }
 
+/**
+ * @brief Cree un body de reponse http en fonction de l'erreur.
+ */
 void	Response::generateBuiltInError(void)
 {
 	ostringstream oss;
@@ -184,6 +187,13 @@ void	Response::generateBuiltInError(void)
 	SetBody(oss.str());
 }
 
+/**
+ * @brief Lit le fichier d'erreur s'il existe, sinon cree un built in, 
+ * renvoie le tout comme reponse.
+ * @param code Code d'erreur.
+ * @param server Server ou se trouve les pages d'erreur.
+ * @return Une reponse d'erreur http.
+ */
 Response	Response::BuildError(int code, const ServerConfig &server)
 {
 	Response	res;
