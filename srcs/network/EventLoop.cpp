@@ -107,6 +107,9 @@ void	EventLoop::Run(void)
 		for (size_t i = 0; i < _toClose.size(); i++)
 			CloseConnection(_toClose[i]);
 		_toClose.clear();
+		for(size_t i = 0; i < _CgiToClose.size(); i++)
+			UnregisterCgi(_CgiToClose[i]);
+		_CgiToClose.clear();
 	}
 	Shutdown();
 }
