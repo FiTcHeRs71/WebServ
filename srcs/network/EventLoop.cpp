@@ -1,7 +1,9 @@
 #include "../../includes/EventLoop.hpp"
+#include "../../includes/Network.hpp"
 #include <cstddef>
 #include <arpa/inet.h>
 #include <ctime>
+#include <map>
 #include <sys/poll.h>
 
 /**
@@ -68,7 +70,7 @@ EventLoop &EventLoop::operator=(const EventLoop& src)
 void	EventLoop::Run(void)
 {
 	int	status;
-	while (_Running)
+	while (_Running && !g_StopRequested)
 	{
 		status = poll(&_Pollfds[0], _Pollfds.size(), ComputeTimeout());
 		SweepTimeouts();
@@ -106,6 +108,7 @@ void	EventLoop::Run(void)
 			CloseConnection(_toClose[i]);
 		_toClose.clear();
 	}
+	Shutdown();
 }
 
 /**
@@ -410,4 +413,25 @@ void	EventLoop::HandleCgiEvent(int fd, short revents)
 {
 	(void)fd;
 	(void)revents;
+}
+
+/**
+ * @brief Close tous les connections et FD ouvert avec les clients.
+ *
+ * Objectif 0 FD ouvert apres nimporte quel type darret du WebServ.
+ * Parcours tous les Connectiosn etabli avec des cliens et close tous les FD lie
+ *
+ * @return void
+ */
+void	EventLoop::Shutdown(void)
+{
+	map<int, Connection>::iterator	it;
+
+	for (it = this->_Clients.begin(); it != this->_Clients.end(); it++)
+	{
+		CloseConnection(it->first);
+	}
+	this->_Clients.clear();
+	this->_Pollfds.clear();
+	// TODO B-07 : pipes de _CGIToClient + waitpid() des child
 }

@@ -60,7 +60,7 @@ class EventLoop
 	void	HandleCgiEvent(int fd, short revents);	///< I/O pipe CGI (B-07) : lit/ecrit selon revents
 	int		ComputeTimeout(void) const;				///< millisecondes a passer a poll()
 	void	SweepTimeouts(void);					///< appele a CHAQUE retour de poll(), meme sur 0
-
+	void	Shutdown(void);							///< Ferme tous les fds client avant de rendre la main
 };
 
 #endif
