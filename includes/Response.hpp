@@ -51,6 +51,7 @@ class Response
 	bool				Serialize(std::string &out);
 	void				Reset(void);
 	Response			BuildError(int code, const ServerConfig &server);
+	void				generateBuiltInError(int code);
 };
 
 #endif /*RESPONSE_HPP*/

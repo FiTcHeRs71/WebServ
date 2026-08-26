@@ -1,6 +1,10 @@
 #include "../../includes/Response.hpp"
+#include <climits>
 #include <map>
+#include <sstream>
 #include <string>
+#include <fcntl.h>
+#include <unistd.h>
 
 	/*===Canonical Form===*/
 Response::Response(void)
@@ -171,17 +175,34 @@ bool	Response::Serialize(std::string &out)
 	return (true);
 }
 
+void	Response::generateBuiltInError(int code)
+{
+	ostringstream oss;
+	oss << "<html><body><h1>" << code << "</h1></body></html>";
+	SetBody(oss.str());
+}
+
 Response	Response::BuildError(int code, const ServerConfig &server)
 {
-	this->SetStatus(code);
 	map<int, string>		ErrorPages = server.getErrorPages();
 	string					ErrorFile = ErrorPages.at(code);
 	const LocationConfig	*loc = server.Resolve(ErrorFile);
 	string					ErrorPath = server.build_path(*loc, ErrorFile);
+	this->SetStatus(code);
+	SetHeader("Content-Type", "text/html");
 	if(!ErrorPath.empty())
 	{
-		// open, setBody, setHeader de content-type, si open() foire -> built in
+		int	fd = open(ErrorPath.c_str(), O_RDONLY);
+		if (fd < 0)
+			generateBuiltInError(code);
+		string	body;
+		read(fd, &body, SSIZE_MAX);
+		if (!body.empty())
+			SetBody(body);
+		else
+			generateBuiltInError(code);
 	}
-	// built-in
+	else
+		generateBuiltInError(code);
 	return (*this);
 }
