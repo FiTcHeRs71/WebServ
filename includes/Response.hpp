@@ -27,6 +27,7 @@ class Response
 	std::string							_Body;
 
 	void	setDate(void);
+	void	generateBuiltInError(int code);
 
 	protected:
 
@@ -50,8 +51,7 @@ class Response
 	/*===Member Function===*/
 	bool				Serialize(std::string &out);
 	void				Reset(void);
-	Response			BuildError(int code, const ServerConfig &server);
-	void				generateBuiltInError(int code);
+	static Response		BuildError(int code, const ServerConfig &server);
 };
 
 #endif /*RESPONSE_HPP*/

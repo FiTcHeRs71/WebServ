@@ -4,6 +4,7 @@
 #include <sstream>
 #include <string>
 #include <fcntl.h>
+#include <sys/types.h>
 #include <unistd.h>
 
 	/*===Canonical Form===*/
@@ -73,7 +74,7 @@ static std::string	StatusText(int code)
 		case 407: return "Proxy Authentication Required";
 		case 408: return "Request Timeout";
 		case 409: return "Conflict";
-		case 410: return "Gone    ";
+		case 410: return "Gone";
 		case 411: return "Length Required";
 		case 412: return "Precondition Failed";
 		case 413: return "Payload Too Large";
@@ -178,31 +179,55 @@ bool	Response::Serialize(std::string &out)
 void	Response::generateBuiltInError(int code)
 {
 	ostringstream oss;
-	oss << "<html><body><h1>" << code << "</h1></body></html>";
+	oss << "<html><body><h1>" << _StatusCode
+		<< " " << _StatusText << "</h1></body></html>";
 	SetBody(oss.str());
 }
 
 Response	Response::BuildError(int code, const ServerConfig &server)
 {
-	map<int, string>		ErrorPages = server.getErrorPages();
-	string					ErrorFile = ErrorPages.at(code);
-	const LocationConfig	*loc = server.Resolve(ErrorFile);
-	string					ErrorPath = server.build_path(*loc, ErrorFile);
-	this->SetStatus(code);
-	SetHeader("Content-Type", "text/html");
+	Response	res;
+	res.SetStatus(code);
+	res.SetHeader("Content-Type", "text/html");
+	map<int, string>					ErrorPages = server.getErrorPages();
+	map<int, string>::const_iterator	it = ErrorPages.find(code);
+	if (it == ErrorPages.end())
+	{
+		res.generateBuiltInError(code);
+		return res;
+	}
+	const LocationConfig	*loc = server.Resolve(it->second);
+	if(!loc)
+	{
+		res.generateBuiltInError(code);
+		return res;
+	}
+	string					ErrorPath = server.build_path(*loc, it->second);
 	if(!ErrorPath.empty())
 	{
 		int	fd = open(ErrorPath.c_str(), O_RDONLY);
 		if (fd < 0)
-			generateBuiltInError(code);
+		{
+			res.generateBuiltInError(code);
+			return res;
+		}
+		char	buf[4096];
+		ssize_t	n;
 		string	body;
-		read(fd, &body, SSIZE_MAX);
-		if (!body.empty())
-			SetBody(body);
+		while ((n = read(fd, &buf, sizeof(buf))) > 0)
+		{
+			body.append(buf, static_cast<size_t>(n));
+		}
+		close(fd);
+		if (n < 0 || body.empty())
+		{
+			res.generateBuiltInError(code);
+			return res;
+		}
 		else
-			generateBuiltInError(code);
+			res.SetBody(body);
 	}
 	else
-		generateBuiltInError(code);
-	return (*this);
+		res.generateBuiltInError(code);
+	return res;
 }

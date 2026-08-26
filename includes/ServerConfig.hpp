@@ -46,7 +46,7 @@ class ServerConfig
 	/*===Getters & Setters===*/
 	vector<TListenConfig>	getListens() const;
 	vector<string>			getServerNames() const;
-	map<int, string>		getErrorPages() const;
+	const map<int, string>	&getErrorPages() const;
 
 	/*===Member Function===*/
 	const LocationConfig	*Resolve(const std::string &uri)const;	///< La location matchant l'URI, prefixe le plus long
