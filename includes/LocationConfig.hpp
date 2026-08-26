@@ -46,11 +46,11 @@ class LocationConfig
 	LocationConfig &operator=(const LocationConfig& src);
 
 	/*===Getters & Setters===*/
-	const string	&getPath(void) const;	///< Le prefixe d'URI declare par le bloc "location"
-	const string	&getRoot(void) const;	///< La racine disque associee a ce bloc
-	const string	&getExt(void) const;
-	const string	&getPass(void) const;
-	const size_t	&getClientMaxBodySize(void) const;
+	const string					&getPath(void) const;	///< Le prefixe d'URI declare par le bloc "location"
+	const string					&getRoot(void) const;	///< La racine disque associee a ce bloc
+	const string					&getExt(void) const;
+	const string					&getPass(void) const;
+	const size_t					&getClientMaxBodySize(void) const;
 	const std::set<std::string>		&getMethods(void) const;
 	const std::vector<std::string>	&getIndex(void) const;
 	bool							getAutoIndex(void) const;
@@ -61,9 +61,9 @@ class LocationConfig
 	bool							hasUploadStore(void) const;
 
 	/*===Member Function===*/
-	void			parse_location(vector<string>	&token, size_t &i);
+	void							parse_location(vector<string>	&token, size_t &i);
 
-	friend ostream	&operator<<(ostream &flux, const LocationConfig &src);
+	friend ostream					&operator<<(ostream &flux, const LocationConfig &src);
 };
 
 #endif /*LOCATION_CONFIG_HPP*/
