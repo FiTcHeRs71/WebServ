@@ -395,7 +395,10 @@ void	EventLoop::RegisterCgi(int client_fd, int cgi_read_fd, int cgi_write_fd)
  */
 void	EventLoop::UnregisterCgi(int client_fd)
 {
-	(void)client_fd;
+	if (client_fd < 0)
+		return ;
+	RemoveFd(client_fd);
+	_CgiToClient.erase(client_fd);
 }
 
 /**
@@ -423,14 +426,14 @@ void	EventLoop::HandleCgiEvent(int fd, short revents)
 	if (revents & POLLIN){
 		Cgi.OnReadableCgi();
 		if(Cgi.GetReadFd() < 0){
-			_CgiToClose.push_back(PipeClientFd->second);
+			_CgiToClose.push_back(fd);
 			//TODO D-04 appeller parse_cgi_output
 		}
 	}
 	if (revents & POLLOUT){
 		Cgi.OnWritableCgi();
 		if (Cgi.GetWriteFd() < 0){
-			_CgiToClose.push_back(PipeClientFd->second);
+			_CgiToClose.push_back(fd);
 		}
 	}
 }
