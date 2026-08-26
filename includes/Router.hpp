@@ -10,11 +10,26 @@
 # include <sys/stat.h>
 # include <unistd.h>
 
+class Router
+{
+	private:
 
+	map<string, string>	_mime;
 
+	public:
 
-Response	Rooter(const Request &request,
+	/*===Canonical Form===*/
+	Router(void);
+	~Router(void);
+	Router(const Router& to_copy);
+	Router &operator=(const Router& src);
+
+	/*===Setters and getters Form===*/
+
+	/*===Methods===*/
+	Response	Rooter(const Request &request,
 					const ServerConfig &server,
 					const Connection &connection);
+};
 
 #endif
