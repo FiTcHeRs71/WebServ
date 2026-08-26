@@ -44,8 +44,10 @@ class ServerConfig
 	ServerConfig &operator=(const ServerConfig& src);
 
 	/*===Getters & Setters===*/
-	vector<TListenConfig>	getListens() const;
-	vector<string>			getServerNames() const;
+	const vector<TListenConfig>		&getListens() const;
+	const vector<string>			&getServerNames() const;
+	const vector<LocationConfig>	&getLocations(void) const;
+	size_t							getClientMaxBodySize(void) const;
 
 	/*===Member Function===*/
 	const LocationConfig	*Resolve(const std::string &uri)const;	///< La location matchant l'URI, prefixe le plus long

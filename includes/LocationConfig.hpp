@@ -51,6 +51,14 @@ class LocationConfig
 	const string	&getExt(void) const;
 	const string	&getPass(void) const;
 	const size_t	&getClientMaxBodySize(void) const;
+	const std::set<std::string>		&getMethods(void) const;
+	const std::vector<std::string>	&getIndex(void) const;
+	bool							getAutoIndex(void) const;
+	bool							hasReturn(void) const;
+	int								getReturnCode(void) const;
+	const std::string				&getReturnTarget(void) const;
+	const std::string				&getUploadStore(void) const;
+	bool							hasUploadStore(void) const;
 
 	/*===Member Function===*/
 	void			parse_location(vector<string>	&token, size_t &i);
