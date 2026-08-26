@@ -87,6 +87,10 @@ pid_t	CgiProcess::GetPid(void) const
 	return (this->_Pid);
 }
 
+string	CgiProcess::GetOutBuf() const{
+	return this->_OutBuf;
+}
+
 	/*===Member Function===*/
 /**
  * @brief Demarre l'execution du script CGI correspondant a la requete.
@@ -227,20 +231,20 @@ void	CgiProcess::CloseFds(void)
 	}
 }
 
-void	CgiProcess::OnWritableCgi(void)
-{
-	if (_WriteFd < 0 || _InBuf.empty())
-		return ;
-	ssize_t	n = write(_WriteFd, &_InBuf[0], _InBuf.size());
-	if (n <= 0)
-	{
-		CloseWriteFd();
-		return ;
-	}
-	_InBuf.erase(0, static_cast<size_t>(n));
-	if (_InBuf.empty())
-		CloseWriteFd();
-}
+// void	CgiProcess::OnWritableCgi(void)
+// {
+// 	if (_WriteFd < 0 || _InBuf.empty())
+// 		return ;
+// 	ssize_t	n = write(_WriteFd, &_InBuf[0], _InBuf.size());
+// 	if (n <= 0)
+// 	{
+// 		CloseWriteFd();
+// 		return ;
+// 	}
+// 	_InBuf.erase(0, static_cast<size_t>(n));
+// 	if (_InBuf.empty())
+// 		CloseWriteFd();
+// }
 
 	/**
 	 * @brief Ferme le stdin du CGI pour lui signaler la fin du body.

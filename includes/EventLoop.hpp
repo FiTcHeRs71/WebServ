@@ -35,6 +35,7 @@ class EventLoop
 	bool					_Running;		///< Garde Run() en vie tant qu'il est true
 	map<int, int>			_CgiToClient;	///< fd de pipe -> fd du client qui attend la reponse
 	vector<int>				_toClose;		///< vecteur contenant les fd cleint a fermer
+	
 
 	public:
 

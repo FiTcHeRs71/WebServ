@@ -94,6 +94,10 @@ void	Connection::setState(const EConnState state)
 	_State = state;
 }
 
+CgiProcess	Connection::getCgi() const{
+	return (_Cgi);
+}
+
 	/*===Member Function===*/
 
 /**

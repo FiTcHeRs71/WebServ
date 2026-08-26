@@ -372,9 +372,12 @@ void	EventLoop::SweepTimeouts(void)
  */
 void	EventLoop::RegisterCgi(int client_fd, int cgi_read_fd, int cgi_write_fd)
 {
-	(void)client_fd;
-	(void)cgi_read_fd;
-	(void)cgi_write_fd;
+	AddFd(cgi_read_fd, POLLIN);
+	_CgiToClient[cgi_read_fd] = client_fd;
+	if (cgi_write_fd >= 0){
+		AddFd(cgi_write_fd, POLLOUT);
+		_CgiToClient[cgi_write_fd] = client_fd;
+	}
 }
 
 /**
