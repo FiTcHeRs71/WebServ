@@ -59,7 +59,7 @@ class Connection
 	void			setLastActivity();
 	bool			getReqComplete(void) const;
 	void			setState(EConnState state);
-	CgiProcess		getCgi() const;
+	CgiProcess&		getCgi();
 
 
 	/*===Member Function===*/

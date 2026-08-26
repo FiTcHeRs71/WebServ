@@ -411,8 +411,28 @@ void	EventLoop::UnregisterCgi(int client_fd)
  */
 void	EventLoop::HandleCgiEvent(int fd, short revents)
 {
-	(void)fd;
-	(void)revents;
+	if (fd <= 0)
+		return;
+	map<int, int>::iterator PipeClientFd = _CgiToClient.find(fd);
+	if (PipeClientFd == _CgiToClient.end())
+		return ;
+	map<int, Connection>::iterator it = _Clients.find(PipeClientFd->second);
+	if (it == _Clients.end())
+		return ;
+	CgiProcess &Cgi = it->second.getCgi();
+	if (revents & POLLIN){
+		Cgi.OnReadableCgi();
+		if(Cgi.GetReadFd() < 0){
+			_CgiToClose.push_back(PipeClientFd->second);
+			//TODO D-04 appeller parse_cgi_output
+		}
+	}
+	if (revents & POLLOUT){
+		Cgi.OnWritableCgi();
+		if (Cgi.GetWriteFd() < 0){
+			_CgiToClose.push_back(PipeClientFd->second);
+		}
+	}
 }
 
 /**

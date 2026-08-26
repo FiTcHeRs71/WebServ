@@ -57,8 +57,10 @@ class CgiProcess
 				const ConfigParser &config, const string &script_path);
 	void	Kill(void);				///< D-05
 	void	CloseFds(void);			///< Ferme les 2 pipes. Idempotente.
-	// void	OnWritableCgi(void);	///< Dead code ?
+	void	OnWritableCgi(void);
+	void	OnReadableCgi();
 	void	CloseWriteFd(void);		///< Ferme le stdin du CGI : D-03, quand le body est entierement ecrit.
+	void	CloseReadFd();
 };
 
 vector<string>	build_cgi_env(const Request &request, const LocationConfig &location,
