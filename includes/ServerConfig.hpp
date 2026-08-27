@@ -46,6 +46,7 @@ class ServerConfig
 	/*===Getters & Setters===*/
 	const vector<TListenConfig>		&getListens() const;
 	const vector<string>			&getServerNames() const;
+	const map<int, string>	&getErrorPages() const;
 	const vector<LocationConfig>	&getLocations(void) const;
 	size_t							getClientMaxBodySize(void) const;
 

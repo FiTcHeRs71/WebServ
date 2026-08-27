@@ -75,6 +75,11 @@ const vector<string>	&ServerConfig::getServerNames() const
 	return(_ServerNames);
 }
 
+const map<int, string>	&ServerConfig::getErrorPages() const
+{
+	return(_ErrorPages);
+}
+
 const vector<LocationConfig>	&ServerConfig::getLocations(void) const
 {
 	return(_Locations);
