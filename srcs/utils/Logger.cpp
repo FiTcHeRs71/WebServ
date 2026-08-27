@@ -19,6 +19,11 @@ Logger::Logger(const string &path)
 		cerr << "webserv: [warn] cannot open " << path << ", logging to terminal" << endl;
 		return ;
 	}
+	this->_SavedCout = cout.rdbuf();
+	this->_SavedCerr = cerr.rdbuf();
+	cout.rdbuf(this->_File.rdbuf());
+	cerr.rdbuf(this->_File.rdbuf());
+	this->_Redirected = true;
 }
 
 Logger::~Logger(void)
@@ -49,8 +54,10 @@ Logger	&Logger::operator=(const Logger& src)
 
 void	Logger::write(const string &level, const string &msg)
 {
-	time_t	now = time(NULL);
-	localtime(&now);
+	time_t		now = time(NULL);
+	struct tm	*t = localtime(&now);
+	char stamp[20];
 
+	strftime(stamp, sizeof(stamp), "%Y/%m/%d %H:%M:%S", t);
 	cout << stamp << " [" << level << "] " << msg << endl;
 }
