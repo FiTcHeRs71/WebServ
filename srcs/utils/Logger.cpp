@@ -58,6 +58,6 @@ void	Logger::write(const string &level, const string &msg)
 	struct tm	*t = localtime(&now);
 	char stamp[20];
 
-	strftime(stamp, sizeof(stamp), "%Y/%m/%d %H:%M:%S", t);
+	strftime(stamp, sizeof(stamp), "%d/%m/%Y %H:%M:%S", t);
 	cout << stamp << " [" << level << "] " << msg << endl;
 }
