@@ -203,16 +203,20 @@ bool Connection::HasPendingOutput() const{
  */
 void	Connection::SendErrorAndClose(int code)
 {
+	const ServerConfig	*srv = _Req.getServerConfig();
 	Response		response;
 	string			out;
-	ostringstream	oss;
 
 	if (code < 400)
 		code = 500;
-	response.SetStatus(code);
-	oss << "<html><body><h1>" << code << "</h1></body></html>";
-	response.SetBody(oss.str());
-	response.SetHeader("Content-Type", "text/html");
+	if (srv != NULL)
+		response = Response::BuildError(code, *srv);
+	else
+	{
+		response.SetStatus(code);
+		response.SetHeader("Content-Type", "text/html");
+		response.generateBuiltInError();
+	}
 	response.SetHeader("Connection", "close");
 	response.Serialize(out);
 	QueueOutput(out);
