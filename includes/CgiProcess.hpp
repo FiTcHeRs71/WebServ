@@ -3,8 +3,7 @@
 
 # include "./LocationConfig.hpp"
 # include "./ServerConfig.hpp"
-#include "./Connection.hpp"
-#include "./Config.hpp"
+# include "./Config.hpp"
 # include <ctime>
 # include <iostream>
 # include <sys/types.h>
@@ -14,6 +13,7 @@ using namespace std;
 
 class Request;
 class LocationConfig;
+class Connection;
 
 /**
  * @brief Gere le cycle de vie d'un processus CGI externe.
@@ -58,15 +58,12 @@ class CgiProcess
 	void	Kill(void);				///< D-05
 	void	CloseFds(void);			///< Ferme les 2 pipes. Idempotente.
 	void	OnWritableCgi(void);
-	void	OnReadableCgi();
 	void	CloseWriteFd(void);		///< Ferme le stdin du CGI : D-03, quand le body est entierement ecrit.
-	void	CloseReadFd();
 };
 
 vector<string>	build_cgi_env(const Request &request, const LocationConfig &location,
 							const ServerConfig &server, const Connection &connection,
 							const ConfigParser &config, const string &script_path);
 char	**VectorToChar(vector<string> &storage);
-// bool	parse_cgi_output(const std::string &raw, Response &out);
 
 #endif /*CGI_PROCESS_HPP*/
