@@ -98,6 +98,7 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 							const ServerConfig &server, const Connection &connection,
 							const ConfigParser &config, const string &script_path)
 {
+	this->_StartTime = time(NULL);
 	string			scriptName = findScriptName(script_path);
 	char			*argv[3];
 	int				pip_in[2];
@@ -261,4 +262,13 @@ void	CgiProcess::CloseWriteFd(void)
 		this->_WriteFd = -1;
 	}
 	// TODO: B-07 devra utiliser Eventloop::RemoveFd() ici.
+}
+bool	CgiProcess::IsTimedOut(time_t now) const
+{
+
+}
+
+bool	CgiProcess::Reap(int &exit_status)
+{
+	
 }

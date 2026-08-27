@@ -10,6 +10,7 @@
 # include <netinet/in.h>
 # include <poll.h>
 # include <unistd.h>
+#include "CgiProcess.hpp"
 # include "Connection.hpp"
 # include "Config.hpp"
 # include "ListenSockets.hpp"
@@ -34,6 +35,7 @@ class EventLoop
 	const ConfigParser		*_Config;		///< Conf parse, pour retrouver le TAddrPortGroup d'un client
 	bool					_Running;		///< Garde Run() en vie tant qu'il est true
 	map<int, int>			_CgiToClient;	///< fd de pipe -> fd du client qui attend la reponse
+	map<int, CgiProcess>	_Cgis;			///< fd du client -> le process (1 entre pr CGI, cible de nettoyage en cas de timeout)
 	vector<int>				_toClose;		///< vecteur contenant les fd cleint a fermer
 
 	public:
