@@ -184,7 +184,7 @@ bool	Request::setUpMethod(){
 	{
 		this->_ErrorCode = 400;
 		this->_State = ST_ERROR;
-		cerr << "Error :" << _ErrorCode << ": Bad Request";
+		cerr << "Error :" << _ErrorCode << ": Bad Request" << endl;;
 		return false;
 	}
 	this->_Method = this->_Raw.substr(0, pos);
@@ -216,7 +216,7 @@ bool	Request::setUpPath(){
 	{
 		this->_ErrorCode = 400;
 		this->_State = ST_ERROR;
-		cerr << "Error :" << _ErrorCode << ": Bad Request";
+		cerr << "Error :" << _ErrorCode << ": Bad Request" << endl;;
 		return false;
 	}
 	size_t posQuery = this->_Raw.find_first_of("?");

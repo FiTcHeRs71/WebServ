@@ -3,8 +3,8 @@
 
 # include <iostream>
 # include <fstream>
-#include <streambuf>
-#include <string>
+# include <streambuf>
+# include <string>
 
 using namespace std;
 
