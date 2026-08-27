@@ -216,7 +216,7 @@ bool	Request::setUpPath(){
 	{
 		this->_ErrorCode = 400;
 		this->_State = ST_ERROR;
-		cerr << "Error :" << _ErrorCode << ": Bad Request" << endl;;
+		cerr << "Error :" << _ErrorCode << ": Bad Request" << endl;
 		return false;
 	}
 	size_t posQuery = this->_Raw.find_first_of("?");
