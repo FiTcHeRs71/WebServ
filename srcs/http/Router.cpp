@@ -55,22 +55,16 @@ Response	Router::Rooter(const Request &request,
 	Response	res;
 	const LocationConfig	*loc = server.Resolve(request.getPath());
 	if (!loc)
-	{
-		// return(Response::BuildError(404, serv));
-	}
+		return(Response::BuildError(404, server));
 	string	file = server.build_path(*loc, request.getPath());
 	if (!file.empty())
 	{
 		struct stat statbuf;
 		if (stat(file.c_str(), &statbuf) < 0)
-		{
-			// return(Response::BuildError(404, serv));
-		}
+			return(Response::BuildError(404, server));
 		int fd;
 		if ((fd = open(file.c_str(), O_RDONLY)) < 0)
-		{
-			// return(Response::BuildError(403, serv));
-		}
+			return(Response::BuildError(403, server));
 		char	buf[4096];
 		ssize_t	n;
 		string	body;
@@ -78,9 +72,7 @@ Response	Router::Rooter(const Request &request,
 			body.append(buf, static_cast<size_t>(n));
 		close(fd);
 		if (n < 0)
-		{
-			// return(Response::BuildError(403, serv));
-		}
+			return(Response::BuildError(403, server));
 		map<string, string>::const_iterator it = _mime.find(getKey(file));
 		res.SetStatus(200);
 		if (n == 0 && body.empty())
@@ -93,7 +85,5 @@ Response	Router::Rooter(const Request &request,
 		return (res);
 	}
 	else
-	{
-		// return(Response::BuildError(500, serv));
-	}
+		return(Response::BuildError(500, server));
 }
