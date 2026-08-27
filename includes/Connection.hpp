@@ -58,6 +58,7 @@ class Connection
 	size_t			getGroupIndex() const;
 	void			setLastActivity();
 	bool			getReqComplete(void) const;
+	Request&		getRequest();
 	void			setState(EConnState state);
 	CgiProcess&		getCgi();
 

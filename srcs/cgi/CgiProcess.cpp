@@ -1,4 +1,6 @@
 #include "../../includes/CgiProcess.hpp"
+#include "../../includes/Request.hpp"
+#include "../../includes/Response.hpp"
 #include <csignal>
 #include <sched.h>
 #include <string>

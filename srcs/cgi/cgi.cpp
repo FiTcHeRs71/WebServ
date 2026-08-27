@@ -3,6 +3,7 @@
 #include "../../includes/Request.hpp"
 #include "../../includes/Connection.hpp"
 #include "../../includes/Config.hpp"
+#include "../../includes/Response.hpp"
 #include <cctype>
 #include <map>
 #include <sstream>
@@ -169,4 +170,5 @@ vector<string>	build_cgi_env(const Request &request, const LocationConfig &locat
 bool	parse_cgi_output(const std::string &raw, Response &out){
 	(void)out;
 	cout << raw << endl;
+	return true;
 }

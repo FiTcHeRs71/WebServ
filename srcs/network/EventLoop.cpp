@@ -79,6 +79,9 @@ void	EventLoop::Run(void)
 			for (size_t i = 0; i < _toClose.size(); i++)
 				CloseConnection(_toClose[i]);
 			_toClose.clear();
+			for(size_t i = 0; i < _CgiToClose.size(); i++)
+				UnregisterCgi(_CgiToClose[i]);
+			_CgiToClose.clear();
 			continue ;
 		}
 		else if (status < 0)
@@ -265,6 +268,9 @@ bool	EventLoop::HandleClientEvent(size_t index)
 		return (false);
 	if (_Pollfds[index].revents & POLLIN){
 		it->second.OnReadable();
+		CgiProcess& cgi = it->second.getCgi();
+		if (cgi.GetReadFd() >= 0 && !_CgiToClient.count(cgi.GetReadFd()))
+			RegisterCgi(fd, cgi.GetReadFd(), cgi.GetWriteFd());
 		if (it->second.HasPendingOutput())
 			SetEvents(fd, POLLIN | POLLOUT);
 	}
@@ -396,12 +402,12 @@ void	EventLoop::RegisterCgi(int client_fd, int cgi_read_fd, int cgi_write_fd)
  * @param client_fd Le client dont il faut fermer les pipes.
  * @return void
  */
-void	EventLoop::UnregisterCgi(int client_fd)
+void	EventLoop::UnregisterCgi(int fd)
 {
-	if (client_fd < 0)
+	if (fd < 0)
 		return ;
-	RemoveFd(client_fd);
-	_CgiToClient.erase(client_fd);
+	RemoveFd(fd);
+	_CgiToClient.erase(fd);
 }
 
 /**
@@ -426,18 +432,34 @@ void	EventLoop::HandleCgiEvent(int fd, short revents)
 	if (it == _Clients.end())
 		return ;
 	CgiProcess &Cgi = it->second.getCgi();
+	if (revents & (POLLERR | POLLNVAL)){
+		_CgiToClose.push_back(fd);
+		return;
+	}
 	if (revents & POLLIN){
 		Cgi.OnReadableCgi();
 		if(Cgi.GetReadFd() < 0){
 			_CgiToClose.push_back(fd);
-			//TODO D-04 appeller parse_cgi_output
+			Response Rep;
+			Rep.SetStatus(200);
+			Rep.SetBody(Cgi.GetOutBuf());
+			// parse_cgi_output(Cgi.GetOutBuf(), Rep); ///< TODO D-04
+			string out;
+			Rep.Serialize(out);
+			it->second.QueueOutput(out);
+			SetEvents(PipeClientFd->second, POLLIN | POLLOUT);
 		}
 	}
 	if (revents & POLLOUT){
 		Cgi.OnWritableCgi();
 		if (Cgi.GetWriteFd() < 0){
+			// OK PR ENVOYER AU CLIENT ???
 			_CgiToClose.push_back(fd);
 		}
+	}
+	if (revents & POLLHUP){
+		_CgiToClose.push_back(fd);
+		return;
 	}
 }
 
