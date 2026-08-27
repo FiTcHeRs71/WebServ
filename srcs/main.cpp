@@ -3,6 +3,7 @@
 #include "../includes/Request.hpp"
 #include "../includes/EventLoop.hpp"
 #include "../includes/Network.hpp"
+#include "../includes/Logger.hpp"
 
 #include <iostream>
 #include <exception>
@@ -24,6 +25,7 @@ int main(int argc, char **argv)
 		ConfigParser	cfg;
 		parse(argv[1], cfg);
 		ListenSockets servSock(cfg.getAddrPorts());
+		Logger	log(DEFAULT_LOG_FILE);
 		EventLoop pollLoop(cfg, servSock);
 		pollLoop.Run();
 	}
