@@ -37,7 +37,7 @@ class Logger
 	Logger&operator=(const Logger& src);	///< Idem, la ressource n'est jamais partagee
 
 	/*===Member Function===*/
-	void	write(const string &level, const string &msg);	///< Ligne horodatee "date [level] msg"
+	static void	write(const string &level, const string &msg);	///< Ligne horodatee "date [level] msg"
 };
 
 #endif
