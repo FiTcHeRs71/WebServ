@@ -1,9 +1,11 @@
 #include "../../includes/EventLoop.hpp"
 #include "../../includes/Network.hpp"
+#include "../../includes/Logger.hpp"
 #include <cstddef>
 #include <arpa/inet.h>
 #include <ctime>
 #include <map>
+#include <sstream>
 #include <sys/poll.h>
 
 /**
@@ -236,7 +238,12 @@ void	EventLoop::AcceptNewClients(int listen_fd)
 	_Clients[clientFd] = Connection(clientFd, groupIndex, _Config);
 	_Clients[clientFd].setLastActivity();
 	AddFd(clientFd, POLLIN);
-	_Clients[clientFd].setIpV4(inet_ntoa(clientAddr.sin_addr));
+	const char		*ip = inet_ntoa(clientAddr.sin_addr);	///< buffer statique : un seul appel
+	ostringstream	oss;
+
+	_Clients[clientFd].setIpV4(ip);
+	oss << "accept " << ip << ":" << ntohs(clientAddr.sin_port) << " on fd " << clientFd;
+	Logger::write("info", oss.str());
 }
 
 
@@ -324,6 +331,14 @@ int	EventLoop::ComputeTimeout(void) const
 */
 void	EventLoop::CloseConnection(int fd)
 {
+	map<int, Connection>::iterator	it = _Clients.find(fd);
+	ostringstream					oss;
+
+	if (it != _Clients.end())
+	{
+		oss << "close " << it->second.getIpV4() << " on fd " << fd;
+		Logger::write("info", oss.str());
+	}
 	RemoveFd(fd);
 	_Clients.erase(fd);
 	if (close(fd) < 0)
@@ -422,13 +437,13 @@ void	EventLoop::HandleCgiEvent(int fd, short revents)
  */
 void	EventLoop::Shutdown(void)
 {
-	map<int, Connection>::iterator	it;
+	size_t			closed = this->_Clients.size();
+	ostringstream	oss;
 
-	for (it = this->_Clients.begin(); it != this->_Clients.end(); it++)
-	{
-		CloseConnection(it->first);
-	}
-	this->_Clients.clear();
+	while (!this->_Clients.empty())	///< CloseConnection() erase : on repart toujours de begin()
+		CloseConnection(this->_Clients.begin()->first);
 	this->_Pollfds.clear();
+	oss << "shutting down, " << closed << " connection(s) closed";
+	Logger::write("info", oss.str());
 	// TODO B-07 : pipes de _CGIToClient + waitpid() des child
 }
