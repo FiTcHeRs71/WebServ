@@ -30,7 +30,7 @@ class CgiProcess
 	pid_t	_Pid;
 	int		_ReadFd;
 	int		_WriteFd;
-	time_t	_StartTime;	///< D-05 : timeout
+	time_t	_StartTime;	///< when the cgi process start used for waitpid with default_cgitimeout
 	string	_InBuf;		///< body restant a ecrire (D-03)
 	string	_OutBuf;	///< sortie brute accumulee (D-04)
 	bool	_Finished;
