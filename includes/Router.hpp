@@ -11,7 +11,7 @@
 # include <unistd.h>
 
 
-Response	Rooter(const Request &request,
+Response	Router(const Request &request,
 				const ServerConfig &server,
 				const Connection &connection);
 

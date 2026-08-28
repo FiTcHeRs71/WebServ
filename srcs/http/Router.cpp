@@ -118,10 +118,11 @@ Response	serveFile(const Request &request, const LocationConfig &loc, const Serv
 	return (res);
 }
 
-Response	Rooter(const Request &request,
+Response	Router(const Request &request,
 				const ServerConfig &server,
 				const Connection &connection)
 {
+	(void)connection;
 	Response	res;
 	map<string, string> mime = mime_table();
 	const LocationConfig	*loc = server.Resolve(request.getPath());
