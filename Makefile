@@ -34,8 +34,11 @@ SRCS_NETWORK = $(addprefix $(SRC_DIR)/network/, \
 	ListenSockets.cpp \
 	Network.cpp)
 
+SRCS_UTILS = $(addprefix $(SRC_DIR)/utils/, \
+	Logger.cpp)
+
 # Source files
-SRCS = $(SRCS_MAIN) $(SRCS_CGI) $(SRCS_CONFIG) $(SRCS_HTTP) $(SRCS_NETWORK)
+SRCS = $(SRCS_MAIN) $(SRCS_CGI) $(SRCS_CONFIG) $(SRCS_HTTP) $(SRCS_NETWORK) $(SRCS_UTILS)
 # <<< SRCS AUTO-GENERATED <<<
 
 # Object files
