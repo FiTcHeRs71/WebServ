@@ -75,10 +75,40 @@ Response	Router::Rooter(const Request &request,
 			}
 			else
 			{
-				// Parcoures loc->getIndex() dans l’ordre (index.html, etc.). 
-				// Pour chaque nom : chemin = dossier disque + ce nom, stat/open.
-				// Le premier qui existe comme fichier: sert comme le point 5 
-				//(body + MIME de ce fichier, ex. index.html → text/html).
+				vector<string> index = loc->getIndex();
+				vector<string>::iterator it1 = index.begin();
+				while (it1 != index.end())
+				{
+					string path = file + *it1;
+					struct stat sf;
+					if (stat(file.c_str(), &sf) < 0)
+						it1++;
+					else
+						break ;
+				}
+				if (it1 == index.end())
+					return(Response::BuildError(403, server));
+				int fd;
+				if ((fd = open(file.c_str(), O_RDONLY)) < 0)
+					return(Response::BuildError(403, server));
+				char	buf[4096];
+				ssize_t	n;
+				string	body;
+				while ((n = read(fd, buf, sizeof(buf))) > 0)
+					body.append(buf, static_cast<size_t>(n));
+				close(fd);
+				if (n < 0)
+					return(Response::BuildError(403, server));
+				map<string, string>::const_iterator it2 = _mime.find(getKey(file));
+				res.SetStatus(200);
+				if (n == 0 && body.empty())
+					res.SetBody("");
+				else
+					res.SetBody(body);
+				if (it2 == _mime.end())
+					res.SetHeader("Content-Type", "application/octet-s");
+				res.SetHeader("Content-Type", it2->second);
+				return (res);
 			}
 		}
 		else if (S_ISREG(statbuf.st_mode))
