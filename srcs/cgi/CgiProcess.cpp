@@ -1,5 +1,6 @@
 #include "../../includes/CgiProcess.hpp"
 #include <csignal>
+#include <cstddef>
 #include <cstdlib>
 #include <ctime>
 #include <sched.h>
@@ -177,7 +178,11 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 void	CgiProcess::Kill(void)
 {
 	if (this->_Pid > 0)
+	{
 		kill(this->_Pid, SIGKILL);
+		waitpid(this->_Pid, NULL, 0);
+	}
+	this->_Pid = -1;
 	this->CloseFds();
 	this->_Finished = true;
 }
@@ -269,8 +274,8 @@ void	CgiProcess::CloseWriteFd(void)
 bool	CgiProcess::IsTimedOut(time_t now) const
 {
 	if (now - this->_StartTime > CGI_TIMEOUT)
-		return (false);
-	return (true);
+		return (true);
+	return (false);
 }
 
 bool	CgiProcess::Reap(int &exit_status)
@@ -285,14 +290,10 @@ bool	CgiProcess::Reap(int &exit_status)
 		return (false);
 	if (reaped < 0)
 		return (true);
-	if (reaped == this->_Pid)
-	{
-		if (WIFEXITED(status))
-			exit_status = WIFEXITED(status);
-		else
+	if (WIFEXITED(status))
+			exit_status = WEXITSTATUS(status);
+	else
 			exit_status = WIFSIGNALED(status);
-		_Pid = -1;
-		return (true);
-	}
+	this->_Pid = -1;
 	return (true);
 }
