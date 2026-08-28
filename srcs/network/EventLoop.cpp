@@ -359,7 +359,11 @@ void	EventLoop::SweepTimeouts(void)
 		return ;
 	for(map<int, Connection>::iterator it = _Clients.begin(); it != _Clients.end(); it++)
 	{
-		time_t	toClose = 1;
+		CgiProcess	&cgi = it->second.getCgi();
+		time_t		toClose = 1;
+
+		if (cgi.GetPid() > 0 && cgi.IsTimedOut(time(NULL)))
+			this->_toClose.push_back(it->first);
 		if (!it->second.getReqComplete() && it->second.getState() == CONN_READING)
 			toClose = (TIMEOUT_HEADER - (time(NULL) - it->second.getLastActivity())) * 1000;
 		else if(it->second.getReqComplete() && it->second.getState() == CONN_READING)
