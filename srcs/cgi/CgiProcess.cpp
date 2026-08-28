@@ -233,6 +233,7 @@ void	CgiProcess::CloseFds(void)
 	}
 }
 
+
 void	CgiProcess::OnWritableCgi(void)
 {
 	if (_WriteFd < 0 || _InBuf.empty())
