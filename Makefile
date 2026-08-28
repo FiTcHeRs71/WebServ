@@ -13,16 +13,21 @@ SRCS_MAIN = $(addprefix $(SRC_DIR)/, \
 SRCS_CGI = $(addprefix $(SRC_DIR)/cgi/, \
 	cgi.cpp \
 	CgiProcess.cpp)
+	cgi.cpp \
+	CgiProcess.cpp)
 
 SRCS_CONFIG = $(addprefix $(SRC_DIR)/config/, \
 	config.cpp \
 	listen.cpp \
+	LocationConfig.cpp \
 	LocationConfig.cpp \
 	resolve_server.cpp \
 	ServerConfig.cpp \
 	utils.cpp)
 
 SRCS_HTTP = $(addprefix $(SRC_DIR)/http/, \
+	http.cpp \
+	httpUtils.cpp \
 	http.cpp \
 	httpUtils.cpp \
 	Request.cpp \
@@ -35,8 +40,11 @@ SRCS_NETWORK = $(addprefix $(SRC_DIR)/network/, \
 	ListenSockets.cpp \
 	Network.cpp)
 
+SRCS_UTILS = $(addprefix $(SRC_DIR)/utils/, \
+	Logger.cpp)
+
 # Source files
-SRCS = $(SRCS_MAIN) $(SRCS_CGI) $(SRCS_CONFIG) $(SRCS_HTTP) $(SRCS_NETWORK)
+SRCS = $(SRCS_MAIN) $(SRCS_CGI) $(SRCS_CONFIG) $(SRCS_HTTP) $(SRCS_NETWORK) $(SRCS_UTILS)
 # <<< SRCS AUTO-GENERATED <<<
 
 # Object files

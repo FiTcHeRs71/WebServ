@@ -22,3 +22,6 @@ docker-compose.yml
 
 # Agents Copilot personnels
 .github/agents/
+
+#logs
+*.log
