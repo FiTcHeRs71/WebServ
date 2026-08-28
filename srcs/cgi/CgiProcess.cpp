@@ -1,4 +1,6 @@
 #include "../../includes/CgiProcess.hpp"
+#include "../../includes/Request.hpp"
+#include "../../includes/Response.hpp"
 #include <csignal>
 #include <sched.h>
 #include <string>
@@ -85,6 +87,10 @@ static string	findScriptName(const string &scriptpath)
 pid_t	CgiProcess::GetPid(void) const
 {
 	return (this->_Pid);
+}
+
+string	CgiProcess::GetOutBuf() const{
+	return this->_OutBuf;
 }
 
 	/*===Member Function===*/
@@ -227,6 +233,7 @@ void	CgiProcess::CloseFds(void)
 	}
 }
 
+
 void	CgiProcess::OnWritableCgi(void)
 {
 	if (_WriteFd < 0 || _InBuf.empty())
@@ -260,5 +267,30 @@ void	CgiProcess::CloseWriteFd(void)
 		}
 		this->_WriteFd = -1;
 	}
-	// TODO: B-07 devra utiliser Eventloop::RemoveFd() ici.
+}
+
+void	CgiProcess::CloseReadFd(void)
+{
+	if (this->_ReadFd != -1)
+	{
+		if (close(this->_ReadFd) < 0)
+		{
+			cerr << "Error: couldn't close _WriteFd." << endl;
+			return ; // erreur a definir
+		}
+		this->_ReadFd = -1;
+	}
+}
+
+
+void CgiProcess::OnReadableCgi(){
+	if (_ReadFd < 0)
+		return ;
+	char buffer[BUFFER_SIZE];
+	ssize_t n = read(_ReadFd, &buffer, BUFFER_SIZE);
+	if (n <= 0){
+		CloseReadFd();
+		return ;
+	}
+	_OutBuf.append(buffer, static_cast<size_t>(n));
 }

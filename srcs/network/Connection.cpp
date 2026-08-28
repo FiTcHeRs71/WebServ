@@ -94,6 +94,14 @@ void	Connection::setState(const EConnState state)
 	_State = state;
 }
 
+CgiProcess&	Connection::getCgi(){
+	return (_Cgi);
+}
+
+Request&	Connection::getRequest(){
+	return (_Req);
+}
+
 	/*===Member Function===*/
 
 /**
@@ -128,9 +136,17 @@ ssize_t	Connection::OnReadable(){
 				SendErrorAndClose(500);
 				break ;
 			}
-			Response	rep = HandleRequest(_Req, *srv, *this);
-			rep.Serialize(out);
-			QueueOutput(out);
+			const LocationConfig* loc = srv->Resolve(_Req.getPath());
+			const ConfigParser* config = _Req.getConfigParser();
+			if (loc && !loc->getPass(). empty() && config){
+				string script = loc->getRoot() + _Req.getPath();
+				_Cgi.Start(_Req, *loc, *srv, *this, *config, script);
+			}
+			else{
+				Response	rep = HandleRequest(_Req, *srv, *this);
+				rep.Serialize(out);
+				QueueOutput(out);
+			}
 			_Req.reset();
 			res = _Req.Feed("", 0);
 		}
