@@ -111,7 +111,47 @@ mettre chaque segment dans un vecteur.¨
 si pas de 403, reconstruire le chemin à partir du vecteur en ajoutant de '/' si besoin.*/
 static string normalizePath(const string &strIn, bool &escaped)
 {
-	
+	size_t		i = 0;
+	bool		abs = !strIn.empty() && strIn[0] == '/';
+	vector<string>	st;
+
+	escaped = false;
+	while (i < strIn.size())
+	{
+		while(i < strIn.size() && strIn[i] == '/')
+			i++;
+		if(i >= strIn.size())
+			break ;
+		size_t j = strIn.find('/');
+		if (j == string::npos)
+			j = strIn.size();
+		string part = strIn.substr(i, j - i);
+		i = j;
+		if (part == "." || part.empty())
+			continue ;
+		else if (part == "..")
+		{
+			if (st.empty())
+			{
+				escaped == true;
+				return("");
+			}
+			st.pop_back();
+			continue ;
+		}
+		st.push_back(part);
+	}
+	string out = abs ? "/" : "";
+	for(size_t k = 0; k < st.size(); k++)
+	{
+		if (!out.empty() && out[out.size - 1] != '/')
+			out += "/";
+		out += st[k];
+	}
+	if (abs && st.empty())
+		out = "/";
+	return (out);
+
 }
 
 static bool isInsideRoot(const string &root, const string &path)
@@ -142,7 +182,11 @@ Response	Router(const Request &request,
 	if (!loc)
 		return(Response::BuildError(404, server));
 	string	file = server.build_path(*loc, request.getPath());
-	if (!file.empty())
+	if (file.empty())
+		return (Response::BuildError(500, server));
+	else if (!isInsideRoot(loc.getRoot(), file))
+		return (Response::BuildError(403, server))
+	else if (!file.empty())
 	{
 		struct stat statbuf;
 		if (stat(file.c_str(), &statbuf) < 0)
