@@ -41,7 +41,7 @@ static void	getMime(Response &res, map<string, string> mime, string path)
 		res.SetHeader("Content-Type", it->second);
 }
 
-Response	serveDir(const Request &request, const LocationConfig &loc,
+static Response	serveDir(const Request &request, const LocationConfig &loc,
 			const ServerConfig &server, string file)
 {
 	Response res;
@@ -94,7 +94,7 @@ Response	serveDir(const Request &request, const LocationConfig &loc,
 	}
 }
 
-Response	serveFile(const Request &request, const LocationConfig &loc, const ServerConfig &server, string file)
+static Response	serveFile(const ServerConfig &server, string file)
 {
 	Response res;
 	map<string, string> mime = mime_table();
@@ -140,8 +140,10 @@ Response	Router(const Request &request,
 		}
 		else if (S_ISREG(statbuf.st_mode))
 		{
-			return (serveFile(request, *loc, server, file));
+			return (serveFile(server, file));
 		}
+		else
+			return(Response::BuildError(404, server));
 	}
 	else
 		return(Response::BuildError(500, server));
