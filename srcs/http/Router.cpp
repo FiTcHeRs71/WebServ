@@ -2,6 +2,10 @@
 #include <fcntl.h>
 #include <string>
 
+/**
+ * @brief Table MIME extension -> Content-Type, construite une seule fois.
+ * @return Reference sur la map statique. Defaut cote appelant : octet-stream.
+ */
 static map<string, string> &mime_table(void)
 {
 	static map<string, string> mime;
@@ -25,6 +29,11 @@ static map<string, string> &mime_table(void)
 	return (mime);
 }
 
+/**
+ * @brief Extraie l'extension du nom de fichier (dernier '.' apres le dernier '/').
+ * @param file Chemin disque ou URI.
+ * @return ".html", ".png"... ou "unknown" s'il n'y a pas d'extension.
+ */
 static string	getKey(string file)
 {
 	size_t slash = file.rfind("/");
@@ -35,6 +44,14 @@ static string	getKey(string file)
 		return(file.substr(dot, string::npos));
 }
 
+/**
+ * @brief Pose Content-Type sur res d'apres l'extension de path.
+ *
+ * Lookup rate -> application/octet-stream.
+ * @param res Reponse a completer.
+ * @param mime Table renvoyee par mime_table().
+ * @param path Chemin du fichier effectivement servi.
+ */
 static void	getMime(Response &res, map<string, string> mime, string path)
 {
 	map<string, string>::const_iterator it = mime.find(getKey(path));
@@ -44,6 +61,14 @@ static void	getMime(Response &res, map<string, string> mime, string path)
 		res.SetHeader("Content-Type", it->second);
 }
 
+/**
+ * @brief Sert un fichier regulier : open/read binaire, MIME, Content-Length.
+ *
+ * open/read fail -> 403. Fichier vide -> 200, Content-Length 0.
+ * @param server Pour BuildError.
+ * @param file Chemin disque deja valide (dans le root, S_ISREG).
+ * @return 200 + body, ou BuildError(403).
+ */
 static Response	serveFile(const ServerConfig &server, string file)
 {
 	Response res;
@@ -68,6 +93,18 @@ static Response	serveFile(const ServerConfig &server, string file)
 	return (res);
 }
 
+/**
+ * @brief Traite un dossier : 301 sans slash final, sinon index puis serveFile.
+ *
+ * URI sans '/' final -> 301 Location: URI + "/".
+ * Avec slash : parcourt loc.getIndex() dans l'ordre. Aucun index -> 403
+ * (l'autoindex est C-07).
+ * @param request Pour l'URI (slash / Location).
+ * @param loc Location qui matche, source de getIndex().
+ * @param server Pour BuildError.
+ * @param file Chemin disque du dossier (build_path). Un '/' est ajoute si besoin.
+ * @return 301, 200 (index), ou 403.
+ */
 static Response	serveDir(const Request &request, const LocationConfig &loc,
 			const ServerConfig &server, string file)
 {
@@ -105,11 +142,16 @@ static Response	serveDir(const Request &request, const LocationConfig &loc,
 	}
 }
 
-
-/*Savoir si le chemin est absolu ('.') ou non (home/...). Découpe le chemin disque en segments (/ ).
-. → ignore. .. → enlève le segment d’avant. S’il n’y a plus rien à enlever, tu es sorti du root → 403.
-mettre chaque segment dans un vecteur.¨
-si pas de 403, reconstruire le chemin à partir du vecteur en ajoutant de '/' si besoin.*/
+/**
+ * @brief Normalise un chemin : collapse des '/', ignore '.', resout '..'.
+ *
+ * Ne touche pas au disque (pas de realpath). Un '..' alors que la pile est
+ * vide pose escaped = true et rend une string vide : on est sorti du point
+ * de depart.
+ * @param strIn Chemin brut (root ou path disque).
+ * @param escaped Out : true si un '..' depasse la racine de strIn.
+ * @return Chemin recollé, ou "" si escaped.
+ */
 static string normalizePath(const string &strIn, bool &escaped)
 {
 	size_t		i = 0;
@@ -155,6 +197,14 @@ static string normalizePath(const string &strIn, bool &escaped)
 
 }
 
+/**
+ * @brief true si path, une fois normalise, reste sous root (frontiere '/').
+ *
+ * escaped ou root vide -> false. Empêche /var/www-evil de matcher /var/www.
+ * @param root Root de la location (loc->getRoot()).
+ * @param path Chemin disque issu de build_path.
+ * @return false -> le caller rend 403.
+ */
 static bool isInsideRoot(const string &root, const string &path)
 {
 	bool	escRoot;
@@ -173,6 +223,18 @@ static bool isInsideRoot(const string &root, const string &path)
 	
 }
 
+/**
+ * @brief Point d'entree du GET statique (C-06).
+ *
+ * Resolve la location, traduit l'URI en chemin disque, refuse le path
+ * traversal, puis sert un fichier, un index de dossier, ou une redirection
+ * 301 /dir -> /dir/. Les erreurs passent par Response::BuildError.
+ *
+ * @param request La requete deja parse, path %-decode.
+ * @param server Le ServerConfig choisi par SelectServer (S-03).
+ * @param connection Inutilise pour le statique (reserve CGI / D-06).
+ * @return La Response a serialiser, jamais une reponse vide.
+ */
 Response	Router(const Request &request,
 				const ServerConfig &server,
 				const Connection &connection)
