@@ -1,12 +1,14 @@
 #include "../../includes/EventLoop.hpp"
 #include "../../includes/Network.hpp"
 #include "../../includes/Logger.hpp"
+#include <algorithm>
 #include <cstddef>
 #include <arpa/inet.h>
 #include <ctime>
 #include <map>
 #include <sstream>
 #include <sys/poll.h>
+#include <vector>
 
 /**
  * @brief Enregistre les sockets d'ecoute dans poll et dans _ListenFds
@@ -364,6 +366,9 @@ void	EventLoop::CloseConnection(int fd)
 */
 void	EventLoop::SweepTimeouts(void)
 {
+	time_t		now	= time(NULL);
+	vector<int>	cgiTimedOut;
+
 	if(_Clients.empty())
 		return ;
 	for(map<int, Connection>::iterator it = _Clients.begin(); it != _Clients.end(); it++)
@@ -371,12 +376,12 @@ void	EventLoop::SweepTimeouts(void)
 		CgiProcess	&cgi = it->second.getCgi();
 		time_t		toClose = 1;
 
-		if (cgi.GetPid() > 0 && cgi.IsTimedOut(time(NULL)))
-			this->_toClose.push_back(it->first);
+		if (cgi.GetPid() > 0 && cgi.IsTimedOut(now))
+			cgiTimedOut.push_back(it->first);
 		if (!it->second.getReqComplete() && it->second.getState() == CONN_READING)
-			toClose = (TIMEOUT_HEADER - (time(NULL) - it->second.getLastActivity())) * 1000;
+			toClose = (TIMEOUT_HEADER - (now - it->second.getLastActivity())) * 1000;
 		else if(it->second.getReqComplete() && it->second.getState() == CONN_READING)
-			toClose = (TIMEOUT_IDLE - (time(NULL) - it->second.getLastActivity())) * 1000;
+			toClose = (TIMEOUT_IDLE - (now - it->second.getLastActivity())) * 1000;
 		if (toClose <= 0)
 		{
 			if(!it->second.getReqComplete())
@@ -387,6 +392,20 @@ void	EventLoop::SweepTimeouts(void)
 			else
 				_toClose.push_back(it->first);
 		}
+	}
+	for (size_t i = 0; i < cgiTimedOut.size(); i++)
+	{
+		map<int, Connection>::iterator	it = _Clients.find(cgiTimedOut[i]);
+
+		if (it == this->_Clients.end())
+			continue;
+		CgiProcess	&cgi = it->second.getCgi();
+
+		this->_CgiToClose.push_back(cgi.GetReadFd());
+		this->_CgiToClose.push_back(cgi.GetWriteFd());
+		cgi.Kill();
+		it->second.SendErrorAndClose(504);
+		SetEvents(cgiTimedOut[i], POLLOUT);
 	}
 }
 
