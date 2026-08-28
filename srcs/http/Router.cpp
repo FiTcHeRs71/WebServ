@@ -12,7 +12,7 @@ Router::Router(void)
 	_mime[".png"] = "image/png";
 	_mime[".jpg"] = "image/jpeg";
 	_mime[".jpeg"] = "image/jpeg";
-	_mime[".txt"] = "txt/plain";
+	_mime[".txt"] = "text/plain";
 	_mime[".gif"] = "image/gif";
 	_mime[".svg"] = "image/svg+xml";
 	_mime[".ico"] = "image/x-icon";
@@ -43,7 +43,7 @@ Router &Router::operator=(const Router& src)
 
 static string	getKey(string file)
 {
-	size_t idx = file.find(".");
+	size_t idx = file.find(".", file.size() - 6);
 	string res = file.substr(idx, string::npos);
 	return(res);
 }
@@ -64,12 +64,13 @@ Response	Router::Rooter(const Request &request,
 			return(Response::BuildError(404, server));
 		if (S_ISDIR(statbuf.st_mode))
 		{
-			string::iterator it = file.end();
+			string str = request.getPath();
+			string::iterator it = str.end();
 			it--;
 			if (*it != '/')
 			{
 				res.SetStatus(301);
-				res.SetHeader("Location", file + "/");
+				res.SetHeader("Location", request.getPath() + "/");
 				res.SetBody("");
 				return (res);
 			}
@@ -77,11 +78,12 @@ Response	Router::Rooter(const Request &request,
 			{
 				vector<string> index = loc->getIndex();
 				vector<string>::iterator it1 = index.begin();
+				string path;
 				while (it1 != index.end())
 				{
-					string path = file + *it1;
+					path = file + *it1;
 					struct stat sf;
-					if (stat(file.c_str(), &sf) < 0)
+					if (stat(path.c_str(), &sf) < 0)
 						it1++;
 					else
 						break ;
@@ -89,7 +91,7 @@ Response	Router::Rooter(const Request &request,
 				if (it1 == index.end())
 					return(Response::BuildError(403, server));
 				int fd;
-				if ((fd = open(file.c_str(), O_RDONLY)) < 0)
+				if ((fd = open(path.c_str(), O_RDONLY)) < 0)
 					return(Response::BuildError(403, server));
 				char	buf[4096];
 				ssize_t	n;
@@ -99,15 +101,16 @@ Response	Router::Rooter(const Request &request,
 				close(fd);
 				if (n < 0)
 					return(Response::BuildError(403, server));
-				map<string, string>::const_iterator it2 = _mime.find(getKey(file));
+				map<string, string>::const_iterator it2 = _mime.find(getKey(path));
 				res.SetStatus(200);
 				if (n == 0 && body.empty())
 					res.SetBody("");
 				else
 					res.SetBody(body);
 				if (it2 == _mime.end())
-					res.SetHeader("Content-Type", "application/octet-s");
-				res.SetHeader("Content-Type", it2->second);
+					res.SetHeader("Content-Type", "application/octet-stream");
+				else
+					res.SetHeader("Content-Type", it2->second);
 				return (res);
 			}
 		}
@@ -131,8 +134,9 @@ Response	Router::Rooter(const Request &request,
 			else
 				res.SetBody(body);
 			if (it == _mime.end())
-				res.SetHeader("Content-Type", "application/octet-s");
-			res.SetHeader("Content-Type", it->second);
+				res.SetHeader("Content-Type", "application/octet-stream");
+			else
+				res.SetHeader("Content-Type", it->second);
 			return (res);
 		}
 	}
