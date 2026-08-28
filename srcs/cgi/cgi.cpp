@@ -3,6 +3,7 @@
 #include "../../includes/Request.hpp"
 #include "../../includes/Connection.hpp"
 #include "../../includes/Config.hpp"
+#include "../../includes/Response.hpp"
 #include <cctype>
 #include <map>
 #include <sstream>
@@ -153,4 +154,21 @@ vector<string>	build_cgi_env(const Request &request, const LocationConfig &locat
 		addEnv(storage, header_to_meta(it->first), it->second);
 	}
 	return (storage);
+}
+
+// srcs/cgi/cgi.cpp
+/**
+ * @brief Convertit la sortie brute d'un CGI en Response prete a serialiser.
+ *
+ * Separe headers CGI et corps sur le premier \r\n\r\n (ou \n\n), interprete
+ * Status: et Location:, recalcule systematiquement Content-Length.
+ *
+ * @param raw La sortie complete du script, lue jusqu'a EOF.
+ * @param out La reponse a remplir.
+ * @return true si la sortie etait exploitable, false -> l'appelant fait un 502.
+*/
+bool	parse_cgi_output(const std::string &raw, Response &out){
+	(void)out;
+	cout << raw << endl;
+	return true;
 }

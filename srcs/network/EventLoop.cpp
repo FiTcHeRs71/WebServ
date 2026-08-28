@@ -81,6 +81,9 @@ void	EventLoop::Run(void)
 			for (size_t i = 0; i < _toClose.size(); i++)
 				CloseConnection(_toClose[i]);
 			_toClose.clear();
+			for(size_t i = 0; i < _CgiToClose.size(); i++)
+				UnregisterCgi(_CgiToClose[i]);
+			_CgiToClose.clear();
 			continue ;
 		}
 		else if (status < 0)
@@ -109,6 +112,9 @@ void	EventLoop::Run(void)
 		for (size_t i = 0; i < _toClose.size(); i++)
 			CloseConnection(_toClose[i]);
 		_toClose.clear();
+		for(size_t i = 0; i < _CgiToClose.size(); i++)
+			UnregisterCgi(_CgiToClose[i]);
+		_CgiToClose.clear();
 	}
 	Shutdown();
 }
@@ -269,6 +275,9 @@ bool	EventLoop::HandleClientEvent(size_t index)
 		return (false);
 	if (_Pollfds[index].revents & POLLIN){
 		it->second.OnReadable();
+		CgiProcess& cgi = it->second.getCgi();
+		if (cgi.GetReadFd() >= 0 && !_CgiToClient.count(cgi.GetReadFd()))
+			RegisterCgi(fd, cgi.GetReadFd(), cgi.GetWriteFd());
 		if (it->second.HasPendingOutput())
 			SetEvents(fd, POLLIN | POLLOUT);
 	}
@@ -382,7 +391,7 @@ void	EventLoop::SweepTimeouts(void)
 }
 
 /**
- * @brief Branche les pipes d'un CGI fraichement forke sur le poll (STUB B-07)
+ * @brief Branche les pipes d'un CGI fraichement forke sur le poll
  *
  * Ajoute les deux pipes a _Pollfds et les associe au client dans
  * _CgiToClient, pour que HandleCgiEvent() sache a qui rendre la reponse.
@@ -394,13 +403,16 @@ void	EventLoop::SweepTimeouts(void)
  */
 void	EventLoop::RegisterCgi(int client_fd, int cgi_read_fd, int cgi_write_fd)
 {
-	(void)client_fd;
-	(void)cgi_read_fd;
-	(void)cgi_write_fd;
+	AddFd(cgi_read_fd, POLLIN);
+	_CgiToClient[cgi_read_fd] = client_fd;
+	if (cgi_write_fd >= 0){
+		AddFd(cgi_write_fd, POLLOUT);
+		_CgiToClient[cgi_write_fd] = client_fd;
+	}
 }
 
 /**
- * @brief Debranche les pipes d'un CGI termine ou abandonne (STUB B-07)
+ * @brief Debranche les pipes d'un CGI termine ou abandonne
  *
  * A appeler a la fin du script comme a la deconnexion prematuree du client.
  * Sans ca, un fd recycle par le noyau retomberait dans la branche CGI du
@@ -409,13 +421,16 @@ void	EventLoop::RegisterCgi(int client_fd, int cgi_read_fd, int cgi_write_fd)
  * @param client_fd Le client dont il faut fermer les pipes.
  * @return void
  */
-void	EventLoop::UnregisterCgi(int client_fd)
+void	EventLoop::UnregisterCgi(int fd)
 {
-	(void)client_fd;
+	if (fd < 0)
+		return ;
+	RemoveFd(fd);
+	_CgiToClient.erase(fd);
 }
 
 /**
- * @brief Traite un evenement sur un pipe CGI (STUB B-07)
+ * @brief Traite un evenement sur un pipe CGI
  *
  * Remonte au client via _CgiToClient : POLLIN -> lire la sortie du script
  * vers son outBuf, POLLOUT -> pousser le corps de la requete dans le script.
@@ -427,8 +442,41 @@ void	EventLoop::UnregisterCgi(int client_fd)
  */
 void	EventLoop::HandleCgiEvent(int fd, short revents)
 {
-	(void)fd;
-	(void)revents;
+	if (fd <= 0)
+		return;
+	map<int, int>::iterator PipeClientFd = _CgiToClient.find(fd);
+	if (PipeClientFd == _CgiToClient.end())
+		return ;
+	map<int, Connection>::iterator it = _Clients.find(PipeClientFd->second);
+	if (it == _Clients.end()){
+		_CgiToClose.push_back(fd);
+		return ;
+	}
+	CgiProcess &Cgi = it->second.getCgi();
+	if (revents & (POLLERR | POLLNVAL)){
+		_CgiToClose.push_back(fd);
+		return;
+	}
+	if (revents & (POLLIN | POLLHUP)){
+		Cgi.OnReadableCgi();
+		if(Cgi.GetReadFd() < 0){
+			_CgiToClose.push_back(fd);
+			Response Rep;
+			Rep.SetStatus(200);
+			Rep.SetBody(Cgi.GetOutBuf());
+			// parse_cgi_output(Cgi.GetOutBuf(), Rep); ///< TODO D-04
+			string out;
+			Rep.Serialize(out);
+			it->second.QueueOutput(out);
+			SetEvents(PipeClientFd->second, POLLIN | POLLOUT);
+		}
+	}
+	if (revents & POLLOUT){
+		Cgi.OnWritableCgi();
+		if (Cgi.GetWriteFd() < 0){
+			_CgiToClose.push_back(fd);
+		}
+	}
 }
 
 /**
@@ -443,7 +491,18 @@ void	EventLoop::Shutdown(void)
 {
 	size_t			closed = this->_Clients.size();
 	ostringstream	oss;
+	map<int, Connection>::iterator it;
 
+	for (it = this->_Clients.begin(); it != this->_Clients.end(); it++)
+	{
+		CloseConnection(it->first);
+	}
+	for(map<int, int>::iterator it = _CgiToClient.begin(); it != _CgiToClient.end(); it++)
+		UnregisterCgi(it->first);
+	_CgiToClose.clear();
+	this->_Clients.clear();
+	this->_Pollfds.clear();
+	// TODO d-05 waitpid() des childs
 	while (!this->_Clients.empty())	///< CloseConnection() erase : on repart toujours de begin()
 		CloseConnection(this->_Clients.begin()->first);
 	this->_Pollfds.clear();

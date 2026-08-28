@@ -2,7 +2,7 @@
 
 Response	HandleRequest(const Request &request,
 					const ServerConfig &server,
-					const Connection &connection)
+					Connection &connection)
 {
 	(void)request;
 	(void)server;
