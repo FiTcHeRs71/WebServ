@@ -105,6 +105,33 @@ static Response	serveFile(const ServerConfig &server, string file)
 	return (res);
 }
 
+/*Savoir si le chemin est absolu ('.') ou non (home/...). Découpe le chemin disque en segments (/ ).
+. → ignore. .. → enlève le segment d’avant. S’il n’y a plus rien à enlever, tu es sorti du root → 403.
+mettre chaque segment dans un vecteur.¨
+si pas de 403, reconstruire le chemin à partir du vecteur en ajoutant de '/' si besoin.*/
+static string normalizePath(const string &strIn, bool &escaped)
+{
+	
+}
+
+static bool isInsideRoot(const string &root, const string &path)
+{
+	bool	escRoot;
+	bool	escPath;
+	string	nRoot = normalizePath(root, escRoot);
+	string	nPath = normalizePath(path, escPath);
+
+	if (escRoot || escPath || nRoot.empty())
+		return (false);
+	if (nPath == nRoot)
+		return (true);
+	if (nRoot[nRoot.size() - 1] != '/')
+		nRoot += '/';
+	return (nPath.size() >= nRoot.size()
+		&& nPath.compare(0, nRoot.size(), nRoot) == 0);
+	
+}
+
 Response	Router(const Request &request,
 				const ServerConfig &server,
 				const Connection &connection)
