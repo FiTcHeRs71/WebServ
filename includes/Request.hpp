@@ -87,6 +87,7 @@ class Request
 	map<string, string>	getHeaders(void) const;
 	void				SetConnectionContext(const ConfigParser *config, size_t group_index);
 	const ServerConfig	*getServerConfig() const;
+	const ConfigParser	*getConfigParser() const;
 
 	/*===Member Function===*/
 	EParseResult		Feed(const char *data, size_t n);

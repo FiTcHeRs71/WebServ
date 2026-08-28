@@ -3,6 +3,7 @@
 
 # include "./Request.hpp"
 # include "./Response.hpp"
+# include "./CgiProcess.hpp"
 # include <iostream>
 # include <sys/types.h>
 # include <sys/socket.h>
@@ -37,6 +38,7 @@ class Connection
 	time_t			_LastActivity;	///< utilise par B-05 pour les timeouts
 	size_t			_GroupIndex;	///< index dans _AddrPorts : quel ServerConfig repond
 	bool			_ReqComplete;
+	CgiProcess		_Cgi;
 
 	public:
 
@@ -56,7 +58,9 @@ class Connection
 	size_t			getGroupIndex() const;
 	void			setLastActivity();
 	bool			getReqComplete(void) const;
+	Request&		getRequest();
 	void			setState(EConnState state);
+	CgiProcess&		getCgi();
 
 
 	/*===Member Function===*/
