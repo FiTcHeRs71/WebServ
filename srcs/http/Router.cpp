@@ -27,9 +27,12 @@ static map<string, string> &mime_table(void)
 
 static string	getKey(string file)
 {
-	size_t idx = file.find(".", file.size() - 6);
-	string res = file.substr(idx, string::npos);
-	return(res);
+	size_t slash = file.rfind("/");
+	size_t dot = file.rfind(".");
+	if (dot == string::npos || (slash != string::npos && dot < slash))
+		return("unknown");
+	else
+		return(file.substr(dot, string::npos));
 }
 
 static void	getMime(Response &res, map<string, string> mime, string path)
@@ -45,7 +48,6 @@ static Response	serveDir(const Request &request, const LocationConfig &loc,
 			const ServerConfig &server, string file)
 {
 	Response res;
-	map<string, string> mime = mime_table();
 
 	string str = request.getPath();
 	string::iterator it = str.end();
@@ -62,6 +64,8 @@ static Response	serveDir(const Request &request, const LocationConfig &loc,
 		vector<string> index = loc.getIndex();
 		vector<string>::iterator it1 = index.begin();
 		string path;
+		if (file.at(file.size()) != '/')
+			file += "/";
 		while (it1 != index.end())
 		{
 			path = file + *it1;
@@ -73,24 +77,7 @@ static Response	serveDir(const Request &request, const LocationConfig &loc,
 		}
 		if (it1 == index.end())
 			return(Response::BuildError(403, server));
-		int fd;
-		if ((fd = open(path.c_str(), O_RDONLY)) < 0)
-			return(Response::BuildError(403, server));
-		char	buf[4096];
-		ssize_t	n;
-		string	body;
-		while ((n = read(fd, buf, sizeof(buf))) > 0)
-			body.append(buf, static_cast<size_t>(n));
-		close(fd);
-		if (n < 0)
-			return(Response::BuildError(403, server));
-		getMime(res, mime, path);
-		res.SetStatus(200);
-		if (n == 0 && body.empty())
-			res.SetBody("");
-		else
-			res.SetBody(body);
-		return (res);
+		return (serveFile(server, path));
 	}
 }
 
@@ -124,7 +111,6 @@ Response	Router(const Request &request,
 {
 	(void)connection;
 	Response	res;
-	map<string, string> mime = mime_table();
 	const LocationConfig	*loc = server.Resolve(request.getPath());
 	if (!loc)
 		return(Response::BuildError(404, server));
