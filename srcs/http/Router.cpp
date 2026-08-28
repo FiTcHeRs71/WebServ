@@ -44,43 +44,6 @@ static void	getMime(Response &res, map<string, string> mime, string path)
 		res.SetHeader("Content-Type", it->second);
 }
 
-static Response	serveDir(const Request &request, const LocationConfig &loc,
-			const ServerConfig &server, string file)
-{
-	Response res;
-
-	string str = request.getPath();
-	string::iterator it = str.end();
-	it--;
-	if (*it != '/')
-	{
-		res.SetStatus(301);
-		res.SetHeader("Location", request.getPath() + "/");
-		res.SetBody("");
-		return (res);
-	}
-	else
-	{
-		vector<string> index = loc.getIndex();
-		vector<string>::iterator it1 = index.begin();
-		string path;
-		if (file.at(file.size()) != '/')
-			file += "/";
-		while (it1 != index.end())
-		{
-			path = file + *it1;
-			struct stat sf;
-			if (stat(path.c_str(), &sf) < 0)
-				it1++;
-			else
-				break ;
-		}
-		if (it1 == index.end())
-			return(Response::BuildError(403, server));
-		return (serveFile(server, path));
-	}
-}
-
 static Response	serveFile(const ServerConfig &server, string file)
 {
 	Response res;
@@ -105,6 +68,44 @@ static Response	serveFile(const ServerConfig &server, string file)
 	return (res);
 }
 
+static Response	serveDir(const Request &request, const LocationConfig &loc,
+			const ServerConfig &server, string file)
+{
+	Response res;
+
+	string str = request.getPath();
+	string::iterator it = str.end();
+	it--;
+	if (*it != '/')
+	{
+		res.SetStatus(301);
+		res.SetHeader("Location", request.getPath() + "/");
+		res.SetBody("");
+		return (res);
+	}
+	else
+	{
+		vector<string> index = loc.getIndex();
+		vector<string>::iterator it1 = index.begin();
+		string path;
+		if (file.at(file.size() - 1) != '/')
+			file += "/";
+		while (it1 != index.end())
+		{
+			path = file + *it1;
+			struct stat sf;
+			if (stat(path.c_str(), &sf) < 0)
+				it1++;
+			else
+				break ;
+		}
+		if (it1 == index.end())
+			return(Response::BuildError(403, server));
+		return (serveFile(server, path));
+	}
+}
+
+
 /*Savoir si le chemin est absolu ('.') ou non (home/...). Découpe le chemin disque en segments (/ ).
 . → ignore. .. → enlève le segment d’avant. S’il n’y a plus rien à enlever, tu es sorti du root → 403.
 mettre chaque segment dans un vecteur.¨
@@ -122,7 +123,7 @@ static string normalizePath(const string &strIn, bool &escaped)
 			i++;
 		if(i >= strIn.size())
 			break ;
-		size_t j = strIn.find('/');
+		size_t j = strIn.find('/', i);
 		if (j == string::npos)
 			j = strIn.size();
 		string part = strIn.substr(i, j - i);
@@ -133,7 +134,7 @@ static string normalizePath(const string &strIn, bool &escaped)
 		{
 			if (st.empty())
 			{
-				escaped == true;
+				escaped = true;
 				return("");
 			}
 			st.pop_back();
@@ -144,7 +145,7 @@ static string normalizePath(const string &strIn, bool &escaped)
 	string out = abs ? "/" : "";
 	for(size_t k = 0; k < st.size(); k++)
 	{
-		if (!out.empty() && out[out.size - 1] != '/')
+		if (!out.empty() && out[out.size() - 1] != '/')
 			out += "/";
 		out += st[k];
 	}
@@ -184,9 +185,9 @@ Response	Router(const Request &request,
 	string	file = server.build_path(*loc, request.getPath());
 	if (file.empty())
 		return (Response::BuildError(500, server));
-	else if (!isInsideRoot(loc.getRoot(), file))
-		return (Response::BuildError(403, server))
-	else if (!file.empty())
+	else if (!isInsideRoot(loc->getRoot(), file))
+		return (Response::BuildError(403, server));
+	else
 	{
 		struct stat statbuf;
 		if (stat(file.c_str(), &statbuf) < 0)
@@ -202,6 +203,4 @@ Response	Router(const Request &request,
 		else
 			return(Response::BuildError(404, server));
 	}
-	else
-		return(Response::BuildError(500, server));
 }
