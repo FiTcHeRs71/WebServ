@@ -53,39 +53,39 @@ CgiProcess	&CgiProcess::operator=(const CgiProcess& src)
 	return (*this);
 }
 
-	/*===Getters & Setters===*/
-	/**
-	 * @brief Retourne le descripteur de lecture du pipe vers le CGI.
-	 * @return Le file descriptor en lecture, ou -1 si non disponible.
-	 */
+/*===Getters & Setters===*/
+/**
+ * @brief Retourne le descripteur de lecture du pipe vers le CGI.
+ * @return Le file descriptor en lecture, ou -1 si non disponible.
+ */
 int	CgiProcess::GetReadFd(void) const
 {
 	return (this->_ReadFd);
 }
 
-	/**
-	 * @brief Retourne le descripteur d'ecriture du pipe vers le CGI.
-	 * @return Le file descriptor en ecriture, ou -1 si non disponible.
-	 */
+/**
+ * @brief Retourne le descripteur d'ecriture du pipe vers le CGI.
+ * @return Le file descriptor en ecriture, ou -1 si non disponible.
+ */
 int	CgiProcess::GetWriteFd(void) const
 {
 	return (this->_WriteFd);
 }
 
-	/**
-	 * @brief Retourne le nom du fichier contenant le script en utilisant son path.
-	 * @return Le nom du script a executer.
-	 */
+/**
+ * @brief Retourne le nom du fichier contenant le script en utilisant son path.
+ * @return Le nom du script a executer.
+ */
 static string	findScriptName(const string &scriptpath)
 {
 	size_t last_slash = scriptpath.rfind('/');
 	return(scriptpath.substr(last_slash + 1));
 }
 
-	/**
-	 * @brief Retourne le PID du processus CGI
-	 * @return Le Pid, ou 0 si aucun processus n'a ete lance
-	 */
+/**
+ * @brief Retourne le PID du processus CGI
+ * @return Le Pid, ou 0 si aucun processus n'a ete lance
+ */
 pid_t	CgiProcess::GetPid(void) const
 {
 	return (this->_Pid);
@@ -251,13 +251,13 @@ void	CgiProcess::OnWritableCgi(void)
 		CloseWriteFd();
 }
 
-	/**
-	 * @brief Ferme le stdin du CGI pour lui signaler la fin du body.
-	 *
-	 * Sans cet appel, le script reste bloque sur read(stdin) : le pipe
-	 * a toujours un ecrivain vivant. A appeler des le dernier octet ecrit,
-	 * y compris quand il n'y a pas de body (GET).
-	 */
+/**
+ * @brief Ferme le stdin du CGI pour lui signaler la fin du body.
+ *
+ * Sans cet appel, le script reste bloque sur read(stdin) : le pipe
+ * a toujours un ecrivain vivant. A appeler des le dernier octet ecrit,
+ * y compris quand il n'y a pas de body (GET).
+ */
 void	CgiProcess::CloseWriteFd(void)
 {
 	if (this->_WriteFd != -1)
