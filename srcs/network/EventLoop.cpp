@@ -479,9 +479,14 @@ void	EventLoop::HandleCgiEvent(int fd, short revents)
 	if (revents & (POLLIN | POLLHUP)){
 		Cgi.OnReadableCgi();
 		if(Cgi.GetReadFd() < 0){
-			_CgiToClose.push_back(fd);
+			int	status = 0;
 			Response Rep;
-			Rep.SetStatus(200);
+
+			if (!Cgi.Reap(status))
+				return;
+			status = (status == 0)? 200 : 502;
+			_CgiToClose.push_back(fd);
+			Rep.SetStatus(status);
 			Rep.SetBody(Cgi.GetOutBuf());
 			// parse_cgi_output(Cgi.GetOutBuf(), Rep); ///< TODO D-04
 			string out;
@@ -510,22 +515,9 @@ void	EventLoop::Shutdown(void)
 {
 	size_t			closed = this->_Clients.size();
 	ostringstream	oss;
-	map<int, Connection>::iterator it;
 
-	for (it = this->_Clients.begin(); it != this->_Clients.end(); it++)
-	{
-		CloseConnection(it->first);
-	}
-	for(map<int, int>::iterator it = _CgiToClient.begin(); it != _CgiToClient.end(); it++)
-		UnregisterCgi(it->first);
-	_CgiToClose.clear();
-	this->_Clients.clear();
-	this->_Pollfds.clear();
-	// TODO d-05 waitpid() des childs
 	while (!this->_Clients.empty())	///< CloseConnection() erase : on repart toujours de begin()
 		CloseConnection(this->_Clients.begin()->first);
-	this->_Pollfds.clear();
 	oss << "shutting down, " << closed << " connection(s) closed";
 	Logger::write("info", oss.str());
-	// TODO B-07 : pipes de _CGIToClient + waitpid() des child
 }
