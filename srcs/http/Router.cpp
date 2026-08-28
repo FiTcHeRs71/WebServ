@@ -2,43 +2,27 @@
 #include <fcntl.h>
 #include <string>
 
-Router::Router(void)
+static map<string, string> &mime_table(void)
 {
-	_mime[".html"] = "text/html";
-	_mime[".htm"] = "text/html";
-	_mime[".css"] = "text/css";
-	_mime[".js"] = "text/javascript";
-	_mime[".json"] = "application/json";
-	_mime[".png"] = "image/png";
-	_mime[".jpg"] = "image/jpeg";
-	_mime[".jpeg"] = "image/jpeg";
-	_mime[".txt"] = "text/plain";
-	_mime[".gif"] = "image/gif";
-	_mime[".svg"] = "image/svg+xml";
-	_mime[".ico"] = "image/x-icon";
-	_mime[".pdf"] = "application/pdf";
-	_mime[".mp4"] = "video/mp4";
-
-	//cout << "Router default constructor called" << endl;
-}
-
-Router::~Router(void)
-{
-	//cout << "Router default destructor called" << endl;
-}
-Router::Router(const Router& to_copy)
-	:_mime(to_copy._mime)
-{
-	//cout << "Router copy constructor called" << endl;
-}
-
-Router &Router::operator=(const Router& src)
-{
-	if (this != &src)
+	static map<string, string> mime;
+	if (mime.empty())
 	{
-		this->_mime = src._mime;
+		mime[".html"] = "text/html";
+		mime[".htm"] = "text/html";
+		mime[".css"] = "text/css";
+		mime[".js"] = "application/javascript";
+		mime[".json"] = "application/json";
+		mime[".png"] = "image/png";
+		mime[".jpg"] = "image/jpeg";
+		mime[".jpeg"] = "image/jpeg";
+		mime[".txt"] = "text/plain";
+		mime[".gif"] = "image/gif";
+		mime[".svg"] = "image/svg+xml";
+		mime[".ico"] = "image/x-icon";
+		mime[".pdf"] = "application/pdf";
+		mime[".mp4"] = "video/mp4";
 	}
-	return(*this);
+	return (mime);
 }
 
 static string	getKey(string file)
@@ -48,11 +32,98 @@ static string	getKey(string file)
 	return(res);
 }
 
-Response	Router::Rooter(const Request &request,
-					const ServerConfig &server,
-					const Connection &connection)
+static void	getMime(Response &res, map<string, string> mime, string path)
+{
+	map<string, string>::const_iterator it = mime.find(getKey(path));
+	if (it == mime.end())
+		res.SetHeader("Content-Type", "application/octet-stream");
+	else
+		res.SetHeader("Content-Type", it->second);
+}
+
+Response	serveDir(const Request &request, const LocationConfig &loc,
+			const ServerConfig &server, string file)
+{
+	Response res;
+	map<string, string> mime = mime_table();
+
+	string str = request.getPath();
+	string::iterator it = str.end();
+	it--;
+	if (*it != '/')
+	{
+		res.SetStatus(301);
+		res.SetHeader("Location", request.getPath() + "/");
+		res.SetBody("");
+		return (res);
+	}
+	else
+	{
+		vector<string> index = loc.getIndex();
+		vector<string>::iterator it1 = index.begin();
+		string path;
+		while (it1 != index.end())
+		{
+			path = file + *it1;
+			struct stat sf;
+			if (stat(path.c_str(), &sf) < 0)
+				it1++;
+			else
+				break ;
+		}
+		if (it1 == index.end())
+			return(Response::BuildError(403, server));
+		int fd;
+		if ((fd = open(path.c_str(), O_RDONLY)) < 0)
+			return(Response::BuildError(403, server));
+		char	buf[4096];
+		ssize_t	n;
+		string	body;
+		while ((n = read(fd, buf, sizeof(buf))) > 0)
+			body.append(buf, static_cast<size_t>(n));
+		close(fd);
+		if (n < 0)
+			return(Response::BuildError(403, server));
+		getMime(res, mime, path);
+		res.SetStatus(200);
+		if (n == 0 && body.empty())
+			res.SetBody("");
+		else
+			res.SetBody(body);
+		return (res);
+	}
+}
+
+Response	serveFile(const Request &request, const LocationConfig &loc, const ServerConfig &server, string file)
+{
+	Response res;
+	map<string, string> mime = mime_table();
+	int fd;
+	if ((fd = open(file.c_str(), O_RDONLY)) < 0)
+		return(Response::BuildError(403, server));
+	char	buf[4096];
+	ssize_t	n;
+	string	body;
+	while ((n = read(fd, buf, sizeof(buf))) > 0)
+		body.append(buf, static_cast<size_t>(n));
+	close(fd);
+	if (n < 0)
+		return(Response::BuildError(403, server));
+	getMime(res, mime, file);
+	res.SetStatus(200);
+	if (n == 0 && body.empty())
+		res.SetBody("");
+	else
+		res.SetBody(body);
+	return (res);
+}
+
+Response	Rooter(const Request &request,
+				const ServerConfig &server,
+				const Connection &connection)
 {
 	Response	res;
+	map<string, string> mime = mime_table();
 	const LocationConfig	*loc = server.Resolve(request.getPath());
 	if (!loc)
 		return(Response::BuildError(404, server));
@@ -64,80 +135,11 @@ Response	Router::Rooter(const Request &request,
 			return(Response::BuildError(404, server));
 		if (S_ISDIR(statbuf.st_mode))
 		{
-			string str = request.getPath();
-			string::iterator it = str.end();
-			it--;
-			if (*it != '/')
-			{
-				res.SetStatus(301);
-				res.SetHeader("Location", request.getPath() + "/");
-				res.SetBody("");
-				return (res);
-			}
-			else
-			{
-				vector<string> index = loc->getIndex();
-				vector<string>::iterator it1 = index.begin();
-				string path;
-				while (it1 != index.end())
-				{
-					path = file + *it1;
-					struct stat sf;
-					if (stat(path.c_str(), &sf) < 0)
-						it1++;
-					else
-						break ;
-				}
-				if (it1 == index.end())
-					return(Response::BuildError(403, server));
-				int fd;
-				if ((fd = open(path.c_str(), O_RDONLY)) < 0)
-					return(Response::BuildError(403, server));
-				char	buf[4096];
-				ssize_t	n;
-				string	body;
-				while ((n = read(fd, buf, sizeof(buf))) > 0)
-					body.append(buf, static_cast<size_t>(n));
-				close(fd);
-				if (n < 0)
-					return(Response::BuildError(403, server));
-				map<string, string>::const_iterator it2 = _mime.find(getKey(path));
-				res.SetStatus(200);
-				if (n == 0 && body.empty())
-					res.SetBody("");
-				else
-					res.SetBody(body);
-				if (it2 == _mime.end())
-					res.SetHeader("Content-Type", "application/octet-stream");
-				else
-					res.SetHeader("Content-Type", it2->second);
-				return (res);
-			}
+			return (serveDir(request, *loc, server, file));
 		}
 		else if (S_ISREG(statbuf.st_mode))
 		{
-			int fd;
-			if ((fd = open(file.c_str(), O_RDONLY)) < 0)
-				return(Response::BuildError(403, server));
-			char	buf[4096];
-			ssize_t	n;
-			string	body;
-			while ((n = read(fd, buf, sizeof(buf))) > 0)
-				body.append(buf, static_cast<size_t>(n));
-			close(fd);
-			if (n < 0)
-				return(Response::BuildError(403, server));
-			map<string, string>::const_iterator it = _mime.find(getKey(file));
-			res.SetStatus(200);
-			if (n == 0 && body.empty())
-				res.SetBody("");
-			else
-				res.SetBody(body);
-			if (it == _mime.end())
-				res.SetHeader("Content-Type", "application/octet-stream");
-			else
-				res.SetHeader("Content-Type", it->second);
-			return (res);
+			return (serveFile(request, *loc, server, file));
 		}
 	}
 	else
