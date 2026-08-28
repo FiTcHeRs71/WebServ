@@ -355,7 +355,6 @@ void	EventLoop::CloseConnection(int fd)
 */
 void	EventLoop::SweepTimeouts(void)
 {
-	this.
 	if(_Clients.empty())
 		return ;
 	for(map<int, Connection>::iterator it = _Clients.begin(); it != _Clients.end(); it++)

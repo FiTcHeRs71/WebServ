@@ -1,10 +1,13 @@
 #include "../../includes/CgiProcess.hpp"
 #include <csignal>
+#include <cstdlib>
+#include <ctime>
 #include <sched.h>
 #include <string>
 #include <unistd.h>
 #include <fcntl.h>
 #include <vector>
+#include <sys/wait.h>
 
 	/*===Canonical Form===*/
 CgiProcess::CgiProcess(void)
@@ -265,10 +268,31 @@ void	CgiProcess::CloseWriteFd(void)
 }
 bool	CgiProcess::IsTimedOut(time_t now) const
 {
-
+	if (now - this->_StartTime > CGI_TIMEOUT)
+		return (false);
+	return (true);
 }
 
 bool	CgiProcess::Reap(int &exit_status)
 {
+	int		status;
+	pid_t	reaped;
 	
+	if (this->_Pid == -1)
+		return (true);
+	reaped = waitpid(this->_Pid, &status, WNOHANG);
+	if (reaped == 0)
+		return (false);
+	if (reaped < 0)
+		return (true);
+	if (reaped == this->_Pid)
+	{
+		if (WIFEXITED(status))
+			exit_status = WIFEXITED(status);
+		else
+			exit_status = WIFSIGNALED(status);
+		_Pid = -1;
+		return (true);
+	}
+	return (true);
 }
