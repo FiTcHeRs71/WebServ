@@ -116,6 +116,46 @@ const size_t	&LocationConfig::getClientMaxBodySize(void) const
 	return (this->_ClientMaxBodySize);
 }
 
+const std::set<std::string>	&LocationConfig::getMethods(void) const
+{
+	return(_Methods);
+}
+
+const std::vector<string>	&LocationConfig::getIndex(void) const
+{
+	return(_Index);
+}
+
+bool	LocationConfig::getAutoIndex(void) const
+{
+	return(_AutoIndex);
+}
+
+bool	LocationConfig::hasReturn(void) const
+{
+	return(_HasReturn);
+}
+
+int	LocationConfig::getReturnCode(void) const
+{
+	return(_ReturnCode);
+}
+
+const string	&LocationConfig::getReturnTarget(void) const
+{
+	return(_ReturnTarget);
+}
+
+const string	&LocationConfig::getUploadStore(void) const
+{
+	return(_UploadStore);
+}
+
+bool	LocationConfig::hasUploadStore(void) const
+{
+	return(_HasUploadStore);
+}
+
 	/*===Member Function===*/
 /**
  * @brief Surcharge d'operateur pour l'impression des attributs de la classe LocationConfig

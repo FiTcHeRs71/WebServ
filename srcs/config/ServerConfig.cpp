@@ -65,12 +65,12 @@ ostream		&operator<<(ostream &flux, const ServerConfig &src)
 	return (flux);
 }
 
-vector<TListenConfig>	ServerConfig::getListens() const
+const vector<TListenConfig>	&ServerConfig::getListens() const
 {
 	return(_Listens);
 }
 
-vector<string>	ServerConfig::getServerNames() const
+const vector<string>	&ServerConfig::getServerNames() const
 {
 	return(_ServerNames);
 }
@@ -78,6 +78,16 @@ vector<string>	ServerConfig::getServerNames() const
 const map<int, string>	&ServerConfig::getErrorPages() const
 {
 	return(_ErrorPages);
+}
+
+const vector<LocationConfig>	&ServerConfig::getLocations(void) const
+{
+	return(_Locations);
+}
+
+size_t	ServerConfig::getClientMaxBodySize(void) const
+{
+	return(_ClientMaxBodySize);
 }
 
 	/*===Member Function===*/
