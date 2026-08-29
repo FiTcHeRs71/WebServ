@@ -1,13 +1,16 @@
 #include "../../includes/EventLoop.hpp"
 #include "../../includes/Network.hpp"
 #include "../../includes/Logger.hpp"
+#include "../../includes/CgiProcess.hpp"
 #include <algorithm>
 #include <cstddef>
 #include <arpa/inet.h>
+#include <cstdlib>
 #include <ctime>
 #include <map>
 #include <sstream>
 #include <sys/poll.h>
+#include <sys/wait.h>
 #include <vector>
 
 /**
@@ -354,6 +357,12 @@ void	EventLoop::CloseConnection(int fd)
 	_Clients.erase(fd);
 	if (close(fd) < 0)
 		cerr << "Error: close() failed on the clients fd." << endl;
+	if (it->second.getCgi().GetPid() > 0)
+	{
+		it->second.getCgi().Kill();
+		UnregisterCgi(it->first);
+		UnregisterCgi(it->second.getFd());
+	}
 }
 
 /**
@@ -483,7 +492,10 @@ void	EventLoop::HandleCgiEvent(int fd, short revents)
 			Response Rep;
 
 			if (!Cgi.Reap(status))
+			{
+				waitpid(Cgi.GetPid(), NULL, WNOHANG);
 				return;
+			}
 			status = (status == 0)? 200 : 502;
 			_CgiToClose.push_back(fd);
 			Rep.SetStatus(status);

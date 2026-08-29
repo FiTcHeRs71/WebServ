@@ -322,11 +322,14 @@ bool	CgiProcess::Reap(int &exit_status)
 	if (reaped == 0)
 		return (false);
 	if (reaped < 0)
+	{
+		exit_status = 502;
 		return (true);
+	}
 	if (WIFEXITED(status))
-			exit_status = WEXITSTATUS(status);
+		exit_status = WEXITSTATUS(status);
 	else
-			exit_status = WIFSIGNALED(status);
+		exit_status = WIFSIGNALED(status);
 	this->_Pid = -1;
 	return (true);
 }
