@@ -81,6 +81,7 @@ void	EventLoop::Run(void)
 	{
 		status = poll(&_Pollfds[0], _Pollfds.size(), ComputeTimeout());
 		SweepTimeouts();
+		SweepPendingReap();
 		if (status == 0)
 		{
 			for (size_t i = 0; i < _toClose.size(); i++)
@@ -308,6 +309,8 @@ bool	EventLoop::HandleClientEvent(size_t index)
 */
 int	EventLoop::ComputeTimeout(void) const
 {
+	if (!_PendingReap.empty())
+		return (10);
 	if (_Clients.empty())
 		return(-1);
 	time_t	next_up = 100000;
@@ -413,6 +416,14 @@ void	EventLoop::SweepTimeouts(void)
 		this->_CgiToClose.push_back(cgi.GetReadFd());
 		this->_CgiToClose.push_back(cgi.GetWriteFd());
 		cgi.Kill();
+		for (size_t j = 0; j < _PendingReap.size(); j++)
+		{
+			if (_PendingReap[j] == cgiTimedOut[i])
+			{
+				_PendingReap.erase(_PendingReap.begin() + j);
+				break ;
+			}
+		}
 		it->second.SendErrorAndClose(504);
 		SetEvents(cgiTimedOut[i], POLLOUT);
 	}
@@ -493,7 +504,8 @@ void	EventLoop::HandleCgiEvent(int fd, short revents)
 
 			if (!Cgi.Reap(status))
 			{
-				waitpid(Cgi.GetPid(), NULL, WNOHANG);
+				this->_PendingReap.push_back(PipeClientFd->second);
+				this->_CgiToClose.push_back(fd);
 				return;
 			}
 			status = (status == 0)? 200 : 502;
@@ -532,4 +544,39 @@ void	EventLoop::Shutdown(void)
 		CloseConnection(this->_Clients.begin()->first);
 	oss << "shutting down, " << closed << " connection(s) closed";
 	Logger::write("info", oss.str());
+}
+
+void	EventLoop::SweepPendingReap(void)
+{
+	for (size_t i = 0; i < this->_PendingReap.size(); )
+	{
+		map<int, Connection>::iterator	it = this->_Clients.find(this->_PendingReap[i]);
+		int								status = 0;
+
+		if (it == this->_Clients.end())
+		{
+			this->_PendingReap.erase(_PendingReap.begin() + i);
+			continue;
+		}
+		if (!it->second.getCgi().Reap(status))
+		{
+			i++;
+			continue;
+		}
+		SendCgiResponse(it, status);
+		this->_PendingReap.erase(_PendingReap.begin() + i);
+	}
+}
+
+void  EventLoop::SendCgiResponse(map<int, Connection>::iterator it, int status)
+{
+		Response	Rep;
+		string	out;
+
+		Rep.SetStatus((status == 0) ? 200 : 502);
+		Rep.SetBody(it->second.getCgi().GetOutBuf());
+		// parse_cgi_output(...) ///< TODO D-04
+		Rep.Serialize(out);
+		it->second.QueueOutput(out);
+		SetEvents(it->first, POLLIN | POLLOUT);
 }

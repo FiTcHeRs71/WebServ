@@ -37,6 +37,7 @@ class EventLoop
 	map<int, int>			_CgiToClient;	///< fd de pipe -> fd du client qui attend la reponse
 	vector<int>				_toClose;		///< vecteur contenant les fd cleint a fermer
 	vector<int>				_CgiToClose;
+	vector<int>				_PendingReap;	///< contient des fd client dont le CGI attend d'être récolté.
 
 
 	public:
@@ -53,6 +54,8 @@ class EventLoop
 	void	RegisterCgi(int client_fd, int cgi_read_fd, int cgi_write_fd);	///< Branche les pipes CGI sur le poll (B-07)
 	void	UnregisterCgi(int client_fd);		///< Ferme et oublie les pipes d'un CGI fini (B-07)
 	void	CloseConnection(int fd);
+	void	SweepPendingReap(void);
+	void	SendCgiResponse(map<int, Connection>::iterator it, int status);
 
 	private:
 
