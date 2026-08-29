@@ -54,8 +54,6 @@ class EventLoop
 	void	RegisterCgi(int client_fd, int cgi_read_fd, int cgi_write_fd);	///< Branche les pipes CGI sur le poll (B-07)
 	void	UnregisterCgi(int client_fd);		///< Ferme et oublie les pipes d'un CGI fini (B-07)
 	void	CloseConnection(int fd);
-	void	SweepPendingReap(void);
-	void	SendCgiResponse(map<int, Connection>::iterator it, int status);
 
 	private:
 
@@ -66,6 +64,8 @@ class EventLoop
 	int		ComputeTimeout(void) const;				///< millisecondes a passer a poll()
 	void	SweepTimeouts(void);					///< appele a CHAQUE retour de poll(), meme sur 0
 	void	Shutdown(void);							///< Ferme tous les fds client avant de rendre la main
+	void	SweepPendingReap(void);
+	void	SendCgiResponse(map<int, Connection>::iterator it, int status);
 };
 
 #endif

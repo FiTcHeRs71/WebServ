@@ -351,21 +351,23 @@ void	EventLoop::CloseConnection(int fd)
 	map<int, Connection>::iterator	it = _Clients.find(fd);
 	ostringstream					oss;
 
-	if (it != _Clients.end())
-	{
-		oss << "close " << it->second.getIpV4() << " on fd " << fd;
-		Logger::write("info", oss.str());
-	}
-	RemoveFd(fd);
-	_Clients.erase(fd);
-	if (close(fd) < 0)
-		cerr << "Error: close() failed on the clients fd." << endl;
-	if (it->second.getCgi().GetPid() > 0)
-	{
-		it->second.getCgi().Kill();
-		UnregisterCgi(it->first);
-		UnregisterCgi(it->second.getFd());
-	}
+		if (it != _Clients.end())
+		{
+			oss << "close " << it->second.getIpV4() << " on fd " << fd;
+			Logger::write("info", oss.str());
+
+			CgiProcess	&cgi = it->second.getCgi();
+			if (cgi.GetPid() > 0)
+			{
+				UnregisterCgi(cgi.GetReadFd());   ///< avant Kill() : CloseFds() met les fds a -1
+				UnregisterCgi(cgi.GetWriteFd());
+				cgi.Kill();
+			}
+		}
+		RemoveFd(fd);
+		_Clients.erase(fd);
+		if (close(fd) < 0)
+			Logger::write("error", "Close() failed on the cllients fd");
 }
 
 /**
@@ -568,7 +570,7 @@ void	EventLoop::SweepPendingReap(void)
 	}
 }
 
-void  EventLoop::SendCgiResponse(map<int, Connection>::iterator it, int status)
+void	EventLoop::SendCgiResponse(map<int, Connection>::iterator it, int status)
 {
 		Response	Rep;
 		string	out;
