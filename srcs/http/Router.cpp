@@ -223,6 +223,20 @@ static bool isInsideRoot(const string &root, const string &path)
 	
 }
 
+static bool	isCgi(const LocationConfig &loc, const string &file)
+{
+	string cgiExt = loc.getExt();
+	if (cgiExt.empty() || loc.getPass().empty())
+		return(false);
+	string toCmp;
+	if (file >= cgiExt)
+		toCmp = file.substr(file.size() - cgiExt.size(), file.size());
+	if (!toCmp.empty() && toCmp == cgiExt)
+		return (true);
+	else
+		return(false);
+}
+
 /**
  * @brief Point d'entree du GET statique (C-06).
  *
@@ -247,6 +261,10 @@ Response	Router(const Request &request,
 	string	file = server.build_path(*loc, request.getPath());
 	if (file.empty())
 		return (Response::BuildError(500, server));
+	else if (isCgi(*loc, file))
+	{
+		// cgi time baby
+	}
 	else if (!isInsideRoot(loc->getRoot(), file))
 		return (Response::BuildError(403, server));
 	else
