@@ -251,9 +251,8 @@ static bool	isCgi(const LocationConfig &loc, const string &file)
  */
 Response	Router(const Request &request,
 				const ServerConfig &server,
-				const Connection &connection)
+				Connection &connection)
 {
-	(void)connection;
 	Response	res;
 	const LocationConfig	*loc = server.Resolve(request.getPath());
 	if (!loc)
@@ -263,7 +262,8 @@ Response	Router(const Request &request,
 		return (Response::BuildError(500, server));
 	else if (isCgi(*loc, file))
 	{
-		// cgi time baby
+		CgiProcess &cgi = connection.getCgi();
+		cgi.Start(request, *loc, server, connection, *request.getConfigParser(), file);
 	}
 	else if (!isInsideRoot(loc->getRoot(), file))
 		return (Response::BuildError(403, server));
