@@ -5,7 +5,6 @@
 # include "Connection.hpp"
 # include "ServerConfig.hpp"
 # include "Config.hpp"
-# include "CgiProcess.hpp"
 # include "Response.hpp"
 # include <sys/types.h>
 # include <sys/stat.h>
@@ -14,6 +13,6 @@
 
 Response	Router(const Request &request,
 				const ServerConfig &server,
-				const Connection &connection);
+				Connection &connection);
 
 #endif

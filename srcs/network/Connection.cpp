@@ -136,11 +136,12 @@ ssize_t	Connection::OnReadable(){
 				SendErrorAndClose(500);
 				break ;
 			}
-			const LocationConfig* loc = srv->Resolve(_Req.getPath());
-			const ConfigParser* config = _Req.getConfigParser();
 			Response	rep = HandleRequest(_Req, *srv, *this);
-			rep.Serialize(out);
-			QueueOutput(out);
+			if (getCgi().GetReadFd() < 0)
+			{
+   				rep.Serialize(out);
+   				QueueOutput(out);
+			}
 			_Req.reset();
 			res = _Req.Feed("", 0);
 		}

@@ -1,4 +1,5 @@
 #include "../../includes/Router.hpp"
+#include "../../includes/CgiProcess.hpp"
 #include <fcntl.h>
 #include <string>
 
@@ -223,18 +224,9 @@ static bool isInsideRoot(const string &root, const string &path)
 	
 }
 
-static bool	isCgi(const LocationConfig &loc, const string &file)
+static bool	isCgi(const Request &request, const LocationConfig &loc)
 {
-	string cgiExt = loc.getExt();
-	if (cgiExt.empty() || loc.getPass().empty())
-		return(false);
-	string toCmp;
-	if (file >= cgiExt)
-		toCmp = file.substr(file.size() - cgiExt.size(), file.size());
-	if (!toCmp.empty() && toCmp == cgiExt)
-		return (true);
-	else
-		return(false);
+	return (getKey(request.getPath()) == loc.getExt() && !loc.getPass().empty());
 }
 
 /**
@@ -260,13 +252,17 @@ Response	Router(const Request &request,
 	string	file = server.build_path(*loc, request.getPath());
 	if (file.empty())
 		return (Response::BuildError(500, server));
-	else if (isCgi(*loc, file))
-	{
-		CgiProcess &cgi = connection.getCgi();
-		cgi.Start(request, *loc, server, connection, *request.getConfigParser(), file);
-	}
 	else if (!isInsideRoot(loc->getRoot(), file))
 		return (Response::BuildError(403, server));
+	else if (isCgi(request, *loc))
+	{
+		CgiProcess		&cgi = connection.getCgi();
+		const ConfigParser	*config = request.getConfigParser();
+		if (config == NULL)
+			return (Response::BuildError(502, server));
+		if (!cgi.Start(request, *loc, server, connection, *config, file))
+			return (Response::BuildError(502, server));
+	}
 	else
 	{
 		struct stat statbuf;
