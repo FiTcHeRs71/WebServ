@@ -262,6 +262,8 @@ Response	Router(const Request &request,
 			return (Response::BuildError(502, server));
 		if (!cgi.Start(request, *loc, server, connection, *config, file))
 			return (Response::BuildError(502, server));
+		else
+			return (Response());
 	}
 	else
 	{
