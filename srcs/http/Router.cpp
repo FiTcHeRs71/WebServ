@@ -224,6 +224,11 @@ static bool isInsideRoot(const string &root, const string &path)
 	
 }
 
+/**
+ * @brief true si le chemin de la request correspond a _CgiExt et si _CgiPass n'est pas vide.
+ * 
+ * @return false -> le caller continue comme un fichier normal.
+ */
 static bool	isCgi(const Request &request, const LocationConfig &loc)
 {
 	return (getKey(request.getPath()) == loc.getExt() && !loc.getPass().empty());
