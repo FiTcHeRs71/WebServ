@@ -245,7 +245,6 @@ Response	Router(const Request &request,
 				const ServerConfig &server,
 				Connection &connection)
 {
-	Response	res;
 	const LocationConfig	*loc = server.Resolve(request.getPath());
 	if (!loc)
 		return(Response::BuildError(404, server));
@@ -260,7 +259,7 @@ Response	Router(const Request &request,
 		const ConfigParser	*config = request.getConfigParser();
 		if (config == NULL)
 			return (Response::BuildError(502, server));
-		if (!cgi.Start(request, *loc, server, connection, *config, file))
+		if (!cgi.Start(request, *loc, server, connection, *config, loc->getRoot() + request.getPath()))
 			return (Response::BuildError(502, server));
 		else
 			return (Response());
