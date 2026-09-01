@@ -10,6 +10,7 @@
 # include <netinet/in.h>
 # include <poll.h>
 # include <unistd.h>
+#include "CgiProcess.hpp"
 # include "Connection.hpp"
 # include "Config.hpp"
 # include "ListenSockets.hpp"
@@ -36,6 +37,7 @@ class EventLoop
 	map<int, int>			_CgiToClient;	///< fd de pipe -> fd du client qui attend la reponse
 	vector<int>				_toClose;		///< vecteur contenant les fd cleint a fermer
 	vector<int>				_CgiToClose;
+	vector<int>				_PendingReap;	///< contient des fd client dont le CGI attend d'être récolté.
 
 
 	public:
@@ -62,6 +64,8 @@ class EventLoop
 	int		ComputeTimeout(void) const;				///< millisecondes a passer a poll()
 	void	SweepTimeouts(void);					///< appele a CHAQUE retour de poll(), meme sur 0
 	void	Shutdown(void);							///< Ferme tous les fds client avant de rendre la main
+	void	SweepPendingReap(void);
+	void	SendCgiResponse(map<int, Connection>::iterator it, int status);
 };
 
 #endif

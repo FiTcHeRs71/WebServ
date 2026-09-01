@@ -29,5 +29,6 @@ const size_t		DEFAULT_BODY_SIZE	= 1048576;		///< 1 Mo, comme la directive client
 const int			DEFAULT_PORT		= 80;			///< Port d'un listen sans port explicite
 const time_t		TIMEOUT_HEADER		= 30;			///< requete incomplete -> 408
 const time_t		TIMEOUT_IDLE		= 60;			///< keep-alive inactif -> close silencieux
+const time_t		CGI_TIMEOUT			= 10;			///< duree dattente max dun enfant dans le cgi apes un fork
 
 #endif

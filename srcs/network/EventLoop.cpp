@@ -1,12 +1,17 @@
 #include "../../includes/EventLoop.hpp"
 #include "../../includes/Network.hpp"
 #include "../../includes/Logger.hpp"
+#include "../../includes/CgiProcess.hpp"
+#include <algorithm>
 #include <cstddef>
 #include <arpa/inet.h>
+#include <cstdlib>
 #include <ctime>
 #include <map>
 #include <sstream>
 #include <sys/poll.h>
+#include <sys/wait.h>
+#include <vector>
 
 /**
  * @brief Enregistre les sockets d'ecoute dans poll et dans _ListenFds
@@ -76,6 +81,7 @@ void	EventLoop::Run(void)
 	{
 		status = poll(&_Pollfds[0], _Pollfds.size(), ComputeTimeout());
 		SweepTimeouts();
+		SweepPendingReap();
 		if (status == 0)
 		{
 			for (size_t i = 0; i < _toClose.size(); i++)
@@ -303,6 +309,8 @@ bool	EventLoop::HandleClientEvent(size_t index)
 */
 int	EventLoop::ComputeTimeout(void) const
 {
+	if (!_PendingReap.empty())
+		return (10);
 	if (_Clients.empty())
 		return(-1);
 	time_t	next_up = 100000;
@@ -343,15 +351,23 @@ void	EventLoop::CloseConnection(int fd)
 	map<int, Connection>::iterator	it = _Clients.find(fd);
 	ostringstream					oss;
 
-	if (it != _Clients.end())
-	{
-		oss << "close " << it->second.getIpV4() << " on fd " << fd;
-		Logger::write("info", oss.str());
-	}
-	RemoveFd(fd);
-	_Clients.erase(fd);
-	if (close(fd) < 0)
-		cerr << "Error: close() failed on the clients fd." << endl;
+		if (it != _Clients.end())
+		{
+			oss << "close " << it->second.getIpV4() << " on fd " << fd;
+			Logger::write("info", oss.str());
+
+			CgiProcess	&cgi = it->second.getCgi();
+			if (cgi.GetPid() > 0)
+			{
+				UnregisterCgi(cgi.GetReadFd());   ///< avant Kill() : CloseFds() met les fds a -1
+				UnregisterCgi(cgi.GetWriteFd());
+				cgi.Kill();
+			}
+		}
+		RemoveFd(fd);
+		_Clients.erase(fd);
+		if (close(fd) < 0)
+			Logger::write("error", "Close() failed on the cllients fd");
 }
 
 /**
@@ -364,15 +380,22 @@ void	EventLoop::CloseConnection(int fd)
 */
 void	EventLoop::SweepTimeouts(void)
 {
+	time_t		now	= time(NULL);
+	vector<int>	cgiTimedOut;
+
 	if(_Clients.empty())
 		return ;
 	for(map<int, Connection>::iterator it = _Clients.begin(); it != _Clients.end(); it++)
 	{
-		time_t	toClose = 1;
+		CgiProcess	&cgi = it->second.getCgi();
+		time_t		toClose = 1;
+
+		if (cgi.GetPid() > 0 && cgi.IsTimedOut(now))
+			cgiTimedOut.push_back(it->first);
 		if (!it->second.getReqComplete() && it->second.getState() == CONN_READING)
-			toClose = (TIMEOUT_HEADER - (time(NULL) - it->second.getLastActivity())) * 1000;
+			toClose = (TIMEOUT_HEADER - (now - it->second.getLastActivity())) * 1000;
 		else if(it->second.getReqComplete() && it->second.getState() == CONN_READING)
-			toClose = (TIMEOUT_IDLE - (time(NULL) - it->second.getLastActivity())) * 1000;
+			toClose = (TIMEOUT_IDLE - (now - it->second.getLastActivity())) * 1000;
 		if (toClose <= 0)
 		{
 			if(!it->second.getReqComplete())
@@ -383,6 +406,28 @@ void	EventLoop::SweepTimeouts(void)
 			else
 				_toClose.push_back(it->first);
 		}
+	}
+	for (size_t i = 0; i < cgiTimedOut.size(); i++)
+	{
+		map<int, Connection>::iterator	it = _Clients.find(cgiTimedOut[i]);
+
+		if (it == this->_Clients.end())
+			continue;
+		CgiProcess	&cgi = it->second.getCgi();
+
+		this->_CgiToClose.push_back(cgi.GetReadFd());
+		this->_CgiToClose.push_back(cgi.GetWriteFd());
+		cgi.Kill();
+		for (size_t j = 0; j < _PendingReap.size(); j++)
+		{
+			if (_PendingReap[j] == cgiTimedOut[i])
+			{
+				_PendingReap.erase(_PendingReap.begin() + j);
+				break ;
+			}
+		}
+		it->second.SendErrorAndClose(504);
+		SetEvents(cgiTimedOut[i], POLLOUT);
 	}
 }
 
@@ -456,9 +501,18 @@ void	EventLoop::HandleCgiEvent(int fd, short revents)
 	if (revents & (POLLIN | POLLHUP)){
 		Cgi.OnReadableCgi();
 		if(Cgi.GetReadFd() < 0){
-			_CgiToClose.push_back(fd);
+			int	status = 0;
 			Response Rep;
-			Rep.SetStatus(200);
+
+			if (!Cgi.Reap(status))
+			{
+				this->_PendingReap.push_back(PipeClientFd->second);
+				this->_CgiToClose.push_back(fd);
+				return;
+			}
+			status = (status == 0)? 200 : 502;
+			_CgiToClose.push_back(fd);
+			Rep.SetStatus(status);
 			Rep.SetBody(Cgi.GetOutBuf());
 			// parse_cgi_output(Cgi.GetOutBuf(), Rep); ///< TODO D-04
 			string out;
@@ -487,22 +541,44 @@ void	EventLoop::Shutdown(void)
 {
 	size_t			closed = this->_Clients.size();
 	ostringstream	oss;
-	map<int, Connection>::iterator it;
 
-	for (it = this->_Clients.begin(); it != this->_Clients.end(); it++)
-	{
-		CloseConnection(it->first);
-	}
-	for(map<int, int>::iterator it = _CgiToClient.begin(); it != _CgiToClient.end(); it++)
-		UnregisterCgi(it->first);
-	_CgiToClose.clear();
-	this->_Clients.clear();
-	this->_Pollfds.clear();
-	// TODO d-05 waitpid() des childs
 	while (!this->_Clients.empty())	///< CloseConnection() erase : on repart toujours de begin()
 		CloseConnection(this->_Clients.begin()->first);
-	this->_Pollfds.clear();
 	oss << "shutting down, " << closed << " connection(s) closed";
 	Logger::write("info", oss.str());
-	// TODO B-07 : pipes de _CGIToClient + waitpid() des child
+}
+
+void	EventLoop::SweepPendingReap(void)
+{
+	for (size_t i = 0; i < this->_PendingReap.size(); )
+	{
+		map<int, Connection>::iterator	it = this->_Clients.find(this->_PendingReap[i]);
+		int								status = 0;
+
+		if (it == this->_Clients.end())
+		{
+			this->_PendingReap.erase(_PendingReap.begin() + i);
+			continue;
+		}
+		if (!it->second.getCgi().Reap(status))
+		{
+			i++;
+			continue;
+		}
+		SendCgiResponse(it, status);
+		this->_PendingReap.erase(_PendingReap.begin() + i);
+	}
+}
+
+void	EventLoop::SendCgiResponse(map<int, Connection>::iterator it, int status)
+{
+		Response	Rep;
+		string	out;
+
+		Rep.SetStatus((status == 0) ? 200 : 502);
+		Rep.SetBody(it->second.getCgi().GetOutBuf());
+		// parse_cgi_output(...) ///< TODO D-04
+		Rep.Serialize(out);
+		it->second.QueueOutput(out);
+		SetEvents(it->first, POLLIN | POLLOUT);
 }

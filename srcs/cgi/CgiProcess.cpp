@@ -2,11 +2,15 @@
 #include "../../includes/Request.hpp"
 #include "../../includes/Response.hpp"
 #include <csignal>
+#include <cstddef>
+#include <cstdlib>
+#include <ctime>
 #include <sched.h>
 #include <string>
 #include <unistd.h>
 #include <fcntl.h>
 #include <vector>
+#include <sys/wait.h>
 
 	/*===Canonical Form===*/
 CgiProcess::CgiProcess(void)
@@ -51,39 +55,39 @@ CgiProcess	&CgiProcess::operator=(const CgiProcess& src)
 	return (*this);
 }
 
-	/*===Getters & Setters===*/
-	/**
-	 * @brief Retourne le descripteur de lecture du pipe vers le CGI.
-	 * @return Le file descriptor en lecture, ou -1 si non disponible.
-	 */
+/*===Getters & Setters===*/
+/**
+ * @brief Retourne le descripteur de lecture du pipe vers le CGI.
+ * @return Le file descriptor en lecture, ou -1 si non disponible.
+ */
 int	CgiProcess::GetReadFd(void) const
 {
 	return (this->_ReadFd);
 }
 
-	/**
-	 * @brief Retourne le descripteur d'ecriture du pipe vers le CGI.
-	 * @return Le file descriptor en ecriture, ou -1 si non disponible.
-	 */
+/**
+ * @brief Retourne le descripteur d'ecriture du pipe vers le CGI.
+ * @return Le file descriptor en ecriture, ou -1 si non disponible.
+ */
 int	CgiProcess::GetWriteFd(void) const
 {
 	return (this->_WriteFd);
 }
 
-	/**
-	 * @brief Retourne le nom du fichier contenant le script en utilisant son path.
-	 * @return Le nom du script a executer.
-	 */
+/**
+ * @brief Retourne le nom du fichier contenant le script en utilisant son path.
+ * @return Le nom du script a executer.
+ */
 static string	findScriptName(const string &scriptpath)
 {
 	size_t last_slash = scriptpath.rfind('/');
 	return(scriptpath.substr(last_slash + 1));
 }
 
-	/**
-	 * @brief Retourne le PID du processus CGI
-	 * @return Le Pid, ou 0 si aucun processus n'a ete lance
-	 */
+/**
+ * @brief Retourne le PID du processus CGI
+ * @return Le Pid, ou 0 si aucun processus n'a ete lance
+ */
 pid_t	CgiProcess::GetPid(void) const
 {
 	return (this->_Pid);
@@ -104,6 +108,7 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 							const ServerConfig &server, const Connection &connection,
 							const ConfigParser &config, const string &script_path)
 {
+	this->_StartTime = time(NULL);
 	string			scriptName = findScriptName(script_path);
 	char			*argv[3];
 	int				pip_in[2];
@@ -179,7 +184,11 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 void	CgiProcess::Kill(void)
 {
 	if (this->_Pid > 0)
+	{
 		kill(this->_Pid, SIGKILL);
+		waitpid(this->_Pid, NULL, 0);
+	}
+	this->_Pid = -1;
 	this->CloseFds();
 	this->_Finished = true;
 }
@@ -249,13 +258,13 @@ void	CgiProcess::OnWritableCgi(void)
 		CloseWriteFd();
 }
 
-	/**
-	 * @brief Ferme le stdin du CGI pour lui signaler la fin du body.
-	 *
-	 * Sans cet appel, le script reste bloque sur read(stdin) : le pipe
-	 * a toujours un ecrivain vivant. A appeler des le dernier octet ecrit,
-	 * y compris quand il n'y a pas de body (GET).
-	 */
+/**
+ * @brief Ferme le stdin du CGI pour lui signaler la fin du body.
+ *
+ * Sans cet appel, le script reste bloque sur read(stdin) : le pipe
+ * a toujours un ecrivain vivant. A appeler des le dernier octet ecrit,
+ * y compris quand il n'y a pas de body (GET).
+ */
 void	CgiProcess::CloseWriteFd(void)
 {
 	if (this->_WriteFd != -1)
@@ -293,4 +302,34 @@ void CgiProcess::OnReadableCgi(){
 		return ;
 	}
 	_OutBuf.append(buffer, static_cast<size_t>(n));
+}
+
+bool	CgiProcess::IsTimedOut(time_t now) const
+{
+	if (now - this->_StartTime > CGI_TIMEOUT)
+		return (true);
+	return (false);
+}
+
+bool	CgiProcess::Reap(int &exit_status)
+{
+	int		status;
+	pid_t	reaped;
+	
+	if (this->_Pid == -1)
+		return (true);
+	reaped = waitpid(this->_Pid, &status, WNOHANG);
+	if (reaped == 0)
+		return (false);
+	if (reaped < 0)
+	{
+		exit_status = 502;
+		return (true);
+	}
+	if (WIFEXITED(status))
+		exit_status = WEXITSTATUS(status);
+	else
+		exit_status = WIFSIGNALED(status);
+	this->_Pid = -1;
+	return (true);
 }
