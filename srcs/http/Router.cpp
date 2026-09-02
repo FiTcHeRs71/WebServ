@@ -1,4 +1,5 @@
 #include "../../includes/Router.hpp"
+#include "../../includes/CgiProcess.hpp"
 #include <fcntl.h>
 #include <string>
 
@@ -224,6 +225,16 @@ static bool isInsideRoot(const string &root, const string &path)
 }
 
 /**
+ * @brief true si le chemin de la request correspond a _CgiExt et si _CgiPass n'est pas vide.
+ * 
+ * @return false -> le caller continue comme un fichier normal.
+ */
+static bool	isCgi(const Request &request, const LocationConfig &loc)
+{
+	return (getKey(request.getPath()) == loc.getExt() && !loc.getPass().empty());
+}
+
+/**
  * @brief Point d'entree du GET statique (C-06).
  *
  * Resolve la location, traduit l'URI en chemin disque, refuse le path
@@ -237,10 +248,8 @@ static bool isInsideRoot(const string &root, const string &path)
  */
 Response	Router(const Request &request,
 				const ServerConfig &server,
-				const Connection &connection)
+				Connection &connection)
 {
-	(void)connection;
-	Response	res;
 	const LocationConfig	*loc = server.Resolve(request.getPath());
 	if (!loc)
 		return(Response::BuildError(404, server));
@@ -249,6 +258,17 @@ Response	Router(const Request &request,
 		return (Response::BuildError(500, server));
 	else if (!isInsideRoot(loc->getRoot(), file))
 		return (Response::BuildError(403, server));
+	else if (isCgi(request, *loc))
+	{
+		CgiProcess		&cgi = connection.getCgi();
+		const ConfigParser	*config = request.getConfigParser();
+		if (config == NULL)
+			return (Response::BuildError(502, server));
+		if (!cgi.Start(request, *loc, server, connection, *config, loc->getRoot() + request.getPath()))
+			return (Response::BuildError(502, server));
+		else
+			return (Response());
+	}
 	else
 	{
 		struct stat statbuf;

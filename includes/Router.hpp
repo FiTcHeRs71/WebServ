@@ -13,6 +13,6 @@
 
 Response	Router(const Request &request,
 				const ServerConfig &server,
-				const Connection &connection);
+				Connection &connection);
 
 #endif
