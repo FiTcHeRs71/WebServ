@@ -254,7 +254,7 @@ static bool	isCgi(const Request &request, const LocationConfig &loc)
 }
 
 /**
- * @brief Point d'entree du GET statique (C-06).
+ * @brief Point d'entree du GET statique
  *
  * Resolve la location, traduit l'URI en chemin disque, refuse le path
  * traversal, puis sert un fichier, un index de dossier, ou une redirection
@@ -265,13 +265,17 @@ static bool	isCgi(const Request &request, const LocationConfig &loc)
  * @param connection Inutilise pour le statique (reserve CGI / D-06).
  * @return La Response a serialiser, jamais une reponse vide.
  */
-Response	Router(const Request &request,
-				const ServerConfig &server,
-				Connection &connection)
+Response	Router(const Request &request, const ServerConfig &server, Connection &connection)
 {
 	const LocationConfig	*loc = server.Resolve(request.getPath());
 	if (!loc)
 		return(Response::BuildError(404, server));
+	if (loc->getMethods().count(request.getMethod()) == 0)
+	{
+		Response	response = Response::BuildError(405, server);
+		response.SetHeader("Allow", "METHODS");
+		return (response);
+	}
 	string	file = server.build_path(*loc, request.getPath());
 	if (file.empty())
 		return (Response::BuildError(500, server));
