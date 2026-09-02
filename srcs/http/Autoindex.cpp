@@ -1,4 +1,5 @@
 #include "../../includes/Autoindex.hpp"
+#include <sstream>
 #include <string>
 #include <vector>
 #include <dirent.h>
@@ -40,9 +41,14 @@ bool	operator<(const TDirEntry &a, const TDirEntry &b)
 
 string	build_autoindex(const string &dir_path, const string &uri)
 {
-	(void)dir_path;
+	vector<TDirEntry>	entries;
+
+	if (!list_dir(dir_path, entries))
+		return ("");
 	(void)uri;
-	return ("TEST");
+	ostringstream	oss;
+	oss << entries.size();
+	return (oss.str());
 }
 
 string	html_escape(const string &s)
