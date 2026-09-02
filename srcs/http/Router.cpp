@@ -234,6 +234,14 @@ static bool	isCgi(const Request &request, const LocationConfig &loc)
 	return (getKey(request.getPath()) == loc.getExt() && !loc.getPass().empty());
 }
 
+/**
+ * @brief Traite le cas ou une location contient un header "return",
+ * 	renvoie une réponse en fonction du code d'erreur et de sa target.
+ *
+ * @param loc Pour les codes et target d'erreurs.
+ * @param server Pour BuildError.
+ * @return Une reponse http dependant du code d'erreur.
+ */
 Response	serveReturn(const ServerConfig &server, const LocationConfig &loc)
 {
 	int	code = loc.getReturnCode();
