@@ -234,6 +234,26 @@ static bool	isCgi(const Request &request, const LocationConfig &loc)
 	return (getKey(request.getPath()) == loc.getExt() && !loc.getPass().empty());
 }
 
+Response	serveReturn(const Request &request, const ServerConfig &server, const LocationConfig &loc)
+{
+	int	code = loc.getReturnCode();
+	string	target = loc.getReturnTarget();
+	if (code >= 300 && code <= 399 && code != 304)
+	{
+		// statut + location: + petit HTML
+	}
+	if (!target.empty() && code != 304 && code != 204)
+	{
+		// statut + cible en body + text/plain
+	}
+	else if (target.empty() && (code == 404 || code == 403))
+		return (Response::BuildError(code, server));
+	else if (code == 204 || code == 304)
+	{
+		// statut , pas de body, pas de Content-Length
+	}
+}
+
 /**
  * @brief Point d'entree du GET statique (C-06).
  *
@@ -253,6 +273,8 @@ Response	Router(const Request &request,
 	const LocationConfig	*loc = server.Resolve(request.getPath());
 	if (!loc)
 		return(Response::BuildError(404, server));
+	if (loc->hasReturn())
+		return (serveReturn(request, server, *loc));
 	string	file = server.build_path(*loc, request.getPath());
 	if (file.empty())
 		return (Response::BuildError(500, server));
