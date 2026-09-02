@@ -238,20 +238,33 @@ Response	serveReturn(const Request &request, const ServerConfig &server, const L
 {
 	int	code = loc.getReturnCode();
 	string	target = loc.getReturnTarget();
-	if (code >= 300 && code <= 399 && code != 304)
+	Response res;
+	if (code >= 300 && code <= 399 && code != 304 && !target.empty())
 	{
-		// statut + location: + petit HTML
+		res.SetStatus(code);
+		res.SetHeader("Location:", target);
+		ostringstream oss;
+		oss << "<html><body><h1>" << code
+			<< " " << res.getStatusText()
+			<< "</h1><a href=\"/new\">/new</a></body></html>";
+		res.SetBody(oss.str());
+		return (res);
 	}
-	if (!target.empty() && code != 304 && code != 204)
+	else if (!target.empty() && code != 304 && code != 204)
 	{
-		// statut + cible en body + text/plain
+		res.SetStatus(code);
+		res.SetBody(target);
+		res.SetHeader("Content-type:", "text/plain");
+		return (res);
 	}
-	else if (target.empty() && (code == 404 || code == 403))
+	else if (target.empty() && (code == 404 || code == 403 || code == 401 || code == 500))
 		return (Response::BuildError(code, server));
 	else if (code == 204 || code == 304)
 	{
-		// statut , pas de body, pas de Content-Length
+		res.SetStatus(code);
+		return (res);
 	}
+	return (Response::BuildError(code, server));
 }
 
 /**
