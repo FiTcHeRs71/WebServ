@@ -1,4 +1,5 @@
 #include "../../includes/Router.hpp"
+#include "../../includes/Autoindex.hpp"
 #include "../../includes/CgiProcess.hpp"
 #include <fcntl.h>
 #include <string>
@@ -135,7 +136,22 @@ static Response	serveDir(const Request &request, const LocationConfig &loc,
 			if (stat(path.c_str(), &sf) < 0)
 				it1++;
 			else
-				break ;
+			{
+				if (!loc.getAutoIndex())
+					return(Response::BuildError(403, server));
+				else
+				{
+					string	body;
+
+					body = build_autoindex(file, request.getPath());
+					if (body.empty())
+						return(Response::BuildError(403, server));
+					res.SetStatus(200);
+					res.SetHeader("Content-Type", "text/html");
+					res.SetBody(body);
+					return (res);
+				}
+			}
 		}
 		if (it1 == index.end())
 			return(Response::BuildError(403, server));
