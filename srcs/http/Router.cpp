@@ -254,6 +254,32 @@ static bool	isCgi(const Request &request, const LocationConfig &loc)
 }
 
 /**
+ * @brief Construit la valeur du header Allow a partir des methodes de la location.
+ *
+ * Concatene loc.getMethods() en une liste separee par ", ""
+ * sans virgule terminale : le separateur est pose avant chaque element sauf
+ * le premier.
+ *
+ * @param loc Location resolue dont on liste les methodes autorisees.
+ * @return "GET", "DELETE, GET, POST"
+ */
+static string  buildAllowHeader(const LocationConfig &loc)
+{
+	string						allow;
+	set<string>::const_iterator	it;
+
+	it = loc.getMethods().begin();
+	while (it != loc.getMethods().end())
+	{
+		if (!allow.empty())
+			allow += ", ";
+		allow += *it;
+		++it;
+	}
+	return (allow);
+}
+
+/**
  * @brief Point d'entree du GET statique
  *
  * Resolve la location, traduit l'URI en chemin disque, refuse le path
@@ -273,7 +299,7 @@ Response	Router(const Request &request, const ServerConfig &server, Connection &
 	if (loc->getMethods().count(request.getMethod()) == 0)
 	{
 		Response	response = Response::BuildError(405, server);
-		response.SetHeader("Allow", "METHODS");
+		response.SetHeader("Allow", buildAllowHeader(*loc));
 		return (response);
 	}
 	string	file = server.build_path(*loc, request.getPath());
