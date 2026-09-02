@@ -114,6 +114,8 @@ static Response	serveDir(const Request &request, const LocationConfig &loc,
 
 	string str = request.getPath();
 	string::iterator it = str.end();
+	if (str.empty())
+		return(Response::BuildError(400, server));
 	it--;
 	if (*it != '/')
 	{
@@ -136,28 +138,29 @@ static Response	serveDir(const Request &request, const LocationConfig &loc,
 			if (stat(path.c_str(), &sf) < 0)
 				it1++;
 			else
-			{
-				if (!loc.getAutoIndex())
-					return(Response::BuildError(403, server));
-				else
-				{
-					string	body;
-
-					body = build_autoindex(file, request.getPath());
-					if (body.empty())
-						return(Response::BuildError(403, server));
-					res.SetStatus(200);
-					res.SetHeader("Content-Type", "text/html");
-					res.SetBody(body);
-					return (res);
-				}
-			}
+				break;
 		}
 		if (it1 == index.end())
-			return(Response::BuildError(403, server));
+		{
+			if (!loc.getAutoIndex())
+				return(Response::BuildError(403, server));
+			else
+			{
+				string	body;
+
+				body = build_autoindex(file, request.getPath());
+				if (body.empty())
+					return(Response::BuildError(403, server));
+				res.SetStatus(200);
+				res.SetHeader("Content-Type", "text/html");
+				res.SetBody(body);
+				return (res);
+			}
+		}
 		return (serveFile(server, path));
 	}
 }
+
 
 /**
  * @brief Normalise un chemin : collapse des '/', ignore '.', resout '..'.
