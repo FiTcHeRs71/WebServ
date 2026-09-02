@@ -280,7 +280,7 @@ static string  buildAllowHeader(const LocationConfig &loc)
 }
 
 /**
- * @brief Point d'entree du GET statique
+ * @brief  Point d'entree du routage 
  *
  * Resolve la location, traduit l'URI en chemin disque, refuse le path
  * traversal, puis sert un fichier, un index de dossier, ou une redirection
