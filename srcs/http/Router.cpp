@@ -234,7 +234,7 @@ static bool	isCgi(const Request &request, const LocationConfig &loc)
 	return (getKey(request.getPath()) == loc.getExt() && !loc.getPass().empty());
 }
 
-Response	serveReturn(const Request &request, const ServerConfig &server, const LocationConfig &loc)
+Response	serveReturn(const ServerConfig &server, const LocationConfig &loc)
 {
 	int	code = loc.getReturnCode();
 	string	target = loc.getReturnTarget();
@@ -242,11 +242,12 @@ Response	serveReturn(const Request &request, const ServerConfig &server, const L
 	if (code >= 300 && code <= 399 && code != 304 && !target.empty())
 	{
 		res.SetStatus(code);
-		res.SetHeader("Location:", target);
+		res.SetHeader("Location", target);
+		res.SetHeader("Content-type", "text/html");
 		ostringstream oss;
 		oss << "<html><body><h1>" << code
 			<< " " << res.getStatusText()
-			<< "</h1><a href=\"/new\">/new</a></body></html>";
+			<< "</h1><a href=" << target << ">" << target << "</a></body></html>";
 		res.SetBody(oss.str());
 		return (res);
 	}
@@ -254,11 +255,9 @@ Response	serveReturn(const Request &request, const ServerConfig &server, const L
 	{
 		res.SetStatus(code);
 		res.SetBody(target);
-		res.SetHeader("Content-type:", "text/plain");
+		res.SetHeader("Content-type", "text/plain");
 		return (res);
 	}
-	else if (target.empty() && (code == 404 || code == 403 || code == 401 || code == 500))
-		return (Response::BuildError(code, server));
 	else if (code == 204 || code == 304)
 	{
 		res.SetStatus(code);
@@ -287,7 +286,7 @@ Response	Router(const Request &request,
 	if (!loc)
 		return(Response::BuildError(404, server));
 	if (loc->hasReturn())
-		return (serveReturn(request, server, *loc));
+		return (serveReturn(server, *loc));
 	string	file = server.build_path(*loc, request.getPath());
 	if (file.empty())
 		return (Response::BuildError(500, server));
