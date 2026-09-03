@@ -253,6 +253,38 @@ static bool	isCgi(const Request &request, const LocationConfig &loc)
 	return (getKey(request.getPath()) == loc.getExt() && !loc.getPass().empty());
 }
 
+bool	parse_multipart(const std::string &body, const std::string &boundary,
+						std::vector<TMultipartPart> &out)
+{
+
+}
+
+std::string	sanitize_filename(const std::string &raw)
+{
+
+}
+
+static void	handleUpload(const Request &request,
+						const ServerConfig &server,
+						const LocationConfig &location)
+{
+	string body = request.getHeader("Content-Type");
+	if (body.find("multipart/form-data"))
+	{
+		size_t idx = body.find("boundary=");
+		if (idx == string::npos)
+		{
+			//error
+		}
+		string boundary;
+		// parse_multipart() -> sanitize()
+	}
+	else
+	{
+		// body = fichier, nom = dernier segment de URI, sanitize()
+	}
+}
+
 /**
  * @brief Point d'entree du GET statique (C-06).
  *
@@ -287,6 +319,16 @@ Response	Router(const Request &request,
 			return (Response::BuildError(502, server));
 		else
 			return (Response());
+	}
+	else if (request.getMethod() == "POST")
+	{
+		if (loc->hasUploadStore())
+		{
+			handleUpload(request, server, *loc);
+			// handler upload et status 201 ("Created")
+		}
+		else
+			return (Response::BuildError(403, server));
 	}
 	else
 	{
