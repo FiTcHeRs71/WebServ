@@ -3,6 +3,7 @@
 #include "../../includes/CgiProcess.hpp"
 #include <fcntl.h>
 #include <string>
+#include <vector>
 
 /**
  * @brief Table MIME extension -> Content-Type, construite une seule fois.
@@ -254,9 +255,26 @@ static bool	isCgi(const Request &request, const LocationConfig &loc)
 }
 
 bool	parse_multipart(const std::string &body, const std::string &boundary,
-						std::vector<TMultipartPart> &out)
+						vector<TMultipartPart> &out)
 {
-
+	if (body.empty())
+		return false;
+	string delimiter = "--" + boundary + "\r\n";
+	if (body.size() <= delimiter.size())
+		return false;
+	if (body.compare(0, delimiter.size(), delimiter))
+		return false;
+	for (size_t i = delimiter.size(); i < body.size(); i++)
+	{
+		TMultipartPart part;
+		if (!body.compare(i, delimiter.size(), delimiter))
+		{
+			out.push_back(part);
+			i += delimiter.size();
+			continue ;
+		}
+		// parse headers + parse data + octets + boundary de fin
+	}
 }
 
 std::string	sanitize_filename(const std::string &raw)
@@ -264,20 +282,40 @@ std::string	sanitize_filename(const std::string &raw)
 
 }
 
-static void	handleUpload(const Request &request,
+static Response	handleUpload(const Request &request,
 						const ServerConfig &server,
 						const LocationConfig &location)
 {
-	string body = request.getHeader("Content-Type");
-	if (body.find("multipart/form-data"))
+	string value = request.getHeader("Content-Type");
+	if (value.find("multipart/form-data"))
 	{
-		size_t idx = body.find("boundary=");
+		size_t idx = value.find("boundary=");
 		if (idx == string::npos)
 		{
-			//error
+			return (Response::BuildError(400, server));
 		}
+		idx += 8;
 		string boundary;
-		// parse_multipart() -> sanitize()
+		bool quote = false;
+		for (size_t i = idx; i < value.size(); i++)
+		{
+			if (value[i] == '\"')
+			{
+				if (i == idx)
+					quote = true;
+				else if (i > idx && quote == true)
+					break ;
+				else
+					return (Response::BuildError(400, server));
+			}
+			else if (value[i] == ' ' || value[i] == '	' || value[i] == ';')
+				break ;
+			boundary += value[i];
+		}
+		vector<TMultipartPart> parts;
+		if (!parse_multipart(request.getBody(), boundary, parts))
+			return (Response::BuildError(400, server));
+		// sanitize()
 	}
 	else
 	{
@@ -324,7 +362,7 @@ Response	Router(const Request &request,
 	{
 		if (loc->hasUploadStore())
 		{
-			handleUpload(request, server, *loc);
+			return (handleUpload(request, server, *loc));
 			// handler upload et status 201 ("Created")
 		}
 		else
