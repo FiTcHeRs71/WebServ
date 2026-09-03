@@ -3,6 +3,8 @@
 #include "../../includes/CgiProcess.hpp"
 #include <fcntl.h>
 #include <string>
+#include <sys/stat.h>
+#include <unistd.h>
 
 /**
  * @brief Table MIME extension -> Content-Type, construite une seule fois.
@@ -96,11 +98,39 @@ static Response	serveFile(const ServerConfig &server, string file)
 }
 
 /**
+ * @brief Traite une demmande de delete, et check si la suppresion est autoriser ou non
+ * 
+ * Verifie si le l'element voulant etre supprimer existe, ou est autotiser a etre supprimer
+ * Check si dossier, regular-file, file existant.
+
+ * @param srv Pour BuildError.
+ * @param file Chemin disque du dossier (build_path). Un '/' est ajoute si besoin.
+ * @return 404 si aucun dossier ou fichier n'as ete trouver, 403 si c'est dossier ou un no-regular file, 204 si ok
+ */
+static Response	handleDelete(const ServerConfig &srv, string file)
+{
+	struct stat	sb;
+	Response response;
+
+	if (stat(file.c_str(), &sb) < 0)
+		response.BuildError(404, srv);
+	else if (S_ISDIR(sb.st_mode))
+		response.BuildError(403, srv);
+	else if (!S_ISREG(sb.st_mode))
+		response.BuildError(403, srv);
+	else if (unlink(file.c_str()) < 0)
+		response.BuildError(403, srv);
+	else
+		response.SetStatus(204);
+	return (response);
+}
+
+/**
  * @brief Traite un dossier : 301 sans slash final, sinon index puis serveFile.
  *
  * URI sans '/' final -> 301 Location: URI + "/".
  * Avec slash : parcourt loc.getIndex() dans l'ordre. Aucun index -> 403
- * (l'autoindex est C-07).
+
  * @param request Pour l'URI (slash / Location).
  * @param loc Location qui matche, source de getIndex().
  * @param server Pour BuildError.
