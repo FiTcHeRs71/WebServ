@@ -281,6 +281,47 @@ static string  buildAllowHeader(const LocationConfig &loc)
 
 /**
  * @brief  Point d'entree du routage 
+ * @brief Traite le cas ou une location contient un header "return",
+ * 	renvoie une réponse en fonction du code d'erreur et de sa target.
+ *
+ * @param loc Pour les codes et target d'erreurs.
+ * @param server Pour BuildError.
+ * @return Une reponse http dependant du code d'erreur.
+ */
+Response	serveReturn(const ServerConfig &server, const LocationConfig &loc)
+{
+	int	code = loc.getReturnCode();
+	string	target = loc.getReturnTarget();
+	Response res;
+	if (code >= 300 && code <= 399 && code != 304 && !target.empty())
+	{
+		res.SetStatus(code);
+		res.SetHeader("Location", target);
+		res.SetHeader("Content-type", "text/html");
+		ostringstream oss;
+		oss << "<html><body><h1>" << code
+			<< " " << res.getStatusText()
+			<< "</h1><a href=" << target << ">" << target << "</a></body></html>";
+		res.SetBody(oss.str());
+		return (res);
+	}
+	else if (!target.empty() && code != 304 && code != 204)
+	{
+		res.SetStatus(code);
+		res.SetBody(target);
+		res.SetHeader("Content-type", "text/plain");
+		return (res);
+	}
+	else if (code == 204 || code == 304)
+	{
+		res.SetStatus(code);
+		return (res);
+	}
+	return (Response::BuildError(code, server));
+}
+
+/**
+ * @brief Point d'entree du GET statique (C-06).
  *
  * Resolve la location, traduit l'URI en chemin disque, refuse le path
  * traversal, puis sert un fichier, un index de dossier, ou une redirection
