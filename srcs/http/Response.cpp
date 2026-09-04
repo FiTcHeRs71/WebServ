@@ -188,7 +188,7 @@ void	Response::generateBuiltInError(void)
 }
 
 /**
- * @brief Lit le fichier d'erreur s'il existe, sinon cree un built in, 
+ * @brief Lit le fichier d'erreur s'il existe, sinon cree un built in,
  * renvoie le tout comme reponse.
  * @param code Code d'erreur.
  * @param server Server ou se trouve les pages d'erreur.
