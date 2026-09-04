@@ -10,6 +10,8 @@
 #include <vector>
 #include <string>
 
+
+
 /**
  * @brief Ajouter une nouvelle valeur a l'environnement cgi.
  *
@@ -168,7 +170,33 @@ vector<string>	build_cgi_env(const Request &request, const LocationConfig &locat
  * @return true si la sortie etait exploitable, false -> l'appelant fait un 502.
 */
 bool	parse_cgi_output(const std::string &raw, Response &out){
-	(void)out;
-	cout << raw << endl;
+	size_t pos = raw.find("\r\n\r\n");
+	if (pos == string::npos){
+		size_t pos2 = raw.find("\n\n");
+		if (pos2 == string::npos){
+			out.SetStatus(502);
+			return false;
+		}
+		string Body = raw.substr(pos2 + 2);
+	}
+	string header = raw.substr(0, pos);
+	string body = raw.substr(pos + 4);
+	cout << header << endl;
+	cout << body << endl;
+	for(size_t i = 0; i < header.size(); i++){
+		size_t del = header.find(":");
+		if (del == string::npos){
+			out.SetStatus(502);
+			return false;
+		}
+		size_t endl = header.find("\n");
+		if (endl == string::npos){
+			out.SetStatus(502);
+			return false;
+		}
+		string key = header.substr(0, del);
+		string value = header.substr(del + 1, endl - del);
+		out.SetHeader(key, value);
+	}
 	return true;
 }

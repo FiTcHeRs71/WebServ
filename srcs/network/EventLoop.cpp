@@ -577,7 +577,8 @@ void	EventLoop::SendCgiResponse(map<int, Connection>::iterator it, int status)
 
 		Rep.SetStatus((status == 0) ? 200 : 502);
 		Rep.SetBody(it->second.getCgi().GetOutBuf());
-		// parse_cgi_output(...) ///< TODO D-04
+		CgiProcess CgiTmp = it->second.getCgi();
+		parse_cgi_output(CgiTmp.GetOutBuf(), Rep);
 		Rep.Serialize(out);
 		it->second.QueueOutput(out);
 		SetEvents(it->first, POLLIN | POLLOUT);
