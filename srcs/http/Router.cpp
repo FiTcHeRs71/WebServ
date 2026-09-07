@@ -98,14 +98,14 @@ static Response	serveFile(const ServerConfig &server, string file)
 }
 
 /**
- * @brief Traite une demmande de delete, et check si la suppresion est autoriser ou non
- * 
- * Verifie si le l'element voulant etre supprimer existe, ou est autotiser a etre supprimer
- * Check si dossier, regular-file, file existant.
-
+ * @brief Supprime le fichier vise par un DELETE
+ *
+ * stat() avant unlink() : il distingue les cas d'echec, ce qui evite de lire
+ * errno apres l'appel. Jamais de suppression recursive.
+ *
  * @param srv Pour BuildError.
- * @param file Chemin disque du dossier (build_path). Un '/' est ajoute si besoin.
- * @return 404 si aucun dossier ou fichier n'as ete trouver, 403 si c'est dossier ou un no-regular file, 204 si ok
+ * @param file Chemin disque deja valide par isInsideRoot().
+ * @return 204 sans corps ; 404 absent ; 403 dossier, type special, ou unlink refuse.
  */
 static Response	handleDelete(const ServerConfig &srv, string file)
 {
@@ -113,13 +113,13 @@ static Response	handleDelete(const ServerConfig &srv, string file)
 	Response response;
 
 	if (stat(file.c_str(), &sb) < 0)
-		response.BuildError(404, srv);
-	else if (S_ISDIR(sb.st_mode))
-		response.BuildError(403, srv);
-	else if (!S_ISREG(sb.st_mode))
-		response.BuildError(403, srv);
-	else if (unlink(file.c_str()) < 0)
-		response.BuildError(403, srv);
+		return (Response::BuildError(404, srv));
+	if (S_ISDIR(sb.st_mode))
+		return (Response::BuildError(403, srv));
+	if (!S_ISREG(sb.st_mode))
+		return (Response::BuildError(403, srv));
+	if (unlink(file.c_str()) < 0)
+		return (Response::BuildError(403, srv));
 	else
 		response.SetStatus(204);
 	return (response);
@@ -378,6 +378,8 @@ Response	Router(const Request &request, const ServerConfig &server, Connection &
 		return (Response::BuildError(500, server));
 	else if (!isInsideRoot(loc->getRoot(), file))
 		return (Response::BuildError(403, server));
+	else if (request.getMethod() == "DELETE")
+		return (handleDelete(server, file));
 	else if (isCgi(request, *loc))
 	{
 		CgiProcess		&cgi = connection.getCgi();
