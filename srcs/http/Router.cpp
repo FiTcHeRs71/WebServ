@@ -257,13 +257,18 @@ static bool	isCgi(const Request &request, const LocationConfig &loc)
 static string findValue(const string &headers, const string &toFind)
 {
 	size_t idx = headers.find(toFind);
-	if (toFind == "name=" && headers[idx - 1] == 'e')
-		idx = headers.find(toFind, idx + 5);
+	if (toFind == "name=" && idx != string::npos && idx > 0)
+	{
+		if (headers[idx - 1] == 'e')
+			idx = headers.find(toFind, idx + 5);
+		else
+			return "";
+	}
 	if (idx == string::npos)
 		return "";
 	string value;
 	bool quote = false;
-	for(size_t i = idx + toFind.size(); i < headers.size(); i++)
+	for(size_t i = idx + toFind.size() - 1; i < headers.size(); i++)
 	{
 		if (headers[i] == '\"')
 		{
@@ -298,7 +303,8 @@ bool	parse_multipart(const std::string &body, const std::string &boundary,
 		return false;
 	if (body.compare(0, delimiter.size(), delimiter))
 		return false;
-	for (size_t i = delimiter.size(); i < body.size(); i++)
+	size_t i = delimiter.size();
+	while(i < body.size())
 	{
 		TMultipartPart part;
 		size_t headersEnd = body.find("\r\n\r\n", i);
@@ -308,12 +314,12 @@ bool	parse_multipart(const std::string &body, const std::string &boundary,
 		if (headers.empty())
 			return false;
 		fillHeaders(headers, part);
-		i += headers.size();
+		i += headers.size() + 8;
 		size_t dataEnd = body.find("\r\n", i);
 		if (dataEnd == string::npos)
 			return false;
 		string data = body.substr(i, dataEnd - i);
-		if (data != delimiter || data != endDelimiter)
+		if (data != delimiter && data != endDelimiter)
 		{
 			part.Data = data;
 			i += data.size();
@@ -321,11 +327,12 @@ bool	parse_multipart(const std::string &body, const std::string &boundary,
 		if (!body.compare(i, delimiter.size(), delimiter) && i != delimiter.size())
 		{
 			out.push_back(part);
-			i += delimiter.size() - 1;
+			i += delimiter.size();
 			continue ;
 		}
 		else if (!body.compare(i, endDelimiter.size(), endDelimiter))
 		{
+			out.push_back(part);
 			return true;
 		}
 		else
@@ -344,14 +351,14 @@ static Response	handleUpload(const Request &request,
 						const LocationConfig &location)
 {
 	string value = request.getHeader("content-type");
-	if (value.find("multipart/form-data"))
+	if (value.find("multipart/form-data") != string::npos)
 	{
 		size_t idx = value.find("boundary=");
 		if (idx == string::npos)
 		{
 			return (Response::BuildError(400, server));
 		}
-		idx += 8;
+		idx += 9;
 		string boundary;
 		bool quote = false;
 		for (size_t i = idx; i < value.size(); i++)
