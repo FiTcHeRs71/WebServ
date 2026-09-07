@@ -1,7 +1,10 @@
 #include "../../includes/Router.hpp"
 #include "../../includes/Autoindex.hpp"
 #include "../../includes/CgiProcess.hpp"
+#include <cstddef>
 #include <fcntl.h>
+#include <fstream>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -259,10 +262,8 @@ static string findValue(const string &headers, const string &toFind)
 	size_t idx = headers.find(toFind);
 	if (toFind == "name=" && idx != string::npos && idx > 0)
 	{
-		if (headers[idx - 1] != 'e')
+		if (headers[idx - 1] == 'e')
 			idx = headers.find(toFind, idx + 5);
-		else
-			return "";
 	}
 	if (idx == string::npos)
 		return "";
@@ -342,7 +343,63 @@ bool	parse_multipart(const std::string &body, const std::string &boundary,
 
 std::string	sanitize_filename(const std::string &raw)
 {
+	if (raw.empty())
+		return "";
+	string basename;
+	size_t	slash = raw.rfind('/');
+	if (slash == string::npos || slash == raw.size())
+	{
+		size_t backslash = raw.rfind('\'');
+		if (backslash == string::npos || backslash == raw.size())
+			return "";
+		basename = raw.substr(backslash, raw.size() - backslash);
+		if (basename[0] == '.')
+			return "";
+		return basename;
+	}
+	basename = raw.substr(slash, raw.size() - slash);
+	if (basename[0] == '.')
+		return "";
+	return basename;
+}
 
+static Response upload(const ServerConfig &server,
+						const LocationConfig &location,
+						vector<TMultipartPart> parts)
+{
+	if (parts.empty())
+		return (Response::BuildError(400, server));
+	for (size_t i = 0; i < parts.size(); i++)
+	{
+		string basename = sanitize_filename(parts[i].Filename);
+		if (basename.empty())
+			return (Response::BuildError(400, server));
+		string path = location.getUploadStore() + basename;
+		struct stat st;
+		for (size_t i = 0; stat(path.c_str(), &st) == 0; i++)
+		{
+			if (S_ISREG(st.st_mode))
+			{
+				size_t suffix = path.rfind('.');
+				ostringstream oss;
+				oss << "_" << i;
+				path.insert(suffix - 1, oss.str());
+				continue ;
+			}
+			else
+				return (Response::BuildError(400, server));
+		}
+		ofstream	file(path.c_str(), ios::binary);
+		if (!file)
+			return (Response::BuildError(500, server));
+		if (parts[i].Data.size() > 0)
+			file.write(parts[i].Data.c_str(), parts[i].Data.size());
+	}
+	Response res;
+	res.SetStatus(201);
+	res.SetBody("");
+	res.SetHeader("Location: ", location.getPath() + "/" + sanitize_filename(parts[0].Filename));
+	return (res);
 }
 
 static Response	handleUpload(const Request &request,
@@ -378,7 +435,7 @@ static Response	handleUpload(const Request &request,
 		vector<TMultipartPart> parts;
 		if (!parse_multipart(request.getBody(), boundary, parts))
 			return (Response::BuildError(400, server));
-		// sanitize()
+		return (upload(server, location, parts));
 	}
 	else
 	{
@@ -497,7 +554,6 @@ Response	Router(const Request &request, const ServerConfig &server, Connection &
 		if (loc->hasUploadStore())
 		{
 			return (handleUpload(request, server, *loc));
-			// handler upload et status 201 ("Created")
 		}
 		else
 			return (Response::BuildError(403, server));
