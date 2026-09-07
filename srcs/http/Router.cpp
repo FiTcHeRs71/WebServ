@@ -363,6 +363,31 @@ std::string	sanitize_filename(const std::string &raw)
 	return basename;
 }
 
+static int	writeInFile(const string &filename, const string &body)
+{
+	string path = filename;
+	struct stat st;
+	for (size_t i = 0; stat(path.c_str(), &st) == 0; i++)
+	{
+		if (S_ISREG(st.st_mode))
+		{
+			size_t suffix = path.rfind('.');
+			ostringstream oss;
+			oss << "_" << i;
+			path.insert(suffix - 1, oss.str());
+			continue ;
+		}
+		else
+			return (400);
+	}
+	ofstream	file(path.c_str(), ios::binary);
+	if (!file)
+		return (500);
+	if (body.size() > 0)
+		file.write(body.c_str(), body.size());
+	return (0);
+}
+
 static Response upload(const ServerConfig &server,
 						const LocationConfig &location,
 						vector<TMultipartPart> parts)
@@ -375,25 +400,9 @@ static Response upload(const ServerConfig &server,
 		if (basename.empty())
 			return (Response::BuildError(400, server));
 		string path = location.getUploadStore() + basename;
-		struct stat st;
-		for (size_t i = 0; stat(path.c_str(), &st) == 0; i++)
-		{
-			if (S_ISREG(st.st_mode))
-			{
-				size_t suffix = path.rfind('.');
-				ostringstream oss;
-				oss << "_" << i;
-				path.insert(suffix - 1, oss.str());
-				continue ;
-			}
-			else
-				return (Response::BuildError(400, server));
-		}
-		ofstream	file(path.c_str(), ios::binary);
-		if (!file)
-			return (Response::BuildError(500, server));
-		if (parts[i].Data.size() > 0)
-			file.write(parts[i].Data.c_str(), parts[i].Data.size());
+		int code = writeInFile(path, parts[i].Data);
+		if (code)
+			return(Response::BuildError(code, server));
 	}
 	Response res;
 	res.SetStatus(201);
@@ -439,7 +448,19 @@ static Response	handleUpload(const Request &request,
 	}
 	else
 	{
-		// body = fichier, nom = dernier segment de URI, sanitize()
+		string body = request.getBody();
+		string basename = sanitize_filename(location.getPath());
+		if (basename.empty())
+			return (Response::BuildError(400, server));
+		string path = location.getUploadStore() + basename;
+		int code = writeInFile(path, body);
+		if (code)
+			return (Response::BuildError(code, server));
+		Response res;
+		res.SetStatus(201);
+		res.SetBody("");
+		res.SetHeader("Location: ", location.getPath());
+		return (res);
 	}
 }
 
