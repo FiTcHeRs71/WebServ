@@ -254,12 +254,40 @@ static bool	isCgi(const Request &request, const LocationConfig &loc)
 	return (getKey(request.getPath()) == loc.getExt() && !loc.getPass().empty());
 }
 
+static string findValue(const string &headers, const string &toFind)
+{
+	size_t idx = headers.find(toFind);
+	if (idx == string::npos)
+		return NULL;
+	string value = NULL;
+	for(size_t i = idx + toFind.size(); i < headers.size(); i++)
+	{
+		if (headers[i] == '\"')
+		{
+			i++;
+			continue ;
+		}
+		else if (headers[i] == ' ' || headers[i] == '	' || headers[i] == ';')
+			break ;
+		value += headers[i];
+	}
+	return (value);
+}
+
+static void fillHeaders(const string &headers, TMultipartPart &part)
+{
+	part.ContentType = findValue(headers, "Content-Type: ");
+	part.Filename = findValue(headers, "filename=");
+	part.Name = findValue(headers, "name=");
+}
+
 bool	parse_multipart(const std::string &body, const std::string &boundary,
 						vector<TMultipartPart> &out)
 {
 	if (body.empty())
 		return false;
 	string delimiter = "--" + boundary + "\r\n";
+	string endDelimiter = "--" + boundary + "--\r\n";
 	if (body.size() <= delimiter.size())
 		return false;
 	if (body.compare(0, delimiter.size(), delimiter))
@@ -267,14 +295,40 @@ bool	parse_multipart(const std::string &body, const std::string &boundary,
 	for (size_t i = delimiter.size(); i < body.size(); i++)
 	{
 		TMultipartPart part;
-		if (!body.compare(i, delimiter.size(), delimiter))
+		if (!body.compare(i, delimiter.size(), delimiter) && i != delimiter.size())
 		{
 			out.push_back(part);
 			i += delimiter.size();
 			continue ;
 		}
-		// parse headers + parse data + octets + boundary de fin
+		if (!body.compare(i, endDelimiter.size(), endDelimiter))
+		{
+			break ;
+		}
+		size_t headersEnd = body.find("\r\n\r\n");
+		if (headersEnd == string::npos)
+			return false;
+		string headers = body.substr(i, headersEnd);
+		if (headers.empty())
+			return false;
+		fillHeaders(headers, part);
+		i += headers.size();
+		size_t dataEnd = body.find("\r\n");
+		if (dataEnd == string::npos)
+			return false;
+		string data = body.substr(i, dataEnd);
+		if (data.empty())
+			return false;
+		if (data == delimiter || data == endDelimiter)
+			continue ;
+		else
+		{
+			part.Data = data;
+			i += data.size();
+			continue ;
+		}
 	}
+	return true;
 }
 
 std::string	sanitize_filename(const std::string &raw)
