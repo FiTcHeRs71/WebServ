@@ -196,7 +196,7 @@ bool	Request::setUpMethod(){
 		return false;
 	}
 	if (this->_Method != "GET" && this->_Method != "POST" && this->_Method != "DELETE"){
-		this->_ErrorCode = 501; //TODO (C-09) si la method existe mais n'est pas handle -> 405 : Method not allowed
+		this->_ErrorCode = 501;
 		this->_State = ST_ERROR;
 		cerr << "Error :" << this->_ErrorCode << ": Method Not Allowed" << endl;
 		return false;

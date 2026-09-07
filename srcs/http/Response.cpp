@@ -123,6 +123,12 @@ int	Response::getStatus(void) const
 	return(this->_StatusCode);
 }
 
+const string		&Response::getStatusText(void) const
+{
+	return(this->_StatusText);
+}
+
+
 	/*===Member Function===*/
 
 	/**
