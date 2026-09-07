@@ -343,7 +343,7 @@ bool	parse_multipart(const std::string &body, const std::string &boundary,
 
 std::string	sanitize_filename(const std::string &raw)
 {
-	if (raw.empty() || raw == "." || raw == "..")
+	if (raw.empty() || raw[0] == '.')
 		return "";
 	string basename;
 	size_t	slash = raw.rfind('/');
@@ -352,7 +352,7 @@ std::string	sanitize_filename(const std::string &raw)
 		size_t backslash = raw.rfind('\\');
 		if (backslash == string::npos || backslash == raw.size())
 			return raw;
-		basename = raw.substr(backslash, raw.size() - backslash);
+		basename = raw.substr(backslash + 1, raw.size() - backslash);
 		if (basename[0] == '.')
 			return "";
 		return basename;
@@ -408,8 +408,10 @@ static Response upload(const ServerConfig &server,
 	res.SetStatus(201);
 	res.SetBody("");
 	size_t i = 0;
-	while (!parts[i].Filename.empty())
+	while (parts[i].Filename.empty() && i < parts.size())
 		i++;
+	if (i == parts.size())
+		return (Response::BuildError(400, server));
 	res.SetHeader("Location", location.getPath() + "/" + sanitize_filename(parts[i].Filename));
 	return (res);
 }
