@@ -349,15 +349,15 @@ std::string	sanitize_filename(const std::string &raw)
 	size_t	slash = raw.rfind('/');
 	if (slash == string::npos || slash == raw.size())
 	{
-		size_t backslash = raw.rfind('\'');
+		size_t backslash = raw.rfind('\\');
 		if (backslash == string::npos || backslash == raw.size())
-			return "";
+			return raw;
 		basename = raw.substr(backslash, raw.size() - backslash);
 		if (basename[0] == '.')
 			return "";
 		return basename;
 	}
-	basename = raw.substr(slash, raw.size() - slash);
+	basename = raw.substr(slash + 1, raw.size() - slash);
 	if (basename[0] == '.')
 		return "";
 	return basename;
@@ -398,8 +398,8 @@ static Response upload(const ServerConfig &server,
 	{
 		string basename = sanitize_filename(parts[i].Filename);
 		if (basename.empty())
-			return (Response::BuildError(400, server));
-		string path = location.getUploadStore() + basename;
+			continue ;
+		string path = location.getUploadStore() + "/" + basename;
 		int code = writeInFile(path, parts[i].Data);
 		if (code)
 			return(Response::BuildError(code, server));
@@ -407,7 +407,7 @@ static Response upload(const ServerConfig &server,
 	Response res;
 	res.SetStatus(201);
 	res.SetBody("");
-	res.SetHeader("Location: ", location.getPath() + "/" + sanitize_filename(parts[0].Filename));
+	res.SetHeader("Location", location.getPath() + "/" + sanitize_filename(parts[0].Filename));
 	return (res);
 }
 
@@ -449,17 +449,17 @@ static Response	handleUpload(const Request &request,
 	else
 	{
 		string body = request.getBody();
-		string basename = sanitize_filename(location.getPath());
+		string basename = sanitize_filename(request.getPath());
 		if (basename.empty())
 			return (Response::BuildError(400, server));
-		string path = location.getUploadStore() + basename;
+		string path = location.getUploadStore() + "/" + basename;
 		int code = writeInFile(path, body);
 		if (code)
 			return (Response::BuildError(code, server));
 		Response res;
 		res.SetStatus(201);
 		res.SetBody("");
-		res.SetHeader("Location: ", location.getPath());
+		res.SetHeader("Location", location.getPath());
 		return (res);
 	}
 }
@@ -554,6 +554,8 @@ Response	Router(const Request &request, const ServerConfig &server, Connection &
 		response.SetHeader("Allow", buildAllowHeader(*loc));
 		return (response);
 	}
+	if (loc->hasReturn())
+		return(serveReturn(server, *loc));
 	string	file = server.build_path(*loc, request.getPath());
 	if (file.empty())
 		return (Response::BuildError(500, server));
