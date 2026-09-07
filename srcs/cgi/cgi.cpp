@@ -189,29 +189,33 @@ bool	parse_cgi_output(const std::string &raw, Response &out){
 			out.SetStatus(502);
 			return false;
 		}
-		size_t endl = header.find("\n");
-		if (endl == string::npos){
-			out.SetStatus(502);
-			return false;
+		size_t end = 0;
+		size_t line_end = header.find("\n");
+		if (line_end == string::npos){
+			end = header.size();
 		}
+		else
+			end = line_end;
 		string key = header.substr(0, del);
-		string value = header.substr(del + 1, endl - del);
+		string value = header.substr(del + 1, end - del);
 		if (key == "Status"){
 			stringstream ss(value);
 			int num = 0;
 			ss >> num;
-			if (ss){
+			if (ss.fail()){
 				out.SetStatus(502);
 				return false;
 			}
-			if (num <= 599 && num >= 100)
-				out.SetStatus(num);
-			else{
+			if (num < 100 || num > 599){
 				out.SetStatus(502);
 				return false;
 			}
+			out.SetStatus(num);
 			flagStatus = 1;
-			header.erase(endl + 1);
+			if (end == header.size())
+				header.clear();
+			else
+				header.erase(0, end + 1);
 			continue;
 		}
 		else if (key == "Location" && flagStatus == 0)
@@ -219,7 +223,10 @@ bool	parse_cgi_output(const std::string &raw, Response &out){
 		if (!value.empty())
 			trim(value);
 		out.SetHeader(key, value);
-		header.erase(endl + 1);
+		if (end == header.size())
+			header.clear();
+		else
+			header.erase(0, end + 1);
 	}
 	out.SetBody(body);
 	return true;
