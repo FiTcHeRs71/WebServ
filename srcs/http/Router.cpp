@@ -343,7 +343,7 @@ bool	parse_multipart(const std::string &body, const std::string &boundary,
 
 std::string	sanitize_filename(const std::string &raw)
 {
-	if (raw.empty())
+	if (raw.empty() || raw == "." || raw == "..")
 		return "";
 	string basename;
 	size_t	slash = raw.rfind('/');
@@ -367,14 +367,14 @@ static int	writeInFile(const string &filename, const string &body)
 {
 	string path = filename;
 	struct stat st;
-	for (size_t i = 0; stat(path.c_str(), &st) == 0; i++)
+	for (size_t i = 1; stat(path.c_str(), &st) == 0; i++)
 	{
 		if (S_ISREG(st.st_mode))
 		{
 			size_t suffix = path.rfind('.');
 			ostringstream oss;
 			oss << "_" << i;
-			path.insert(suffix - 1, oss.str());
+			path.insert(suffix, oss.str());
 			continue ;
 		}
 		else
@@ -407,7 +407,10 @@ static Response upload(const ServerConfig &server,
 	Response res;
 	res.SetStatus(201);
 	res.SetBody("");
-	res.SetHeader("Location", location.getPath() + "/" + sanitize_filename(parts[0].Filename));
+	size_t i = 0;
+	while (!parts[i].Filename.empty())
+		i++;
+	res.SetHeader("Location", location.getPath() + "/" + sanitize_filename(parts[i].Filename));
 	return (res);
 }
 
@@ -459,7 +462,7 @@ static Response	handleUpload(const Request &request,
 		Response res;
 		res.SetStatus(201);
 		res.SetBody("");
-		res.SetHeader("Location", location.getPath());
+		res.SetHeader("Location", location.getPath() + "/" + basename);
 		return (res);
 	}
 }
@@ -548,14 +551,14 @@ Response	Router(const Request &request, const ServerConfig &server, Connection &
 	const LocationConfig	*loc = server.Resolve(request.getPath());
 	if (!loc)
 		return(Response::BuildError(404, server));
+	if (loc->hasReturn())
+		return(serveReturn(server, *loc));
 	if (loc->getMethods().count(request.getMethod()) == 0)
 	{
 		Response	response = Response::BuildError(405, server);
 		response.SetHeader("Allow", buildAllowHeader(*loc));
 		return (response);
 	}
-	if (loc->hasReturn())
-		return(serveReturn(server, *loc));
 	string	file = server.build_path(*loc, request.getPath());
 	if (file.empty())
 		return (Response::BuildError(500, server));
