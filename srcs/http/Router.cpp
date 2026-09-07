@@ -259,7 +259,7 @@ static string findValue(const string &headers, const string &toFind)
 	size_t idx = headers.find(toFind);
 	if (toFind == "name=" && idx != string::npos && idx > 0)
 	{
-		if (headers[idx - 1] == 'e')
+		if (headers[idx - 1] != 'e')
 			idx = headers.find(toFind, idx + 5);
 		else
 			return "";
@@ -268,14 +268,13 @@ static string findValue(const string &headers, const string &toFind)
 		return "";
 	string value;
 	bool quote = false;
-	for(size_t i = idx + toFind.size() - 1; i < headers.size(); i++)
+	for(size_t i = idx + toFind.size(); i < headers.size(); i++)
 	{
 		if (headers[i] == '\"')
 		{
 			if (quote == true)
 				break ;
 			quote = true;
-			i++;
 			continue ;
 		}
 		else if ((headers[i] == ' ' || headers[i] == '	' || headers[i] == ';') && quote == false)
@@ -314,15 +313,15 @@ bool	parse_multipart(const std::string &body, const std::string &boundary,
 		if (headers.empty())
 			return false;
 		fillHeaders(headers, part);
-		i += headers.size() + 8;
-		size_t dataEnd = body.find("\r\n", i);
+		i += headers.size() + 4;
+		size_t dataEnd = body.find("\r\n--" + boundary, i);
 		if (dataEnd == string::npos)
 			return false;
 		string data = body.substr(i, dataEnd - i);
 		if (data != delimiter && data != endDelimiter)
 		{
 			part.Data = data;
-			i += data.size();
+			i += data.size() + 2;
 		}
 		if (!body.compare(i, delimiter.size(), delimiter) && i != delimiter.size())
 		{
