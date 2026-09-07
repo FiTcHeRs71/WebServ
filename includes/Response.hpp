@@ -46,6 +46,7 @@ class Response
 	void				SetBody(const std::string &body);	///< pose aussi Content-Length
 	const std::string	&getBody(void) const;
 	int					getStatus(void) const;
+	const string		&getStatusText(void) const;
 
 	/*===Member Function===*/
 	bool				Serialize(std::string &out);
