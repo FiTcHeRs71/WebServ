@@ -510,11 +510,32 @@ void	EventLoop::HandleCgiEvent(int fd, short revents)
 				this->_CgiToClose.push_back(fd);
 				return;
 			}
-			status = (status == 0)? 200 : 502;
 			_CgiToClose.push_back(fd);
-			Rep.SetStatus(status);
-			Rep.SetBody(Cgi.GetOutBuf());
-			// parse_cgi_output(Cgi.GetOutBuf(), Rep); ///< TODO D-04
+			if (status == 0){
+				Rep.SetStatus(200);
+				if (!parse_cgi_output(Cgi.GetOutBuf(), Rep)){
+					Request req = it->second.getRequest();
+					const ServerConfig *srv = req.getServerConfig();
+					if (srv)
+						Rep = Response::BuildError(502, *srv);
+					else{
+						Rep.SetStatus(502);
+						Rep.SetHeader("Content-Type", "text/html");
+						Rep.generateBuiltInError();
+					}
+				}
+			}
+			else{
+				Request req = it->second.getRequest();
+				const ServerConfig *srv = req.getServerConfig();
+				if (srv)
+					Rep = Response::BuildError(502, *srv);
+				else{
+					Rep.SetStatus(502);
+					Rep.SetHeader("Content-Type", "text/html");
+					Rep.generateBuiltInError();
+				}
+			}
 			string out;
 			Rep.Serialize(out);
 			it->second.QueueOutput(out);
@@ -576,8 +597,29 @@ void	EventLoop::SendCgiResponse(map<int, Connection>::iterator it, int status)
 		string	out;
 
 		Rep.SetStatus((status == 0) ? 200 : 502);
-		Rep.SetBody(it->second.getCgi().GetOutBuf());
-		// parse_cgi_output(...) ///< TODO D-04
+		CgiProcess CgiTmp = it->second.getCgi();
+		Request req = it->second.getRequest();
+		const ServerConfig *srv = req.getServerConfig();
+		if (status != 0){
+			if (srv)
+				Rep = Response::BuildError(502, *srv);
+			else{
+				Rep.SetStatus(502);
+				Rep.SetHeader("Content-Type", "text/html");
+				Rep.generateBuiltInError();
+			}
+		}
+		else if (status == 0){
+			if (!parse_cgi_output(CgiTmp.GetOutBuf(), Rep)){
+				if (srv)
+					Rep = Response::BuildError(502, *srv);
+				else{
+					Rep.SetStatus(502);
+					Rep.SetHeader("Content-Type", "text/html");
+					Rep.generateBuiltInError();
+				}
+			}
+		}
 		Rep.Serialize(out);
 		it->second.QueueOutput(out);
 		SetEvents(it->first, POLLIN | POLLOUT);

@@ -10,6 +10,8 @@
 #include <vector>
 #include <string>
 
+
+
 /**
  * @brief Ajouter une nouvelle valeur a l'environnement cgi.
  *
@@ -168,7 +170,71 @@ vector<string>	build_cgi_env(const Request &request, const LocationConfig &locat
  * @return true si la sortie etait exploitable, false -> l'appelant fait un 502.
 */
 bool	parse_cgi_output(const std::string &raw, Response &out){
-	(void)out;
-	cout << raw << endl;
+	size_t crlf = raw.find("\r\n\r\n");
+	size_t lf = raw.find("\n\n");
+	size_t pos;
+	int sep;
+	if (crlf != string::npos && (lf == string::npos || crlf <= lf)){
+		pos = crlf;
+		sep = 4;
+	}
+	else if (lf != string::npos){
+		pos = lf;
+		sep = 2;
+	}
+	else{
+		out.SetStatus(502);
+		return false;
+	}
+	int flagStatus = 0;
+	string body = raw.substr(pos + sep);
+	string header = raw.substr(0, pos);
+	while(header.size() > 0){
+		size_t del = header.find(":");
+		if (del == string::npos){
+			out.SetStatus(502);
+			return false;
+		}
+		size_t end = 0;
+		size_t line_end = header.find("\n");
+		if (line_end == string::npos){
+			end = header.size();
+		}
+		else
+			end = line_end;
+		string key = header.substr(0, del);
+		trim(key);
+		string value = header.substr(del + 1, end - del);
+		if (key == "Status"){
+			stringstream ss(value);
+			int num = 0;
+			ss >> num;
+			if (ss.fail()){
+				out.SetStatus(502);
+				return false;
+			}
+			if (num < 100 || num > 599){
+				out.SetStatus(502);
+				return false;
+			}
+			out.SetStatus(num);
+			flagStatus = 1;
+			if (end == header.size())
+				header.clear();
+			else
+				header.erase(0, end + 1);
+			continue;
+		}
+		else if (key == "Location" && flagStatus == 0)
+				out.SetStatus(302);
+		if (!value.empty())
+			trim(value);
+		out.SetHeader(key, value);
+		if (end == header.size())
+			header.clear();
+		else
+			header.erase(0, end + 1);
+	}
+	out.SetBody(body);
 	return true;
 }
