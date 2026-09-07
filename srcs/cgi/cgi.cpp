@@ -170,15 +170,21 @@ vector<string>	build_cgi_env(const Request &request, const LocationConfig &locat
  * @return true si la sortie etait exploitable, false -> l'appelant fait un 502.
 */
 bool	parse_cgi_output(const std::string &raw, Response &out){
-	size_t pos = raw.find("\r\n\r\n");
-	int sep = 4;
-	if (pos == string::npos){
-		pos = raw.find("\n\n");
-		if (pos == string::npos){
-			out.SetStatus(502);
-			return false;
-		}
+	size_t crlf = raw.find("\r\n\r\n");
+	size_t lf = raw.find("\n\n");
+	size_t pos;
+	int sep;
+	if (crlf != string::npos && (lf == string::npos || crlf <= lf)){
+		pos = crlf;
+		sep = 4;
+	}
+	else if (lf != string::npos){
+		pos = lf;
 		sep = 2;
+	}
+	else{
+		out.SetStatus(502);
+		return false;
 	}
 	int flagStatus = 0;
 	string body = raw.substr(pos + sep);
@@ -197,6 +203,7 @@ bool	parse_cgi_output(const std::string &raw, Response &out){
 		else
 			end = line_end;
 		string key = header.substr(0, del);
+		trim(key);
 		string value = header.substr(del + 1, end - del);
 		if (key == "Status"){
 			stringstream ss(value);
