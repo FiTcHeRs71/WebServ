@@ -355,7 +355,8 @@ std::string	sanitize_filename(const std::string &raw)
 		else
 			basename = raw.substr(backslash + 1);
 	}
-	basename = raw.substr(slash + 1, raw.size() - slash);
+	else
+		basename = raw.substr(slash + 1, raw.size() - slash);
 	if (basename.empty())
 		return "";
 	if (basename[0] == '.')
