@@ -350,7 +350,7 @@ std::string	sanitize_filename(const std::string &raw)
 	if (slash == string::npos)
 	{
 		size_t backslash = raw.rfind('\\');
-		if (backslash == string::npos)
+		if (backslash == string::npos && (raw != ".." || raw != ".hidden"))
 			return raw;
 		basename = raw.substr(backslash + 1, raw.size() - backslash);
 		if (basename[0] == '.')
@@ -358,12 +358,14 @@ std::string	sanitize_filename(const std::string &raw)
 		return basename;
 	}
 	basename = raw.substr(slash + 1, raw.size() - slash);
-	if (basename[0] == '.' || basename.empty())
+	if (basename.empty())
+		return "";
+	if (basename[0] == '.')
 		return "";
 	return basename;
 }
 
-static int	writeInFile(const string &filename, const string &body)
+static int	writeInFile(const string &filename, const string &body, string &written)
 {
 	string path = filename;
 	struct stat st;
@@ -389,6 +391,7 @@ static int	writeInFile(const string &filename, const string &body)
 		return (500);
 	if (body.size() > 0)
 		file.write(body.c_str(), body.size());
+	written = path;
 	return (0);
 }
 
@@ -396,31 +399,30 @@ static Response upload(const ServerConfig &server,
 						const LocationConfig &location,
 						vector<TMultipartPart> parts)
 {
-	if (parts.empty())
-		return (Response::BuildError(400, server));
-	size_t created = -1;
+	string locName;
 	for (size_t i = 0; i < parts.size(); i++)
 	{
 		string basename = sanitize_filename(parts[i].Filename);
 		if (basename.empty())
 			continue ;
 		string path = location.getUploadStore() + "/" + basename;
-		int code = writeInFile(path, parts[i].Data);
+		string written;
+		int code = writeInFile(path, parts[i].Data, written);
 		if (code)
-			return(Response::BuildError(code, server));
-		if (created == 0)
-			created = i;
+			return (Response::BuildError(code, server));
+		if (locName.empty())
+		{
+			size_t slash = written.rfind('/');
+			locName = (slash == string::npos) ? written : written.substr(slash + 1);
+		}
 	}
-	if (created >= 0)
-	{
-		Response res;
-		res.SetStatus(201);
-		res.SetBody("");
-		res.SetHeader("Location", location.getPath() + "/" + sanitize_filename(parts[created].Filename));
-		return (res);
-	}
-	else
-		return(Response::BuildError(400, server));
+	if (locName.empty())
+		return (Response::BuildError(400, server));
+	Response res;
+	res.SetStatus(201);
+	res.SetBody("");
+	res.SetHeader("Location", location.getPath() + "/" + locName);
+	return (res);
 }
 
 static Response	handleUpload(const Request &request,
@@ -448,7 +450,10 @@ static Response	handleUpload(const Request &request,
 					continue ;
 				}
 				else if (i > idx && quote == true)
+				{
+					quote = false;
 					break ;
+				}
 				else
 					return (Response::BuildError(400, server));
 			}
@@ -456,6 +461,8 @@ static Response	handleUpload(const Request &request,
 				break ;
 			boundary += value[i];
 		}
+		if (quote == true)
+			return (Response::BuildError(400, server));
 		vector<TMultipartPart> parts;
 		if (!parse_multipart(request.getBody(), boundary, parts))
 			return (Response::BuildError(400, server));
@@ -468,9 +475,12 @@ static Response	handleUpload(const Request &request,
 		if (basename.empty())
 			return (Response::BuildError(400, server));
 		string path = location.getUploadStore() + "/" + basename;
-		int code = writeInFile(path, body);
+		string written;
+		int code = writeInFile(path, body, written);
 		if (code)
 			return (Response::BuildError(code, server));
+		size_t slash = written.rfind('/');
+		string locName = (slash == string::npos) ? written : written.substr(slash + 1);
 		Response res;
 		res.SetStatus(201);
 		res.SetBody("");
