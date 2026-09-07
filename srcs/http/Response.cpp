@@ -82,6 +82,7 @@ static std::string	StatusText(int code)
 		case 415: return "Unsupported Media Type";
 		case 416: return "Range Not Satisfiable";
 		case 417: return "Expectation Failed";
+		case 418: return "I'm a teapot";
 		case 426: return "Upgrade Required";
 		case 431: return "Request Header Fields Too Large";
 		case 500: return "Internal Server Error";
@@ -194,7 +195,7 @@ void	Response::generateBuiltInError(void)
 }
 
 /**
- * @brief Lit le fichier d'erreur s'il existe, sinon cree un built in, 
+ * @brief Lit le fichier d'erreur s'il existe, sinon cree un built in,
  * renvoie le tout comme reponse.
  * @param code Code d'erreur.
  * @param server Server ou se trouve les pages d'erreur.
