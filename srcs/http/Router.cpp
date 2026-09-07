@@ -350,12 +350,10 @@ std::string	sanitize_filename(const std::string &raw)
 	if (slash == string::npos)
 	{
 		size_t backslash = raw.rfind('\\');
-		if (backslash == string::npos && (raw != ".." || raw != ".hidden"))
-			return raw;
-		basename = raw.substr(backslash + 1, raw.size() - backslash);
-		if (basename[0] == '.')
-			return "";
-		return basename;
+		if (backslash == string::npos)
+			basename = raw;
+		else
+			basename = raw.substr(backslash + 1);
 	}
 	basename = raw.substr(slash + 1, raw.size() - slash);
 	if (basename.empty())
@@ -484,7 +482,7 @@ static Response	handleUpload(const Request &request,
 		Response res;
 		res.SetStatus(201);
 		res.SetBody("");
-		res.SetHeader("Location", location.getPath() + "/" + basename);
+		res.SetHeader("Location", location.getPath() + "/" + locName);
 		return (res);
 	}
 }
