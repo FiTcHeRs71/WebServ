@@ -343,14 +343,14 @@ bool	parse_multipart(const std::string &body, const std::string &boundary,
 
 std::string	sanitize_filename(const std::string &raw)
 {
-	if (raw.empty() || raw[0] == '.')
+	if (raw.empty())
 		return "";
 	string basename;
 	size_t	slash = raw.rfind('/');
-	if (slash == string::npos || slash == raw.size())
+	if (slash == string::npos)
 	{
 		size_t backslash = raw.rfind('\\');
-		if (backslash == string::npos || backslash == raw.size())
+		if (backslash == string::npos)
 			return raw;
 		basename = raw.substr(backslash + 1, raw.size() - backslash);
 		if (basename[0] == '.')
@@ -371,7 +371,10 @@ static int	writeInFile(const string &filename, const string &body)
 	{
 		if (S_ISREG(st.st_mode))
 		{
+			path = filename;
 			size_t suffix = path.rfind('.');
+			if (suffix == string::npos)
+				suffix = path.size();
 			ostringstream oss;
 			oss << "_" << i;
 			path.insert(suffix, oss.str());
@@ -394,6 +397,7 @@ static Response upload(const ServerConfig &server,
 {
 	if (parts.empty())
 		return (Response::BuildError(400, server));
+	size_t created = 0;
 	for (size_t i = 0; i < parts.size(); i++)
 	{
 		string basename = sanitize_filename(parts[i].Filename);
@@ -403,17 +407,19 @@ static Response upload(const ServerConfig &server,
 		int code = writeInFile(path, parts[i].Data);
 		if (code)
 			return(Response::BuildError(code, server));
+		if (created == 0)
+			created = i;
 	}
-	Response res;
-	res.SetStatus(201);
-	res.SetBody("");
-	size_t i = 0;
-	while (parts[i].Filename.empty() && i < parts.size())
-		i++;
-	if (i == parts.size())
-		return (Response::BuildError(400, server));
-	res.SetHeader("Location", location.getPath() + "/" + sanitize_filename(parts[i].Filename));
-	return (res);
+	if (created)
+	{
+		Response res;
+		res.SetStatus(201);
+		res.SetBody("");
+		res.SetHeader("Location", location.getPath() + "/" + sanitize_filename(parts[created].Filename));
+		return (res);
+	}
+	else
+		return(Response::BuildError(400, server));
 }
 
 static Response	handleUpload(const Request &request,
@@ -436,13 +442,16 @@ static Response	handleUpload(const Request &request,
 			if (value[i] == '\"')
 			{
 				if (i == idx)
+				{
+					continue ;
 					quote = true;
+				}
 				else if (i > idx && quote == true)
 					break ;
 				else
 					return (Response::BuildError(400, server));
 			}
-			else if (value[i] == ' ' || value[i] == '	' || value[i] == ';')
+			else if (value[i] == ' ' || value[i] == '	' || value[i] == ';' && !quote)
 				break ;
 			boundary += value[i];
 		}
