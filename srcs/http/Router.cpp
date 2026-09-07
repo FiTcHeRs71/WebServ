@@ -358,7 +358,7 @@ std::string	sanitize_filename(const std::string &raw)
 		return basename;
 	}
 	basename = raw.substr(slash + 1, raw.size() - slash);
-	if (basename[0] == '.')
+	if (basename[0] == '.' || basename.empty())
 		return "";
 	return basename;
 }
@@ -373,7 +373,8 @@ static int	writeInFile(const string &filename, const string &body)
 		{
 			path = filename;
 			size_t suffix = path.rfind('.');
-			if (suffix == string::npos)
+			size_t slash = path.rfind('/');
+			if (suffix == string::npos || slash > suffix)
 				suffix = path.size();
 			ostringstream oss;
 			oss << "_" << i;
@@ -397,7 +398,7 @@ static Response upload(const ServerConfig &server,
 {
 	if (parts.empty())
 		return (Response::BuildError(400, server));
-	size_t created = 0;
+	size_t created = -1;
 	for (size_t i = 0; i < parts.size(); i++)
 	{
 		string basename = sanitize_filename(parts[i].Filename);
@@ -410,7 +411,7 @@ static Response upload(const ServerConfig &server,
 		if (created == 0)
 			created = i;
 	}
-	if (created)
+	if (created >= 0)
 	{
 		Response res;
 		res.SetStatus(201);
@@ -443,15 +444,15 @@ static Response	handleUpload(const Request &request,
 			{
 				if (i == idx)
 				{
-					continue ;
 					quote = true;
+					continue ;
 				}
 				else if (i > idx && quote == true)
 					break ;
 				else
 					return (Response::BuildError(400, server));
 			}
-			else if (value[i] == ' ' || value[i] == '	' || value[i] == ';' && !quote)
+			else if ((value[i] == ' ' || value[i] == '	' || value[i] == ';') && !quote)
 				break ;
 			boundary += value[i];
 		}
