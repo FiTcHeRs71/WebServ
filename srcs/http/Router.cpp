@@ -37,7 +37,7 @@ static map<string, string> &mime_table(void)
  * @param file Chemin disque ou URI.
  * @return ".html", ".png"... ou "unknown" s'il n'y a pas d'extension.
  */
-static string	getKey(string file)
+string	getKey(string file)
 {
 	size_t slash = file.rfind("/");
 	size_t dot = file.rfind(".");
@@ -251,13 +251,7 @@ static bool isInsideRoot(const string &root, const string &path)
  */
 static bool	isCgi(const Request &request, const LocationConfig &loc)
 {
-	map<string, string> Cgi = loc.getCgi();
-	for (map<string, string>::iterator it = Cgi.begin(); it != Cgi.end(); ++it)
-	{
-		if (getKey(request.getPath()) == it->first && !it->second.empty())
-			return true;
-	}
-	return false;
+	return (!loc.getCgiPass(getKey(request.getPath())).empty());
 }
 
 /**

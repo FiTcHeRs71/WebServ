@@ -47,7 +47,7 @@ class LocationConfig
 	/*===Getters & Setters===*/
 	const string					&getPath(void) const;	///< Le prefixe d'URI declare par le bloc "location"
 	const string					&getRoot(void) const;	///< La racine disque associee a ce bloc
-	const string					&getCgiPath(const string &ext) const;
+	const string					&getCgiPass(const string &ext) const;
 	const map<string, string>		&getCgi(void) const;
 	const size_t					&getClientMaxBodySize(void) const;
 	const std::set<std::string>		&getMethods(void) const;

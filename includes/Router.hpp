@@ -14,5 +14,6 @@
 Response	Router(const Request &request,
 				const ServerConfig &server,
 				Connection &connection);
+string		getKey(string file);
 
 #endif

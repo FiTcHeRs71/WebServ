@@ -4,6 +4,7 @@
 #include "../../includes/Connection.hpp"
 #include "../../includes/Config.hpp"
 #include "../../includes/Response.hpp"
+#include "../../includes/Router.hpp"
 #include <cctype>
 #include <map>
 #include <sstream>
@@ -32,20 +33,16 @@ void	addEnv(vector<string>& storage, const string &key, const string &value)
 */
 string findScriptName(const Request &request, const LocationConfig &location)
 {
-	map<string, string>					Cgi = location.getCgi();
-	const string						&path = request.getPath();
-	map<string, string>::const_iterator	it;
-
-	for(it = Cgi.begin(); it != Cgi.end(); ++it)
+	const string &path = request.getPath();
+	const map<string, string> &cgi = location.getCgi();
+	map<string, string>::const_iterator it;
+	for (it = cgi.begin(); it != cgi.end(); ++it)
 	{
-		if (request.getPath() == it->second)
-			break ;
+		size_t idx = path.find(it->first);
+		if (idx != string::npos)
+			return (path.substr(0, idx + it->first.size()));
 	}
-	const string &ext = it->first;
-	size_t			idx = path.find(ext);
-	if (idx == string::npos)
-		return (path);
-	return(path.substr(0, idx + ext.size()));
+	return (path);
 }
 
 /**
@@ -55,20 +52,16 @@ string findScriptName(const Request &request, const LocationConfig &location)
 */
 string findPathInfo(const Request &request, const LocationConfig &location)
 {
-	map<string, string>					Cgi = location.getCgi();
-	const string						&path = request.getPath();
-	map<string, string>::const_iterator	it;
-
-	for(it = Cgi.begin(); it != Cgi.end(); ++it)
+	const string &path = request.getPath();
+	const map<string, string> &cgi = location.getCgi();
+	map<string, string>::const_iterator it;
+	for (it = cgi.begin(); it != cgi.end(); ++it)
 	{
-		if (request.getPath() == it->second)
-			break ;
+		size_t idx = path.find(it->first);
+		if (idx != string::npos)
+			return (path.substr(0, idx + it->first.size()));
 	}
-	const string &ext = it->first;
-	size_t			idx = path.find(ext);
-	if (idx == string::npos)
-		return ("");
-	return(path.substr(idx + ext.size()));
+	return ("");
 }
 
 /**

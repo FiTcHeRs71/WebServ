@@ -84,9 +84,9 @@ const string	&LocationConfig::getRoot(void) const
 	return (this->_Root);
 }
 
-const string					&LocationConfig::getCgiPath(const string &ext) const
+const string					&LocationConfig::getCgiPass(const string &ext) const
 {
-	static const string &empty = "";
+	static const string empty;
 	map<string, string>::const_iterator it = _Cgi.find(ext);
 	if (it == _Cgi.end())
 		return (empty);
@@ -260,11 +260,8 @@ void	LocationConfig::parse_location(vector<string> &token, size_t &i)
 		else
 			throw runtime_error(key + " is not a valid instructions in location bloc");
 	}
-	for (map<string, string>::const_iterator it = _Cgi.begin(); it != _Cgi.end(); ++it)
-	{
-		if (!it->first.empty() && it->second.size() == 0)
-			throw runtime_error("cgi_pass is mandatory with a cgi_ext key");
-	}
+	if (!CgiExt.empty())
+		throw runtime_error("cgi_pass is mandatory with a cgi_ext key");
 	i++; // saute le "}" avant de rendre le i aparse bloc server
 }
 
