@@ -32,10 +32,17 @@ void	addEnv(vector<string>& storage, const string &key, const string &value)
 */
 string findScriptName(const Request &request, const LocationConfig &location)
 {
-	const string	&path = request.getPath();
-	const string	&ext = location.getExt();
-	size_t			idx = path.find(ext);
+	map<string, string>					Cgi = location.getCgi();
+	const string						&path = request.getPath();
+	map<string, string>::const_iterator	it;
 
+	for(it = Cgi.begin(); it != Cgi.end(); ++it)
+	{
+		if (request.getPath() == it->first)
+			break ;
+	}
+	const string &ext = it->first;
+	size_t			idx = path.find(ext);
 	if (idx == string::npos)
 		return (path);
 	return(path.substr(0, idx + ext.size()));
@@ -48,10 +55,17 @@ string findScriptName(const Request &request, const LocationConfig &location)
 */
 string findPathInfo(const Request &request, const LocationConfig &location)
 {
-	const string	&path = request.getPath();
-	const string	&ext = location.getExt();
-	size_t			idx = path.find(ext);
+	map<string, string>					Cgi = location.getCgi();
+	const string						&path = request.getPath();
+	map<string, string>::const_iterator	it;
 
+	for(it = Cgi.begin(); it != Cgi.end(); ++it)
+	{
+		if (request.getPath() == it->first)
+			break ;
+	}
+	const string &ext = it->first;
+	size_t			idx = path.find(ext);
 	if (idx == string::npos)
 		return ("");
 	return(path.substr(idx + ext.size()));

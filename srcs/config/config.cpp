@@ -488,7 +488,8 @@ void	ConfigParser::resolve_paths(void)
 			LocationConfig &loc = this->_Servers[i]._Locations[j];
 
 			loc._Root = to_absolute(loc._Root, cwd);
-			loc._CgiPass = to_absolute(loc._CgiPass, cwd);
+			for (map<string, string>::iterator it = loc._Cgi.begin(); it != loc._Cgi.end(); ++it)
+				it->second = to_absolute(it->second, cwd);
 			loc._UploadStore = to_absolute(loc._UploadStore, cwd);
 		}
 	}

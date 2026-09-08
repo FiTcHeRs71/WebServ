@@ -116,7 +116,15 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 	vector<string>	storage = build_cgi_env(request, location, server, connection, config, script_path);
 	char			**envp = VectorToChar(storage);
 
-	argv[0] = const_cast<char *>(location.getPass().c_str());
+	map<string, string>					Cgi = location.getCgi();
+	map<string, string>::const_iterator	it;
+
+	for(it = Cgi.begin(); it != Cgi.end(); ++it)
+	{
+		if (request.getPath() == it->first)
+			break ;
+	}
+	argv[0] = const_cast<char *>(it->second.c_str());
 	argv[1] = const_cast<char *>(scriptName.c_str());
 	argv[2] = NULL;
 	this->_InBuf = request.getBody();

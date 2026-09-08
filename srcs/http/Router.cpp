@@ -2,6 +2,7 @@
 #include "../../includes/Autoindex.hpp"
 #include "../../includes/CgiProcess.hpp"
 #include <fcntl.h>
+#include <map>
 #include <string>
 
 /**
@@ -250,7 +251,13 @@ static bool isInsideRoot(const string &root, const string &path)
  */
 static bool	isCgi(const Request &request, const LocationConfig &loc)
 {
-	return (getKey(request.getPath()) == loc.getExt() && !loc.getPass().empty());
+	map<string, string> Cgi = loc.getCgi();
+	for (map<string, string>::iterator it = Cgi.begin(); it != Cgi.end(); ++it)
+	{
+		if (getKey(request.getPath()) == it->first && !it->second.empty())
+			return true;
+	}
+	return false;
 }
 
 /**
