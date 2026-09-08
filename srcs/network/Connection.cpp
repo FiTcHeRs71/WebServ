@@ -139,8 +139,8 @@ ssize_t	Connection::OnReadable(){
 			Response	rep = HandleRequest(_Req, *srv, *this);
 			if (getCgi().GetReadFd() < 0)
 			{
-   				rep.Serialize(out);
-   				QueueOutput(out);
+				rep.Serialize(out);
+				QueueOutput(out);
 			}
 			_Req.reset();
 			res = _Req.Feed("", 0);

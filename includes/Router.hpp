@@ -20,9 +20,14 @@ struct TMultipartPart
 
 bool		parse_multipart(const std::string &body, const std::string &boundary,
 						std::vector<TMultipartPart> &out);
-std::string	sanitize_filename(const std::string &raw);	///< basename seul, refuse .. /
-Response	Router(const Request &request,
-				const ServerConfig &server,
-				Connection &connection);
+bool		findBoundary( const string &value, string &boundary, int idx);
+string		sanitize_filename(const std::string &raw);	///< basename seul, refuse .. /
+string		findValue(const string &headers, const string &toFind);
+Response	Router(const Request &request, const ServerConfig &server, Connection &connection);
+Response	uploadMultipart(const ServerConfig &server, const LocationConfig &location, vector<TMultipartPart> parts);
+Response	upload(const Request &request, const ServerConfig &server, const LocationConfig &location);
+void		fillHeaders(const string &headers, TMultipartPart &part);
+int			writeInFile(const string &filename, const string &body, string &written);
+int			sanitizeAndWrite(const LocationConfig &location, string &written, const string &name, const string &data);
 
 #endif
