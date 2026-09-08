@@ -257,6 +257,19 @@ static bool	isCgi(const Request &request, const LocationConfig &loc)
 	return (getKey(request.getPath()) == loc.getExt() && !loc.getPass().empty());
 }
 
+/**
+ * @brief Decoupe un body multipart/form-data sur --boundary (RFC 7578, C-10).
+ *
+ * Le delimiteur dans le corps est "--" + boundary. Le close porte "--" en plus.
+ * Pour chaque part : headers jusqu'au double CRLF, puis octets exacts jusqu'au
+ * CRLF qui precede le delimiteur suivant (ce CRLF n'appartient pas au fichier).
+ * Data peut contenir des NUL : substr + size, jamais strlen.
+ *
+ * @param body Corps HTTP brut.
+ * @param boundary Valeur de boundary=, sans les '--' (quotes deja retirees).
+ * @param out Parts dans l'ordre, y compris les champs texte (Filename vide).
+ * @return false si body/boundary vides, delimiteur absent, headers ou close manquants.
+ */
 bool	parse_multipart(const std::string &body, const std::string &boundary,
 						vector<TMultipartPart> &out)
 {
@@ -294,6 +307,15 @@ bool	parse_multipart(const std::string &body, const std::string &boundary,
 	return false;
 }
 
+/**
+ * @brief Basename seul, apres le dernier '/' ou '\\'. Refuse vide et leading '.'.
+ *
+ * Neutralise filename="../../etc/passwd" -> "passwd". ".." et ".hidden" -> "".
+ * Le caller ignore "" (part texte, ou 400 en POST raw).
+ *
+ * @param raw Filename client (multipart) ou URI (POST raw).
+ * @return Basename ecrivable dans upload_store, ou "".
+ */
 std::string	sanitize_filename(const std::string &raw)
 {
 	if (raw.empty())
@@ -317,6 +339,18 @@ std::string	sanitize_filename(const std::string &raw)
 	return basename;
 }
 
+/**
+ * @brief Aiguillage C-10 : multipart/form-data ou corps brut.
+ *
+ * Content-Type contenant "multipart/form-data" -> boundary= puis parse_multipart
+ * puis uploadMultipart. Sinon tout le body est le fichier (upload()).
+ * boundary= absent ou parse fail -> 400.
+ *
+ * @param request getHeader("content-type") (cles minuscules) + getBody().
+ * @param server Pour BuildError.
+ * @param location Doit avoir upload_store (filtre deja pose dans Router).
+ * @return 201, 400 ou 500.
+ */
 static Response	handleUpload(const Request &request,
 						const ServerConfig &server,
 						const LocationConfig &location)

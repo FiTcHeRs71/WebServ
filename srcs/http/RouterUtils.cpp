@@ -4,6 +4,16 @@
 #include <sstream>
 #include <cctype>
 
+/**
+ * @brief true si key ne commence pas au milieu d'un identifiant.
+ *
+ * Evite que find("name=") matche l'interieur de "filename=".
+ * idx == 0, ou le caractere precedent n'est pas alphanumerique.
+ *
+ * @param s Bloc d'en-tetes de la part.
+ * @param idx Index du debut de la cle candidate.
+ * @return false -> findParam passe au match suivant.
+ */
 static bool	isStartParam(const string &s, size_t idx)
 {
 	if (idx == 0)
@@ -12,6 +22,16 @@ static bool	isStartParam(const string &s, size_t idx)
 	return (!isalnum(c));
 }
 
+/**
+ * @brief Extrait la valeur d'un parametre ou d'un header dans une part multipart.
+ *
+ * Guillemets optionnels. Un match interne a un autre token est ignore
+ * (filename= vs name=) via isStartParam. Quote ouvrante sans fermante -> "".
+ *
+ * @param headers En-tetes de la part (ou le Content-Type de la requete).
+ * @param key Cle avec son separateur : "name=", "filename=", "Content-Type: ".
+ * @return Valeur sans guillemets, ou "" si absent / mal forme.
+ */
 string	findParam(const string &headers, const string &key)
 {
 	size_t idx = 0;
@@ -41,6 +61,19 @@ string	findParam(const string &headers, const string &key)
 	return "";
 }
 
+/**
+ * @brief Ecrit body en binaire dans filename. Collision : suffixe _1, _2 avant l'extension.
+ *
+ * Ne cree pas le dossier parent : ofstream fail -> 500. Une entree existante
+ * qui n'est pas un fichier regulier -> 400. Le '.' d'extension est cherche
+ * apres le dernier '/' (pour ne pas matcher le '.' de ./www).
+ * Pas d'extension -> suffixe en fin de nom (Makefile -> Makefile_1).
+ *
+ * @param filename Chemin cible (upload_store + '/' + basename).
+ * @param body Octets bruts, peut contenir des NUL.
+ * @param written Out : chemin reellement ecrit (avec suffixe si collision).
+ * @return 0 ok, 400 collision avec un non-fichier, 500 open/write fail.
+ */
 int	writeInFile(const string &filename, const string &body, string &written)
 {
 	string path = filename;
@@ -71,6 +104,15 @@ int	writeInFile(const string &filename, const string &body, string &written)
 	return (0);
 }
 
+/**
+ * @brief sanitize_filename(name) puis writeInFile dans location.getUploadStore().
+ *
+ * @param location Location qui porte upload_store.
+ * @param written Out : path disque ecrit (si return 0).
+ * @param name Filename client (part) ou URI (POST raw).
+ * @param data Octets a ecrire.
+ * @return -1 nom refuse (caller skip / 400), 0 ok, >0 code HTTP (400 ou 500).
+ */
 int	sanitizeAndWrite(const LocationConfig &location, string &written, const string &name, const string &data)
 {
 	string basename = sanitize_filename(name);
@@ -81,6 +123,18 @@ int	sanitizeAndWrite(const LocationConfig &location, string &written, const stri
 	return (code);
 }
 
+/**
+ * @brief Ecrit toutes les parts qui ont un filename ; 201 + Location du premier fichier.
+ *
+ * Parts sans filename (champs texte d'un formulaire) ignorees, pas de fichier vide.
+ * Aucun fichier ecrit -> 400. Location est une URI (getPath() + basename reel,
+ * collision comprise), jamais un chemin disque.
+ *
+ * @param server Pour BuildError.
+ * @param location upload_store + getPath() pour le header Location.
+ * @param parts Sortie de parse_multipart.
+ * @return 201, 400 ou 500.
+ */
 Response uploadMultipart(const ServerConfig &server,
 						const LocationConfig &location,
 						vector<TMultipartPart> parts)
@@ -109,6 +163,14 @@ Response uploadMultipart(const ServerConfig &server,
 	return (res);
 }
 
+/**
+ * @brief POST brut : tout le body est le fichier, nom = dernier segment de l'URI.
+ *
+ * @param request getBody() + getPath() (ex. /upload/photo.png -> photo.png).
+ * @param server Pour BuildError.
+ * @param location upload_store.
+ * @return 201 + Location, ou 400/500.
+ */
 Response	upload(const Request &request,
 						const ServerConfig &server,
 						const LocationConfig &location)
@@ -129,6 +191,18 @@ Response	upload(const Request &request,
 	return (res);
 }
 
+/**
+ * @brief Lit la valeur de boundary= a partir de idx (juste apres le '=').
+ *
+ * Guillemets optionnels. Espace, tab ou ';' hors quotes terminent la valeur.
+ * Quote ouvrante sans fermante -> false. Le '"' d'ouverture n'est pas copie
+ * dans boundary.
+ *
+ * @param value Header Content-Type complet.
+ * @param boundary Out : token sans quotes.
+ * @param idx Index du premier caractere de la valeur (idx += 9 apres "boundary=").
+ * @return false si quotes mal formees.
+ */
 bool	findBoundary( const string &value, string &boundary, size_t idx)
 {
 	bool quote = false;
