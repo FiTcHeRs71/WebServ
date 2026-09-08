@@ -1,5 +1,5 @@
 #include "../../includes/Connection.hpp"
-#include "../../includes/http.hpp"
+#include "../../includes/Router.hpp"
 #include <ctime>
 #include <string>
 #include <sstream>
@@ -136,11 +136,11 @@ ssize_t	Connection::OnReadable(){
 				SendErrorAndClose(500);
 				break ;
 			}
-			Response	rep = HandleRequest(_Req, *srv, *this);
+			Response	rep = Router(_Req, *srv, *this);
 			if (getCgi().GetReadFd() < 0)
 			{
-   				rep.Serialize(out);
-   				QueueOutput(out);
+				rep.Serialize(out);
+				QueueOutput(out);
 			}
 			_Req.reset();
 			res = _Req.Feed("", 0);
