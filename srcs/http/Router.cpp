@@ -1,6 +1,10 @@
 #include "../../includes/Router.hpp"
 #include "../../includes/Autoindex.hpp"
 #include "../../includes/CgiProcess.hpp"
+#include "../../includes/Logger.hpp"
+#include <sstream>
+#include "../../includes/Logger.hpp"
+#include <sstream>
 #include <fcntl.h>
 #include <string>
 #include <sys/stat.h>
@@ -359,10 +363,10 @@ Response	serveReturn(const ServerConfig &server, const LocationConfig &loc)
  *
  * @param request La requete deja parse, path %-decode.
  * @param server Le ServerConfig choisi par SelectServer (S-03).
- * @param connection Inutilise pour le statique (reserve CGI / D-06).
- * @return La Response a serialiser, jamais une reponse vide.
+ * @param connection Reserve au CGI (D-06), inutilise pour le statique.
+ * @return La Response a serialiser. Statut 0 = CGI demarre, reponse differee.
  */
-Response	Router(const Request &request, const ServerConfig &server, Connection &connection)
+static Response	dispatch(const Request &request, const ServerConfig &server, Connection &connection)
 {
 	const LocationConfig	*loc = server.Resolve(request.getPath());
 	if (!loc)
@@ -407,4 +411,30 @@ Response	Router(const Request &request, const ServerConfig &server, Connection &
 		else
 			return(Response::BuildError(404, server));
 	}
+}
+
+
+/**
+ * @brief Point d'entree du routage : dispatch() puis une ligne d'access log.
+ *
+ * Une ligne "METHODE URI -> statut" par requete. Statut 0 = CGI demarre,
+ * la reponse est differee : on trace "cgi started".
+ *
+ * @param request La requete deja parse, path decode.
+ * @param server Le ServerConfig choisi par SelectServer.
+ * @param connection Reserve au CGI.
+ * @return La Response produite par dispatch(), inchangee.
+ */
+Response	Router(const Request &request, const ServerConfig &server, Connection &connection)
+{
+	Response		response = dispatch(request, server, connection);
+	ostringstream	oss;
+
+	oss << request.getMethod() << " " << request.getPath() << " -> ";
+	if (response.getStatus() == 0)
+		oss << "cgi started";
+	else
+		oss << response.getStatus();
+	Logger::write("info", oss.str());
+	return (response);
 }
