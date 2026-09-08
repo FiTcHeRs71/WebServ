@@ -260,48 +260,36 @@ static bool	isCgi(const Request &request, const LocationConfig &loc)
 bool	parse_multipart(const std::string &body, const std::string &boundary,
 						vector<TMultipartPart> &out)
 {
-	if (body.empty())
+	if (body.empty() || boundary.empty())
 		return false;
-	string delimiter = "--" + boundary + "\r\n";
-	string endDelimiter = "--" + boundary + "--\r\n";
-	if (body.size() <= delimiter.size())
+	string delimiter = "--" + boundary;
+	size_t i = body.find(delimiter);
+	if (i == string::npos)
 		return false;
-	if (body.compare(0, delimiter.size(), delimiter))
-		return false;
-	size_t i = delimiter.size();
 	while(i < body.size())
 	{
-		TMultipartPart part;
-		size_t headersEnd = body.find("\r\n\r\n", i);
-		if (headersEnd == string::npos)
+		TMultipartPart	part;
+		size_t			hdrsEnd;
+		size_t			dataEnd;
+
+		i += delimiter.size();
+		if (i + 1 < body.size() && body[i] == '-' && body[i + 1] == '-')
+			return true;
+		if (i + 1 >= body.size() || body[i] != '\r' || body[i + 1] != '\n')
+			return true;
+		hdrsEnd = body.find("\r\n\r\n", i);
+		if (hdrsEnd == string::npos)
 			return false;
-		string headers = body.substr(i, headersEnd - i);
-		if (headers.empty())
-			return false;
-		fillHeaders(headers, part);
-		i += headers.size() + 4;
-		size_t dataEnd = body.find("\r\n--" + boundary, i);
+		part.Name = findParam(body.substr(i, hdrsEnd - 1), "name=");
+		part.Filename = findParam(body.substr(i, hdrsEnd - 1), "filename=");
+		part.ContentType = findParam(body.substr(i, hdrsEnd - 1), "Content-Type=");
+		i += hdrsEnd + 4;
+		dataEnd = body.find("\r\n" + delimiter, i);
 		if (dataEnd == string::npos)
 			return false;
-		string data = body.substr(i, dataEnd - i);
-		if (data != delimiter && data != endDelimiter)
-		{
-			part.Data = data;
-			i += data.size() + 2;
-		}
-		if (!body.compare(i, delimiter.size(), delimiter) && i != delimiter.size())
-		{
-			out.push_back(part);
-			i += delimiter.size();
-			continue ;
-		}
-		else if (!body.compare(i, endDelimiter.size(), endDelimiter))
-		{
-			out.push_back(part);
-			return true;
-		}
-		else
-			return false;
+		part.Data = body.substr(i, dataEnd - i);
+		out.push_back(part);
+		i = dataEnd + 2;
 	}
 	return false;
 }

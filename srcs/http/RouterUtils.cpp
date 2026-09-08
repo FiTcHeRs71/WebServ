@@ -1,39 +1,41 @@
 #include "../../includes/Router.hpp"
+#include <string>
 
-
-string findValue(const string &headers, const string &toFind)
+static bool	isStartParam(const string &s, size_t idx)
 {
-	size_t idx = headers.find(toFind);
-	if (toFind == "name=" && idx != string::npos && idx > 0)
-	{
-		if (headers[idx - 1] == 'e')
-			idx = headers.find(toFind, idx + 5);
-	}
-	if (idx == string::npos)
-		return "";
-	string value;
-	bool quote = false;
-	for(size_t i = idx + toFind.size(); i < headers.size(); i++)
-	{
-		if (headers[i] == '\"')
-		{
-			if (quote == true)
-				break ;
-			quote = true;
-			continue ;
-		}
-		else if ((headers[i] == ' ' || headers[i] == '	' || headers[i] == ';') && quote == false)
-			break ;
-		value += headers[i];
-	}
-	return (value);
+	if (idx == 0)
+		return true;
+	unsigned char c = static_cast<unsigned char>(s[idx - 1]);
+	return (!isalnum(c));
 }
 
-void fillHeaders(const string &headers, TMultipartPart &part)
+string	findParam(const string &headers, const string &key)
 {
-	part.ContentType = findValue(headers, "Content-Type: ");
-	part.Filename = findValue(headers, "filename=");
-	part.Name = findValue(headers, "name=");
+	size_t idx = 0;
+
+	while ((idx = headers.find(key)) != string::npos)
+	{
+		if (!isStartParam(headers, idx))
+		{
+			idx += key.size();
+			continue ;
+		}
+		idx += key.size();
+		if (idx < headers.size() && headers[idx] == '"')
+		{
+			size_t endQuote = headers.find('"', idx + 1);
+			if (endQuote == string::npos)
+				return "";
+			return (headers.substr(idx + 1, endQuote - idx - 1));
+		}
+		size_t end = idx;
+		while (end < headers.size() && headers[end] != ' '
+				&& headers[end] != '\t' && headers[end] != '\r'
+				&& headers[end] != ';')
+				end++;
+		return (headers.substr(idx, end - idx));
+	}
+	return "";
 }
 
 int	writeInFile(const string &filename, const string &body, string &written)
@@ -152,3 +154,52 @@ bool	findBoundary( const string &value, string &boundary, int idx)
 			return false;
 	return true;
 }
+
+// bool	parse_multipart(const std::string &body, const std::string &boundary,
+// 						vector<TMultipartPart> &out)
+// {
+// 	if (body.empty() || boundary.empty())
+// 		return false;
+// 	string delimiter = "--" + boundary + "\r\n";
+// 	string endDelimiter = "--" + boundary + "--\r\n";
+// 	if (body.size() <= delimiter.size())
+// 		return false;
+// 	if (body.compare(0, delimiter.size(), delimiter))
+// 		return false;
+// 	size_t i = delimiter.size();
+// 	while(i < body.size())
+// 	{
+// 		TMultipartPart part;
+// 		size_t headersEnd = body.find("\r\n\r\n", i);
+// 		if (headersEnd == string::npos)
+// 			return false;
+// 		string headers = body.substr(i, headersEnd - i);
+// 		if (headers.empty())
+// 			return false;
+// 		fillHeaders(headers, part);
+// 		i += headers.size() + 4;
+// 		size_t dataEnd = body.find("\r\n--" + boundary, i);
+// 		if (dataEnd == string::npos)
+// 			return false;
+// 		string data = body.substr(i, dataEnd - i);
+// 		if (data != delimiter && data != endDelimiter)
+// 		{
+// 			part.Data = data;
+// 			i += data.size() + 2;
+// 		}
+// 		if (!body.compare(i, delimiter.size(), delimiter) && i != delimiter.size())
+// 		{
+// 			out.push_back(part);
+// 			i += delimiter.size();
+// 			continue ;
+// 		}
+// 		else if (!body.compare(i, endDelimiter.size(), endDelimiter))
+// 		{
+// 			out.push_back(part);
+// 			return true;
+// 		}
+// 		else
+// 			return false;
+// 	}
+// 	return false;
+// }
