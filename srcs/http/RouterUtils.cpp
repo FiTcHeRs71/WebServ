@@ -126,7 +126,7 @@ Response	upload(const Request &request,
 	return (res);
 }
 
-bool	findBoundary( const string &value, string &boundary, int idx)
+bool	findBoundary( const string &value, string &boundary, size_t idx)
 {
 	bool quote = false;
 	for (size_t i = idx; i < value.size(); i++)
@@ -154,52 +154,3 @@ bool	findBoundary( const string &value, string &boundary, int idx)
 			return false;
 	return true;
 }
-
-// bool	parse_multipart(const std::string &body, const std::string &boundary,
-// 						vector<TMultipartPart> &out)
-// {
-// 	if (body.empty() || boundary.empty())
-// 		return false;
-// 	string delimiter = "--" + boundary + "\r\n";
-// 	string endDelimiter = "--" + boundary + "--\r\n";
-// 	if (body.size() <= delimiter.size())
-// 		return false;
-// 	if (body.compare(0, delimiter.size(), delimiter))
-// 		return false;
-// 	size_t i = delimiter.size();
-// 	while(i < body.size())
-// 	{
-// 		TMultipartPart part;
-// 		size_t headersEnd = body.find("\r\n\r\n", i);
-// 		if (headersEnd == string::npos)
-// 			return false;
-// 		string headers = body.substr(i, headersEnd - i);
-// 		if (headers.empty())
-// 			return false;
-// 		fillHeaders(headers, part);
-// 		i += headers.size() + 4;
-// 		size_t dataEnd = body.find("\r\n--" + boundary, i);
-// 		if (dataEnd == string::npos)
-// 			return false;
-// 		string data = body.substr(i, dataEnd - i);
-// 		if (data != delimiter && data != endDelimiter)
-// 		{
-// 			part.Data = data;
-// 			i += data.size() + 2;
-// 		}
-// 		if (!body.compare(i, delimiter.size(), delimiter) && i != delimiter.size())
-// 		{
-// 			out.push_back(part);
-// 			i += delimiter.size();
-// 			continue ;
-// 		}
-// 		else if (!body.compare(i, endDelimiter.size(), endDelimiter))
-// 		{
-// 			out.push_back(part);
-// 			return true;
-// 		}
-// 		else
-// 			return false;
-// 	}
-// 	return false;
-// }

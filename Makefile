@@ -28,7 +28,8 @@ SRCS_HTTP = $(addprefix $(SRC_DIR)/http/, \
 	httpUtils.cpp \
 	Request.cpp \
 	Response.cpp \
-	Router.cpp)
+	Router.cpp \
+	RouterUtils.cpp)
 
 SRCS_NETWORK = $(addprefix $(SRC_DIR)/network/, \
 	Connection.cpp \
