@@ -27,10 +27,15 @@ void	addEnv(vector<string>& storage, const string &key, const string &value)
 }
 
 /**
- * @brief Trouver le nom du script.
+ * @brief SCRIPT_NAME : URI jusqu'a l'extension CGI comprise (RFC 3875).
  *
- * @return Le nom du script.
-*/
+ * /cgi-bin/echo.py/extra -> /cgi-bin/echo.py
+ * Aucune ext CGI dans le path -> path entier.
+ *
+ * @param request Pour getPath().
+ * @param location Table _Cgi (quelle ext chercher).
+ * @return Prefix jusqu'a ".py" / ".php" inclus.
+ */
 string findScriptName(const Request &request, const LocationConfig &location)
 {
 	const string &path = request.getPath();
@@ -43,10 +48,15 @@ string findScriptName(const Request &request, const LocationConfig &location)
 }
 
 /**
- * @brief Trouver les infomations contenant le chemin vers le script.
+ * @brief PATH_INFO : suffixe apres l'extension CGI, ou "".
  *
- * @return Le chemin vers le script.
-*/
+ * /cgi-bin/echo.py -> ""
+ * /cgi-bin/echo.py/extra -> /extra
+ *
+ * @param request Pour getPath().
+ * @param location Table _Cgi.
+ * @return Extra path, jamais NULL.
+ */
 string findPathInfo(const Request &request, const LocationConfig &location)
 {
 	const string &path = request.getPath();
@@ -240,6 +250,16 @@ bool	parse_cgi_output(const std::string &raw, Response &out){
 	return true;
 }
 
+/**
+ * @brief Premiere extension CGI de loc._Cgi trouvee dans path (E-03).
+ *
+ * Sert isCgi, SCRIPT_NAME, PATH_INFO et argv[0]. Marche avec un PATH_INFO
+ * (/cgi-bin/echo.py/extra) ou getKey verrait "unknown".
+ *
+ * @param path URI de la requete (getPath()), query deja retiree.
+ * @param loc Location resolue, source de getCgi().
+ * @return ".py" / ".php", ou "" si aucune cle ne matche.
+ */
 string	findCgiExt(const string &path, const LocationConfig &loc)
 {
 	const map<string, string>			&cgi = loc.getCgi();

@@ -245,9 +245,9 @@ static bool isInsideRoot(const string &root, const string &path)
 }
 
 /**
- * @brief true si le chemin de la request correspond a _CgiExt et si _CgiPass n'est pas vide.
- * 
- * @return false -> le caller continue comme un fichier normal.
+ * @brief true si l'URI correspond a une extension CGI de la location (E-03).
+ *
+ * @return false -> le caller continue comme un fichier statique.
  */
 static bool	isCgi(const Request &request, const LocationConfig &loc)
 {

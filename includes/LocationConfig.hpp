@@ -45,10 +45,10 @@ class LocationConfig
 	LocationConfig &operator=(const LocationConfig& src);
 
 	/*===Getters & Setters===*/
-	const string					&getPath(void) const;	///< Le prefixe d'URI declare par le bloc "location"
-	const string					&getRoot(void) const;	///< La racine disque associee a ce bloc
-	const string					&getCgiPass(const string &ext) const;
-	const map<string, string>		&getCgi(void) const;
+	const string					&getPath(void) const;				///< Le prefixe d'URI declare par le bloc "location"
+	const string					&getRoot(void) const;				///< La racine disque associee a ce bloc
+	const string				&getCgiPass(const string &ext) const;	///< Interpreteur pour ext (".py"), "" si absent
+	const map<string, string>	&getCgi(void) const;					///< Table cgi_ext -> cgi_pass
 	const size_t					&getClientMaxBodySize(void) const;
 	const std::set<std::string>		&getMethods(void) const;
 	const std::vector<std::string>	&getIndex(void) const;

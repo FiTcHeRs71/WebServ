@@ -84,6 +84,14 @@ const string	&LocationConfig::getRoot(void) const
 	return (this->_Root);
 }
 
+/**
+ * @brief Interpreteur CGI associe a une extension (E-03).
+ *
+ * Lookup dans _Cgi. Extension absente ou sans cgi_pass -> string vide.
+ *
+ * @param ext Clef de la map, avec le point (".py", ".php").
+ * @return Chemin de l'interpreteur, ou "".
+ */
 const string					&LocationConfig::getCgiPass(const string &ext) const
 {
 	static const string empty;
@@ -93,6 +101,11 @@ const string					&LocationConfig::getCgiPass(const string &ext) const
 	return (it->second);
 }
 
+/**
+ * @brief Table extension -> interpreteur de cette location.
+ *
+ * @return Reference const sur _Cgi. Vide si aucun CGI declare.
+ */
 const map<string, string>		&LocationConfig::getCgi(void) const
 {
 	return (this->_Cgi);
