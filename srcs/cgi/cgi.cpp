@@ -34,15 +34,12 @@ void	addEnv(vector<string>& storage, const string &key, const string &value)
 string findScriptName(const Request &request, const LocationConfig &location)
 {
 	const string &path = request.getPath();
-	const map<string, string> &cgi = location.getCgi();
-	map<string, string>::const_iterator it;
-	for (it = cgi.begin(); it != cgi.end(); ++it)
-	{
-		size_t idx = path.find(it->first);
-		if (idx != string::npos)
-			return (path.substr(0, idx + it->first.size()));
-	}
-	return (path);
+	string	ext = findCgiExt(path, location);
+	
+	if (ext.empty())
+		return (path);
+	size_t idx = path.find(ext);
+	return (path.substr(0, idx + ext.size()));
 }
 
 /**
@@ -53,15 +50,12 @@ string findScriptName(const Request &request, const LocationConfig &location)
 string findPathInfo(const Request &request, const LocationConfig &location)
 {
 	const string &path = request.getPath();
-	const map<string, string> &cgi = location.getCgi();
-	map<string, string>::const_iterator it;
-	for (it = cgi.begin(); it != cgi.end(); ++it)
-	{
-		size_t idx = path.find(it->first);
-		if (idx != string::npos)
-			return (path.substr(0, idx + it->first.size()));
-	}
-	return ("");
+	string	ext = findCgiExt(path, location);
+
+	if (ext.empty())
+		return ("");
+	size_t idx = path.find(ext);
+	return (path.substr(idx + ext.size()));
 }
 
 /**
@@ -244,4 +238,16 @@ bool	parse_cgi_output(const std::string &raw, Response &out){
 	}
 	out.SetBody(body);
 	return true;
+}
+
+string	findCgiExt(const string &path, const LocationConfig &loc)
+{
+	const map<string, string>			&cgi = loc.getCgi();
+	map<string, string>::const_iterator	it;
+	for (it = cgi.begin(); it != cgi.end(); ++it)
+	{
+		if (path.find(it->first) != string::npos && !it->second.empty())
+			return (it->first);
+	}
+	return ("");
 }

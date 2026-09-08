@@ -37,7 +37,7 @@ static map<string, string> &mime_table(void)
  * @param file Chemin disque ou URI.
  * @return ".html", ".png"... ou "unknown" s'il n'y a pas d'extension.
  */
-string	getKey(string file)
+static string	getKey(string file)
 {
 	size_t slash = file.rfind("/");
 	size_t dot = file.rfind(".");
@@ -251,7 +251,7 @@ static bool isInsideRoot(const string &root, const string &path)
  */
 static bool	isCgi(const Request &request, const LocationConfig &loc)
 {
-	return (!loc.getCgiPass(getKey(request.getPath())).empty());
+	return (!findCgiExt(request.getPath(), loc).empty());
 }
 
 /**

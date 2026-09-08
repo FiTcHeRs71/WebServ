@@ -117,8 +117,13 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 	vector<string>	storage = build_cgi_env(request, location, server, connection, config, script_path);
 	char			**envp = VectorToChar(storage);
 
-	string ext = getKey(request.getPath());
+	string ext = findCgiExt(request.getPath(), location);
 	const string &pass = location.getCgiPass(ext);
+	if (pass.empty())
+	{
+		delete[] envp;
+		return false;
+	}
 	argv[0] = const_cast<char *>(pass.c_str());
 	argv[1] = const_cast<char *>(scriptName.c_str());
 	argv[2] = NULL;
