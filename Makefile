@@ -24,7 +24,6 @@ SRCS_CONFIG = $(addprefix $(SRC_DIR)/config/, \
 
 SRCS_HTTP = $(addprefix $(SRC_DIR)/http/, \
 	Autoindex.cpp \
-	http.cpp \
 	httpUtils.cpp \
 	Request.cpp \
 	Response.cpp \
