@@ -1,5 +1,8 @@
 #include "../../includes/Router.hpp"
 #include <string>
+#include <fstream>
+#include <sstream>
+#include <cctype>
 
 static bool	isStartParam(const string &s, size_t idx)
 {
@@ -13,7 +16,7 @@ string	findParam(const string &headers, const string &key)
 {
 	size_t idx = 0;
 
-	while ((idx = headers.find(key)) != string::npos)
+	while ((idx = headers.find(key, idx)) != string::npos)
 	{
 		if (!isStartParam(headers, idx))
 		{

@@ -276,14 +276,14 @@ bool	parse_multipart(const std::string &body, const std::string &boundary,
 		if (i + 1 < body.size() && body[i] == '-' && body[i + 1] == '-')
 			return true;
 		if (i + 1 >= body.size() || body[i] != '\r' || body[i + 1] != '\n')
-			return true;
+			return false;
 		hdrsEnd = body.find("\r\n\r\n", i);
 		if (hdrsEnd == string::npos)
 			return false;
-		part.Name = findParam(body.substr(i, hdrsEnd - 1), "name=");
-		part.Filename = findParam(body.substr(i, hdrsEnd - 1), "filename=");
-		part.ContentType = findParam(body.substr(i, hdrsEnd - 1), "Content-Type=");
-		i += hdrsEnd + 4;
+		part.Name = findParam(body.substr(i, hdrsEnd - i), "name=");
+		part.Filename = findParam(body.substr(i, hdrsEnd - i), "filename=");
+		part.ContentType = findParam(body.substr(i, hdrsEnd - i), "Content-Type: ");
+		i = hdrsEnd + 4;
 		dataEnd = body.find("\r\n" + delimiter, i);
 		if (dataEnd == string::npos)
 			return false;
