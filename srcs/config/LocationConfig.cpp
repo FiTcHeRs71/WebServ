@@ -86,7 +86,11 @@ const string	&LocationConfig::getRoot(void) const
 
 const string					&LocationConfig::getCgiPath(const string &ext) const
 {
-	return (this->_Cgi.at(ext));
+	static const string &empty = "";
+	map<string, string>::const_iterator it = _Cgi.find(ext);
+	if (it == _Cgi.end())
+		return (empty);
+	return (it->second);
 }
 
 const map<string, string>		&LocationConfig::getCgi(void) const
@@ -196,6 +200,7 @@ ostream	&operator<<(ostream &flux, const LocationConfig &src)
 void	LocationConfig::parse_location(vector<string> &token, size_t &i)
 {
 	set<string>	seen;
+	string CgiExt;
 
 	this->_Path = token[i];
 	i += 2; // saute le PATH + "{"
@@ -204,11 +209,10 @@ void	LocationConfig::parse_location(vector<string> &token, size_t &i)
 		string	key = token[i];
 		i++;
 
-		if (!seen.insert(key).second)
+		if (!seen.insert(key).second && key != "cgi_ext" && key != "cgi_pass")
 			throw runtime_error("Multiple definition of " + key + " not allowed in same location blocks");
 
 		vector<string>	value = collect_values(token, i);
-		string CgiExt;
 		if (key == "allow_methods")
 			this->_Methods = parse_allow_methods(value);
 		else if (key == "root")
@@ -218,9 +222,20 @@ void	LocationConfig::parse_location(vector<string> &token, size_t &i)
 		else if (key == "autoindex")
 			this->_AutoIndex = parse_auto_index(value);
 		else if (key == "cgi_ext")
+		{
+			if (!CgiExt.empty())
+				throw runtime_error("Consecutive cgi_ext without any cgi_pass");
 			CgiExt = parse_cgi_ext(value);
+		}
 		else if (key == "cgi_pass")
+		{
+			if (CgiExt.empty())
+				throw runtime_error("No cgi_ext preceding cgi_pass");
+			else if (_Cgi.count(CgiExt))
+				throw runtime_error("Multiple definition for the same cgi_ext");
 			_Cgi[CgiExt] = parse_cgi_pass(value);
+			CgiExt.clear();
+		}
 		else if (key == "client_max_body_size")
 		{
 			if (value.size() != 1)

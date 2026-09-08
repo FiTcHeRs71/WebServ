@@ -38,7 +38,7 @@ string findScriptName(const Request &request, const LocationConfig &location)
 
 	for(it = Cgi.begin(); it != Cgi.end(); ++it)
 	{
-		if (request.getPath() == it->first)
+		if (request.getPath() == it->second)
 			break ;
 	}
 	const string &ext = it->first;
@@ -61,7 +61,7 @@ string findPathInfo(const Request &request, const LocationConfig &location)
 
 	for(it = Cgi.begin(); it != Cgi.end(); ++it)
 	{
-		if (request.getPath() == it->first)
+		if (request.getPath() == it->second)
 			break ;
 	}
 	const string &ext = it->first;

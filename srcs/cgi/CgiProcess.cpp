@@ -121,7 +121,7 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 
 	for(it = Cgi.begin(); it != Cgi.end(); ++it)
 	{
-		if (request.getPath() == it->first)
+		if (request.getPath() == it->second)
 			break ;
 	}
 	argv[0] = const_cast<char *>(it->second.c_str());
