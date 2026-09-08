@@ -1,8 +1,12 @@
 #include "../../includes/Router.hpp"
 #include "../../includes/Autoindex.hpp"
 #include "../../includes/CgiProcess.hpp"
+#include <cstddef>
 #include <fcntl.h>
+#include <fstream>
+#include <sstream>
 #include <string>
+#include <vector>
 
 /**
  * @brief Table MIME extension -> Content-Type, construite une seule fois.
@@ -254,6 +258,127 @@ static bool	isCgi(const Request &request, const LocationConfig &loc)
 }
 
 /**
+ * @brief Decoupe un body multipart/form-data sur --boundary (RFC 7578, C-10).
+ *
+ * Le delimiteur dans le corps est "--" + boundary. Le close porte "--" en plus.
+ * Pour chaque part : headers jusqu'au double CRLF, puis octets exacts jusqu'au
+ * CRLF qui precede le delimiteur suivant (ce CRLF n'appartient pas au fichier).
+ * Data peut contenir des NUL : substr + size, jamais strlen.
+ *
+ * @param body Corps HTTP brut.
+ * @param boundary Valeur de boundary=, sans les '--' (quotes deja retirees).
+ * @param out Parts dans l'ordre, y compris les champs texte (Filename vide).
+ * @return false si body/boundary vides, delimiteur absent, headers ou close manquants.
+ */
+bool	parse_multipart(const std::string &body, const std::string &boundary,
+						vector<TMultipartPart> &out)
+{
+	if (body.empty() || boundary.empty())
+		return false;
+	string delimiter = "--" + boundary;
+	size_t i = body.find(delimiter);
+	if (i == string::npos)
+		return false;
+	while(i < body.size())
+	{
+		TMultipartPart	part;
+		size_t			hdrsEnd;
+		size_t			dataEnd;
+
+		i += delimiter.size();
+		if (i + 1 < body.size() && body[i] == '-' && body[i + 1] == '-')
+			return true;
+		if (i + 1 >= body.size() || body[i] != '\r' || body[i + 1] != '\n')
+			return false;
+		hdrsEnd = body.find("\r\n\r\n", i);
+		if (hdrsEnd == string::npos)
+			return false;
+		part.Name = findParam(body.substr(i, hdrsEnd - i), "name=");
+		part.Filename = findParam(body.substr(i, hdrsEnd - i), "filename=");
+		part.ContentType = findParam(body.substr(i, hdrsEnd - i), "Content-Type: ");
+		i = hdrsEnd + 4;
+		dataEnd = body.find("\r\n" + delimiter, i);
+		if (dataEnd == string::npos)
+			return false;
+		part.Data = body.substr(i, dataEnd - i);
+		out.push_back(part);
+		i = dataEnd + 2;
+	}
+	return false;
+}
+
+/**
+ * @brief Basename seul, apres le dernier '/' ou '\\'. Refuse vide et leading '.'.
+ *
+ * Neutralise filename="../../etc/passwd" -> "passwd". ".." et ".hidden" -> "".
+ * Le caller ignore "" (part texte, ou 400 en POST raw).
+ *
+ * @param raw Filename client (multipart) ou URI (POST raw).
+ * @return Basename ecrivable dans upload_store, ou "".
+ */
+std::string	sanitize_filename(const std::string &raw)
+{
+	if (raw.empty())
+		return "";
+	string basename;
+	size_t	slash = raw.rfind('/');
+	if (slash == string::npos)
+	{
+		size_t backslash = raw.rfind('\\');
+		if (backslash == string::npos)
+			basename = raw;
+		else
+			basename = raw.substr(backslash + 1);
+	}
+	else
+		basename = raw.substr(slash + 1, raw.size() - slash);
+	if (basename.empty())
+		return "";
+	if (basename[0] == '.')
+		return "";
+	return basename;
+}
+
+/**
+ * @brief Aiguillage C-10 : multipart/form-data ou corps brut.
+ *
+ * Content-Type contenant "multipart/form-data" -> boundary= puis parse_multipart
+ * puis uploadMultipart. Sinon tout le body est le fichier (upload()).
+ * boundary= absent ou parse fail -> 400.
+ *
+ * @param request getHeader("content-type") (cles minuscules) + getBody().
+ * @param server Pour BuildError.
+ * @param location Doit avoir upload_store (filtre deja pose dans Router).
+ * @return 201, 400 ou 500.
+ */
+static Response	handleUpload(const Request &request,
+						const ServerConfig &server,
+						const LocationConfig &location)
+{
+	string value = request.getHeader("content-type");
+	if (value.find("multipart/form-data") != string::npos)
+	{
+		size_t idx = value.find("boundary=");
+		if (idx == string::npos)
+		{
+			return (Response::BuildError(400, server));
+		}
+		idx += 9;
+		string boundary;
+		if (!findBoundary(value, boundary, idx))
+			return (Response::BuildError(400, server));
+		vector<TMultipartPart> parts;
+		if (!parse_multipart(request.getBody(), boundary, parts))
+			return (Response::BuildError(400, server));
+		return (uploadMultipart(server, location, parts));
+	}
+	else
+	{
+		return (upload(request, server, location));
+	}
+}
+
+/**
  * @brief Construit la valeur du header Allow a partir des methodes de la location.
  *
  * Concatene loc.getMethods() en une liste separee par ", ""
@@ -337,6 +462,8 @@ Response	Router(const Request &request, const ServerConfig &server, Connection &
 	const LocationConfig	*loc = server.Resolve(request.getPath());
 	if (!loc)
 		return(Response::BuildError(404, server));
+	if (loc->hasReturn())
+		return(serveReturn(server, *loc));
 	if (loc->getMethods().count(request.getMethod()) == 0)
 	{
 		Response	response = Response::BuildError(405, server);
@@ -358,6 +485,15 @@ Response	Router(const Request &request, const ServerConfig &server, Connection &
 			return (Response::BuildError(502, server));
 		else
 			return (Response());
+	}
+	else if (request.getMethod() == "POST")
+	{
+		if (loc->hasUploadStore())
+		{
+			return (handleUpload(request, server, *loc));
+		}
+		else
+			return (Response::BuildError(403, server));
 	}
 	else
 	{
