@@ -515,10 +515,9 @@ static Response	dispatch(const Request &request, const ServerConfig &server, Con
 		const ConfigParser	*config = request.getConfigParser();
 		if (config == NULL)
 			return (Response::BuildError(502, server));
-		if (!cgi.Start(request, *loc, server, connection, *config, loc->getRoot() + request.getPath()))
+		if (!cgi.Start(request, *loc, server, connection, *config, file))
 			return (Response::BuildError(502, server));
-		else
-			return (Response());
+		return (Response());
 	}
 	else if (request.getMethod() == "POST")
 	{
