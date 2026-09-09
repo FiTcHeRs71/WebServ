@@ -166,6 +166,18 @@ void	Response::setDate(void)
  * @param out Chaine dans laquelle la reponse serialisee sera ecrite.
  * @return true si la serialisation a reussi, false sinon.
  */
+/**
+ * @brief Vide le corps sans toucher a Content-Length.
+ *
+ * Une reponse a HEAD porte les memes en-tetes que celle du GET equivalent,
+ * mais aucun octet de corps : Content-Length annonce la taille qu'aurait eue
+ * le GET. Laisser le corps desynchronise le socket en keep-alive.
+ */
+void	Response::DropBody(void)
+{
+	this->_Body.clear();
+}
+
 bool	Response::Serialize(std::string &out)
 {
 	out.clear();

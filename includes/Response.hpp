@@ -51,6 +51,7 @@ class Response
 	/*===Member Function===*/
 	bool				Serialize(std::string &out);
 	void				Reset(void);
+	void				DropBody(void);				///< Vide le corps, conserve Content-Length (HEAD)
 	static Response		BuildError(int code, const ServerConfig &server);
 	void				generateBuiltInError(void);
 };

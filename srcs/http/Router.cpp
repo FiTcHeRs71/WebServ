@@ -2,9 +2,6 @@
 #include "../../includes/Autoindex.hpp"
 #include "../../includes/CgiProcess.hpp"
 #include "../../includes/Logger.hpp"
-#include <sstream>
-#include "../../includes/Logger.hpp"
-#include <sstream>
 #include <cstddef>
 #include <fcntl.h>
 #include <fstream>
@@ -565,6 +562,9 @@ Response	Router(const Request &request, const ServerConfig &server, Connection &
 {
 	Response		response = dispatch(request, server, connection);
 	ostringstream	oss;
+
+	if (request.getMethod() == "HEAD")
+		response.DropBody();
 
 	oss << request.getMethod() << " " << request.getPath() << " -> ";
 	if (response.getStatus() == 0)

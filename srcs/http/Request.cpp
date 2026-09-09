@@ -195,10 +195,14 @@ bool	Request::setUpMethod(){
 		cerr << "Error :" << this->_ErrorCode << ": Bad Request" << endl;
 		return false;
 	}
-	if (this->_Method != "GET" && this->_Method != "POST" && this->_Method != "DELETE"){
+	// HEAD est un verbe standard de HTTP/1.1 : il traverse le parsing pour que
+	// le Router puisse le confronter a allow_methods et rendre 405 + Allow.
+	// 501 reste reserve aux verbes que le serveur ne connait pas du tout.
+	if (this->_Method != "GET" && this->_Method != "POST"
+		&& this->_Method != "DELETE" && this->_Method != "HEAD"){
 		this->_ErrorCode = 501;
 		this->_State = ST_ERROR;
-		cerr << "Error :" << this->_ErrorCode << ": Method Not Allowed" << endl;
+		cerr << "Error :" << this->_ErrorCode << ": Not Implemented" << endl;
 		return false;
 	}
 	return true;
