@@ -25,3 +25,7 @@ docker-compose.yml
 
 #logs
 *.log
+
+#uploads de test
+/www/uploads/*
+!/www/uploads/.gitkeep
