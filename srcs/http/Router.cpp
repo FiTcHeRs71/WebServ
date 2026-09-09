@@ -529,7 +529,13 @@ static Response	dispatch(const Request &request, const ServerConfig &server, Con
 			return (handleUpload(request, server, *loc));
 		}
 		else
-			return (Response::BuildError(403, server));
+		{
+			Response	resp;
+
+			resp.SetStatus(200);
+			resp.SetBody("");
+			return resp;
+		}
 	}
 	else
 	{
