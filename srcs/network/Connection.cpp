@@ -165,8 +165,8 @@ ssize_t Connection::OnWritable(){
 		return (0);
 	ssize_t s = send(_Fd, _OutBuf.c_str(), _OutBuf.size(), 0);
 	if (s <= 0){
-			_State = CONN_CLOSING;
-			return (s);
+		_State = CONN_CLOSING;
+		return (s);
 	}
 	else{
 		_LastActivity = time(NULL);

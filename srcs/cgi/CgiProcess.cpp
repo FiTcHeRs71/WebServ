@@ -11,6 +11,26 @@
 #include <fcntl.h>
 #include <vector>
 #include <sys/wait.h>
+#include <sstream>
+#include "../../includes/Logger.hpp"
+
+// DEBUG-TESTER : helper temporaire, a retirer avec les traces CGI-DBG
+static std::string dbg_escape(const std::string &s)
+{
+	std::string	out;
+	for (size_t i = 0; i < s.size(); i++)
+	{
+		if (s[i] == '\r')
+			out += "\\r";
+		else if (s[i] == '\n')
+			out += "\\n";
+		else if (s[i] >= 32 && s[i] < 127)
+			out += s[i];
+		else
+			out += '.';
+	}
+	return (out);
+}
 
 	/*===Canonical Form===*/
 CgiProcess::CgiProcess(void)
@@ -108,6 +128,7 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 							const ServerConfig &server, const Connection &connection,
 							const ConfigParser &config, const string &script_path)
 {
+	this->_OutBuf.clear();
 	this->_StartTime = time(NULL);
 	string			scriptName = findScriptName(script_path);
 	char			*argv[3];
@@ -120,6 +141,26 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 	argv[1] = const_cast<char *>(scriptName.c_str());
 	argv[2] = NULL;
 	this->_InBuf = request.getBody();
+
+	// DEBUG-TESTER : trace temporaire, a retirer
+	{
+		std::ostringstream	dbg;
+		std::string			secret = "(absent)";
+		std::string			clen = "(absent)";
+
+		for (size_t i = 0; i < storage.size(); i++)
+		{
+			if (storage[i].compare(0, 30, "HTTP_X_SECRET_HEADER_FOR_TEST=") == 0)
+				secret = storage[i].substr(30);
+			else if (storage[i].compare(0, 15, "CONTENT_LENGTH=") == 0)
+				clen = storage[i].substr(15);
+		}
+		dbg << "CGI-DBG start " << request.getMethod() << " " << request.getPath()
+			<< " secret=[" << secret << "] CONTENT_LENGTH=[" << clen
+			<< "] body=" << this->_InBuf.size()
+			<< " debut=[" << dbg_escape(this->_InBuf.substr(0, 32)) << "]";
+		Logger::write("info", dbg.str());
+	}
 
 	// Dossier du script pour le chdir() de l'enfant. Les deux cas limites
 	// donnent un chemin invalide si on prend le substr tel quel :
@@ -298,6 +339,31 @@ void CgiProcess::OnReadableCgi(){
 	char buffer[BUFFER_SIZE];
 	ssize_t n = read(_ReadFd, &buffer, BUFFER_SIZE);
 	if (n <= 0){
+		// DEBUG-TESTER : trace temporaire, a retirer
+		{
+			std::ostringstream	dbg;
+			size_t				hdr = _OutBuf.find("\r\n\r\n");
+			size_t				body = (hdr == std::string::npos) ? 0 : hdr + 4;
+			size_t				diff = std::string::npos;
+
+			for (size_t k = body + 1; k < _OutBuf.size(); k++)
+			{
+				if (_OutBuf[k] != _OutBuf[body])
+				{
+					diff = k;
+					break ;
+				}
+			}
+			dbg << "CGI-DBG fin out=" << _OutBuf.size()
+				<< " head=[" << dbg_escape(_OutBuf.substr(0, (hdr == std::string::npos) ? 64 : hdr)) << "]"
+				<< " body1=[" << dbg_escape(_OutBuf.substr(body, 1)) << "]";
+			if (diff == std::string::npos)
+				dbg << " uniforme=oui";
+			else
+				dbg << " uniforme=non 1re_diff_a=" << (diff - body)
+					<< " autour=[" << dbg_escape(_OutBuf.substr(diff - 4, 12)) << "]";
+			Logger::write("info", dbg.str());
+		}
 		CloseReadFd();
 		return ;
 	}
