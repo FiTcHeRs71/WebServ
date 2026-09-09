@@ -1,11 +1,14 @@
 #include "../../includes/Router.hpp"
 #include "../../includes/Autoindex.hpp"
 #include "../../includes/CgiProcess.hpp"
+#include "../../includes/Logger.hpp"
 #include <cstddef>
 #include <fcntl.h>
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <sys/stat.h>
+#include <unistd.h>
 #include <vector>
 
 /**
@@ -100,16 +103,45 @@ static Response	serveFile(const ServerConfig &server, string file)
 }
 
 /**
+ * @brief Supprime le fichier vise par un DELETE
+ *
+ * stat() avant unlink() : il distingue les cas d'echec, ce qui evite de lire
+ * errno apres l'appel. Jamais de suppression recursive.
+ *
+ * @param srv Pour BuildError.
+ * @param file Chemin disque deja valide par isInsideRoot().
+ * @return 204 sans corps ; 404 absent ; 403 dossier, type special, ou unlink refuse.
+ */
+static Response	handleDelete(const ServerConfig &srv, string file)
+{
+	struct stat	sb;
+	Response response;
+
+	if (stat(file.c_str(), &sb) < 0)
+		return (Response::BuildError(404, srv));
+	if (S_ISDIR(sb.st_mode))
+		return (Response::BuildError(403, srv));
+	if (!S_ISREG(sb.st_mode))
+		return (Response::BuildError(403, srv));
+	if (unlink(file.c_str()) < 0)
+		return (Response::BuildError(403, srv));
+	else
+		response.SetStatus(204);
+	return (response);
+}
+
+/**
  * @brief Traite un dossier : 301 sans slash final, sinon index puis serveFile.
  *
  * URI sans '/' final -> 301 Location: URI + "/".
- * Avec slash : parcourt loc.getIndex() dans l'ordre. Aucun index -> 403
- * (l'autoindex est C-07).
+ * Avec slash : parcourt loc.getIndex() dans l'ordre. Aucun index trouve ->
+ * autoindex on rend le listing, sinon 403.
+ *
  * @param request Pour l'URI (slash / Location).
  * @param loc Location qui matche, source de getIndex().
  * @param server Pour BuildError.
  * @param file Chemin disque du dossier (build_path). Un '/' est ajoute si besoin.
- * @return 301, 200 (index), ou 403.
+ * @return 301, 200 (index ou autoindex), ou 403.
  */
 static Response	serveDir(const Request &request, const LocationConfig &loc,
 			const ServerConfig &server, string file)
@@ -454,10 +486,10 @@ Response	serveReturn(const ServerConfig &server, const LocationConfig &loc)
  *
  * @param request La requete deja parse, path %-decode.
  * @param server Le ServerConfig choisi par SelectServer (S-03).
- * @param connection Inutilise pour le statique (reserve CGI / D-06).
- * @return La Response a serialiser, jamais une reponse vide.
+ * @param connection Reserve au CGI (D-06), inutilise pour le statique.
+ * @return La Response a serialiser. Statut 0 = CGI demarre, reponse differee.
  */
-Response	Router(const Request &request, const ServerConfig &server, Connection &connection)
+static Response	dispatch(const Request &request, const ServerConfig &server, Connection &connection)
 {
 	const LocationConfig	*loc = server.Resolve(request.getPath());
 	if (!loc)
@@ -475,6 +507,8 @@ Response	Router(const Request &request, const ServerConfig &server, Connection &
 		return (Response::BuildError(500, server));
 	else if (!isInsideRoot(loc->getRoot(), file))
 		return (Response::BuildError(403, server));
+	else if (request.getMethod() == "DELETE")
+		return (handleDelete(server, file));
 	else if (isCgi(request, *loc))
 	{
 		CgiProcess		&cgi = connection.getCgi();
@@ -511,4 +545,30 @@ Response	Router(const Request &request, const ServerConfig &server, Connection &
 		else
 			return(Response::BuildError(404, server));
 	}
+}
+
+
+/**
+ * @brief Point d'entree du routage : dispatch() puis une ligne d'access log.
+ *
+ * Une ligne "METHODE URI -> statut" par requete. Statut 0 = CGI demarre,
+ * la reponse est differee : on trace "cgi started".
+ *
+ * @param request La requete deja parse, path decode.
+ * @param server Le ServerConfig choisi par SelectServer.
+ * @param connection Reserve au CGI.
+ * @return La Response produite par dispatch(), inchangee.
+ */
+Response	Router(const Request &request, const ServerConfig &server, Connection &connection)
+{
+	Response		response = dispatch(request, server, connection);
+	ostringstream	oss;
+
+	oss << request.getMethod() << " " << request.getPath() << " -> ";
+	if (response.getStatus() == 0)
+		oss << "cgi started";
+	else
+		oss << response.getStatus();
+	Logger::write("info", oss.str());
+	return (response);
 }
