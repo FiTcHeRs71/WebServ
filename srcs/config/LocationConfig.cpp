@@ -1,6 +1,7 @@
 #include "../../includes/LocationConfig.hpp"
 #include "../../includes/Config.hpp"
 #include <algorithm>
+#include <map>
 #include <set>
 #include <sstream>
 #include <stdexcept>
@@ -31,8 +32,7 @@ LocationConfig::LocationConfig(const LocationConfig& to_copy)
 	,_AutoIndex(to_copy._AutoIndex)
 	,_ReturnCode(to_copy._ReturnCode)
 	,_HasReturn(to_copy._HasReturn)
-	,_CgiExt(to_copy._CgiExt)
-	,_CgiPass(to_copy._CgiPass)
+	,_Cgi(to_copy._Cgi)
 	,_ClientMaxBodySize(to_copy._ClientMaxBodySize)
 	,_HasClientMaxBodySize(to_copy._HasClientMaxBodySize)
 	,_ReturnTarget(to_copy._ReturnTarget)
@@ -53,8 +53,7 @@ LocationConfig	&LocationConfig::operator=(const LocationConfig& src)
 		this->_AutoIndex = src._AutoIndex;
 		this->_ReturnCode = src._ReturnCode;
 		this->_HasReturn = src._HasReturn;
-		this->_CgiExt = src._CgiExt;
-		this->_CgiPass = src._CgiPass;
+		this->_Cgi = src._Cgi;
 		this->_ClientMaxBodySize = src._ClientMaxBodySize;
 		this->_HasClientMaxBodySize = src._HasClientMaxBodySize;
 		this->_ReturnTarget = src._ReturnTarget;
@@ -86,23 +85,30 @@ const string	&LocationConfig::getRoot(void) const
 }
 
 /**
- * @brief Accesseur sur l'extention du script
+ * @brief Interpreteur CGI associe a une extension (E-03).
  *
- * @return Le fichier et son extention sont declarer dans le .conf, chaine vide si la directive est absente.
+ * Lookup dans _Cgi. Extension absente ou sans cgi_pass -> string vide.
+ *
+ * @param ext Clef de la map, avec le point (".py", ".php").
+ * @return Chemin de l'interpreteur, ou "".
  */
-const string	&LocationConfig::getExt(void) const
+const string					&LocationConfig::getCgiPass(const string &ext) const
 {
-	return (this->_CgiExt);
+	static const string empty;
+	map<string, string>::const_iterator it = _Cgi.find(ext);
+	if (it == _Cgi.end())
+		return (empty);
+	return (it->second);
 }
 
 /**
- * @brief Accesseur sur le PATH ou se trouve le scirpt
+ * @brief Table extension -> interpreteur de cette location.
  *
- * @return Le fichier et son extention sont declarer dans le .conf, chaine vide si la directive est absente.
+ * @return Reference const sur _Cgi. Vide si aucun CGI declare.
  */
-const string	&LocationConfig::getPass(void) const
+const map<string, string>		&LocationConfig::getCgi(void) const
 {
-	return (this->_CgiPass);
+	return (this->_Cgi);
 }
 
 /**
@@ -181,8 +187,10 @@ ostream	&operator<<(ostream &flux, const LocationConfig &src)
 	flux << "Auto index = " << src._AutoIndex << endl;
 	flux << "Return Code = " << src._ReturnCode << endl;
 	flux << "Has return = " << src._HasReturn << endl;
-	flux << "CGI ext = " << src._CgiExt << endl;
-	flux << "CGI pass = " << src._CgiPass << endl;
+	flux << "CGI =" << endl;
+	map<string, string>::const_iterator itCgi;
+	for (itCgi = src._Cgi.begin(); itCgi != src._Cgi.end(); ++itCgi)
+		flux << " " << itCgi->first << " -> " << itCgi->second << endl;
 	flux << "Client max body size = " << src._ClientMaxBodySize << endl;
 	flux << "Has client max body size = " << src._HasClientMaxBodySize << endl;
 	flux << "Return = " << src._ReturnTarget << endl;
@@ -205,6 +213,7 @@ ostream	&operator<<(ostream &flux, const LocationConfig &src)
 void	LocationConfig::parse_location(vector<string> &token, size_t &i)
 {
 	set<string>	seen;
+	string CgiExt;
 
 	this->_Path = token[i];
 	i += 2; // saute le PATH + "{"
@@ -213,7 +222,7 @@ void	LocationConfig::parse_location(vector<string> &token, size_t &i)
 		string	key = token[i];
 		i++;
 
-		if (!seen.insert(key).second)
+		if (!seen.insert(key).second && key != "cgi_ext" && key != "cgi_pass")
 			throw runtime_error("Multiple definition of " + key + " not allowed in same location blocks");
 
 		vector<string>	value = collect_values(token, i);
@@ -226,9 +235,20 @@ void	LocationConfig::parse_location(vector<string> &token, size_t &i)
 		else if (key == "autoindex")
 			this->_AutoIndex = parse_auto_index(value);
 		else if (key == "cgi_ext")
-			this->_CgiExt = parse_cgi_ext(value);
+		{
+			if (!CgiExt.empty())
+				throw runtime_error("Consecutive cgi_ext without any cgi_pass");
+			CgiExt = parse_cgi_ext(value);
+		}
 		else if (key == "cgi_pass")
-			this->_CgiPass = parse_cgi_pass(value);
+		{
+			if (CgiExt.empty())
+				throw runtime_error("No cgi_ext preceding cgi_pass");
+			else if (_Cgi.count(CgiExt))
+				throw runtime_error("Multiple definition for the same cgi_ext");
+			_Cgi[CgiExt] = parse_cgi_pass(value);
+			CgiExt.clear();
+		}
 		else if (key == "client_max_body_size")
 		{
 			if (value.size() != 1)
@@ -253,7 +273,7 @@ void	LocationConfig::parse_location(vector<string> &token, size_t &i)
 		else
 			throw runtime_error(key + " is not a valid instructions in location bloc");
 	}
-	if (this->_CgiExt.size() > 0 && this->_CgiPass.size() == 0)
+	if (!CgiExt.empty())
 		throw runtime_error("cgi_pass is mandatory with a cgi_ext key");
 	i++; // saute le "}" avant de rendre le i aparse bloc server
 }

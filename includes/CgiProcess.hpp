@@ -71,5 +71,6 @@ vector<string>	build_cgi_env(const Request &request, const LocationConfig &locat
 							const ConfigParser &config, const string &script_path);
 char			**VectorToChar(vector<string> &storage);
 bool			parse_cgi_output(const std::string &raw, Response &out);
+string			findCgiExt(const string &path, const LocationConfig &loc);	///< ext CGI dans path, ou ""
 
 #endif /*CGI_PROCESS_HPP*/
