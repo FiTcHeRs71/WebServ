@@ -29,3 +29,4 @@ docker-compose.yml
 #uploads de test
 /www/uploads/*
 !/www/uploads/.gitkeep
+!/www/uploads/victime.txt
