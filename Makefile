@@ -24,11 +24,11 @@ SRCS_CONFIG = $(addprefix $(SRC_DIR)/config/, \
 
 SRCS_HTTP = $(addprefix $(SRC_DIR)/http/, \
 	Autoindex.cpp \
-	http.cpp \
 	httpUtils.cpp \
 	Request.cpp \
 	Response.cpp \
-	Router.cpp)
+	Router.cpp \
+	RouterUtils.cpp)
 
 SRCS_NETWORK = $(addprefix $(SRC_DIR)/network/, \
 	Connection.cpp \
