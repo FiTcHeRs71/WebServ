@@ -1,6 +1,7 @@
 #include "../../includes/CgiProcess.hpp"
 #include "../../includes/Request.hpp"
 #include "../../includes/Response.hpp"
+#include "../../includes/Router.hpp"
 #include <csignal>
 #include <cstddef>
 #include <cstdlib>
@@ -116,7 +117,14 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 	vector<string>	storage = build_cgi_env(request, location, server, connection, config, script_path);
 	char			**envp = VectorToChar(storage);
 
-	argv[0] = const_cast<char *>(location.getPass().c_str());
+	string ext = findCgiExt(request.getPath(), location);
+	const string &pass = location.getCgiPass(ext);
+	if (pass.empty())
+	{
+		delete[] envp;
+		return false;
+	}
+	argv[0] = const_cast<char *>(pass.c_str());
 	argv[1] = const_cast<char *>(scriptName.c_str());
 	argv[2] = NULL;
 	this->_InBuf = request.getBody();

@@ -22,20 +22,19 @@ class LocationConfig
 
 	private:
 
-	string			_Path;
-	set<string>		_Methods;
-	string			_Root;
-	vector<string>	_Index;
-	bool			_AutoIndex;
-	int				_ReturnCode;
-	bool			_HasReturn;
-	string			_CgiExt;
-	string			_CgiPass;
-	size_t			_ClientMaxBodySize;
-	bool			_HasClientMaxBodySize;
-	string			_ReturnTarget;
-	string			_UploadStore;
-	bool			_HasUploadStore;
+	string				_Path;
+	set<string>			_Methods;
+	string				_Root;
+	vector<string>		_Index;
+	bool				_AutoIndex;
+	int					_ReturnCode;
+	bool				_HasReturn;
+	map<string, string>	_Cgi;
+	size_t				_ClientMaxBodySize;
+	bool				_HasClientMaxBodySize;
+	string				_ReturnTarget;
+	string				_UploadStore;
+	bool				_HasUploadStore;
 
 	public:
 
@@ -46,10 +45,10 @@ class LocationConfig
 	LocationConfig &operator=(const LocationConfig& src);
 
 	/*===Getters & Setters===*/
-	const string					&getPath(void) const;	///< Le prefixe d'URI declare par le bloc "location"
-	const string					&getRoot(void) const;	///< La racine disque associee a ce bloc
-	const string					&getExt(void) const;
-	const string					&getPass(void) const;
+	const string					&getPath(void) const;				///< Le prefixe d'URI declare par le bloc "location"
+	const string					&getRoot(void) const;				///< La racine disque associee a ce bloc
+	const string				&getCgiPass(const string &ext) const;	///< Interpreteur pour ext (".py"), "" si absent
+	const map<string, string>	&getCgi(void) const;					///< Table cgi_ext -> cgi_pass
 	const size_t					&getClientMaxBodySize(void) const;
 	const std::set<std::string>		&getMethods(void) const;
 	const std::vector<std::string>	&getIndex(void) const;
