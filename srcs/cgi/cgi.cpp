@@ -121,18 +121,19 @@ vector<string>	build_cgi_env(const Request &request, const LocationConfig &locat
 {
 	vector<string>	storage;
 	vector<string>	serverNames = server.getServerNames();
-	string	path_translated;
+	string			path_translated;
+	string			path_info = findPathInfo(request, location);
 	ostringstream	ss;
 	ss << config.getAddrPorts()[connection.getGroupIndex()].Port;
 
 	addEnv(storage, "REQUEST_METHOD", request.getMethod());
 	addEnv(storage, "SCRIPT_NAME", findScriptName(request, location));
 	addEnv(storage, "SCRIPT_FILENAME", script_path);
-	addEnv(storage, "PATH_INFO", findPathInfo(request, location));
-	if (findPathInfo(request, location).empty())
-		path_translated = "";
+	addEnv(storage, "PATH_INFO", path_info);
+	if (path_info.empty())
+		path_translated = script_path;
 	else
-		path_translated = location.getRoot() + findPathInfo(request, location);
+		path_translated = location.getRoot() + path_info;
 	addEnv(storage, "PATH_TRANSLATED", path_translated);
 	addEnv(storage, "QUERY_STRING", request.getQuery());
 	addEnv(storage, "CONTENT_LENGTH", request.getHeader("content-length"));
