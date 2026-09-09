@@ -86,6 +86,7 @@ server
 		allow_methods		GET POST DELETE;
 		root				$WWW/upload;
 		autoindex			on;
+		upload_store		$WWW/upload;
 	}
 }
 EOF
@@ -224,6 +225,38 @@ echo "$H" | grep -qi '^Allow:.*GET' \
 c="$(code DELETE /nexiste_pas.txt)"
 [ "$c" = "405" ] && ok "405 rendu avant tout acces disque" \
                  || ko "DELETE d'un fichier absent en GET-only rend $c (405 attendu)"
+
+# --- 6. cycle complet C-10 -> C-11 -----------------------------------------
+# POST ecrit dans `upload_store`, DELETE resout l'URI par build_path, donc par
+# le `root`. Si les deux ne designent pas le meme dossier, le fichier uploade
+# n'est adressable par aucune URI : POST rend 201, puis le listing est vide et
+# le DELETE rend 404. Le cycle du ticket est casse sans qu'aucun test unitaire
+# ne rougisse -- c'est exactement ce qui est arrive avec conf/default.conf.
+# Ce bloc verrouille l'invariant : upload_store doit etre sous le root.
+echo
+echo "[ 6. cycle POST -> listing -> DELETE ]"
+c="$(curl -s --path-as-is -o /dev/null -w '%{http_code}' \
+	-X POST --data-binary 'cycle' "$U/upload/cycle.txt")"
+[ "$c" = "201" ] && ok "POST rend 201 Created" \
+                 || ko "POST rend $c (201 attendu)"
+
+[ "$(curl -s "$U/upload/" | grep -c 'cycle.txt')" -ge 1 ] \
+	&& ok "le fichier uploade apparait dans l'autoindex" \
+	|| ko "cycle.txt absent du listing (upload_store hors du root ?)"
+
+c="$(code GET /upload/cycle.txt)"
+[ "$c" = "200" ] && ok "GET relit le fichier uploade" \
+                 || ko "GET rend $c (200 attendu)"
+
+c="$(raw /upload/cycle.txt)"
+[ "$c" = "204" ] && ok "DELETE supprime le fichier uploade" \
+                 || ko "DELETE rend $c (404 = POST et DELETE ne visent pas le meme dossier)"
+
+# find sur tout le bac a sable, pas seulement sur $WWW/upload : si POST a
+# ecrit hors du root, le fichier survit ailleurs et le DELETE ne l'a jamais vu.
+[ -z "$(find "$WWW" -name cycle.txt 2>/dev/null)" ] \
+	&& ok "le cycle POST -> DELETE ne laisse rien derriere lui" \
+	|| ko "cycle.txt survit sur le disque : $(find "$WWW" -name cycle.txt)"
 
 # --- Bilan -----------------------------------------------------------------
 echo

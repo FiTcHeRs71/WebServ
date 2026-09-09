@@ -2,7 +2,6 @@
 #include "../../includes/Autoindex.hpp"
 #include "../../includes/CgiProcess.hpp"
 #include "../../includes/Logger.hpp"
-#include <sstream>
 #include <cstddef>
 #include <fcntl.h>
 #include <fstream>
@@ -135,13 +134,14 @@ static Response	handleDelete(const ServerConfig &srv, string file)
  * @brief Traite un dossier : 301 sans slash final, sinon index puis serveFile.
  *
  * URI sans '/' final -> 301 Location: URI + "/".
- * Avec slash : parcourt loc.getIndex() dans l'ordre. Aucun index -> 403
-
+ * Avec slash : parcourt loc.getIndex() dans l'ordre. Aucun index trouve ->
+ * autoindex on rend le listing, sinon 403.
+ *
  * @param request Pour l'URI (slash / Location).
  * @param loc Location qui matche, source de getIndex().
  * @param server Pour BuildError.
  * @param file Chemin disque du dossier (build_path). Un '/' est ajoute si besoin.
- * @return 301, 200 (index), ou 403.
+ * @return 301, 200 (index ou autoindex), ou 403.
  */
 static Response	serveDir(const Request &request, const LocationConfig &loc,
 			const ServerConfig &server, string file)
