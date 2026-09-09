@@ -695,7 +695,7 @@ bool	Request::findChunkData()
 	_Body.append(_Raw, 0, take);
 	_Raw.erase(0,take);
 	_CurrentChunkRead += take;
-	if (this->_MaxBodySize != 0 && this->_Body.size() > this->_MaxBodySize)
+	if (this->_MaxBodySize != 0 && this->_CurrentChunkRead > this->_MaxBodySize)
 	{
 		this->_ErrorCode = 413;
 		this->_State = ST_ERROR;

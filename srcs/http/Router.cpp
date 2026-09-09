@@ -185,8 +185,10 @@ static Response	serveDir(const Request &request, const LocationConfig &loc,
 				string	body;
 
 				body = build_autoindex(file, request.getPath());
-				if (body.empty())
+				if (body.empty() && loc.getAutoIndex())
 					return(Response::BuildError(403, server));
+				else if (!body.empty() && loc.getAutoIndex())
+					return(Response::BuildError(404, server));
 				res.SetStatus(200);
 				res.SetHeader("Content-Type", "text/html; charset=utf-8");
 				res.SetBody(body);
@@ -513,6 +515,7 @@ static Response	dispatch(const Request &request, const ServerConfig &server, Con
 	{
 		CgiProcess		&cgi = connection.getCgi();
 		const ConfigParser	*config = request.getConfigParser();
+
 		if (config == NULL)
 			return (Response::BuildError(502, server));
 		if (!cgi.Start(request, *loc, server, connection, *config, file))
