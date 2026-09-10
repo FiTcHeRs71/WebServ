@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <sstream>
 #include <string>
+#include <utility>
 
 	/*===Canonical Form===*/
 Request::Request(void) : _State(ST_REQUEST_LINE),
@@ -779,8 +780,47 @@ bool	Request::findChunkTrailer()
 
 map<string, string>	Request::getCookies(void) const
 {
+	map<string, string>	out;
 	string	raw = getHeader("cookie");
+
 	if (raw.empty())
-		return (map vide);
+		return (out);
 	
+	size_t i = 0;
+	while (i < raw.size())
+	{
+		size_t	start = i;
+		size_t	end = raw.find(';', start);
+		if (end == string::npos)
+			end = raw.size();
+		i = end + 1;
+		string	pair = raw.substr(start, end - start);
+		trim(pair);
+		size_t	equal_flag = pair.find('=');
+		if (equal_flag == string::npos || equal_flag == 0)
+			;
+		else
+		{
+			string	name = pair.substr(0, equal_flag);
+			string	value = pair.substr(equal_flag + 1);
+
+			trim(name);
+			trim(value);
+			out.insert(make_pair(name, value));
+		}
+	}
+	return (out);
+}
+
+string	Request::getCookie(const string &name) const
+{
+	map<string, string>			 c = getCookies();
+	map<string, string>::const_iterator it = c.find(name);
+	if (it == c.end())
+		return ("");
+	return (it->second);
+}
+bool	Request::hasCookie(const string &name) const
+{
+	return (getCookies().count(name) != 0);
 }
