@@ -129,45 +129,15 @@ void	EventLoop::Run(void)
 				if (!HandleClientEvent(i))
 					_toClose.push_back(_Pollfds[i].fd);
 			}
-			gettimeofday(&_h1, NULL);
-			{
-				long _hus = (_h1.tv_sec - _h0.tv_sec) * 1000000L + (_h1.tv_usec - _h0.tv_usec);
-				if (_hus > 30000)
-				{
-					std::ostringstream _o;
-					_o << "PROBE-HANDLER " << (_hus / 1000) << "ms who=" << _who
-					   << " revents=" << _Pollfds[i].revents;
-					Logger::write("info", _o.str());
-				}
-			}
 			if (_ListenFds.count(fd))
 				continue;
 		}
-		gettimeofday(&_tC, NULL);
 		for (size_t i = 0; i < _toClose.size(); i++)
 			CloseConnection(_toClose[i]);
 		_toClose.clear();
 		for(size_t i = 0; i < _CgiToClose.size(); i++)
 			UnregisterCgi(_CgiToClose[i]);
 		_CgiToClose.clear();
-		/* PROBE-STALL */
-		gettimeofday(&_t1, NULL);
-		{
-#define _DMS(a,b) ((((b).tv_sec-(a).tv_sec)*1000000L+((b).tv_usec-(a).tv_usec))/1000)
-			long _us = (_t1.tv_sec - _t0.tv_sec) * 1000000L + (_t1.tv_usec - _t0.tv_usec);
-			if (_us > 20000)
-			{
-				std::ostringstream _o;
-				_o << "PROBE-STALL " << (_us / 1000) << "ms"
-				   << " sweepTO=" << _DMS(_t0,_tA)
-				   << " reap=" << _DMS(_tA,_tB)
-				   << " dispatch=" << _DMS(_tB,_tC)
-				   << " close=" << _DMS(_tC,_t1)
-				   << " clients=" << _Clients.size();
-				Logger::write("info", _o.str());
-			}
-#undef _DMS
-		}
 	}
 	Shutdown();
 }
