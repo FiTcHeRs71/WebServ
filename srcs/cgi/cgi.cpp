@@ -252,7 +252,7 @@ bool	parse_cgi_output(const std::string &raw, Response &out){
 		else
 			header.erase(0, end + 1);
 	}
-	out.SetBody(body);
+	out.SwapBody(body);	///< body peut peser 100 Mo : on vole le buffer
 	return true;
 }
 

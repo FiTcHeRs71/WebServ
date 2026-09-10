@@ -114,6 +114,14 @@ void	Response::SetBody(const std::string &body)
 	SetHeader("Content-Length", oss.str());
 }
 
+void	Response::SwapBody(std::string &body)
+{
+	this->_Body.swap(body);
+	ostringstream oss;
+	oss << this->_Body.size();
+	SetHeader("Content-Length", oss.str());
+}
+
 const std::string	&Response::getBody(void) const
 {
 	return(this->_Body);

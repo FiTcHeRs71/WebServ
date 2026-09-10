@@ -44,6 +44,7 @@ class Response
 	void				SetStatus(int code);					///< pose _StatusCode ET _StatusText
 	void				SetHeader(const std::string &key, const std::string &value);
 	void				SetBody(const std::string &body);	///< pose aussi Content-Length
+	void				SwapBody(std::string &body);			///< idem, mais vole le buffer : pas de copie du corps CGI
 	const std::string	&getBody(void) const;
 	int					getStatus(void) const;
 	const string		&getStatusText(void) const;

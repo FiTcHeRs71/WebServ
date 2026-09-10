@@ -7,6 +7,7 @@
 	/*===Canonical Form===*/
 Connection::Connection(void)
 	:_Fd(0),
+	_OutOff(0),
 	_State(CONN_READING),
 	_LastActivity(time(NULL)),
 	_GroupIndex(0),
@@ -16,6 +17,7 @@ Connection::~Connection(void) {}
 
 Connection::Connection(int fd, size_t group_index, const ConfigParser *config)
 	:_Fd(fd)
+	,_OutOff(0)
 	,_State(CONN_READING)
 	,_LastActivity(time(NULL))
 	,_GroupIndex(group_index)
@@ -30,6 +32,7 @@ Connection::Connection(const Connection& to_copy)
 	this->_Req = to_copy._Req;
 	this->_IpV4 = to_copy._IpV4;
 	this->_OutBuf = to_copy._OutBuf;
+	this->_OutOff = to_copy._OutOff;
 	this->_State = to_copy._State;
 	this->_LastActivity = to_copy._LastActivity;
 	this->_GroupIndex = to_copy._GroupIndex;
@@ -44,6 +47,7 @@ Connection	&Connection::operator=(const Connection& src)
 		this->_Req = src._Req;
 		this->_IpV4 = src._IpV4;
 		this->_OutBuf = src._OutBuf;
+		this->_OutOff = src._OutOff;
 		this->_State = src._State;
 		this->_LastActivity = src._LastActivity;
 		this->_GroupIndex = src._GroupIndex;
@@ -140,7 +144,7 @@ ssize_t	Connection::OnReadable(){
 			if (getCgi().GetReadFd() < 0)
 			{
 				rep.Serialize(out);
-				QueueOutput(out);
+				QueueOutputSwap(out);
 			}
 			_Req.reset();
 			res = _Req.Feed("", 0);
@@ -161,16 +165,21 @@ ssize_t	Connection::OnReadable(){
  * @return ssize_t the size of the return from send()
  */
 ssize_t Connection::OnWritable(){
-	if (_OutBuf.empty())
+	if (_OutOff >= _OutBuf.size())
 		return (0);
-	ssize_t s = send(_Fd, _OutBuf.c_str(), _OutBuf.size(), 0);
+	ssize_t s = send(_Fd, _OutBuf.c_str() + _OutOff, _OutBuf.size() - _OutOff, 0);
 	if (s <= 0){
 		_State = CONN_CLOSING;
 		return (s);
 	}
 	else{
 		_LastActivity = time(NULL);
-		_OutBuf.erase(0, s);
+		_OutOff += static_cast<size_t>(s);	///< consommation par offset : pas de memmove du reste
+		if (_OutOff >= _OutBuf.size())
+		{
+			string().swap(_OutBuf);			///< libere reellement la reponse (100 Mo pour le CGI)
+			_OutOff = 0;
+		}
 	}
 	return (s);
 }
@@ -182,7 +191,26 @@ ssize_t Connection::OnWritable(){
  * @param data The return from the request
  */
 void Connection::QueueOutput(const string& data){
+	if (_OutOff > 0)					///< compacte une seule fois par reponse, pas par send()
+	{
+		_OutBuf.erase(0, _OutOff);
+		_OutOff = 0;
+	}
 	_OutBuf.append(data);
+	_State = CONN_WRITING;
+}
+
+void Connection::QueueOutputSwap(string& data){
+	if (_OutOff > 0)
+	{
+		_OutBuf.erase(0, _OutOff);
+		_OutOff = 0;
+	}
+	if (_OutBuf.empty())
+		_OutBuf.swap(data);
+	else
+		_OutBuf.append(data);
+	string().swap(data);
 	_State = CONN_WRITING;
 }
 
@@ -193,7 +221,7 @@ void Connection::QueueOutput(const string& data){
  * @return false _Outbuf is empty
  */
 bool Connection::HasPendingOutput() const{
-	return !(_OutBuf.empty());
+	return (_OutOff < _OutBuf.size());
 }
 
 /**

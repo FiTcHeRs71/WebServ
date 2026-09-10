@@ -1,4 +1,5 @@
 #include "../../includes/EventLoop.hpp"
+#include <sys/time.h>
 #include "../../includes/Network.hpp"
 #include "../../includes/Logger.hpp"
 #include "../../includes/CgiProcess.hpp"
@@ -80,8 +81,12 @@ void	EventLoop::Run(void)
 	while (_Running && !g_StopRequested)
 	{
 		status = poll(&_Pollfds[0], _Pollfds.size(), ComputeTimeout());
+		/* PROBE-STALL : mesure du temps passe hors poll(), par phase */
+		struct timeval _t0, _tA, _tB, _tC, _t1; gettimeofday(&_t0, NULL);
 		SweepTimeouts();
+		gettimeofday(&_tA, NULL);
 		SweepPendingReap();
+		gettimeofday(&_tB, NULL);
 		if (status == 0)
 		{
 			for (size_t i = 0; i < _toClose.size(); i++)
@@ -104,23 +109,65 @@ void	EventLoop::Run(void)
 			if (_Pollfds[i].revents == 0)
 				continue ;
 			int	fd = _Pollfds[i].fd;
+			/* PROBE-HANDLER */
+			struct timeval _h0, _h1; gettimeofday(&_h0, NULL);
+			const char *_who = "?";
 			if (_ListenFds.count(fd)) ///< 1 is a listen fd so we accept, 0 isn't, its a client so we handle
 			{
+				_who = "accept";
 				if (_Pollfds[i].revents & POLLIN)
 					AcceptNewClients(fd);
-				continue;
 			}
 			else if (_CgiToClient.count(fd))
+			{
+				_who = "cgiEvent";
 				HandleCgiEvent(fd, _Pollfds[i].revents);
-			else if (!HandleClientEvent(i))
-				_toClose.push_back(_Pollfds[i].fd);
+			}
+			else
+			{
+				_who = "clientEvent";
+				if (!HandleClientEvent(i))
+					_toClose.push_back(_Pollfds[i].fd);
+			}
+			gettimeofday(&_h1, NULL);
+			{
+				long _hus = (_h1.tv_sec - _h0.tv_sec) * 1000000L + (_h1.tv_usec - _h0.tv_usec);
+				if (_hus > 30000)
+				{
+					std::ostringstream _o;
+					_o << "PROBE-HANDLER " << (_hus / 1000) << "ms who=" << _who
+					   << " revents=" << _Pollfds[i].revents;
+					Logger::write("info", _o.str());
+				}
+			}
+			if (_ListenFds.count(fd))
+				continue;
 		}
+		gettimeofday(&_tC, NULL);
 		for (size_t i = 0; i < _toClose.size(); i++)
 			CloseConnection(_toClose[i]);
 		_toClose.clear();
 		for(size_t i = 0; i < _CgiToClose.size(); i++)
 			UnregisterCgi(_CgiToClose[i]);
 		_CgiToClose.clear();
+		/* PROBE-STALL */
+		gettimeofday(&_t1, NULL);
+		{
+#define _DMS(a,b) ((((b).tv_sec-(a).tv_sec)*1000000L+((b).tv_usec-(a).tv_usec))/1000)
+			long _us = (_t1.tv_sec - _t0.tv_sec) * 1000000L + (_t1.tv_usec - _t0.tv_usec);
+			if (_us > 20000)
+			{
+				std::ostringstream _o;
+				_o << "PROBE-STALL " << (_us / 1000) << "ms"
+				   << " sweepTO=" << _DMS(_t0,_tA)
+				   << " reap=" << _DMS(_tA,_tB)
+				   << " dispatch=" << _DMS(_tB,_tC)
+				   << " close=" << _DMS(_tC,_t1)
+				   << " clients=" << _Clients.size();
+				Logger::write("info", _o.str());
+			}
+#undef _DMS
+		}
 	}
 	Shutdown();
 }
@@ -536,9 +583,10 @@ void	EventLoop::HandleCgiEvent(int fd, short revents)
 					Rep.generateBuiltInError();
 				}
 			}
+			Cgi.ClearOutBuf();		///< sortie brute parsee : 100 Mo rendus tout de suite
 			string out;
 			Rep.Serialize(out);
-			it->second.QueueOutput(out);
+			it->second.QueueOutputSwap(out);
 			SetEvents(PipeClientFd->second, POLLIN | POLLOUT);
 		}
 	}
@@ -597,8 +645,8 @@ void	EventLoop::SendCgiResponse(map<int, Connection>::iterator it, int status)
 		string	out;
 
 		Rep.SetStatus((status == 0) ? 200 : 502);
-		CgiProcess CgiTmp = it->second.getCgi();
-		Request req = it->second.getRequest();
+		CgiProcess	&CgiTmp = it->second.getCgi();	///< reference : la copie embarquait _InBuf/_OutBuf (100 Mo chacun)
+		Request		&req = it->second.getRequest();	///< idem : la copie embarquait le body
 		const ServerConfig *srv = req.getServerConfig();
 		if (status != 0){
 			if (srv)
@@ -620,7 +668,8 @@ void	EventLoop::SendCgiResponse(map<int, Connection>::iterator it, int status)
 				}
 			}
 		}
+		CgiTmp.ClearOutBuf();
 		Rep.Serialize(out);
-		it->second.QueueOutput(out);
+		it->second.QueueOutputSwap(out);
 		SetEvents(it->first, POLLIN | POLLOUT);
 }

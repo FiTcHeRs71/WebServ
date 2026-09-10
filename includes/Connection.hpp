@@ -34,6 +34,7 @@ class Connection
 	Request			_Req;
 	string			_IpV4;
 	string			_OutBuf;		///< octets a envoyer, produits par Response::Serialize()
+	size_t			_OutOff;		///< octets deja envoyes de _OutBuf
 	EConnState		_State;
 	time_t			_LastActivity;	///< utilise par B-05 pour les timeouts
 	size_t			_GroupIndex;	///< index dans _AddrPorts : quel ServerConfig repond
@@ -68,6 +69,7 @@ class Connection
 	ssize_t			OnReadable(void);				///< un seul recv(), renvoie ce que recv() a rendu
 	ssize_t			OnWritable(void);				///< un seul send() partiel
 	void			QueueOutput(const string& data);
+	void			QueueOutputSwap(string& data);	///< vole le buffer : evite une copie de la reponse (100 Mo en CGI)
 	void			SendErrorAndClose(int code);
 };
 

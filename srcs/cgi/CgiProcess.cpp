@@ -1,4 +1,6 @@
 #include "../../includes/CgiProcess.hpp"
+#include <fstream>
+#include <sys/time.h>
 #include "../../includes/Request.hpp"
 #include "../../includes/Response.hpp"
 #include "../../includes/Router.hpp"
@@ -38,7 +40,9 @@ CgiProcess::CgiProcess(void)
 	:_Pid(0)
 	,_ReadFd(-1)
 	,_WriteFd(-1)
+	,_LastIo(0)
 	,_StartTime(0)
+	,_InOff(0)
 	,_Finished(false)
 {
 	//std::cout << "LocationConfig default constructor called" << std::endl;
@@ -53,8 +57,10 @@ CgiProcess::CgiProcess(const CgiProcess& to_copy)
 	:_Pid(to_copy._Pid)
 	,_ReadFd(to_copy._ReadFd)
 	,_WriteFd(to_copy._WriteFd)
+	,_LastIo(to_copy._LastIo)
 	,_StartTime(to_copy._StartTime)
 	,_InBuf(to_copy._InBuf)
+	,_InOff(to_copy._InOff)
 	,_OutBuf(to_copy._OutBuf)
 	,_Finished(to_copy._Finished)
 {
@@ -68,8 +74,10 @@ CgiProcess	&CgiProcess::operator=(const CgiProcess& src)
 		this->_Pid = src._Pid;
 		this->_ReadFd = src._ReadFd;
 		this->_WriteFd = src._WriteFd;
+		this->_LastIo = src._LastIo;
 		this->_StartTime = src._StartTime;
 		this->_InBuf = src._InBuf;
+		this->_InOff = src._InOff;
 		this->_OutBuf = src._OutBuf;
 		this->_Finished = src._Finished;
 	}
@@ -114,8 +122,12 @@ pid_t	CgiProcess::GetPid(void) const
 	return (this->_Pid);
 }
 
-string	CgiProcess::GetOutBuf() const{
+const string&	CgiProcess::GetOutBuf() const{
 	return this->_OutBuf;
+}
+
+void	CgiProcess::ClearOutBuf(){
+	string().swap(this->_OutBuf);	///< clear() garderait la capacite (100 Mo)
 }
 
 	/*===Member Function===*/
@@ -131,6 +143,7 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 {
 	this->_OutBuf.clear();
 	this->_StartTime = time(NULL);
+	this->_LastIo = this->_StartTime;
 	string			scriptName = findScriptName(script_path);
 	char			*argv[3];
 	int				pip_in[2];
@@ -149,6 +162,7 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 	argv[1] = const_cast<char *>(scriptName.c_str());
 	argv[2] = NULL;
 	this->_InBuf = request.getBody();
+	this->_InOff = 0;
 
 	// DEBUG-TESTER : trace temporaire, a retirer
 	{
@@ -189,7 +203,22 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 		delete[] envp;
 		return (false);
 	}
+	/* PROBE-FORK */
+	struct timeval _f0, _f1; gettimeofday(&_f0, NULL);
+	long _rss = 0;
+	{ std::ifstream _st("/proc/self/statm"); long _sz=0; if (_st) _st >> _sz >> _rss; }
 	pid_t	pid = fork();
+	if (pid > 0)
+	{
+		gettimeofday(&_f1, NULL);
+		long _us = (_f1.tv_sec - _f0.tv_sec) * 1000000L + (_f1.tv_usec - _f0.tv_usec);
+		if (_us > 20000)
+		{
+			std::ostringstream _o;
+			_o << "PROBE-FORK " << (_us / 1000) << "ms rss=" << (_rss * 4096 / 1048576) << "MB";
+			Logger::write("info", _o.str());
+		}
+	}
 
 	if(pid == -1)
 	{
@@ -224,6 +253,7 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 	this->_ReadFd = pip_out[0];
 	this->_Pid = pid;
 	this->_StartTime = time(NULL);
+	this->_LastIo = this->_StartTime;
 	return (true);
 }
 
@@ -294,17 +324,22 @@ void	CgiProcess::CloseFds(void)
 
 void	CgiProcess::OnWritableCgi(void)
 {
-	if (_WriteFd < 0 || _InBuf.empty())
+	if (_WriteFd < 0 || _InOff >= _InBuf.size())
 		return ;
-	ssize_t	n = write(_WriteFd, &_InBuf[0], _InBuf.size());
+	ssize_t	n = write(_WriteFd, &_InBuf[_InOff], _InBuf.size() - _InOff);
 	if (n <= 0)
 	{
 		CloseWriteFd();
 		return ;
 	}
-	_InBuf.erase(0, static_cast<size_t>(n));
-	if (_InBuf.empty())
+	_InOff += static_cast<size_t>(n);	///< consommation par offset : pas de memmove du reste
+	_LastIo = time(NULL);
+	if (_InOff >= _InBuf.size())
+	{
+		string().swap(_InBuf);			///< libere reellement les 100 Mo
+		_InOff = 0;
 		CloseWriteFd();
+	}
 }
 
 /**
@@ -347,40 +382,16 @@ void CgiProcess::OnReadableCgi(){
 	char buffer[BUFFER_SIZE];
 	ssize_t n = read(_ReadFd, &buffer, BUFFER_SIZE);
 	if (n <= 0){
-		// DEBUG-TESTER : trace temporaire, a retirer
-		{
-			std::ostringstream	dbg;
-			size_t				hdr = _OutBuf.find("\r\n\r\n");
-			size_t				body = (hdr == std::string::npos) ? 0 : hdr + 4;
-			size_t				diff = std::string::npos;
-
-			for (size_t k = body + 1; k < _OutBuf.size(); k++)
-			{
-				if (_OutBuf[k] != _OutBuf[body])
-				{
-					diff = k;
-					break ;
-				}
-			}
-			dbg << "CGI-DBG fin out=" << _OutBuf.size()
-				<< " head=[" << dbg_escape(_OutBuf.substr(0, (hdr == std::string::npos) ? 64 : hdr)) << "]"
-				<< " body1=[" << dbg_escape(_OutBuf.substr(body, 1)) << "]";
-			if (diff == std::string::npos)
-				dbg << " uniforme=oui";
-			else
-				dbg << " uniforme=non 1re_diff_a=" << (diff - body)
-					<< " autour=[" << dbg_escape(_OutBuf.substr(diff - 4, 12)) << "]";
-			Logger::write("info", dbg.str());
-		}
 		CloseReadFd();
 		return ;
 	}
 	_OutBuf.append(buffer, static_cast<size_t>(n));
+	_LastIo = time(NULL);
 }
 
 bool	CgiProcess::IsTimedOut(time_t now) const
 {
-	if (now - this->_StartTime > CGI_TIMEOUT)
+	if (now - this->_LastIo > CGI_TIMEOUT)	///< inactivite, pas duree totale : un CGI qui progresse n'est pas tue
 		return (true);
 	return (false);
 }
