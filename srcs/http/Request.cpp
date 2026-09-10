@@ -1,5 +1,6 @@
 #include "../../includes/Request.hpp"
 #include "../../includes/Config.hpp"
+#include "../../includes/Logger.hpp"
 #include <cerrno>
 #include <cstddef>
 #include <cstdlib>

@@ -17,24 +17,6 @@
 #include <sstream>
 #include "../../includes/Logger.hpp"
 
-// DEBUG-TESTER : helper temporaire, a retirer avec les traces CGI-DBG
-static std::string dbg_escape(const std::string &s)
-{
-	std::string	out;
-	for (size_t i = 0; i < s.size(); i++)
-	{
-		if (s[i] == '\r')
-			out += "\\r";
-		else if (s[i] == '\n')
-			out += "\\n";
-		else if (s[i] >= 32 && s[i] < 127)
-			out += s[i];
-		else
-			out += '.';
-	}
-	return (out);
-}
-
 	/*===Canonical Form===*/
 CgiProcess::CgiProcess(void)
 	:_Pid(0)
@@ -164,26 +146,6 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 	this->_InBuf = request.getBody();
 	this->_InOff = 0;
 
-	// DEBUG-TESTER : trace temporaire, a retirer
-	{
-		std::ostringstream	dbg;
-		std::string			secret = "(absent)";
-		std::string			clen = "(absent)";
-
-		for (size_t i = 0; i < storage.size(); i++)
-		{
-			if (storage[i].compare(0, 30, "HTTP_X_SECRET_HEADER_FOR_TEST=") == 0)
-				secret = storage[i].substr(30);
-			else if (storage[i].compare(0, 15, "CONTENT_LENGTH=") == 0)
-				clen = storage[i].substr(15);
-		}
-		dbg << "CGI-DBG start " << request.getMethod() << " " << request.getPath()
-			<< " secret=[" << secret << "] CONTENT_LENGTH=[" << clen
-			<< "] body=" << this->_InBuf.size()
-			<< " debut=[" << dbg_escape(this->_InBuf.substr(0, 32)) << "]";
-		Logger::write("info", dbg.str());
-	}
-
 	// Dossier du script pour le chdir() de l'enfant. Les deux cas limites
 	// donnent un chemin invalide si on prend le substr tel quel :
 	// "script.bla" (pas de '/') -> "" et "/script.bla" (slash en tete) -> "".
@@ -208,17 +170,6 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 	long _rss = 0;
 	{ std::ifstream _st("/proc/self/statm"); long _sz=0; if (_st) _st >> _sz >> _rss; }
 	pid_t	pid = fork();
-	if (pid > 0)
-	{
-		gettimeofday(&_f1, NULL);
-		long _us = (_f1.tv_sec - _f0.tv_sec) * 1000000L + (_f1.tv_usec - _f0.tv_usec);
-		if (_us > 20000)
-		{
-			std::ostringstream _o;
-			_o << "PROBE-FORK " << (_us / 1000) << "ms rss=" << (_rss * 4096 / 1048576) << "MB";
-			Logger::write("info", _o.str());
-		}
-	}
 
 	if(pid == -1)
 	{
