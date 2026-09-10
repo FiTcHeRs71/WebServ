@@ -776,3 +776,11 @@ bool	Request::findChunkTrailer()
 	_State = ST_DONE;
 	return(true);
 }
+
+map<string, string>	Request::getCookies(void) const
+{
+	string	raw = getHeader("cookie");
+	if (raw.empty())
+		return (map vide);
+	
+}

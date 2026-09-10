@@ -89,6 +89,11 @@ class Request
 	const ServerConfig	*getServerConfig() const;
 	const ConfigParser	*getConfigParser() const;
 
+	/*=== cookies ===*/
+	map<string, string>	getCookies(void) const;
+	string				getCookie(const string &name) const;
+	bool				hasCookie(const string &name) const;
+
 	/*===Member Function===*/
 	EParseResult		Feed(const char *data, size_t n);
 	void				reset();
