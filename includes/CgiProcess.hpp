@@ -31,8 +31,10 @@ class CgiProcess
 	pid_t	_Pid;
 	int		_ReadFd;
 	int		_WriteFd;
+	time_t	_LastIo;	///< derniere I/O reussie avec le CGI : le timeout est un timeout d'inactivite
 	time_t	_StartTime;	///< when the cgi process start used for waitpid with default_cgitimeout
 	string	_InBuf;		///< body restant a ecrire (D-03)
+	size_t	_InOff;		///< octets deja ecrits dans _InBuf (evite erase(0,n) en O(n^2))
 	string	_OutBuf;	///< sortie brute accumulee (D-04)
 	bool	_Finished;
 
@@ -50,7 +52,8 @@ class CgiProcess
 	int		GetReadFd(void) const;
 	int		GetWriteFd(void) const;
 	pid_t	GetPid(void) const;
-	string	GetOutBuf() const;
+	const string&	GetOutBuf() const;	///< par reference : la sortie CGI peut peser 100 Mo
+	void			ClearOutBuf();		///< libere la sortie brute des qu'elle est parsee
 
 	/*===Member Function===*/
 	bool	Start(const Request &request, const LocationConfig &location,

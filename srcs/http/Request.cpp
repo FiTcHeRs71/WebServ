@@ -1,5 +1,6 @@
 #include "../../includes/Request.hpp"
 #include "../../includes/Config.hpp"
+#include "../../includes/Logger.hpp"
 #include <cerrno>
 #include <cstddef>
 #include <cstdlib>
@@ -196,7 +197,7 @@ bool	Request::setUpMethod(){
 		return false;
 	}
 	if (this->_Method != "GET" && this->_Method != "POST" && this->_Method != "DELETE"){
-		this->_ErrorCode = 501;
+		this->_ErrorCode = 405;
 		this->_State = ST_ERROR;
 		cerr << "Error :" << this->_ErrorCode << ": Method Not Allowed" << endl;
 		return false;
@@ -695,7 +696,7 @@ bool	Request::findChunkData()
 	_Body.append(_Raw, 0, take);
 	_Raw.erase(0,take);
 	_CurrentChunkRead += take;
-	if (this->_MaxBodySize != 0 && this->_Body.size() > this->_MaxBodySize)
+	if (this->_MaxBodySize != 0 && this->_CurrentChunkRead > this->_MaxBodySize)
 	{
 		this->_ErrorCode = 413;
 		this->_State = ST_ERROR;

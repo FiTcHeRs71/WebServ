@@ -1,4 +1,5 @@
 #include "../../includes/EventLoop.hpp"
+#include <sys/time.h>
 #include "../../includes/Network.hpp"
 #include "../../includes/Logger.hpp"
 #include "../../includes/CgiProcess.hpp"
@@ -80,8 +81,12 @@ void	EventLoop::Run(void)
 	while (_Running && !g_StopRequested)
 	{
 		status = poll(&_Pollfds[0], _Pollfds.size(), ComputeTimeout());
+		/* PROBE-STALL : mesure du temps passe hors poll(), par phase */
+		struct timeval _t0, _tA, _tB, _tC, _t1; gettimeofday(&_t0, NULL);
 		SweepTimeouts();
+		gettimeofday(&_tA, NULL);
 		SweepPendingReap();
+		gettimeofday(&_tB, NULL);
 		if (status == 0)
 		{
 			for (size_t i = 0; i < _toClose.size(); i++)
@@ -104,16 +109,28 @@ void	EventLoop::Run(void)
 			if (_Pollfds[i].revents == 0)
 				continue ;
 			int	fd = _Pollfds[i].fd;
+			/* PROBE-HANDLER */
+			struct timeval _h0, _h1; gettimeofday(&_h0, NULL);
+			const char *_who = "?";
 			if (_ListenFds.count(fd)) ///< 1 is a listen fd so we accept, 0 isn't, its a client so we handle
 			{
+				_who = "accept";
 				if (_Pollfds[i].revents & POLLIN)
 					AcceptNewClients(fd);
-				continue;
 			}
 			else if (_CgiToClient.count(fd))
+			{
+				_who = "cgiEvent";
 				HandleCgiEvent(fd, _Pollfds[i].revents);
-			else if (!HandleClientEvent(i))
-				_toClose.push_back(_Pollfds[i].fd);
+			}
+			else
+			{
+				_who = "clientEvent";
+				if (!HandleClientEvent(i))
+					_toClose.push_back(_Pollfds[i].fd);
+			}
+			if (_ListenFds.count(fd))
+				continue;
 		}
 		for (size_t i = 0; i < _toClose.size(); i++)
 			CloseConnection(_toClose[i]);
@@ -536,9 +553,10 @@ void	EventLoop::HandleCgiEvent(int fd, short revents)
 					Rep.generateBuiltInError();
 				}
 			}
+			Cgi.ClearOutBuf();		///< sortie brute parsee : 100 Mo rendus tout de suite
 			string out;
 			Rep.Serialize(out);
-			it->second.QueueOutput(out);
+			it->second.QueueOutputSwap(out);
 			SetEvents(PipeClientFd->second, POLLIN | POLLOUT);
 		}
 	}
@@ -597,8 +615,8 @@ void	EventLoop::SendCgiResponse(map<int, Connection>::iterator it, int status)
 		string	out;
 
 		Rep.SetStatus((status == 0) ? 200 : 502);
-		CgiProcess CgiTmp = it->second.getCgi();
-		Request req = it->second.getRequest();
+		CgiProcess	&CgiTmp = it->second.getCgi();	///< reference : la copie embarquait _InBuf/_OutBuf (100 Mo chacun)
+		Request		&req = it->second.getRequest();	///< idem : la copie embarquait le body
 		const ServerConfig *srv = req.getServerConfig();
 		if (status != 0){
 			if (srv)
@@ -620,7 +638,8 @@ void	EventLoop::SendCgiResponse(map<int, Connection>::iterator it, int status)
 				}
 			}
 		}
+		CgiTmp.ClearOutBuf();
 		Rep.Serialize(out);
-		it->second.QueueOutput(out);
+		it->second.QueueOutputSwap(out);
 		SetEvents(it->first, POLLIN | POLLOUT);
 }
