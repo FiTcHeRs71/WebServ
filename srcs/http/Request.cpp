@@ -157,7 +157,7 @@ bool Request::findRequestLine(int n){
 		{
 			this->_ErrorCode = 414;
 			this->_State = ST_ERROR;
-			cerr << "Error: " << this->_ErrorCode << ": URI Too Long" << endl;
+			Logger::write("Error: 414", "URI Too Long");
 			return (false);
 		}
 		return (false);
@@ -166,7 +166,7 @@ bool Request::findRequestLine(int n){
 	{
 		this->_ErrorCode = 414;
 		this->_State = ST_ERROR;
-		cerr << "Error: " << this->_ErrorCode << ": URI Too Long" << endl;
+		Logger::write("Error: 414", "URI Too Long");
 		return (false);
 	}
 	if (!setUpMethod())
@@ -185,7 +185,7 @@ bool	Request::setUpMethod(){
 	{
 		this->_ErrorCode = 400;
 		this->_State = ST_ERROR;
-		cerr << "Error :" << _ErrorCode << ": Bad Request" << endl;;
+		Logger::write("Error: 400", "Bad Request");
 		return false;
 	}
 	this->_Method = this->_Raw.substr(0, pos);
@@ -193,13 +193,13 @@ bool	Request::setUpMethod(){
 	if (!this->_Raw.empty() && this->_Raw[0] == ' '){
 		this->_ErrorCode = 400;
 		this->_State = ST_ERROR;
-		cerr << "Error :" << this->_ErrorCode << ": Bad Request" << endl;
+		Logger::write("Error: 400", "Bad Request");
 		return false;
 	}
 	if (this->_Method != "GET" && this->_Method != "POST" && this->_Method != "DELETE"){
 		this->_ErrorCode = 405;
 		this->_State = ST_ERROR;
-		cerr << "Error :" << this->_ErrorCode << ": Method Not Allowed" << endl;
+		Logger::write("Error: 405", "Method Not Allowed");
 		return false;
 	}
 	return true;
@@ -217,7 +217,7 @@ bool	Request::setUpPath(){
 	{
 		this->_ErrorCode = 400;
 		this->_State = ST_ERROR;
-		cerr << "Error :" << _ErrorCode << ": Bad Request" << endl;
+		Logger::write("Error: 400", "Bad Request");
 		return false;
 	}
 	size_t posQuery = this->_Raw.find_first_of("?");
@@ -231,7 +231,7 @@ bool	Request::setUpPath(){
 	if (this->_Path[0] != '/'){
 		this->_ErrorCode = 400;
 		this->_State = ST_ERROR;
-		cerr << "Error :" << this->_ErrorCode << ": Bad Request" << endl;
+		Logger::write("Error: 400", "Bad Request");
 		return false;
 	}
 	if (!expandEncodingUrl())
@@ -241,7 +241,7 @@ bool	Request::setUpPath(){
 	if (!this->_Raw.empty() && this->_Raw[0] == ' '){
 		this->_ErrorCode = 400;
 		this->_State = ST_ERROR;
-		cerr << "Error :" << this->_ErrorCode << ": Bad Request" << endl;
+		Logger::write("Error: 400", "Bad Request");
 		return false;
 	}
 	return true;
@@ -264,7 +264,7 @@ bool	Request::setUpVersion(){
 	if (this->_Version != "HTTP/1.0" && this->_Version != "HTTP/1.1"){
 		this->_State = ST_ERROR;
 		this->_ErrorCode = 505;
-		cerr << "Error: " << this->_ErrorCode << ": HTTP Version Not Supported" << endl;
+		Logger::write("Error: 505", "HTTP Version Not Supported");
 		return false;
 	}
 	this->_State = ST_HEADERS;
@@ -283,7 +283,7 @@ bool	Request::findHeaders(int n){
 	if (noHeaders){
 		this->_State = ST_ERROR;
 		this->_ErrorCode = 400;
-		cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+		Logger::write("Error: 400", "Bad Request");
 		_Raw.erase(0, 2);
 		return false;
 	}
@@ -294,7 +294,7 @@ bool	Request::findHeaders(int n){
 		{
 			this->_State = ST_ERROR;
 			this->_ErrorCode = 431;
-			cerr << "Error: " << this->_ErrorCode << ": Request Header Fields Too Large" << endl;
+			Logger::write("Error: 431", "Request Header Fields Too Large");
 			return (false);
 		}
 		return (false);
@@ -303,7 +303,7 @@ bool	Request::findHeaders(int n){
 	{
 		this->_State = ST_ERROR;
 		this->_ErrorCode = 431;
-		cerr << "Error: " << this->_ErrorCode << ": Request Header Fields Too Large" << endl;
+		Logger::write("Error: 431", "Request Header Fields Too Large");
 		return (false);
 	}
 	stringstream ss(_Raw);
@@ -315,7 +315,7 @@ bool	Request::findHeaders(int n){
 		if (delPos == string::npos){
 			this->_State = ST_ERROR;
 			this->_ErrorCode = 400;
-			cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+			Logger::write("Error: 400", "Bad Request");
 			return false;
 		}
 		string key = line.substr(0, delPos);
@@ -330,7 +330,7 @@ bool	Request::findHeaders(int n){
 			if (key == "host"){
 				this->_State = ST_ERROR;
 				this->_ErrorCode = 400;
-				cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+				Logger::write("Error: 400", "Bad Request");
 				return false;
 			}
 			else{
@@ -341,13 +341,13 @@ bool	Request::findHeaders(int n){
 	if (this->_Header.size() > MAXHEADERS){
 		this->_State = ST_ERROR;
 		this->_ErrorCode = 431;
-		cerr << "Error: " << this->_ErrorCode << ": Request Header Fields Too Large" << endl;
+		Logger::write("Error: 431", "Request Header Fields Too Large");
 		return false;
 	}
 	if (this->_Header.find("host") == this->_Header.end()){
 		this->_State = ST_ERROR;
 		this->_ErrorCode = 400;
-		cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+		Logger::write("Error: 400", "Bad Request");
 		return false;
 	}
 	this->_Raw.erase(0, pos + 4);
@@ -371,7 +371,7 @@ bool	Request::expandEncodingUrl(){
 			if (!isHexa(_Path[i + 1], _Path[i + 2])){
 				this->_ErrorCode = 400;
 				this->_State = ST_ERROR;
-				cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+				Logger::write("Error: 400", "Bad Request");
 				return false;
 			}
 			tmp.push_back(convertToHexa(_Path[i + 1], _Path[i + 2]));
@@ -380,7 +380,7 @@ bool	Request::expandEncodingUrl(){
 		else{
 			this->_ErrorCode = 400;
 			this->_State = ST_ERROR;
-			cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+			Logger::write("Error: 400", "Bad Request");
 			return false;
 		}
 	}
@@ -536,7 +536,7 @@ bool  Request::setUpContentLength()
 	{
 		this->_ErrorCode = 400;
 		this->_State = ST_ERROR;
-		cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+		Logger::write("Error: 400", "Bad Request");
 		return (false);
 	}
 	if (this->_Srv != NULL)
@@ -553,7 +553,7 @@ bool  Request::setUpContentLength()
 		if(te != "chunked" && te != "Chunked")
 		{
 			_ErrorCode = 501;
-			cerr << "Error: " << this->_ErrorCode << ": Not Implemented" << endl;
+			Logger::write("Error: 501", "Not Implemented");
 			_State = ST_ERROR;
 			return(false);
 		}
@@ -566,7 +566,7 @@ bool  Request::setUpContentLength()
 		if (this->_Method == "POST")
 		{
 			this->_ErrorCode = 411;
-			cerr << "Error: " << this->_ErrorCode << ": Length Required" << endl;
+			Logger::write("Error: 411", "Length Required");
 			this->_State = ST_ERROR;
 			return (false);
 		}
@@ -582,7 +582,7 @@ bool  Request::setUpContentLength()
 	{
 		this->_ErrorCode = 400;
 		this->_State = ST_ERROR;
-		cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+		Logger::write("Error: 400", "Bad Request");
 		return (false);
 	}
 	else
@@ -594,7 +594,7 @@ bool  Request::setUpContentLength()
 	{
 		this->_ErrorCode = 413;
 		this->_State = ST_ERROR;
-		cerr << "Error: " << this->_ErrorCode << ": Payload Too Large" << endl;
+		Logger::write("Error: 413", "Payload Too Large");
 		return (false);
 	}
 	this->_State = (this->_ContentLength == 0) ? ST_DONE : ST_BODY;
@@ -619,7 +619,7 @@ bool	Request::findBody()
 	{
 		this->_ErrorCode = 413;
 		this->_State = ST_ERROR;
-		cerr << "Error: " << this->_ErrorCode << ": Payload Too Large" << endl;
+		Logger::write("Error: 413", "Payload Too Large");
 		return (false);
 	}
 	if (this->_Body.size() == this->_ContentLength)
@@ -645,7 +645,7 @@ bool	Request::findChunkSize()
 		{
 			_State = ST_ERROR;
 			_ErrorCode = 400;
-			cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+			Logger::write("Error: 400", "Bad Request");
 			return(false);
 		}
 		return(false);
@@ -659,7 +659,7 @@ bool	Request::findChunkSize()
 	{
 		_State = ST_ERROR;
 		_ErrorCode = 400;
-		cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+		Logger::write("Error: 400", "Bad Request");
 		return(false);
 	}
 	char	*end;
@@ -669,7 +669,7 @@ bool	Request::findChunkSize()
 	{
 		_State = ST_ERROR;
 		_ErrorCode = 400;
-		cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+		Logger::write("Error: 400", "Bad Request");
 		return(false);
 	}
 	_CurrentChunkRead = 0;
@@ -700,7 +700,7 @@ bool	Request::findChunkData()
 	{
 		this->_ErrorCode = 413;
 		this->_State = ST_ERROR;
-		cerr << "Error: " << this->_ErrorCode << ": Payload Too Large" << endl;
+		Logger::write("Error: 413", "Payload Too Large");
 		return (false);
 	}
 	if (_CurrentChunkRead < _CurrentChunkSize)
@@ -722,7 +722,7 @@ bool	Request::findChunkCrlf()
 	{
 		_State = ST_ERROR;
 		_ErrorCode = 400;
-		cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+		Logger::write("Error: 400", "Bad Request");
 		return(false);
 	}
 	if (_Raw.size() < 2)
@@ -731,7 +731,7 @@ bool	Request::findChunkCrlf()
 	{
 		_State = ST_ERROR;
 		_ErrorCode = 400;
-		cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+		Logger::write("Error: 400", "Bad Request");
 		return(false);
 	}
 	_Raw.erase(0, 2);
@@ -765,7 +765,7 @@ bool	Request::findChunkTrailer()
 		{
 			_State = ST_ERROR;
 			_ErrorCode = 400;
-			cerr << "Error: " << this->_ErrorCode << ": Bad Request" << endl;
+			Logger::write("Error: 400", "Bad Request");
 			return(false);
 		}
 		return(false);
