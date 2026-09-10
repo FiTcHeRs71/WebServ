@@ -246,7 +246,12 @@ bool	parse_cgi_output(const std::string &raw, Response &out){
 				out.SetStatus(302);
 		if (!value.empty())
 			trim(value);
-		out.SetHeader(key, value);
+		string	lower = key;
+		MyToLower(lower);
+		if (lower == "set-cookie")
+			out.AddSetCookie(value);
+		else
+			out.SetHeader(key, value);
 		if (end == header.size())
 			header.clear();
 		else
