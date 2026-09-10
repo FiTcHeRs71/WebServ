@@ -1,8 +1,9 @@
 #ifndef RESPONSE_HPP
 # define RESPONSE_HPP
 
-#include "ServerConfig.hpp"
+# include "ServerConfig.hpp"
 # include <iostream>
+# include <vector>
 # include <string>
 # include <map>
 # include <ctime>
@@ -25,6 +26,7 @@ class Response
 	std::string							_StatusText;	///< "OK", "Not Found"...
 	std::map<std::string, std::string>	_Headers;	///< cles telles quelles ("Content-Type")
 	std::string							_Body;
+	vector<string>						_SetCookies;
 
 	void	setDate(void);
 
@@ -48,6 +50,10 @@ class Response
 	const std::string	&getBody(void) const;
 	int					getStatus(void) const;
 	const string		&getStatusText(void) const;
+
+	/*=== Cookies ===*/
+	bool	AddSetCookie(const string &value);	///< false si valeur invalide
+	void	ClearSetCookies(void);
 
 	/*===Member Function===*/
 	bool				Serialize(std::string &out);

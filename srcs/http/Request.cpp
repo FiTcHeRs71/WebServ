@@ -797,9 +797,7 @@ map<string, string>	Request::getCookies(void) const
 		string	pair = raw.substr(start, end - start);
 		trim(pair);
 		size_t	equal_flag = pair.find('=');
-		if (equal_flag == string::npos || equal_flag == 0)
-			;
-		else
+		if (equal_flag != string::npos && equal_flag != 0)
 		{
 			string	name = pair.substr(0, equal_flag);
 			string	value = pair.substr(equal_flag + 1);

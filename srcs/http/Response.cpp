@@ -1,5 +1,6 @@
 #include "../../includes/Response.hpp"
 #include <climits>
+#include <cstddef>
 #include <map>
 #include <sstream>
 #include <string>
@@ -26,6 +27,7 @@ Response::Response(const Response& to_copy)
 	,_StatusText(to_copy._StatusText)
 	,_Headers(to_copy._Headers)
 	,_Body(to_copy._Body)
+	,_SetCookies(to_copy._SetCookies)
 {
 	//std::cout << "Response copy constructor called" << std::endl;
 }
@@ -39,6 +41,7 @@ Response	&Response::operator=(const Response& src)
 		_StatusText = src._StatusText;
 		_Headers = src._Headers;
 		_Body = src._Body;
+		_SetCookies = src._SetCookies;
 	}
 	return (*this);
 }
@@ -149,6 +152,7 @@ void	Response::Reset(void)
 	_StatusText.clear();
 	_Body.clear();
 	_Headers.clear();
+	_SetCookies.clear();
 }
 
 /**
@@ -185,6 +189,10 @@ bool	Response::Serialize(std::string &out)
 	for (map<string, string>::iterator it = _Headers.begin(); it != _Headers.end(); it++)
 	{
 		out += it->first + ": "  + it->second  + "\r\n";
+	}
+	for (size_t i = 0; i < this->_SetCookies.size(); i++)
+	{
+		out += "Set-Cookie: " + this->_SetCookies[i] + "\r\n";
 	}
 	out += "\r\n";
 	out += _Body;
@@ -255,4 +263,19 @@ Response	Response::BuildError(int code, const ServerConfig &server)
 	else
 		res.generateBuiltInError();
 	return res;
+}
+
+bool	Response::AddSetCookie(const string &value)
+{
+	if (value.empty())
+		return (false);
+	if (value.find_first_of("\r\n") != string::npos)
+		return (false);
+	this->_SetCookies.push_back(value);
+	return (true);
+
+}
+void	Response::ClearSetCookies(void)
+{
+	this->_SetCookies.clear();
 }
