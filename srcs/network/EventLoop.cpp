@@ -81,12 +81,8 @@ void	EventLoop::Run(void)
 	while (_Running && !g_StopRequested)
 	{
 		status = poll(&_Pollfds[0], _Pollfds.size(), ComputeTimeout());
-		/* PROBE-STALL : mesure du temps passe hors poll(), par phase */
-		struct timeval _t0, _tA, _tB, _tC, _t1; gettimeofday(&_t0, NULL);
 		SweepTimeouts();
-		gettimeofday(&_tA, NULL);
 		SweepPendingReap();
-		gettimeofday(&_tB, NULL);
 		if (status == 0)
 		{
 			for (size_t i = 0; i < _toClose.size(); i++)
@@ -101,7 +97,7 @@ void	EventLoop::Run(void)
 		{
 			if (errno == EINTR)
 							continue ;
-			cerr << "Error: poll() failed." << endl;
+			Logger::write("Error: ", "poll() failed.");
 			break ;			//TODO: A check break ou throw ?
 		}
 		for (size_t i = 0; i < _Pollfds.size(); i++)
@@ -109,23 +105,17 @@ void	EventLoop::Run(void)
 			if (_Pollfds[i].revents == 0)
 				continue ;
 			int	fd = _Pollfds[i].fd;
-			/* PROBE-HANDLER */
-			struct timeval _h0, _h1; gettimeofday(&_h0, NULL);
-			const char *_who = "?";
 			if (_ListenFds.count(fd)) ///< 1 is a listen fd so we accept, 0 isn't, its a client so we handle
 			{
-				_who = "accept";
 				if (_Pollfds[i].revents & POLLIN)
 					AcceptNewClients(fd);
 			}
 			else if (_CgiToClient.count(fd))
 			{
-				_who = "cgiEvent";
 				HandleCgiEvent(fd, _Pollfds[i].revents);
 			}
 			else
 			{
-				_who = "clientEvent";
 				if (!HandleClientEvent(i))
 					_toClose.push_back(_Pollfds[i].fd);
 			}
@@ -207,7 +197,7 @@ void	EventLoop::RemoveFd(int fd)
 		_Pollfds.erase(_Pollfds.begin() + idx);
 		return ;
 	}
-	cerr << "This fd wasnt found." << endl; //checker si message d'erreur necessaire ou si on skip.
+	Logger::write("Error: ", "The fd to remove wasn't found"); //checker si message d'erreur necessaire ou si on skip.
 }
 
 /**
@@ -231,7 +221,7 @@ void	EventLoop::SetEvents(int fd, short events)
 		_Pollfds[idx].events = events;
 		return ;
 	}
-	cerr << "This fd wasnt found." << endl; //checker si message d'erreur necessaire ou si on skip.
+	Logger::write("Error: ", "The fd to remove wasn't found"); //checker si message d'erreur necessaire ou si on skip.
 }
 
 /**
@@ -256,7 +246,7 @@ void	EventLoop::AcceptNewClients(int listen_fd)
 	int clientFd = accept(listen_fd, (struct sockaddr *)&clientAddr, &clientLen);
 	if (clientFd < 0)
 	{
-		cerr << "Error: accept() failure." << endl;
+		Logger::write("Error: ", "Accept() failure."); 
 		return ;
 	}
 	if (fcntl(clientFd, F_SETFL, O_NONBLOCK) < 0){
