@@ -165,10 +165,6 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 		delete[] envp;
 		return (false);
 	}
-	/* PROBE-FORK */
-	struct timeval _f0, _f1; gettimeofday(&_f0, NULL);
-	long _rss = 0;
-	{ std::ifstream _st("/proc/self/statm"); long _sz=0; if (_st) _st >> _sz >> _rss; }
 	pid_t	pid = fork();
 
 	if(pid == -1)
@@ -306,7 +302,7 @@ void	CgiProcess::CloseWriteFd(void)
 	{
 		if (close(this->_WriteFd) < 0)
 		{
-			cerr << "Error: couldn't close _WriteFd." << endl;
+			Logger::write("Error", "couldn't close _WriteFd.");
 			return ; // erreur a definir
 		}
 		this->_WriteFd = -1;
@@ -319,7 +315,7 @@ void	CgiProcess::CloseReadFd(void)
 	{
 		if (close(this->_ReadFd) < 0)
 		{
-			cerr << "Error: couldn't close _WriteFd." << endl;
+			Logger::write("Error", "couldn't close _ReadFd.");
 			return ; // erreur a definir
 		}
 		this->_ReadFd = -1;
