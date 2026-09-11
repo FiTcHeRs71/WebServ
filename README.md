@@ -13,6 +13,13 @@ file inspired by NGINX.
 
 Key concepts:
 
+- HTTP request: a text message sent by a client. It starts with a request
+  line (method, path, version, for example GET /index.html HTTP/1.1), then
+  headers (Host, Content-Length, Cookie), an empty line and an optional body.
+  The server answers with a status line (HTTP/1.1 200 OK), headers and a body.
+- NGINX: a widely used real web server. Webserv copies the style of its
+  configuration file (server and location blocks, listen, root, index) and
+  uses it as a reference for expected behavior.
 - Socket: an endpoint for network communication, seen by the program as a
   file descriptor. The server opens one listening socket per address and
   port, then gets one new socket for each client it accepts.
