@@ -5,6 +5,8 @@
 #include <cctype>
 #include <fcntl.h>
 
+static map<string, map<string, int> > g_sessions;
+
 /**
  * @brief true si key ne commence pas au milieu d'un identifiant.
  *
@@ -237,7 +239,7 @@ string	randSessionId(void)
 {
 	int	fd = open("/dev/urandom", O_RDONLY);
 	char	buf[16];
-	string	hex = "123456789abcdef";
+	string	hex = "0123456789abcdef";
 	string	id;
 
 	if (fd < 0 || read(fd, buf, 16) != 16)
@@ -250,7 +252,7 @@ string	randSessionId(void)
 	for (int i = 0; i < 16; i++)
 	{
 		unsigned char c = static_cast<unsigned char>(buf[i]);
-		id += buf[c << 4];
+		id += buf[c >> 4];
 		id += buf[c & 15];
 	}
 	return id;
@@ -268,7 +270,6 @@ Response	handleSession(const Request &request, const ServerConfig &server)
 		if (sid.empty())
 			return (Response::BuildError(500, server));
 		g_sessions[sid]["visits"] = 0;
-		n = 0;
 		res.AddSetCookie("sessionid=" + sid + "; Path=/; HttpOnly");
 	}
 	g_sessions[sid]["visits"]++;

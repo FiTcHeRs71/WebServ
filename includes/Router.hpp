@@ -10,8 +10,6 @@
 # include <sys/stat.h>
 # include <unistd.h>
 
-static map<string, map<string, int> > g_sessions;
-
 struct TMultipartPart
 {
 	std::string	Name;			///< name="..." du Content-Disposition
