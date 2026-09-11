@@ -1,7 +1,838 @@
 <!DOCTYPE html>
-<html>
-<head><title>webserv</title></head>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>webserv</title>
+<style>
+:root {
+	--bg: #edf0f4;
+	--panel: #e2e7ee;
+	--ink: #18212f;
+	--muted: #586477;
+	--rule: #c6cfdb;
+	--get: #2459c4;
+	--post: #17804f;
+	--delete: #b3264f;
+	--s2: #17804f;
+	--s3: #9a6700;
+	--s4: #b3264f;
+	--s5: #7a2e9e;
+	--focus: #2459c4;
+	--mono: ui-monospace, "JetBrains Mono", "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+	--sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+	color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bg: #141a23;
+		--panel: #1c2430;
+		--ink: #e4e9f0;
+		--muted: #97a3b6;
+		--rule: #313c4c;
+		--get: #85a9f4;
+		--post: #5cc795;
+		--delete: #f07a9b;
+		--s2: #5cc795;
+		--s3: #e0b04c;
+		--s4: #f07a9b;
+		--s5: #c58af0;
+		--focus: #85a9f4;
+		color-scheme: dark;
+	}
+}
+
+* { box-sizing: border-box; }
+
+body {
+	margin: 0;
+	background: var(--bg);
+	color: var(--ink);
+	font: 1rem/1.5 var(--sans);
+	-webkit-font-smoothing: antialiased;
+}
+
+.page {
+	max-width: 72rem;
+	margin: 0 auto;
+	padding: 0 1.25rem 4rem;
+}
+
+h2 {
+	font-size: 1.125rem;
+	font-weight: 650;
+	margin: 0;
+}
+
+p { margin: 0; }
+
+a { color: var(--get); }
+
+:focus-visible {
+	outline: 2px solid var(--focus);
+	outline-offset: 2px;
+}
+
+.visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}
+
+.m-get { color: var(--get); }
+.m-post { color: var(--post); }
+.m-delete { color: var(--delete); }
+.s2 { --status: var(--s2); }
+.s3 { --status: var(--s3); }
+.s4 { --status: var(--s4); }
+.s5, .s0 { --status: var(--s5); }
+
+/* Hero: the exchange that loaded this page */
+
+.hero {
+	padding: 3.5rem 0 3rem;
+	border-bottom: 1px solid var(--rule);
+}
+
+.wire {
+	font-family: var(--mono);
+	margin: 0;
+}
+
+.wire .line {
+	font-size: clamp(2rem, 7.5vw, 5rem);
+	line-height: 1.05;
+	letter-spacing: -0.03em;
+	font-weight: 700;
+	overflow-wrap: anywhere;
+}
+
+.wire .line.status {
+	font-weight: 400;
+	color: var(--s2);
+	margin-top: 1.25rem;
+}
+
+.wire .header {
+	font-size: clamp(0.875rem, 1.6vw, 1.125rem);
+	color: var(--muted);
+	margin-top: 0.4rem;
+}
+
+.lede {
+	max-width: 38rem;
+	margin-top: 2.25rem;
+	font-size: 1.125rem;
+	color: var(--muted);
+}
+
+.lede strong {
+	color: var(--ink);
+	font-weight: 600;
+}
+
+/* Layout */
+
+.grid {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 22rem;
+	grid-template-areas:
+		"files log"
+		"routes log";
+	gap: 0 3rem;
+	padding-top: 2.5rem;
+	align-items: start;
+}
+
+.files { grid-area: files; }
+.routes { grid-area: routes; padding-top: 3rem; }
+.log { grid-area: log; }
+
+@media (max-width: 56rem) {
+	.grid {
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-areas: "files" "log" "routes";
+	}
+	.log { margin-top: 3rem; }
+}
+
+.section-head {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 1rem;
+	margin-bottom: 1rem;
+}
+
+.section-note {
+	color: var(--muted);
+	font-size: 0.9375rem;
+	max-width: 36rem;
+	margin: -0.5rem 0 1rem;
+}
+
+/* Buttons */
+
+button {
+	font: inherit;
+	color: inherit;
+	cursor: pointer;
+}
+
+.btn {
+	border: 1px solid var(--ink);
+	background: var(--ink);
+	color: var(--bg);
+	padding: 0.55rem 1.1rem;
+	border-radius: 6px;
+	font-weight: 600;
+}
+
+.btn:disabled {
+	opacity: 0.45;
+	cursor: not-allowed;
+}
+
+.btn-quiet {
+	border: 0;
+	background: none;
+	padding: 0.25rem 0;
+	color: var(--muted);
+	font-size: 0.875rem;
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+
+.btn-quiet:hover { color: var(--ink); }
+
+/* Upload */
+
+.upload {
+	display: flex;
+	gap: 0.75rem;
+	align-items: stretch;
+	flex-wrap: wrap;
+	margin-bottom: 1.5rem;
+}
+
+.drop {
+	flex: 1 1 18rem;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 0.15rem;
+	padding: 1rem 1.25rem;
+	border: 1.5px dashed var(--rule);
+	border-radius: 6px;
+	cursor: pointer;
+	transition: border-color 120ms, background-color 120ms;
+}
+
+.drop:hover,
+.drop.over {
+	border-color: var(--post);
+	background: color-mix(in srgb, var(--post) 7%, transparent);
+}
+
+.drop:focus-within {
+	outline: 2px solid var(--focus);
+	outline-offset: 2px;
+}
+
+.drop input {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	opacity: 0;
+}
+
+.drop-main { font-weight: 600; }
+
+.drop-hint {
+	color: var(--muted);
+	font-size: 0.875rem;
+	overflow-wrap: anywhere;
+}
+
+.upload .btn {
+	background: var(--post);
+	border-color: var(--post);
+	color: #fff;
+	align-self: center;
+}
+
+@media (prefers-color-scheme: dark) {
+	.upload .btn { color: #0d1a13; }
+}
+
+/* File table */
+
+.table-wrap { overflow-x: auto; }
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.9375rem;
+}
+
+th {
+	text-align: left;
+	font-weight: 500;
+	color: var(--muted);
+	font-size: 0.8125rem;
+	padding: 0 1rem 0.5rem 0;
+	border-bottom: 1px solid var(--rule);
+}
+
+td {
+	padding: 0.6rem 1rem 0.6rem 0;
+	border-bottom: 1px solid var(--rule);
+	vertical-align: middle;
+}
+
+td.name { overflow-wrap: anywhere; }
+td.name a { color: var(--ink); text-underline-offset: 3px; }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--muted); }
+th.num { white-space: nowrap; }
+td.act, th.act { text-align: right; padding-right: 0; }
+
+.del {
+	border: 1px solid transparent;
+	background: none;
+	color: var(--delete);
+	padding: 0.25rem 0.6rem;
+	border-radius: 6px;
+	font-size: 0.875rem;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.del:hover { border-color: var(--delete); }
+
+.del.armed {
+	background: var(--delete);
+	border-color: var(--delete);
+	color: #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+	.del.armed { color: #2a0d16; }
+}
+
+tr.gone { opacity: 0.35; }
+
+@media (max-width: 34rem) {
+	.col-date { display: none; }
+}
+
+.empty {
+	padding: 1.5rem 0;
+	color: var(--muted);
+	border-bottom: 1px solid var(--rule);
+}
+
+/* Routes */
+
+.routes ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	border-top: 1px solid var(--rule);
+}
+
+.routes li {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	border-bottom: 1px solid var(--rule);
+}
+
+.send {
+	flex: 1;
+	display: grid;
+	grid-template-columns: 4.25rem minmax(0, 11rem) minmax(0, 1fr);
+	gap: 0.75rem;
+	align-items: baseline;
+	text-align: left;
+	border: 0;
+	background: none;
+	padding: 0.7rem 0.5rem;
+	margin-left: -0.5rem;
+	border-radius: 6px;
+}
+
+.send:hover { background: var(--panel); }
+
+.send .method,
+.send .path {
+	font-family: var(--mono);
+	font-size: 0.875rem;
+	font-weight: 600;
+}
+
+.send .path { overflow-wrap: anywhere; }
+
+.send .what {
+	color: var(--muted);
+	font-size: 0.9375rem;
+}
+
+.routes li a {
+	font-size: 0.875rem;
+	white-space: nowrap;
+	padding: 0.25rem 0;
+	text-underline-offset: 3px;
+}
+
+@media (max-width: 34rem) {
+	.send { grid-template-columns: 4.25rem minmax(0, 1fr); }
+	.send .what { grid-column: 2; }
+}
+
+/* Exchange log */
+
+.log {
+	position: sticky;
+	top: 1.25rem;
+	background: var(--panel);
+	border-radius: 8px;
+	padding: 1.25rem;
+}
+
+.log .section-head { margin-bottom: 0.75rem; }
+
+.log ol {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	max-height: min(70vh, 40rem);
+	overflow-y: auto;
+	font-family: var(--mono);
+	font-size: 0.8125rem;
+	line-height: 1.45;
+}
+
+.entry {
+	padding: 0.6rem 0 0.6rem 0.75rem;
+	border-left: 3px solid var(--status, var(--rule));
+	margin-bottom: 0.5rem;
+}
+
+.entry.fresh { animation: arrive 500ms ease-out; }
+
+@keyframes arrive {
+	from { background: color-mix(in srgb, var(--status) 18%, transparent); }
+	to { background: transparent; }
+}
+
+.entry .req { font-weight: 600; overflow-wrap: anywhere; }
+.entry .res { color: var(--status); margin-top: 0.1rem; }
+.entry .ms { color: var(--muted); }
+.entry .note {
+	color: var(--muted);
+	margin-top: 0.2rem;
+	overflow-wrap: anywhere;
+	font-family: var(--sans);
+	font-size: 0.8125rem;
+}
+
+.log-empty {
+	color: var(--muted);
+	font-size: 0.9375rem;
+}
+
+footer {
+	margin-top: 4rem;
+	padding-top: 1.25rem;
+	border-top: 1px solid var(--rule);
+	color: var(--muted);
+	font-size: 0.875rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.entry.fresh { animation: none; }
+	.drop { transition: none; }
+}
+</style>
+</head>
 <body>
-<h1>It works!</h1>
+<div class="page">
+
+<header class="hero">
+	<div class="wire" aria-label="The HTTP request that loaded this page, and the response">
+		<p class="line"><span class="m-get">GET</span> / HTTP/1.1</p>
+		<p class="header">Host: <span id="host">localhost:8080</span></p>
+		<p class="line status">HTTP/1.1 200 OK</p>
+		<p class="header">Server: webserv</p>
+	</div>
+	<p class="lede"><strong>webserv</strong> is an HTTP/1.1 server written in
+	C++98 by fducrot, lgranger and ludebarn. It served this page. Every button
+	below sends a real request to it, and the log shows what came back.</p>
+</header>
+
+<main class="grid">
+
+	<section class="files" aria-labelledby="files-title">
+		<div class="section-head">
+			<h2 id="files-title">Files in /uploads</h2>
+			<button type="button" class="btn-quiet" id="refresh">Refresh list</button>
+		</div>
+
+		<form class="upload" id="upload" method="POST" action="/uploads" enctype="multipart/form-data">
+			<label class="drop" id="drop">
+				<input type="file" name="file" id="file-input" multiple>
+				<span class="drop-main" id="drop-main">Choose files or drop them here</span>
+				<span class="drop-hint" id="drop-hint">Sent as multipart/form-data. Up to 10 MB per upload.</span>
+			</label>
+			<button type="submit" class="btn" id="upload-btn">Upload</button>
+		</form>
+
+		<div class="table-wrap">
+			<table>
+				<thead>
+					<tr><th>Name</th><th class="num">Size</th><th class="num col-date">Modified</th><th class="act"><span class="visually-hidden">Actions</span></th></tr>
+				</thead>
+				<tbody id="rows"></tbody>
+			</table>
+		</div>
+		<p class="empty" id="empty" hidden>No files yet. Upload one and it shows up here.</p>
+		<noscript><p class="empty">The list and the delete buttons need JavaScript.
+		Uploading still works, and <a href="/uploads/">/uploads/</a> shows the directory listing.</p></noscript>
+	</section>
+
+	<aside class="log" aria-labelledby="log-title">
+		<div class="section-head">
+			<h2 id="log-title">Exchange log</h2>
+			<button type="button" class="btn-quiet" id="clear">Clear</button>
+		</div>
+		<p class="log-empty" id="log-empty">Requests you send from this page appear here, newest first.</p>
+		<ol id="log" aria-live="polite"></ol>
+	</aside>
+
+	<section class="routes" aria-labelledby="routes-title">
+		<div class="section-head">
+			<h2 id="routes-title">Other routes</h2>
+		</div>
+		<p class="section-note">Send a request to see the status in the log, or open the page in a new tab.</p>
+		<ul id="routes">
+			<li><button type="button" class="send" data-method="GET" data-path="/cgi-bin/hello.py"><span class="method m-get">GET</span><span class="path">/cgi-bin/hello.py</span><span class="what">Python script run as a CGI</span></button><a href="/cgi-bin/hello.py" target="_blank" rel="noopener">Open</a></li>
+			<li><button type="button" class="send" data-method="GET" data-path="/cgi-bin/hello.php"><span class="method m-get">GET</span><span class="path">/cgi-bin/hello.php</span><span class="what">PHP script run as a CGI, needs php-cgi</span></button><a href="/cgi-bin/hello.php" target="_blank" rel="noopener">Open</a></li>
+			<li><button type="button" class="send" data-method="GET" data-path="/cgi-bin/cookie.py"><span class="method m-get">GET</span><span class="path">/cgi-bin/cookie.py</span><span class="what">Session cookie set by a CGI, counts your visits</span></button><a href="/cgi-bin/cookie.py" target="_blank" rel="noopener">Open</a></li>
+			<li><button type="button" class="send" data-method="GET" data-path="/session"><span class="method m-get">GET</span><span class="path">/session</span><span class="what">Session handled by the server itself, counts your visits</span></button><a href="/session" target="_blank" rel="noopener">Open</a></li>
+			<li><button type="button" class="send" data-method="GET" data-path="/ping"><span class="method m-get">GET</span><span class="path">/ping</span><span class="what">Answered by a return directive</span></button><a href="/ping" target="_blank" rel="noopener">Open</a></li>
+			<li><button type="button" class="send" data-method="GET" data-path="/old"><span class="method m-get">GET</span><span class="path">/old</span><span class="what">301 redirect to /new</span></button><a href="/old" target="_blank" rel="noopener">Open</a></li>
+			<li><button type="button" class="send" data-method="GET" data-path="/deny"><span class="method m-get">GET</span><span class="path">/deny</span><span class="what">Refused with 403</span></button><a href="/deny" target="_blank" rel="noopener">Open</a></li>
+			<li><button type="button" class="send" data-method="GET" data-path="/missing.html"><span class="method m-get">GET</span><span class="path">/missing.html</span><span class="what">File that does not exist, custom 404 page</span></button><a href="/missing.html" target="_blank" rel="noopener">Open</a></li>
+			<li><button type="button" class="send" data-method="POST" data-path="/"><span class="method m-post">POST</span><span class="path">/</span><span class="what">Method not allowed on this location, 405</span></button></li>
+			<li><button type="button" class="send" data-method="DELETE" data-path="/index.html"><span class="method m-delete">DELETE</span><span class="path">/index.html</span><span class="what">Try to delete this page, refused with 405</span></button></li>
+		</ul>
+	</section>
+
+</main>
+
+<footer>
+	webserv, 42 project. Configuration in conf/default.conf, server log in webserv.log.
+</footer>
+
+</div>
+
+<script>
+(function () {
+	"use strict";
+
+	var UPLOADS = "/uploads/";
+	var logList = document.getElementById("log");
+	var logEmpty = document.getElementById("log-empty");
+	var rows = document.getElementById("rows");
+	var empty = document.getElementById("empty");
+	var input = document.getElementById("file-input");
+	var drop = document.getElementById("drop");
+	var dropMain = document.getElementById("drop-main");
+	var dropHint = document.getElementById("drop-hint");
+	var dropHintText = dropHint.textContent;
+	var form = document.getElementById("upload");
+	var uploadBtn = document.getElementById("upload-btn");
+
+	document.getElementById("host").textContent = location.host;
+
+	function el(tag, cls, text) {
+		var node = document.createElement(tag);
+		if (cls)
+			node.className = cls;
+		if (text !== undefined)
+			node.textContent = text;
+		return node;
+	}
+
+	function statusClass(code) {
+		return "s" + String(code).charAt(0);
+	}
+
+	function humanSize(bytes) {
+		var n = Number(bytes);
+		if (isNaN(n))
+			return bytes;
+		if (n < 1024)
+			return n + " B";
+		if (n < 1024 * 1024)
+			return (n / 1024).toFixed(1) + " KB";
+		return (n / (1024 * 1024)).toFixed(1) + " MB";
+	}
+
+	// Visible text of a response body, one line, block tags turned into spaces.
+	function preview(text) {
+		var spaced = text.replace(/<\/?(p|h[1-6]|div|br|li|tr|td|hr)\b[^>]*>/gi, " ");
+		var doc = new DOMParser().parseFromString(spaced, "text/html");
+		var flat = (doc.body ? doc.body.textContent : text).replace(/\s+/g, " ").trim();
+		return flat.length > 140 ? flat.slice(0, 140) + "..." : flat;
+	}
+
+	function displayPath(path) {
+		try {
+			return decodeURIComponent(path);
+		} catch (e) {
+			return path;
+		}
+	}
+
+	// One entry per exchange: request line, status line, then a short note.
+	function logEntry(method, path, status, reason, ms, note) {
+		var li = el("li", "entry fresh " + statusClass(status));
+		var req = el("div", "req");
+		req.appendChild(el("span", "m-" + method.toLowerCase(), method));
+		req.appendChild(document.createTextNode(" " + displayPath(path)));
+		li.appendChild(req);
+		var res = el("div", "res", status ? status + " " + reason : "No response");
+		res.appendChild(el("span", "ms", "  " + ms + " ms"));
+		li.appendChild(res);
+		if (note)
+			li.appendChild(el("div", "note", note));
+		logList.insertBefore(li, logList.firstChild);
+		while (logList.children.length > 60)
+			logList.removeChild(logList.lastChild);
+		logEmpty.hidden = true;
+		setTimeout(function () { li.classList.remove("fresh"); }, 600);
+	}
+
+	// Sends a request, logs it and returns the Response (or null on network error).
+	function send(method, path, options, describe) {
+		var start = performance.now();
+		var opts = options || {};
+		opts.method = method;
+		opts.cache = "no-store";
+		return fetch(path, opts).then(function (res) {
+			return res.text().then(function (body) {
+				var ms = Math.round(performance.now() - start);
+				var note = describe ? describe(res, body) : defaultNote(res, body);
+				logEntry(method, path, res.status, res.statusText, ms, note);
+				res.bodyText = body;
+				return res;
+			});
+		}, function () {
+			var ms = Math.round(performance.now() - start);
+			logEntry(method, path, 0, "", ms, "The connection failed. Is the server still running?");
+			return null;
+		});
+	}
+
+	function defaultNote(res, body) {
+		var parts = [];
+		if (res.redirected)
+			parts.push("Redirect followed to " + new URL(res.url).pathname + ".");
+		if (res.headers.get("Allow"))
+			parts.push("Allow: " + res.headers.get("Allow"));
+		// Error pages only repeat the status line, the log already shows it.
+		var text = preview(body);
+		if (text && text.indexOf(res.status + " " + res.statusText) !== 0)
+			parts.push(text);
+		return parts.join(" ");
+	}
+
+	/* File list, read from the autoindex page of /uploads/ */
+
+	function parseListing(html) {
+		var doc = new DOMParser().parseFromString(html, "text/html");
+		var files = [];
+		doc.querySelectorAll("tr").forEach(function (tr) {
+			var link = tr.querySelector("a");
+			var cells = tr.querySelectorAll("td");
+			if (!link || cells.length < 3)
+				return;
+			var name = link.textContent;
+			if (name === "../" || name.charAt(0) === "." || name.slice(-1) === "/")
+				return;
+			files.push({
+				name: name,
+				path: new URL(link.getAttribute("href"), location.origin + UPLOADS).pathname,
+				size: cells[1].textContent.trim(),
+				date: cells[2].textContent.trim()
+			});
+		});
+		return files;
+	}
+
+	function renderFiles(files) {
+		rows.textContent = "";
+		empty.hidden = files.length > 0;
+		files.forEach(function (f) {
+			var tr = el("tr");
+			var name = el("td", "name");
+			var a = el("a", null, f.name);
+			a.href = f.path;
+			a.target = "_blank";
+			a.rel = "noopener";
+			name.appendChild(a);
+			tr.appendChild(name);
+			tr.appendChild(el("td", "num", humanSize(f.size)));
+			tr.appendChild(el("td", "num col-date", f.date));
+			var act = el("td", "act");
+			var btn = el("button", "del", "Delete");
+			btn.type = "button";
+			btn.setAttribute("aria-label", "Delete " + f.name);
+			btn.addEventListener("click", function () { onDelete(btn, tr, f); });
+			act.appendChild(btn);
+			tr.appendChild(act);
+			rows.appendChild(tr);
+		});
+	}
+
+	function loadFiles(logIt) {
+		var request = logIt
+			? send("GET", UPLOADS, null, function (res, body) {
+				return res.ok ? parseListing(body).length + " file(s) in the directory listing." : defaultNote(res, body);
+			})
+			: fetch(UPLOADS, { cache: "no-store" }).then(function (res) {
+				return res.text().then(function (body) { res.bodyText = body; return res; });
+			}, function () { return null; });
+		return request.then(function (res) {
+			if (res && res.ok)
+				renderFiles(parseListing(res.bodyText));
+			else {
+				rows.textContent = "";
+				empty.hidden = false;
+				empty.textContent = "The list could not be loaded. Check that /uploads has autoindex on.";
+			}
+		});
+	}
+
+	/* Delete: first click arms the button, second click sends DELETE */
+
+	function onDelete(btn, tr, f) {
+		if (!btn.classList.contains("armed")) {
+			btn.classList.add("armed");
+			btn.textContent = "Confirm delete";
+			btn.timer = setTimeout(function () {
+				btn.classList.remove("armed");
+				btn.textContent = "Delete";
+			}, 3000);
+			return;
+		}
+		clearTimeout(btn.timer);
+		btn.disabled = true;
+		btn.textContent = "Deleting";
+		send("DELETE", f.path, null, function (res, body) {
+			if (res.status === 204)
+				return f.name + " was deleted from the server.";
+			if (res.status === 404)
+				return f.name + " is already gone.";
+			return defaultNote(res, body);
+		}).then(function (res) {
+			if (res && (res.status === 204 || res.status === 404)) {
+				tr.classList.add("gone");
+				setTimeout(function () { loadFiles(false); }, 250);
+			} else {
+				btn.disabled = false;
+				btn.classList.remove("armed");
+				btn.textContent = "Delete";
+			}
+		});
+	}
+
+	/* Upload: multipart/form-data POST, like the plain form would send */
+
+	function showSelection() {
+		var files = input.files;
+		uploadBtn.disabled = files.length === 0;
+		if (files.length === 0) {
+			dropMain.textContent = "Choose files or drop them here";
+			dropHint.textContent = dropHintText;
+			return;
+		}
+		var total = 0;
+		var names = [];
+		for (var i = 0; i < files.length; i++) {
+			total += files[i].size;
+			names.push(files[i].name);
+		}
+		dropMain.textContent = files.length === 1 ? "1 file selected" : files.length + " files selected";
+		dropHint.textContent = names.join(", ") + " (" + humanSize(total) + ")";
+	}
+
+	input.addEventListener("change", showSelection);
+
+	["dragenter", "dragover"].forEach(function (type) {
+		drop.addEventListener(type, function (e) {
+			e.preventDefault();
+			drop.classList.add("over");
+		});
+	});
+	["dragleave", "drop"].forEach(function (type) {
+		drop.addEventListener(type, function () { drop.classList.remove("over"); });
+	});
+	drop.addEventListener("drop", function (e) {
+		e.preventDefault();
+		if (e.dataTransfer && e.dataTransfer.files.length) {
+			input.files = e.dataTransfer.files;
+			showSelection();
+		}
+	});
+
+	form.addEventListener("submit", function (e) {
+		e.preventDefault();
+		if (input.files.length === 0)
+			return;
+		var data = new FormData(form);
+		var count = input.files.length;
+		uploadBtn.disabled = true;
+		uploadBtn.textContent = "Uploading";
+		send("POST", "/uploads", { body: data }, function (res, body) {
+			if (res.status === 201)
+				return (count === 1 ? "Saved as " + res.headers.get("Location") : count + " files saved") + ".";
+			if (res.status === 413)
+				return "Too large: this location accepts at most 10 MB per request.";
+			return defaultNote(res, body);
+		}).then(function (res) {
+			uploadBtn.textContent = "Upload";
+			if (res && res.status === 201) {
+				form.reset();
+				showSelection();
+				loadFiles(false);
+			} else
+				uploadBtn.disabled = false;
+		});
+	});
+
+	/* Other routes */
+
+	document.getElementById("routes").addEventListener("click", function (e) {
+		var btn = e.target.closest(".send");
+		if (btn)
+			send(btn.dataset.method, btn.dataset.path);
+	});
+
+	document.getElementById("refresh").addEventListener("click", function () { loadFiles(true); });
+
+	document.getElementById("clear").addEventListener("click", function () {
+		logList.textContent = "";
+		logEmpty.hidden = false;
+	});
+
+	showSelection();
+	loadFiles(false);
+})();
+</script>
 </body>
 </html>
