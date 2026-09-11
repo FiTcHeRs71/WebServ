@@ -32,4 +32,5 @@ Response	upload(const Request &request, const ServerConfig &server,
 int			writeInFile(const string &filename, const string &body, string &written);	///< 0 ok, 400, 500 ; written = path reel
 int			sanitizeAndWrite(const LocationConfig &location, string &written,
 						const string &name, const string &data);						///< -1 nom refuse, 0 ok, >0 HTTP
+Response	handleSession(const Request &request, const ServerConfig &server);
 #endif

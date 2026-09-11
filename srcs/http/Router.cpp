@@ -492,14 +492,16 @@ static Response	dispatch(const Request &request, const ServerConfig &server, Con
 	const LocationConfig	*loc = server.Resolve(request.getPath());
 	if (!loc)
 		return(Response::BuildError(404, server));
-	if (loc->hasReturn())
+	else if (loc->hasReturn())
 		return(serveReturn(server, *loc));
-	if (loc->getMethods().count(request.getMethod()) == 0)
+	else if (loc->getMethods().count(request.getMethod()) == 0)
 	{
 		Response	response = Response::BuildError(405, server);
 		response.SetHeader("Allow", buildAllowHeader(*loc));
 		return (response);
 	}
+	else if (request.getPath() == "/session" || request.getPath() == "/session/")
+		return (handleSession(request, server));
 	string	file = server.build_path(*loc, request.getPath());
 	if (file.empty())
 		return (Response::BuildError(500, server));
