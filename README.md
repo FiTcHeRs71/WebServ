@@ -55,6 +55,18 @@ sessionid and counts its visits. Two clients get two distinct sessions.
 Run it twice: the first answer sets the cookies, the second one shows the
 visit counter increasing.
 
+The server also handles sessions itself, without any CGI, on the /session
+route. On the first visit it creates a random sessionid (16 bytes read from
+/dev/urandom), keeps it in memory and sends it back in a Set-Cookie header
+(Path=/, HttpOnly). On each next visit it finds the session from the cookie and
+increases its visit counter. An unknown or fake sessionid gets a new session.
+
+    curl -i -c jar -b jar http://localhost:8080/session
+
+The first answer carries Set-Cookie and visits 1, the second one has no
+Set-Cookie and shows visits 2 with the same id. Sessions are lost when the
+server stops.
+
 Multiple CGI types: one location can map several extensions to several
 interpreters, for example .py to python3 and .php to php-cgi.
 
