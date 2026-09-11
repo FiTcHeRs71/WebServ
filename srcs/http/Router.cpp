@@ -179,22 +179,17 @@ static Response	serveDir(const Request &request, const LocationConfig &loc,
 		}
 		if (it1 == index.end())
 		{
-			if (!loc.getAutoIndex())
-				return(Response::BuildError(403, server));
-			else
-			{
-				string	body;
+			string	body;
 
-				body = build_autoindex(file, request.getPath());
-				if (body.empty() && loc.getAutoIndex())
-					return(Response::BuildError(403, server));
-				else if (!body.empty() && loc.getAutoIndex())
-					return(Response::BuildError(404, server));
-				res.SetStatus(200);
-				res.SetHeader("Content-Type", "text/html; charset=utf-8");
-				res.SetBody(body);
-				return (res);
-			}
+			if (!loc.getAutoIndex())
+				return(Response::BuildError(404, server));
+			body = build_autoindex(file, request.getPath());
+			if (body.empty())
+				return(Response::BuildError(403, server));
+			res.SetStatus(200);
+			res.SetHeader("Content-Type", "text/html; charset=utf-8");
+			res.SetBody(body);
+			return (res);
 		}
 		return (serveFile(server, path));
 	}
