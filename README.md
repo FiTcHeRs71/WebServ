@@ -53,7 +53,8 @@ sessionid and counts its visits. Two clients get two distinct sessions.
     curl -i -c jar -b jar http://localhost:8080/cgi-bin/cookie.py
 
 Run it twice: the first answer sets the cookies, the second one shows the
-visit counter increasing.
+visit counter increasing. The curl options are explained in the Instructions
+section below.
 
 The server also handles sessions itself, without any CGI, on the /session
 route. On the first visit it creates a random sessionid (16 bytes read from
@@ -112,6 +113,28 @@ Then open http://localhost:8080 in a browser, or use curl:
     curl -i http://localhost:8080/
     curl -i -X POST --data-binary @file.txt http://localhost:8080/uploads/file.txt
     curl -i -X DELETE http://localhost:8080/uploads/file.txt
+
+About curl: curl is a command line HTTP client. It sends one request to the
+given URL and prints the answer body in the terminal, which makes it handy to
+test the server without a browser. Options used in this README:
+
+- -i: also print the status line and the response headers, not only the body.
+- -X METHOD: choose the request method (GET is the default).
+- --data-binary @file: send the content of the file as the request body, as
+  is. This also makes the request a POST.
+- -c jar: after the answer, save the cookies set by the server (Set-Cookie
+  headers) into the file named jar. The name is free, jar stands for
+  cookie jar.
+- -b jar: before the request, read the cookies stored in jar and send them in
+  a Cookie header.
+- -v: verbose mode, print the request headers sent by curl too. Useful to see
+  the Cookie header going out.
+
+Used together, -c jar -b jar make curl behave like a browser: the first
+request has no cookie and gets one from the server, the next requests send it
+back. Without -b the cookie is never sent, so every request looks like a new
+client. Run cat jar after the first request to see the stored sessionid.
+
 Configuration: each server block accepts listen, server_name,
 client_max_body_size, error_page and location blocks. A location accepts
 root, index, autoindex, allow_methods, return, upload_store, cgi_ext and
