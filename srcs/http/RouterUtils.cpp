@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <cctype>
+#include <fcntl.h>
 
 /**
  * @brief true si key ne commence pas au milieu d'un identifiant.
@@ -230,4 +231,57 @@ bool	findBoundary( const string &value, string &boundary, size_t idx)
 	if (quote == true)
 			return false;
 	return true;
+}
+
+string	randSessionId(void)
+{
+	int	fd = open("/dev/urandom", O_RDONLY);
+	char	buf[16];
+	string	hex = "123456789abcdef";
+	string	id;
+
+	if (fd < 0 || read(fd, buf, 16) != 16)
+	{
+		if (fd >= 0)
+			close(fd);
+		return "";
+	}
+	close(fd);
+	for (int i = 0; i < 16; i++)
+	{
+		unsigned char c = static_cast<unsigned char>(buf[i]);
+		id += buf[c << 4];
+		id += buf[c & 15];
+	}
+	return id;
+}
+
+Response	handleSession(const Request &request, const ServerConfig &server)
+{
+	Response	res;
+	string		sid = request.getCookie("sessionid");
+	int		n;
+
+	if (sid.empty() || g_sessions.find(sid) == g_sessions.end())
+	{
+		sid = randSessionId();
+		if (sid.empty())
+			return (Response::BuildError(500, server));
+		g_sessions[sid]["visits"] = 0;
+		n = 0;
+		res.AddSetCookie("sessionid=" + sid + "; Path=/; HttpOnly");
+	}
+	g_sessions[sid]["visits"]++;
+	n = g_sessions[sid]["visits"];
+	ostringstream oss;
+
+	oss << "<!DOCTYPE html>\n<html><body>"
+		<< "<h1>session</h1>"
+		<< "<p>id: " << sid << "</p>"
+		<< "<p>visits: " << n << "</p>"
+		<< "</body></html>\n";
+	res.SetStatus(200);
+	res.SetHeader("Content-Type", "text/html; charset=utf-8");
+	res.SetBody(oss.str());
+	return res;
 }
