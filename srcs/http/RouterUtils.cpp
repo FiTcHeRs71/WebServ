@@ -252,8 +252,8 @@ string	randSessionId(void)
 	for (int i = 0; i < 16; i++)
 	{
 		unsigned char c = static_cast<unsigned char>(buf[i]);
-		id += buf[c >> 4];
-		id += buf[c & 15];
+		id += hex[c >> 4];
+		id += hex[c & 15];
 	}
 	return id;
 }
