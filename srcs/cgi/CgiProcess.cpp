@@ -132,28 +132,20 @@ static const int	MAX_FD = 1024;
  */
 static void	closeInheritedFds(void)
 {
-	int	dir_fd = open("/proc/self/fd", O_RDONLY);
-	DIR	*dir;
-
-	if (dir_fd >= 0)
-		close(dir_fd);
-	dir = opendir("/proc/self/fd");
-	if (dir_fd < 0 || dir == NULL)
+	DIR *dir = opendir("/proc/self/fd");
+	if (dir == NULL)
 	{
-		if (dir != NULL)
-			closedir(dir);
-		for (int fd = STDERR_FILENO + 1; fd < MAX_FD; fd++)
+		for (int fd = 3; fd < MAX_FD; fd++)
 			close(fd);
 		return ;
 	}
 	std::vector<int>	open_fds;
+	int skip = dirfd(dir);
 	struct dirent		*entry;
-
 	while ((entry = readdir(dir)) != NULL)
 	{
 		int	fd = atoi(entry->d_name);
-
-		if (fd > STDERR_FILENO && fd < MAX_FD && fd != dir_fd)
+		if (fd > 2 && fd < MAX_FD && fd != skip)
 			open_fds.push_back(fd);
 	}
 	closedir(dir);
@@ -230,13 +222,10 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 			_exit(1);
 		if (dup2(pip_in[0], STDIN_FILENO) < 0 || dup2(pip_out[1], STDOUT_FILENO) < 0)
 		{
-			close(STDIN_FILENO);
 			_exit(1);
 		}
 		closeInheritedFds();
 		execve(argv[0], argv, envp);
-		close(STDIN_FILENO);
-		close(STDOUT_FILENO);
 		_exit(1);
 	}
 	delete[] envp;
