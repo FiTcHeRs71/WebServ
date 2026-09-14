@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <vector>
+#include <dirent.h>
 #include <sys/wait.h>
 #include <sstream>
 #include "../../includes/Logger.hpp"
@@ -113,6 +114,53 @@ void	CgiProcess::ClearOutBuf(){
 }
 
 	/*===Member Function===*/
+/// Borne haute des descripteurs fermes dans l'enfant, voir closeInheritedFds().
+static const int	MAX_FD = 1024;
+
+/**
+ * @brief Ferme, dans l'enfant, tout ce qui est herite du serveur : sockets
+ * d'ecoute, connexions des autres clients, fichiers en cours de lecture, et
+ * les extremites de pipe deja dupliquees sur 0/1. FD_CLOEXEC n'est pas une
+ * option : le sujet limite fcntl() a F_SETFL / O_NONBLOCK.
+ *
+ * /proc/self/fd donne la liste exacte des descripteurs ouverts, ce qui evite
+ * de fermer a l'aveugle des numeros non ouverts : ces close() renvoient EBADF
+ * sans consequence, mais valgrind --track-fds=yes les signale un par un et
+ * noie le rapport.
+ *
+ * @note A n'appeler qu'entre fork() et execve(), jamais dans le parent.
+ */
+static void	closeInheritedFds(void)
+{
+	int	dir_fd = open("/proc/self/fd", O_RDONLY);
+	DIR	*dir;
+
+	if (dir_fd >= 0)
+		close(dir_fd);
+	dir = opendir("/proc/self/fd");
+	if (dir_fd < 0 || dir == NULL)
+	{
+		if (dir != NULL)
+			closedir(dir);
+		for (int fd = STDERR_FILENO + 1; fd < MAX_FD; fd++)
+			close(fd);
+		return ;
+	}
+	std::vector<int>	open_fds;
+	struct dirent		*entry;
+
+	while ((entry = readdir(dir)) != NULL)
+	{
+		int	fd = atoi(entry->d_name);
+
+		if (fd > STDERR_FILENO && fd < MAX_FD && fd != dir_fd)
+			open_fds.push_back(fd);
+	}
+	closedir(dir);
+	for (size_t i = 0; i < open_fds.size(); i++)
+		close(open_fds[i]);
+}
+
 /**
  * @brief Demarre l'execution du script CGI correspondant a la requete.
  * @param request  La requete HTTP a transmettre au processus CGI.
@@ -181,14 +229,14 @@ bool	CgiProcess::Start(const Request &request, const LocationConfig &location,
 		if (chdir(dir_c) < 0)
 			_exit(1);
 		if (dup2(pip_in[0], STDIN_FILENO) < 0 || dup2(pip_out[1], STDOUT_FILENO) < 0)
+		{
+			close(STDIN_FILENO);
 			_exit(1);
-		// Fermeture en force de tout ce qui est herite du serveur : sockets
-		// d'ecoute, connexions des autres clients, et les extremites de pipe
-		// deja dupliquees sur 0/1 juste au-dessus. FD_CLOEXEC n'est pas une
-		// option : le sujet limite fcntl() a F_SETFL / O_NONBLOCK.
-		for (int fd = 3; fd < 1024; fd++)
-			close(fd);
+		}
+		closeInheritedFds();
 		execve(argv[0], argv, envp);
+		close(STDIN_FILENO);
+		close(STDOUT_FILENO);
 		_exit(1);
 	}
 	delete[] envp;
