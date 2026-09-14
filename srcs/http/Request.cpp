@@ -818,6 +818,7 @@ string	Request::getCookie(const string &name) const
 		return ("");
 	return (it->second);
 }
+
 bool	Request::hasCookie(const string &name) const
 {
 	return (getCookies().count(name) != 0);
