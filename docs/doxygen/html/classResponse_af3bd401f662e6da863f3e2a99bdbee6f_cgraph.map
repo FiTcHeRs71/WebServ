@@ -1,0 +1,5 @@
+<map id="Response::SwapBody" name="Response::SwapBody">
+<area shape="rect" id="Node000001" title="idem, mais vole le buffer : pas de copie du corps CGI" alt="" coords="5,5,167,31"/>
+<area shape="rect" id="Node000002" href="$classResponse.html#a57e91a47a4522fa82bd99dd7464e1c87" title=" " alt="" coords="215,5,376,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="167,15,201,15,201,21,167,21"/>
+</map>

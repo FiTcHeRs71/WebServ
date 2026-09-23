@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>webserv:  Fichier source de includes/Default.hpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">webserv
+   </div>
+   <div id="projectbrief">Serveur HTTP/1.1 non bloquant -- 42</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Généré par Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','Recherche');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function() { init_codefold(0); });
+/* @license-end */
+</script>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('Default_8hpp_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Chargement...</div>
+<div class="SRStatus" id="Searching">Recherche...</div>
+<div class="SRStatus" id="NoMatches">Aucune correspondance</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">Default.hpp</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="Default_8hpp.html">Aller à la documentation de ce fichier.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef DEFAULT_HPP</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor"># define DEFAULT_HPP</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor"># include &lt;ctime&gt;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor"># include &lt;iostream&gt;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="keyword">using namespace </span>std;</div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span> </div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno"><a class="line" href="Default_8hpp.html#a9c8d98262e3f462e76b6c35b31cfc91b">    9</a></span><span class="preprocessor"># define MAXHEADERS     100         </span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno"><a class="line" href="Default_8hpp.html#ac45c1ef901e114b2cdc10c5d1f25a57a">   10</a></span><span class="preprocessor"># define MAX_URI_LENGTH 8192        </span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno"><a class="line" href="Default_8hpp.html#a6b20d41d6252e9871430c242cb1a56e7">   11</a></span><span class="preprocessor"># define BUFFER_SIZE    8192        </span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno"><a class="line" href="Default_8hpp.html#a2414bc8ed6edcb836c1a2a9fff488a5f">   12</a></span><span class="preprocessor"># define MAX_METHOD_LENGTH 16</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="Default_8hpp.html#af199a39319b90015d86f3c3ccccf42bc">   13</a></span><span class="preprocessor"># define MAX_HEADER_LENGTH 8192     </span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="comment">// includes/Default.hpp</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="Default_8hpp.html#a278191b342d9728a2898d86bc3814cdd">   23</a></span><span class="keyword">const</span> <span class="keywordtype">char</span> *<span class="keyword">const</span>   <a class="code hl_variable" href="Default_8hpp.html#a278191b342d9728a2898d86bc3814cdd">DEFAULT_ROOT</a>        = <span class="stringliteral">&quot;./www&quot;</span>;      </div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="Default_8hpp.html#ab362bbce67f4e88e7205f2df76cb782c">   24</a></span><span class="keyword">const</span> <span class="keywordtype">char</span> *<span class="keyword">const</span>   <a class="code hl_variable" href="Default_8hpp.html#ab362bbce67f4e88e7205f2df76cb782c">DEFAULT_INDEX</a>       = <span class="stringliteral">&quot;index.html&quot;</span>; </div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="Default_8hpp.html#a0993fc003e13f4859d7330c9b0ca69fa">   25</a></span><span class="keyword">const</span> <span class="keywordtype">char</span> *<span class="keyword">const</span>   <a class="code hl_variable" href="Default_8hpp.html#a0993fc003e13f4859d7330c9b0ca69fa">LOC_NO_SUPPORTED</a>    = <span class="stringliteral">&quot;=~^@&quot;</span>;       </div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno"><a class="line" href="Default_8hpp.html#ac7f95f96703743afcc03a7b206af445d">   26</a></span><span class="keyword">const</span> <span class="keywordtype">char</span> *<span class="keyword">const</span>   <a class="code hl_variable" href="Default_8hpp.html#ac7f95f96703743afcc03a7b206af445d">DEFAULT_HOST</a>        = <span class="stringliteral">&quot;0.0.0.0&quot;</span>;    </div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="Default_8hpp.html#a958a2fa8c22dd53bf2c2282768918756">   27</a></span><span class="keyword">const</span> <span class="keywordtype">char</span> *<span class="keyword">const</span>   <a class="code hl_variable" href="Default_8hpp.html#a958a2fa8c22dd53bf2c2282768918756">DEFAULT_LOG_FILE</a>    = <span class="stringliteral">&quot;./webserv.log&quot;</span>; </div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="Default_8hpp.html#ad30c491ca082d9e4d393aaede79be5a6">   28</a></span><span class="keyword">const</span> <span class="keywordtype">size_t</span>        <a class="code hl_variable" href="Default_8hpp.html#ad30c491ca082d9e4d393aaede79be5a6">DEFAULT_BODY_SIZE</a>   = 1048576;      </div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="Default_8hpp.html#a610f3f15565288af94817eb21fea9d13">   29</a></span><span class="keyword">const</span> <span class="keywordtype">int</span>           <a class="code hl_variable" href="Default_8hpp.html#a610f3f15565288af94817eb21fea9d13">DEFAULT_PORT</a>        = 80;           </div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="Default_8hpp.html#a9aed89136b38f63a4a5dcb18cf8d69a6">   30</a></span><span class="keyword">const</span> time_t        <a class="code hl_variable" href="Default_8hpp.html#a9aed89136b38f63a4a5dcb18cf8d69a6">TIMEOUT_HEADER</a>      = 30;           </div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno"><a class="line" href="Default_8hpp.html#ad5ba6fc985f18141ea53333e234d25b6">   31</a></span><span class="keyword">const</span> time_t        <a class="code hl_variable" href="Default_8hpp.html#ad5ba6fc985f18141ea53333e234d25b6">TIMEOUT_IDLE</a>        = 60;           </div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="Default_8hpp.html#afa0425a95a05f62a4569a2fa2f27ddd6">   32</a></span><span class="keyword">const</span> time_t        <a class="code hl_variable" href="Default_8hpp.html#afa0425a95a05f62a4569a2fa2f27ddd6">CGI_TIMEOUT</a>         = 30;           </div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span> </div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="aDefault_8hpp_html_a0993fc003e13f4859d7330c9b0ca69fa"><div class="ttname"><a href="Default_8hpp.html#a0993fc003e13f4859d7330c9b0ca69fa">LOC_NO_SUPPORTED</a></div><div class="ttdeci">const char *const LOC_NO_SUPPORTED</div><div class="ttdoc">Arguments de location non supporterpar notre webserv.</div><div class="ttdef"><b>Definition</b> <a href="Default_8hpp_source.html#l00025">Default.hpp:25</a></div></div>
+<div class="ttc" id="aDefault_8hpp_html_a278191b342d9728a2898d86bc3814cdd"><div class="ttname"><a href="Default_8hpp.html#a278191b342d9728a2898d86bc3814cdd">DEFAULT_ROOT</a></div><div class="ttdeci">const char *const DEFAULT_ROOT</div><div class="ttdoc">Valeurs appliquees quand une directive est absente du .conf.</div><div class="ttdef"><b>Definition</b> <a href="Default_8hpp_source.html#l00023">Default.hpp:23</a></div></div>
+<div class="ttc" id="aDefault_8hpp_html_a610f3f15565288af94817eb21fea9d13"><div class="ttname"><a href="Default_8hpp.html#a610f3f15565288af94817eb21fea9d13">DEFAULT_PORT</a></div><div class="ttdeci">const int DEFAULT_PORT</div><div class="ttdoc">Port d'un listen sans port explicite.</div><div class="ttdef"><b>Definition</b> <a href="Default_8hpp_source.html#l00029">Default.hpp:29</a></div></div>
+<div class="ttc" id="aDefault_8hpp_html_a958a2fa8c22dd53bf2c2282768918756"><div class="ttname"><a href="Default_8hpp.html#a958a2fa8c22dd53bf2c2282768918756">DEFAULT_LOG_FILE</a></div><div class="ttdeci">const char *const DEFAULT_LOG_FILE</div><div class="ttdoc">Chemin vers le fichier log ou COUT et CERR sont rediriger.</div><div class="ttdef"><b>Definition</b> <a href="Default_8hpp_source.html#l00027">Default.hpp:27</a></div></div>
+<div class="ttc" id="aDefault_8hpp_html_a9aed89136b38f63a4a5dcb18cf8d69a6"><div class="ttname"><a href="Default_8hpp.html#a9aed89136b38f63a4a5dcb18cf8d69a6">TIMEOUT_HEADER</a></div><div class="ttdeci">const time_t TIMEOUT_HEADER</div><div class="ttdoc">requete incomplete -&gt; 408</div><div class="ttdef"><b>Definition</b> <a href="Default_8hpp_source.html#l00030">Default.hpp:30</a></div></div>
+<div class="ttc" id="aDefault_8hpp_html_ab362bbce67f4e88e7205f2df76cb782c"><div class="ttname"><a href="Default_8hpp.html#ab362bbce67f4e88e7205f2df76cb782c">DEFAULT_INDEX</a></div><div class="ttdeci">const char *const DEFAULT_INDEX</div><div class="ttdoc">Fichier servi quand l'URI designe un repertoire.</div><div class="ttdef"><b>Definition</b> <a href="Default_8hpp_source.html#l00024">Default.hpp:24</a></div></div>
+<div class="ttc" id="aDefault_8hpp_html_ac7f95f96703743afcc03a7b206af445d"><div class="ttname"><a href="Default_8hpp.html#ac7f95f96703743afcc03a7b206af445d">DEFAULT_HOST</a></div><div class="ttdeci">const char *const DEFAULT_HOST</div><div class="ttdoc">Toutes les interfaces, valeur d'un listen implicite.</div><div class="ttdef"><b>Definition</b> <a href="Default_8hpp_source.html#l00026">Default.hpp:26</a></div></div>
+<div class="ttc" id="aDefault_8hpp_html_ad30c491ca082d9e4d393aaede79be5a6"><div class="ttname"><a href="Default_8hpp.html#ad30c491ca082d9e4d393aaede79be5a6">DEFAULT_BODY_SIZE</a></div><div class="ttdeci">const size_t DEFAULT_BODY_SIZE</div><div class="ttdoc">1 Mo, comme la directive client_max_body_size de NGINX</div><div class="ttdef"><b>Definition</b> <a href="Default_8hpp_source.html#l00028">Default.hpp:28</a></div></div>
+<div class="ttc" id="aDefault_8hpp_html_ad5ba6fc985f18141ea53333e234d25b6"><div class="ttname"><a href="Default_8hpp.html#ad5ba6fc985f18141ea53333e234d25b6">TIMEOUT_IDLE</a></div><div class="ttdeci">const time_t TIMEOUT_IDLE</div><div class="ttdoc">keep-alive inactif -&gt; close silencieux</div><div class="ttdef"><b>Definition</b> <a href="Default_8hpp_source.html#l00031">Default.hpp:31</a></div></div>
+<div class="ttc" id="aDefault_8hpp_html_afa0425a95a05f62a4569a2fa2f27ddd6"><div class="ttname"><a href="Default_8hpp.html#afa0425a95a05f62a4569a2fa2f27ddd6">CGI_TIMEOUT</a></div><div class="ttdeci">const time_t CGI_TIMEOUT</div><div class="ttdoc">duree dattente max dun enfant dans le cgi apes un fork</div><div class="ttdef"><b>Definition</b> <a href="Default_8hpp_source.html#l00032">Default.hpp:32</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_09e761304027c904456130627fd4dcf5.html">includes</a></li><li class="navelem"><a class="el" href="Default_8hpp.html">Default.hpp</a></li>
+    <li class="footer">Généré par <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

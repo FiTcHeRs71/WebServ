@@ -1,0 +1,9 @@
+<map id="includes/Struct_webserv.hpp" name="includes/Struct_webserv.hpp">
+<area shape="rect" id="Node000001" title=" " alt="" coords="37,5,244,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,76,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="126,33,70,73,67,68,123,29"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="101,79,181,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="143,31,143,65,138,65,138,31"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="205,79,268,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="158,29,211,68,208,72,155,33"/>
+</map>

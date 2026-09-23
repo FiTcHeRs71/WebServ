@@ -1,0 +1,226 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>webserv:  Fichier source de includes/Config.hpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">webserv
+   </div>
+   <div id="projectbrief">Serveur HTTP/1.1 non bloquant -- 42</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Généré par Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','Recherche');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function() { init_codefold(0); });
+/* @license-end */
+</script>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('Config_8hpp_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Chargement...</div>
+<div class="SRStatus" id="Searching">Recherche...</div>
+<div class="SRStatus" id="NoMatches">Aucune correspondance</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">Config.hpp</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="Config_8hpp.html">Aller à la documentation de ce fichier.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef CONFIG_HPP</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor"># define CONFIG_HPP</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor"># include &quot;<a class="code" href="Struct__webserv_8hpp.html">Struct_webserv.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor"># include &quot;<a class="code" href="Default_8hpp.html">Default.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor"># include &quot;<a class="code" href="LocationConfig_8hpp.html">LocationConfig.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor"># include &quot;<a class="code" href="ServerConfig_8hpp.html">ServerConfig.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor"># include &lt;cstddef&gt;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor"># include &lt;iostream&gt;</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor"># include &lt;string&gt;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor"># include &lt;vector&gt;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor"># include &lt;set&gt;</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor"># include &lt;fstream&gt;</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor"># include &lt;map&gt;</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="keyword">using namespace </span>std;</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
+<div class="foldopen" id="foldopen00031" data-start="{" data-end="};">
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno"><a class="line" href="classConfigParser.html">   31</a></span><span class="keyword">class </span><a class="code hl_class" href="classConfigParser.html">ConfigParser</a></div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>{</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span> </div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="classConfigParser.html#abb81912d72a2b249ada192c4f40d0c2c">   35</a></span>    vector&lt;string&gt;          <a class="code hl_variable" href="classConfigParser.html#abb81912d72a2b249ada192c4f40d0c2c">_LexerConfig</a>;   </div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="classConfigParser.html#a406df907aa1edf5e876031874491eeae">   36</a></span>    vector&lt;ServerConfig&gt;    <a class="code hl_variable" href="classConfigParser.html#a406df907aa1edf5e876031874491eeae">_Servers</a>;       </div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="classConfigParser.html#a60f5669ff003ec43505766799df3c77d">   37</a></span>    vector&lt;TAddrPortGroup&gt;  <a class="code hl_variable" href="classConfigParser.html#a60f5669ff003ec43505766799df3c77d">_AddrPorts</a>;     </div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span> </div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    <span class="keyword">public</span>:</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    <span class="comment">/*===Canonical Form===*/</span></div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    <a class="code hl_function" href="classConfigParser.html#affea1ae59bda153b6b8f04ebd6e155ce">ConfigParser</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    <a class="code hl_function" href="classConfigParser.html#a09f7d3d9e696f9eb3bb1f3ec1bde572b">~ConfigParser</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    <a class="code hl_function" href="classConfigParser.html#affea1ae59bda153b6b8f04ebd6e155ce">ConfigParser</a>(<span class="keyword">const</span> <a class="code hl_class" href="classConfigParser.html">ConfigParser</a>&amp; to_copy);</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    <a class="code hl_class" href="classConfigParser.html">ConfigParser</a>&amp;<a class="code hl_function" href="classConfigParser.html#a0a90dba72636df4cbdf9e477f3a66154">operator=</a>(<span class="keyword">const</span> <a class="code hl_class" href="classConfigParser.html">ConfigParser</a>&amp; src);</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span> </div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    <span class="comment">/*===Getters &amp; Setters===*/</span></div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    <span class="keyword">const</span> vector&lt;ServerConfig&gt;      &amp;<a class="code hl_function" href="classConfigParser.html#accbf7ac90776e8726cd92202ea46b0c7">getServers</a>(<span class="keywordtype">void</span>) <span class="keyword">const</span>;                    </div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    <span class="keyword">const</span> vector&lt;TAddrPortGroup&gt;    &amp;<a class="code hl_function" href="classConfigParser.html#ad7e54a715496137af9e7b4ab7a7900ee">getAddrPorts</a>(<span class="keywordtype">void</span>) <span class="keyword">const</span>;                  </div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span> </div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    <span class="comment">/*===Member Function===*/</span></div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    <span class="keywordtype">void</span>                <a class="code hl_function" href="classConfigParser.html#a9132bc366b8112a7a86f64cb0696ad00">check_syntax</a>(<span class="keyword">const</span> vector&lt;string&gt; &amp;tokens);         </div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <span class="keywordtype">void</span>                <a class="code hl_function" href="classConfigParser.html#af923a22b74c51b584cf12d8cfdbbda8f">build_addr_port_groups</a>(<span class="keywordtype">void</span>);                       </div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    <span class="keywordtype">void</span>                <a class="code hl_function" href="classConfigParser.html#a3772c7128b75b6cac5f7a3133106a2d2">tokenize</a>(<span class="keyword">const</span> <span class="keywordtype">string</span> &amp;path);                       </div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    <span class="keyword">friend</span> <span class="keywordtype">void</span>         <a class="code hl_friend" href="classConfigParser.html#a1ad4e5f0a89fb0edb1cdd700291bd6fd">parse</a>(<span class="keyword">const</span> <span class="keywordtype">string</span> &amp;argv1, <a class="code hl_class" href="classConfigParser.html">ConfigParser</a> &amp;Config);</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    <span class="keywordtype">void</span>                <a class="code hl_function" href="classConfigParser.html#ae73901151eb3f7ffd938f8557ceda6fb">fill_servers_config</a>(<span class="keywordtype">void</span>);                          </div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    <span class="keywordtype">void</span>                <a class="code hl_function" href="classConfigParser.html#a3548613b96653fb0e62c7932aa520cdb">fill_one_server</a>(<a class="code hl_class" href="classServerConfig.html">ServerConfig</a> &amp;server, <span class="keywordtype">size_t</span> &amp;i);   </div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    <span class="keywordtype">void</span>                <a class="code hl_function" href="classConfigParser.html#a2ebf50e856d33920c7ebc297c532a0a7">apply_defaults</a>(<span class="keywordtype">void</span>);                               </div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    <span class="keywordtype">void</span>                <a class="code hl_function" href="classConfigParser.html#a2051acdc323ac2f7fa3da4a6c4cc24d9">resolve_paths</a>(<span class="keywordtype">void</span>);                                </div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>};</div>
+</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span> </div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span><span class="comment">/* === Helpers === */</span></div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>vector&lt;string&gt;          <a class="code hl_function" href="Config_8hpp.html#a4bd4204c0a89d7173d4e1c400770b74f">collect_values</a>(vector&lt;string&gt; &amp;token, <span class="keywordtype">size_t</span> &amp;i);</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span><span class="keywordtype">void</span>                    <a class="code hl_function" href="Config_8hpp.html#aefa5a3506e35469bdc1dda6481699859">is_valid_file</a>(ifstream &amp;file);</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span><span class="keywordtype">void</span>                    <a class="code hl_function" href="Config_8hpp.html#a1b5a7a9af18908a3839a66bfaa7b0884">check_valid_path</a>(<span class="keyword">const</span> <span class="keywordtype">string</span> &amp;path);</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span><span class="keywordtype">void</span>                    <a class="code hl_function" href="Config_8hpp.html#a1ad4e5f0a89fb0edb1cdd700291bd6fd">parse</a>(<span class="keyword">const</span> <span class="keywordtype">string</span> &amp;argv1, <a class="code hl_class" href="classConfigParser.html">ConfigParser</a> &amp;Config);</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span><span class="keyword">const</span> set&lt;string&gt;       &amp;<a class="code hl_function" href="Config_8hpp.html#a24b9db616facc9dc6745c15ed0679f6b">known_directives</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span><span class="keyword">const</span> set&lt;string&gt;       &amp;<a class="code hl_function" href="Config_8hpp.html#a87d84f83873a929055dda3fdd55aa1e5">known_methods</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span><span class="keyword">const</span> set&lt;string&gt;       &amp;<a class="code hl_function" href="Config_8hpp.html#aef002d3eb1502801a5e459db083a4115">known_listen_parameters</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span><span class="keywordtype">size_t</span>                  <a class="code hl_function" href="Config_8hpp.html#ac3d997aa0c902e9a392a2fefa13dcaf3">parse_body_size</a>(<span class="keyword">const</span> <span class="keywordtype">string</span> &amp;value);</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>map&lt;int, string&gt;        <a class="code hl_function" href="Config_8hpp.html#aa9316ac37e6cdff2f42ebfe1272e0976">parse_error_pages</a>(<span class="keyword">const</span> vector&lt;string&gt; &amp;value, <span class="keywordtype">size_t</span> &amp;j);</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>set&lt;string&gt;             <a class="code hl_function" href="Config_8hpp.html#ac27743f1e2355a52bc397fd323718c11">parse_allow_methods</a>(<span class="keyword">const</span> vector&lt;string&gt; &amp;value);</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span><span class="keywordtype">string</span>                  <a class="code hl_function" href="Config_8hpp.html#a43b26f4f2943f506a02a431384e5853a">parse_root</a>(<span class="keyword">const</span> vector&lt;string&gt; &amp;value);</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>vector&lt;string&gt;          <a class="code hl_function" href="Config_8hpp.html#affdc8f9ddaaa0d740201412979146e4d">parse_index</a>(<span class="keyword">const</span> vector&lt;string&gt; &amp;value);</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span><span class="keywordtype">bool</span>                    <a class="code hl_function" href="Config_8hpp.html#aa00761e511b31cc62839e04645b6f0df">parse_auto_index</a>(<span class="keyword">const</span> vector&lt;string&gt; &amp;value);</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span><span class="keywordtype">string</span>                  <a class="code hl_function" href="Config_8hpp.html#afc812568aa7f2d9693bea69ff6cebabb">parse_cgi_ext</a>(<span class="keyword">const</span> vector&lt;string&gt; &amp;value);</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span><span class="keywordtype">string</span>                  <a class="code hl_function" href="Config_8hpp.html#a63cff8877b806e6eedc5100e65f348b3">parse_cgi_pass</a>(<span class="keyword">const</span> vector&lt;string&gt; &amp;value);</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span><span class="keywordtype">int</span>                     <a class="code hl_function" href="Config_8hpp.html#ad8308dcbd234856efeffc00316801af7">parser_return_code</a>(<span class="keyword">const</span> <span class="keywordtype">string</span> &amp;value, <span class="keyword">const</span> <span class="keywordtype">size_t</span> nb_args);</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span><span class="keywordtype">string</span>                  <a class="code hl_function" href="Config_8hpp.html#a008459d98b1be4d08ff79981af874736">parse_upload_store</a>(<span class="keyword">const</span> vector&lt;string&gt; &amp;value);</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>vector&lt;TListenConfig&gt;   <a class="code hl_function" href="Config_8hpp.html#ac357b301ac0bd6aa2982b731b8835e33">parse_listen_directive</a>(<span class="keyword">const</span> vector&lt;string&gt; &amp;tokens);</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span><span class="keywordtype">string</span>                  <a class="code hl_function" href="Config_8hpp.html#af0c3d29c48967d73339d55d6f268dd65">to_absolute</a>(<span class="keyword">const</span> <span class="keywordtype">string</span> &amp;path, <span class="keyword">const</span> <span class="keywordtype">string</span> &amp;cwd);</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span><span class="keyword">const</span> <a class="code hl_class" href="classServerConfig.html">ServerConfig</a>      &amp;<a class="code hl_function" href="Config_8hpp.html#a544ca41e4759d0ff376ac09cd6c333cb">SelectServer</a>(<span class="keyword">const</span> <a class="code hl_class" href="classConfigParser.html">ConfigParser</a> &amp;config, <span class="keywordtype">size_t</span> group_index, <span class="keyword">const</span> <span class="keywordtype">string</span> &amp;host_header);</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span> </div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span><span class="preprocessor">#endif </span><span class="comment">/*CONFIG_HPP*/</span><span class="preprocessor"></span></div>
+<div class="ttc" id="aConfig_8hpp_html_a008459d98b1be4d08ff79981af874736"><div class="ttname"><a href="Config_8hpp.html#a008459d98b1be4d08ff79981af874736">parse_upload_store</a></div><div class="ttdeci">string parse_upload_store(const vector&lt; string &gt; &amp;value)</div><div class="ttdoc">Prend tous les arguments de &lt;upload_store&gt; et verifie leurs valeurs.</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00347">utils.cpp:347</a></div></div>
+<div class="ttc" id="aConfig_8hpp_html_a1ad4e5f0a89fb0edb1cdd700291bd6fd"><div class="ttname"><a href="Config_8hpp.html#a1ad4e5f0a89fb0edb1cdd700291bd6fd">parse</a></div><div class="ttdeci">void parse(const string &amp;argv1, ConfigParser &amp;Config)</div><div class="ttdoc">Fonction d'entree pour le parsing et le checking.</div><div class="ttdef"><b>Definition</b> <a href="config_8cpp_source.html#l00055">config.cpp:82</a></div></div>
+<div class="ttc" id="aConfig_8hpp_html_a1b5a7a9af18908a3839a66bfaa7b0884"><div class="ttname"><a href="Config_8hpp.html#a1b5a7a9af18908a3839a66bfaa7b0884">check_valid_path</a></div><div class="ttdeci">void check_valid_path(const string &amp;path)</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00373">utils.cpp:373</a></div></div>
+<div class="ttc" id="aConfig_8hpp_html_a24b9db616facc9dc6745c15ed0679f6b"><div class="ttname"><a href="Config_8hpp.html#a24b9db616facc9dc6745c15ed0679f6b">known_directives</a></div><div class="ttdeci">const set&lt; string &gt; &amp; known_directives(void)</div><div class="ttdoc">Contient toutes les directives (key) valides acceptees dans le .conf ex : -&gt;listen&lt;- 0....</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00038">utils.cpp:38</a></div></div>
+<div class="ttc" id="aConfig_8hpp_html_a43b26f4f2943f506a02a431384e5853a"><div class="ttname"><a href="Config_8hpp.html#a43b26f4f2943f506a02a431384e5853a">parse_root</a></div><div class="ttdeci">string parse_root(const vector&lt; string &gt; &amp;value)</div><div class="ttdoc">Prend tous les arguments de &lt;root&gt; et verifie leurs valeurs.</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00245">utils.cpp:245</a></div></div>
+<div class="ttc" id="aConfig_8hpp_html_a4bd4204c0a89d7173d4e1c400770b74f"><div class="ttname"><a href="Config_8hpp.html#a4bd4204c0a89d7173d4e1c400770b74f">collect_values</a></div><div class="ttdeci">vector&lt; string &gt; collect_values(vector&lt; string &gt; &amp;token, size_t &amp;i)</div><div class="ttdoc">Remplit un vecteur de toutes les valeurs associees a une key.</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00207">utils.cpp:207</a></div></div>
+<div class="ttc" id="aConfig_8hpp_html_a544ca41e4759d0ff376ac09cd6c333cb"><div class="ttname"><a href="Config_8hpp.html#a544ca41e4759d0ff376ac09cd6c333cb">SelectServer</a></div><div class="ttdeci">const ServerConfig &amp; SelectServer(const ConfigParser &amp;config, size_t group_index, const string &amp;host_header)</div><div class="ttdoc">renvoie le serveur demande dans la requete HTTP ou le default serveur.</div><div class="ttdef"><b>Definition</b> <a href="resolve__server_8cpp_source.html#l00036">resolve_server.cpp:36</a></div></div>
+<div class="ttc" id="aConfig_8hpp_html_a63cff8877b806e6eedc5100e65f348b3"><div class="ttname"><a href="Config_8hpp.html#a63cff8877b806e6eedc5100e65f348b3">parse_cgi_pass</a></div><div class="ttdeci">string parse_cgi_pass(const vector&lt; string &gt; &amp;value)</div><div class="ttdoc">Prend tous les arguments de &lt;cgi_pass&gt; et verifie leurs valeurs.</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00308">utils.cpp:308</a></div></div>
+<div class="ttc" id="aConfig_8hpp_html_a87d84f83873a929055dda3fdd55aa1e5"><div class="ttname"><a href="Config_8hpp.html#a87d84f83873a929055dda3fdd55aa1e5">known_methods</a></div><div class="ttdeci">const set&lt; string &gt; &amp; known_methods(void)</div><div class="ttdoc">Contient toutes les methodes HTTP acceptees par notre webserv.</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00056">utils.cpp:56</a></div></div>
+<div class="ttc" id="aConfig_8hpp_html_aa00761e511b31cc62839e04645b6f0df"><div class="ttname"><a href="Config_8hpp.html#aa00761e511b31cc62839e04645b6f0df">parse_auto_index</a></div><div class="ttdeci">bool parse_auto_index(const vector&lt; string &gt; &amp;value)</div><div class="ttdoc">Prend tous les arguments de &lt;auto_index&gt; et verifie leurs valeurs.</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00276">utils.cpp:276</a></div></div>
+<div class="ttc" id="aConfig_8hpp_html_aa9316ac37e6cdff2f42ebfe1272e0976"><div class="ttname"><a href="Config_8hpp.html#aa9316ac37e6cdff2f42ebfe1272e0976">parse_error_pages</a></div><div class="ttdeci">map&lt; int, string &gt; parse_error_pages(const vector&lt; string &gt; &amp;value, size_t &amp;j)</div><div class="ttdoc">Cree une map STL contenant le code d'erreur associe au PATH de la page dediee Check si le code d'erre...</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00178">utils.cpp:178</a></div></div>
+<div class="ttc" id="aConfig_8hpp_html_ac27743f1e2355a52bc397fd323718c11"><div class="ttname"><a href="Config_8hpp.html#ac27743f1e2355a52bc397fd323718c11">parse_allow_methods</a></div><div class="ttdeci">set&lt; string &gt; parse_allow_methods(const vector&lt; string &gt; &amp;value)</div><div class="ttdoc">Prend tous les arguments de &lt;allow_methods&gt; et verifie leurs valeurs.</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00226">utils.cpp:226</a></div></div>
+<div class="ttc" id="aConfig_8hpp_html_ac357b301ac0bd6aa2982b731b8835e33"><div class="ttname"><a href="Config_8hpp.html#ac357b301ac0bd6aa2982b731b8835e33">parse_listen_directive</a></div><div class="ttdeci">vector&lt; TListenConfig &gt; parse_listen_directive(const vector&lt; string &gt; &amp;tokens)</div><div class="ttdoc">Valide les arguments donner a l'instruction listen.</div><div class="ttdef"><b>Definition</b> <a href="listen_8cpp_source.html#l00096">listen.cpp:96</a></div></div>
+<div class="ttc" id="aConfig_8hpp_html_ac3d997aa0c902e9a392a2fefa13dcaf3"><div class="ttname"><a href="Config_8hpp.html#ac3d997aa0c902e9a392a2fefa13dcaf3">parse_body_size</a></div><div class="ttdeci">size_t parse_body_size(const string &amp;value)</div><div class="ttdoc">Fait la conversion de la value donnee par client_max_body_size en size_t Check si un suffixe de taill...</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00144">utils.cpp:144</a></div></div>
+<div class="ttc" id="aConfig_8hpp_html_ad8308dcbd234856efeffc00316801af7"><div class="ttname"><a href="Config_8hpp.html#ad8308dcbd234856efeffc00316801af7">parser_return_code</a></div><div class="ttdeci">int parser_return_code(const string &amp;value, const size_t nb_args)</div><div class="ttdoc">Verifie le code HTTP de la directive &lt;return&gt;.</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00324">utils.cpp:324</a></div></div>
+<div class="ttc" id="aConfig_8hpp_html_aef002d3eb1502801a5e459db083a4115"><div class="ttname"><a href="Config_8hpp.html#aef002d3eb1502801a5e459db083a4115">known_listen_parameters</a></div><div class="ttdeci">const set&lt; string &gt; &amp; known_listen_parameters(void)</div><div class="ttdoc">Contient toutes les parametres de listen existant dans NGINX.</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00070">utils.cpp:70</a></div></div>
+<div class="ttc" id="aConfig_8hpp_html_aefa5a3506e35469bdc1dda6481699859"><div class="ttname"><a href="Config_8hpp.html#aefa5a3506e35469bdc1dda6481699859">is_valid_file</a></div><div class="ttdeci">void is_valid_file(ifstream &amp;file)</div><div class="ttdoc">Check si le fichier de configuration est ouvrable / lisible et non vide.</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00024">utils.cpp:24</a></div></div>
+<div class="ttc" id="aConfig_8hpp_html_af0c3d29c48967d73339d55d6f268dd65"><div class="ttname"><a href="Config_8hpp.html#af0c3d29c48967d73339d55d6f268dd65">to_absolute</a></div><div class="ttdeci">string to_absolute(const string &amp;path, const string &amp;cwd)</div><div class="ttdoc">Rend absolu un chemin de configuration, comme le fait nginx au chargement.</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00398">utils.cpp:398</a></div></div>
+<div class="ttc" id="aConfig_8hpp_html_afc812568aa7f2d9693bea69ff6cebabb"><div class="ttname"><a href="Config_8hpp.html#afc812568aa7f2d9693bea69ff6cebabb">parse_cgi_ext</a></div><div class="ttdeci">string parse_cgi_ext(const vector&lt; string &gt; &amp;value)</div><div class="ttdoc">Prend tous les arguments de &lt;cgi_ext&gt; et verifie leurs valeurs.</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00293">utils.cpp:293</a></div></div>
+<div class="ttc" id="aConfig_8hpp_html_affdc8f9ddaaa0d740201412979146e4d"><div class="ttname"><a href="Config_8hpp.html#affdc8f9ddaaa0d740201412979146e4d">parse_index</a></div><div class="ttdeci">vector&lt; string &gt; parse_index(const vector&lt; string &gt; &amp;value)</div><div class="ttdoc">Prend tous les arguments de &lt;index&gt; et verifie leurs valeurs.</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00258">utils.cpp:258</a></div></div>
+<div class="ttc" id="aDefault_8hpp_html"><div class="ttname"><a href="Default_8hpp.html">Default.hpp</a></div></div>
+<div class="ttc" id="aLocationConfig_8hpp_html"><div class="ttname"><a href="LocationConfig_8hpp.html">LocationConfig.hpp</a></div></div>
+<div class="ttc" id="aServerConfig_8hpp_html"><div class="ttname"><a href="ServerConfig_8hpp.html">ServerConfig.hpp</a></div></div>
+<div class="ttc" id="aStruct__webserv_8hpp_html"><div class="ttname"><a href="Struct__webserv_8hpp.html">Struct_webserv.hpp</a></div></div>
+<div class="ttc" id="aclassConfigParser_html"><div class="ttname"><a href="classConfigParser.html">ConfigParser</a></div><div class="ttdoc">Represente toute la phase de parsing du .conf.</div><div class="ttdef"><b>Definition</b> <a href="Config_8hpp_source.html#l00031">Config.hpp:32</a></div></div>
+<div class="ttc" id="aclassConfigParser_html_a09f7d3d9e696f9eb3bb1f3ec1bde572b"><div class="ttname"><a href="classConfigParser.html#a09f7d3d9e696f9eb3bb1f3ec1bde572b">ConfigParser::~ConfigParser</a></div><div class="ttdeci">~ConfigParser(void)</div><div class="ttdef"><b>Definition</b> <a href="config_8cpp_source.html#l00024">config.cpp:24</a></div></div>
+<div class="ttc" id="aclassConfigParser_html_a0a90dba72636df4cbdf9e477f3a66154"><div class="ttname"><a href="classConfigParser.html#a0a90dba72636df4cbdf9e477f3a66154">ConfigParser::operator=</a></div><div class="ttdeci">ConfigParser &amp; operator=(const ConfigParser &amp;src)</div><div class="ttdef"><b>Definition</b> <a href="config_8cpp_source.html#l00035">config.cpp:35</a></div></div>
+<div class="ttc" id="aclassConfigParser_html_a1ad4e5f0a89fb0edb1cdd700291bd6fd"><div class="ttname"><a href="classConfigParser.html#a1ad4e5f0a89fb0edb1cdd700291bd6fd">ConfigParser::parse</a></div><div class="ttdeci">friend void parse(const string &amp;argv1, ConfigParser &amp;Config)</div><div class="ttdoc">Fonction d'entree pour le parsing et le checking.</div><div class="ttdef"><b>Definition</b> <a href="config_8cpp_source.html#l00082">config.cpp:82</a></div></div>
+<div class="ttc" id="aclassConfigParser_html_a2051acdc323ac2f7fa3da4a6c4cc24d9"><div class="ttname"><a href="classConfigParser.html#a2051acdc323ac2f7fa3da4a6c4cc24d9">ConfigParser::resolve_paths</a></div><div class="ttdeci">void resolve_paths(void)</div><div class="ttdoc">Passe 5 : rend absolus tous les chemins disque de la conf.</div><div class="ttdef"><b>Definition</b> <a href="config_8cpp_source.html#l00475">config.cpp:475</a></div></div>
+<div class="ttc" id="aclassConfigParser_html_a2ebf50e856d33920c7ebc297c532a0a7"><div class="ttname"><a href="classConfigParser.html#a2ebf50e856d33920c7ebc297c532a0a7">ConfigParser::apply_defaults</a></div><div class="ttdeci">void apply_defaults(void)</div><div class="ttdoc">Passe 4 : comble les directives absentes avec Default.hpp.</div><div class="ttdef"><b>Definition</b> <a href="config_8cpp_source.html#l00327">config.cpp:327</a></div></div>
+<div class="ttc" id="aclassConfigParser_html_a3548613b96653fb0e62c7932aa520cdb"><div class="ttname"><a href="classConfigParser.html#a3548613b96653fb0e62c7932aa520cdb">ConfigParser::fill_one_server</a></div><div class="ttdeci">void fill_one_server(ServerConfig &amp;server, size_t &amp;i)</div><div class="ttdoc">Remplit un seul bloc server.</div><div class="ttdef"><b>Definition</b> <a href="config_8cpp_source.html#l00259">config.cpp:259</a></div></div>
+<div class="ttc" id="aclassConfigParser_html_a3772c7128b75b6cac5f7a3133106a2d2"><div class="ttname"><a href="classConfigParser.html#a3772c7128b75b6cac5f7a3133106a2d2">ConfigParser::tokenize</a></div><div class="ttdeci">void tokenize(const string &amp;path)</div><div class="ttdoc">Passe 1 : decoupe le .conf en tokens.</div><div class="ttdef"><b>Definition</b> <a href="config_8cpp_source.html#l00102">config.cpp:102</a></div></div>
+<div class="ttc" id="aclassConfigParser_html_a406df907aa1edf5e876031874491eeae"><div class="ttname"><a href="classConfigParser.html#a406df907aa1edf5e876031874491eeae">ConfigParser::_Servers</a></div><div class="ttdeci">vector&lt; ServerConfig &gt; _Servers</div><div class="ttdoc">Un objet par bloc server valide.</div><div class="ttdef"><b>Definition</b> <a href="Config_8hpp_source.html#l00036">Config.hpp:36</a></div></div>
+<div class="ttc" id="aclassConfigParser_html_a60f5669ff003ec43505766799df3c77d"><div class="ttname"><a href="classConfigParser.html#a60f5669ff003ec43505766799df3c77d">ConfigParser::_AddrPorts</a></div><div class="ttdeci">vector&lt; TAddrPortGroup &gt; _AddrPorts</div><div class="ttdoc">Les struct contenant les serveur ecoutant les memes ports.</div><div class="ttdef"><b>Definition</b> <a href="Config_8hpp_source.html#l00037">Config.hpp:37</a></div></div>
+<div class="ttc" id="aclassConfigParser_html_a9132bc366b8112a7a86f64cb0696ad00"><div class="ttname"><a href="classConfigParser.html#a9132bc366b8112a7a86f64cb0696ad00">ConfigParser::check_syntax</a></div><div class="ttdeci">void check_syntax(const vector&lt; string &gt; &amp;tokens)</div><div class="ttdoc">Passe 2 : valide la structure des tokens.</div><div class="ttdef"><b>Definition</b> <a href="config_8cpp_source.html#l00154">config.cpp:154</a></div></div>
+<div class="ttc" id="aclassConfigParser_html_abb81912d72a2b249ada192c4f40d0c2c"><div class="ttname"><a href="classConfigParser.html#abb81912d72a2b249ada192c4f40d0c2c">ConfigParser::_LexerConfig</a></div><div class="ttdeci">vector&lt; string &gt; _LexerConfig</div><div class="ttdoc">Le .conf sous forme de tokens non checkes.</div><div class="ttdef"><b>Definition</b> <a href="Config_8hpp_source.html#l00035">Config.hpp:35</a></div></div>
+<div class="ttc" id="aclassConfigParser_html_accbf7ac90776e8726cd92202ea46b0c7"><div class="ttname"><a href="classConfigParser.html#accbf7ac90776e8726cd92202ea46b0c7">ConfigParser::getServers</a></div><div class="ttdeci">const vector&lt; ServerConfig &gt; &amp; getServers(void) const</div><div class="ttdoc">Les blocs server construits par fill_servers_config()</div><div class="ttdef"><b>Definition</b> <a href="config_8cpp_source.html#l00053">config.cpp:53</a></div></div>
+<div class="ttc" id="aclassConfigParser_html_ad7e54a715496137af9e7b4ab7a7900ee"><div class="ttname"><a href="classConfigParser.html#ad7e54a715496137af9e7b4ab7a7900ee">ConfigParser::getAddrPorts</a></div><div class="ttdeci">const vector&lt; TAddrPortGroup &gt; &amp; getAddrPorts(void) const</div><div class="ttdoc">La table des sockets d'ecoute.</div><div class="ttdef"><b>Definition</b> <a href="config_8cpp_source.html#l00067">config.cpp:67</a></div></div>
+<div class="ttc" id="aclassConfigParser_html_ae73901151eb3f7ffd938f8557ceda6fb"><div class="ttname"><a href="classConfigParser.html#ae73901151eb3f7ffd938f8557ceda6fb">ConfigParser::fill_servers_config</a></div><div class="ttdeci">void fill_servers_config(void)</div><div class="ttdoc">Passe 3 : construit un ServerConfig par bloc.</div><div class="ttdef"><b>Definition</b> <a href="config_8cpp_source.html#l00224">config.cpp:224</a></div></div>
+<div class="ttc" id="aclassConfigParser_html_af923a22b74c51b584cf12d8cfdbbda8f"><div class="ttname"><a href="classConfigParser.html#af923a22b74c51b584cf12d8cfdbbda8f">ConfigParser::build_addr_port_groups</a></div><div class="ttdeci">void build_addr_port_groups(void)</div><div class="ttdoc">Passe 5 : regroupe les servers par host:port et detecte les conflits.</div><div class="ttdef"><b>Definition</b> <a href="config_8cpp_source.html#l00387">config.cpp:387</a></div></div>
+<div class="ttc" id="aclassConfigParser_html_affea1ae59bda153b6b8f04ebd6e155ce"><div class="ttname"><a href="classConfigParser.html#affea1ae59bda153b6b8f04ebd6e155ce">ConfigParser::ConfigParser</a></div><div class="ttdeci">ConfigParser(void)</div><div class="ttdef"><b>Definition</b> <a href="config_8cpp_source.html#l00020">config.cpp:20</a></div></div>
+<div class="ttc" id="aclassServerConfig_html"><div class="ttname"><a href="classServerConfig.html">ServerConfig</a></div><div class="ttdoc">Represente la configuration d'un serveur virtuel (bloc &quot;server&quot;).</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8hpp_source.html#l00021">ServerConfig.hpp:22</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_09e761304027c904456130627fd4dcf5.html">includes</a></li><li class="navelem"><a class="el" href="Config_8hpp.html">Config.hpp</a></li>
+    <li class="footer">Généré par <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

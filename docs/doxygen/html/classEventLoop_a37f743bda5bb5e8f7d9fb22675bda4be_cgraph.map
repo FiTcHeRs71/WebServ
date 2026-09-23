@@ -1,0 +1,75 @@
+<map id="EventLoop::HandleCgiEvent" name="EventLoop::HandleCgiEvent">
+<area shape="rect" id="Node000001" title="I/O pipe CGI (B&#45;07) : lit/ecrit selon revents." alt="" coords="5,645,208,671"/>
+<area shape="rect" id="Node000002" href="$classResponse.html#aeaa3673db99a8c45772c3a5a5b949c4a" title="Lit le fichier d&#39;erreur s&#39;il existe, sinon cree un built in, renvoie le tout comme reponse." alt="" coords="278,251,435,276"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="112,644,167,537,208,463,254,389,295,332,333,285,338,288,299,335,258,391,213,465,171,539,116,647"/>
+<area shape="rect" id="Node000004" href="$classResponse.html#a2b91a2e06e39090e0ec2dfde64820dbb" title="Cree un body de reponse http en fonction de l&#39;erreur." alt="" coords="510,55,703,95"/>
+<area shape="poly" id="edge14_Node000001_Node000004" title=" " alt="" coords="107,645,116,576,140,469,159,408,184,347,215,289,254,236,280,210,309,186,372,147,438,118,500,97,502,102,440,123,374,152,312,191,283,214,258,240,220,292,189,350,164,410,145,470,121,577,112,645"/>
+<area shape="rect" id="Node000006" href="$classResponse.html#a57e91a47a4522fa82bd99dd7464e1c87" title=" " alt="" coords="969,272,1131,297"/>
+<area shape="poly" id="edge41_Node000001_Node000006" title=" " alt="" coords="125,643,181,610,217,593,255,581,312,566,359,557,405,560,459,581,476,597,484,616,491,634,507,649,541,664,571,672,598,673,625,671,683,661,756,655,805,662,844,672,862,674,880,674,899,668,920,656,958,621,988,578,1010,530,1026,479,1036,430,1043,383,1046,311,1052,311,1048,384,1042,431,1031,481,1015,532,992,580,962,624,923,660,901,673,881,679,862,680,843,677,804,667,756,661,684,666,626,676,598,679,570,677,539,669,504,654,486,637,479,618,472,600,456,586,404,566,360,563,314,571,257,586,219,598,184,614,128,647"/>
+<area shape="rect" id="Node000010" href="$classResponse.html#a7f9b175d957559236e0b065e4d495963" title="pose _StatusCode ET _StatusText" alt="" coords="529,372,684,397"/>
+<area shape="poly" id="edge42_Node000001_Node000010" title=" " alt="" coords="113,644,133,611,165,567,206,520,255,480,318,446,387,421,454,403,515,392,516,397,455,408,388,426,321,451,257,484,210,524,169,570,138,614,117,647"/>
+<area shape="rect" id="Node000012" href="$classCgiProcess.html#a5110d793370ab14acc4786f68d5155cc" title="libere la sortie brute des qu&#39;elle est parsee" alt="" coords="267,596,447,621"/>
+<area shape="poly" id="edge13_Node000001_Node000012" title=" " alt="" coords="171,643,278,621,279,627,172,648"/>
+<area shape="rect" id="Node000013" href="$classCgiProcess.html#a782f9a995e91b8398cda546b4489998a" title="par reference : la sortie CGI peut peser 100 Mo" alt="" coords="272,645,441,671"/>
+<area shape="poly" id="edge15_Node000001_Node000013" title=" " alt="" coords="208,655,258,655,258,661,208,661"/>
+<area shape="rect" id="Node000014" href="$classCgiProcess.html#ad718f5bbc4da3d1fb5fe1e6687218319" title="Retourne le descripteur de lecture du pipe vers le CGI." alt="" coords="270,695,443,720"/>
+<area shape="poly" id="edge16_Node000001_Node000014" title=" " alt="" coords="172,668,279,689,278,695,171,673"/>
+<area shape="rect" id="Node000015" href="$classRequest.html#a77c68b828229478cad061649775c7147" title=" " alt="" coords="263,744,450,769"/>
+<area shape="poly" id="edge17_Node000001_Node000015" title=" " alt="" coords="131,668,187,698,257,729,285,738,283,743,255,734,185,703,129,673"/>
+<area shape="rect" id="Node000016" href="$classCgiProcess.html#aa85023e28d1083c853f33238c12e1bbe" title="Retourne le descripteur d&#39;ecriture du pipe vers le CGI." alt="" coords="269,793,444,819"/>
+<area shape="poly" id="edge18_Node000001_Node000016" title=" " alt="" coords="122,669,177,722,215,752,257,778,276,786,274,791,255,783,212,757,173,726,118,673"/>
+<area shape="rect" id="Node000017" href="$classCgiProcess.html#ad3bc070224d604bbeb3ad7609914d31c" title="Ferme le stdin du CGI : D&#45;03, quand le body est entierement ecrit." alt="" coords="256,843,457,868"/>
+<area shape="poly" id="edge19_Node000001_Node000017" title=" " alt="" coords="117,669,138,702,169,745,209,790,257,828,272,835,269,840,255,832,206,794,165,748,133,705,113,672"/>
+<area shape="rect" id="Node000020" href="$classCgiProcess.html#aec364e3e87c41ce73dcafea03532a335" title=" " alt="" coords="259,892,454,917"/>
+<area shape="poly" id="edge22_Node000001_Node000020" title=" " alt="" coords="115,670,133,711,162,767,204,827,229,854,258,877,269,884,266,889,254,882,226,858,200,830,158,770,128,713,110,672"/>
+<area shape="rect" id="Node000022" href="$cgi_8cpp.html#ac300ea8c2409fbc00c754021ea20f7b2" title="Convertit la sortie brute d&#39;un CGI en Response prete a serialiser." alt="" coords="290,495,423,520"/>
+<area shape="poly" id="edge25_Node000001_Node000022" title=" " alt="" coords="119,643,175,592,213,563,255,537,290,522,292,527,257,542,216,567,178,596,122,647"/>
+<area shape="rect" id="Node000027" href="$classCgiProcess.html#a3afe3860325ee426a7a319b06d5e2629" title="waitpid" alt="" coords="289,991,424,1016"/>
+<area shape="poly" id="edge33_Node000001_Node000027" title=" " alt="" coords="113,670,124,726,150,809,169,855,193,899,222,940,258,976,278,988,275,993,254,980,218,944,189,902,164,857,145,811,119,728,107,671"/>
+<area shape="rect" id="Node000028" href="$classResponse.html#a8851d9a332f43f66d2964b7c6f4bf0f7" title="Serialise la reponse HTTP en une chaine prete a etre envoyee sur le socket." alt="" coords="532,5,681,31"/>
+<area shape="poly" id="edge34_Node000001_Node000028" title=" " alt="" coords="105,645,110,564,118,504,130,435,148,363,174,289,209,219,254,156,281,129,313,105,381,68,452,43,518,27,519,33,454,48,383,73,315,110,285,133,258,160,214,222,179,291,153,364,135,437,123,505,116,565,111,645"/>
+<area shape="rect" id="Node000030" href="$classEventLoop.html#a7c1b4adc44f2e5867b5461fb2c530ad1" title="Re&#45;arme POLLIN / POLLOUT sur un fd deja surveille." alt="" coords="275,941,438,967"/>
+<area shape="poly" id="edge38_Node000001_Node000030" title=" " alt="" coords="114,670,128,719,156,789,175,826,199,863,226,897,258,927,267,933,264,937,254,931,222,901,194,866,171,829,151,791,123,721,109,672"/>
+<area shape="rect" id="Node000003" href="$classServerConfig.html#abc10b3c8133bbe2715745435befd5c76" title="Traduit une URI en chemin disque via le root de la location." alt="" coords="516,323,697,348"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="402,273,549,316,548,321,401,279"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="367,249,441,168,504,105,515,99,518,103,507,109,445,171,371,252"/>
+<area shape="rect" id="Node000005" href="$classResponse.html#a38d47b3fe3909d0a6851c8f672fa4c8b" title="pose aussi Content&#45;Length" alt="" coords="765,171,912,196"/>
+<area shape="poly" id="edge9_Node000002_Node000005" title=" " alt="" coords="385,248,439,226,505,206,569,195,634,187,752,181,752,186,634,192,569,200,506,211,441,231,387,253"/>
+<area shape="poly" id="edge10_Node000002_Node000006" title=" " alt="" coords="436,263,956,279,955,284,435,268"/>
+<area shape="rect" id="Node000007" href="$classServerConfig.html#a81447d6457e725384798527b8587ccaa" title=" " alt="" coords="505,120,708,145"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="372,248,429,207,504,162,542,147,544,152,507,167,432,211,375,253"/>
+<area shape="rect" id="Node000008" href="$classServerConfig.html#aa65c203b34f8636d4f9f1dbcd8e157be" title="La location matchant l&#39;URI, prefixe le plus long." alt="" coords="524,221,689,247"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="435,251,510,243,511,248,436,257"/>
+<area shape="poly" id="edge11_Node000002_Node000010" title=" " alt="" coords="375,274,431,315,468,337,506,357,530,366,528,371,504,362,465,342,428,319,372,278"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="679,93,709,105,763,133,809,161,806,165,760,137,707,110,677,98"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="889,194,922,206,975,234,1021,262,1018,267,973,238,920,211,887,199"/>
+<area shape="rect" id="Node000009" href="$utils_8cpp.html#a6c5106f7f4691c9fcce1d810962fbe8f" title="check si le prefixe path s&#39;arrete sur une frontiere de segment de l&#39;URI" alt="" coords="756,221,921,247"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="690,231,742,231,742,237,690,237"/>
+<area shape="rect" id="Node000011" href="$Response_8cpp.html#a3c5697cdaf5346a857f580182a004a6a" title=" " alt="" coords="793,372,884,397"/>
+<area shape="poly" id="edge12_Node000010_Node000011" title=" " alt="" coords="684,382,779,382,779,387,684,387"/>
+<area shape="rect" id="Node000018" href="$classCgiProcess.html#a069cb5dc52300f7dcbe4e86179e97cb9" title=" " alt="" coords="513,841,700,867"/>
+<area shape="poly" id="edge20_Node000017_Node000018" title=" " alt="" coords="458,852,500,852,500,857,458,857"/>
+<area shape="rect" id="Node000019" href="$classLogger.html#abf1a44e82213ce8094057b5fa926cf72" title="Ligne horodatee &quot;date [level] msg&quot;." alt="" coords="785,891,892,916"/>
+<area shape="poly" id="edge21_Node000018_Node000019" title=" " alt="" coords="668,864,772,887,771,892,666,869"/>
+<area shape="rect" id="Node000021" href="$classCgiProcess.html#aef02846916ff0c0209bdd3707b613b17" title="Ferme le stdin du CGI : D&#45;03, quand le body est entierement ecrit." alt="" coords="513,891,701,916"/>
+<area shape="poly" id="edge23_Node000020_Node000021" title=" " alt="" coords="454,901,499,901,499,907,454,907"/>
+<area shape="poly" id="edge24_Node000021_Node000019" title=" " alt="" coords="701,901,771,901,771,906,701,906"/>
+<area shape="poly" id="edge28_Node000022_Node000006" title=" " alt="" coords="400,518,458,537,482,547,506,554,563,564,608,570,652,568,707,554,761,533,813,504,861,471,905,435,979,363,1028,306,1032,310,983,366,909,439,864,475,815,509,763,538,709,559,653,573,608,575,562,570,505,559,480,552,456,542,398,523"/>
+<area shape="poly" id="edge29_Node000022_Node000010" title=" " alt="" coords="372,492,428,450,465,426,504,406,524,399,526,404,506,411,467,431,431,454,375,497"/>
+<area shape="rect" id="Node000023" href="$classResponse.html#acb0980f3803ca2d1f4351fcd26bc988d" title="false si valeur invalide" alt="" coords="515,421,699,447"/>
+<area shape="poly" id="edge26_Node000022_Node000023" title=" " alt="" coords="393,492,505,455,535,447,536,453,506,461,394,497"/>
+<area shape="rect" id="Node000024" href="$httpUtils_8cpp.html#a6c24f17c6b20cf20061f666f2a3ff8de" title="Permet de mettre une string en lowercase." alt="" coords="559,471,654,496"/>
+<area shape="poly" id="edge27_Node000022_Node000024" title=" " alt="" coords="423,498,545,486,546,492,424,504"/>
+<area shape="rect" id="Node000025" href="$classResponse.html#af3bd401f662e6da863f3e2a99bdbee6f" title="idem, mais vole le buffer : pas de copie du corps CGI" alt="" coords="758,621,919,647"/>
+<area shape="poly" id="edge30_Node000022_Node000025" title=" " alt="" coords="419,518,459,537,475,554,483,571,491,586,507,600,564,624,626,637,688,642,744,642,744,647,687,647,625,642,563,629,504,604,487,590,478,573,470,557,456,541,416,522"/>
+<area shape="rect" id="Node000026" href="$httpUtils_8cpp.html#a8bddc3dcbfa8ff455abebaf144a1f5cf" title="Fonction permettant de trim les espaes de debut det de fin." alt="" coords="582,520,631,545"/>
+<area shape="poly" id="edge32_Node000022_Node000026" title=" " alt="" coords="424,511,568,526,568,532,423,517"/>
+<area shape="poly" id="edge31_Node000025_Node000006" title=" " alt="" coords="890,619,920,600,948,566,973,528,993,488,1009,447,1031,369,1043,311,1048,312,1036,371,1014,448,998,490,977,531,953,569,923,604,893,623"/>
+<area shape="poly" id="edge37_Node000028_Node000006" title=" " alt="" coords="682,13,738,16,801,26,864,44,895,58,923,74,947,94,968,116,1002,167,1027,217,1043,258,1038,260,1022,219,998,169,964,120,943,98,920,79,892,62,862,49,800,31,737,21,681,18"/>
+<area shape="rect" id="Node000029" href="$classResponse.html#acbc922c139261ea3a71a7880d78c317f" title="Calcule et ajoute aux headers la date en anglais a l&#39;instant T." alt="" coords="767,89,911,115"/>
+<area shape="poly" id="edge35_Node000028_Node000029" title=" " alt="" coords="666,28,709,41,802,81,799,86,707,46,665,33"/>
+<area shape="poly" id="edge36_Node000029_Node000006" title=" " alt="" coords="862,113,923,156,982,210,1030,260,1026,263,979,214,920,160,859,117"/>
+<area shape="poly" id="edge40_Node000030_Node000019" title=" " alt="" coords="438,948,565,939,708,925,771,914,772,920,708,930,565,945,438,953"/>
+<area shape="rect" id="Node000031" href="$classEventLoop.html#a4064611cef5aca07311693bc8937fec6" title="Index de fd dans _Pollfds, &#45;1 si absent." alt="" coords="536,992,677,1017"/>
+<area shape="poly" id="edge39_Node000030_Node000031" title=" " alt="" coords="421,964,531,987,530,992,420,969"/>
+</map>

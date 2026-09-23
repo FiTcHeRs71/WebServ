@@ -1,0 +1,45 @@
+<map id="ConfigParser::fill_servers_config" name="ConfigParser::fill_servers_config">
+<area shape="rect" id="Node000001" title="Passe 3 : construit un ServerConfig par bloc." alt="" coords="5,195,132,235"/>
+<area shape="rect" id="Node000002" href="$classConfigParser.html#a3548613b96653fb0e62c7932aa520cdb" title="Remplit un seul bloc server." alt="" coords="180,195,307,235"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="132,213,167,213,167,218,132,218"/>
+<area shape="rect" id="Node000003" href="$utils_8cpp.html#a4bd4204c0a89d7173d4e1c400770b74f" title="Remplit un vecteur de toutes les valeurs associees a une key." alt="" coords="606,5,721,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="262,193,302,156,353,118,414,88,477,63,592,30,593,35,479,68,416,93,356,123,305,160,265,197"/>
+<area shape="rect" id="Node000004" href="$utils_8cpp.html#ac3d997aa0c902e9a392a2fefa13dcaf3" title="Fait la conversion de la value donnee par client_max_body_size en size_t Check si un suffixe de taill..." alt="" coords="598,55,729,80"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="291,193,415,143,567,89,594,81,595,86,569,94,417,148,293,198"/>
+<area shape="rect" id="Node000005" href="$utils_8cpp.html#aa9316ac37e6cdff2f42ebfe1272e0976" title="Cree une map STL contenant le code d&#39;erreur associe au PATH de la page dediee Check si le code d&#39;erre..." alt="" coords="366,260,509,285"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="308,231,381,253,380,259,306,237"/>
+<area shape="rect" id="Node000006" href="$listen_8cpp.html#ac357b301ac0bd6aa2982b731b8835e33" title="Valide les arguments donner a l&#39;instruction listen." alt="" coords="355,523,520,548"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="259,234,424,510,419,512,254,237"/>
+<area shape="rect" id="Node000012" href="$classLocationConfig.html#a65be75a5ac5c9a662d497d51667144bb" title="Fonction d&#39;entree pour le parsing des blocs location contenus dans chaque bloc serveur." alt="" coords="356,195,519,235"/>
+<area shape="poly" id="edge11_Node000002_Node000012" title=" " alt="" coords="307,213,342,213,342,218,307,218"/>
+<area shape="rect" id="Node000007" href="$utils_8cpp.html#aef002d3eb1502801a5e459db083a4115" title="Contient toutes les parametres de listen existant dans NGINX." alt="" coords="568,499,759,524"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="520,524,554,520,555,526,521,529"/>
+<area shape="rect" id="Node000008" href="$listen_8cpp.html#a8d21fa43b58b1d7a4c2ab1241aa79908" title="Resout une adresse de directive listen en une ou plusieurs IPv4." alt="" coords="611,548,716,573"/>
+<area shape="poly" id="edge7_Node000006_Node000008" title=" " alt="" coords="521,542,598,551,597,556,520,547"/>
+<area shape="rect" id="Node000010" href="$listen_8cpp.html#ab4966be20042c4d73106caa00fce9eba" title="Separe la partie adresse de la partie port d&#39;un token listen." alt="" coords="604,597,723,623"/>
+<area shape="poly" id="edge9_Node000006_Node000010" title=" " alt="" coords="469,546,569,583,595,591,594,596,567,589,467,551"/>
+<area shape="rect" id="Node000009" href="$utils_8cpp.html#aea9cfbf41fbfe1bae093d72538eb3ac0" title="Verifie qu&#39;une chaine est une adresse IPv4 bien formee." alt="" coords="818,548,925,573"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="716,558,804,558,804,563,716,563"/>
+<area shape="rect" id="Node000011" href="$utils_8cpp.html#a33a62d02493d54e927b73969ec71f85d" title="Check si une chaine est composee uniquement de chiffres." alt="" coords="822,597,921,623"/>
+<area shape="poly" id="edge10_Node000010_Node000011" title=" " alt="" coords="723,607,808,607,808,613,723,613"/>
+<area shape="poly" id="edge12_Node000012_Node000003" title=" " alt="" coords="446,194,464,160,490,118,525,76,567,40,592,27,594,32,569,44,529,79,494,121,468,163,450,196"/>
+<area shape="poly" id="edge16_Node000012_Node000004" title=" " alt="" coords="457,193,519,132,567,89,584,81,586,86,569,94,523,135,460,197"/>
+<area shape="rect" id="Node000013" href="$utils_8cpp.html#ac27743f1e2355a52bc397fd323718c11" title="Prend tous les arguments de &lt;allow_methods&gt; et verifie leurs valeurs." alt="" coords="581,449,745,475"/>
+<area shape="poly" id="edge13_Node000012_Node000013" title=" " alt="" coords="508,233,522,246,538,271,546,295,545,343,544,367,545,390,553,412,570,435,576,440,572,444,566,438,548,415,540,391,539,367,540,343,540,296,534,273,518,249,504,238"/>
+<area shape="rect" id="Node000015" href="$utils_8cpp.html#aa00761e511b31cc62839e04645b6f0df" title="Prend tous les arguments de &lt;auto_index&gt; et verifie leurs valeurs." alt="" coords="595,104,732,129"/>
+<area shape="poly" id="edge15_Node000012_Node000015" title=" " alt="" coords="467,193,513,165,567,138,588,131,590,136,569,143,515,169,470,197"/>
+<area shape="rect" id="Node000016" href="$utils_8cpp.html#afc812568aa7f2d9693bea69ff6cebabb" title="Prend tous les arguments de &lt;cgi_ext&gt; et verifie leurs valeurs." alt="" coords="607,153,719,179"/>
+<area shape="poly" id="edge17_Node000012_Node000016" title=" " alt="" coords="519,195,593,178,594,184,520,200"/>
+<area shape="rect" id="Node000017" href="$utils_8cpp.html#a63cff8877b806e6eedc5100e65f348b3" title="Prend tous les arguments de &lt;cgi_pass&gt; et verifie leurs valeurs." alt="" coords="603,203,724,228"/>
+<area shape="poly" id="edge18_Node000012_Node000017" title=" " alt="" coords="519,213,589,213,589,218,519,218"/>
+<area shape="rect" id="Node000018" href="$utils_8cpp.html#affdc8f9ddaaa0d740201412979146e4d" title="Prend tous les arguments de &lt;index&gt; et verifie leurs valeurs." alt="" coords="613,252,714,277"/>
+<area shape="poly" id="edge19_Node000012_Node000018" title=" " alt="" coords="520,231,599,248,598,253,519,236"/>
+<area shape="rect" id="Node000019" href="$utils_8cpp.html#a43b26f4f2943f506a02a431384e5853a" title="Prend tous les arguments de &lt;root&gt; et verifie leurs valeurs." alt="" coords="618,301,709,327"/>
+<area shape="poly" id="edge20_Node000012_Node000019" title=" " alt="" coords="498,233,522,245,546,267,555,277,569,286,606,301,604,306,567,291,552,281,542,270,518,250,495,238"/>
+<area shape="rect" id="Node000020" href="$utils_8cpp.html#a008459d98b1be4d08ff79981af874736" title="Prend tous les arguments de &lt;upload_store&gt; et verifie leurs valeurs." alt="" coords="589,351,738,376"/>
+<area shape="poly" id="edge21_Node000012_Node000020" title=" " alt="" coords="504,233,522,245,539,269,546,293,553,315,570,336,579,342,576,347,566,340,548,317,541,294,534,271,518,249,501,238"/>
+<area shape="rect" id="Node000021" href="$utils_8cpp.html#ad8308dcbd234856efeffc00316801af7" title="Verifie le code HTTP de la directive &lt;return&gt;." alt="" coords="590,400,737,425"/>
+<area shape="poly" id="edge22_Node000012_Node000021" title=" " alt="" coords="507,233,522,245,535,264,543,282,546,318,549,353,556,369,570,385,580,393,576,397,566,389,552,372,544,354,540,319,537,284,531,266,518,249,503,237"/>
+<area shape="rect" id="Node000014" href="$utils_8cpp.html#a87d84f83873a929055dda3fdd55aa1e5" title="Contient toutes les methodes HTTP acceptees par notre webserv." alt="" coords="807,449,936,475"/>
+<area shape="poly" id="edge14_Node000013_Node000014" title=" " alt="" coords="746,459,793,459,793,465,746,465"/>
+</map>

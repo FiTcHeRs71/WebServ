@@ -1,0 +1,7 @@
+<map id="ConfigParser::check_syntax" name="ConfigParser::check_syntax">
+<area shape="rect" id="Node000001" title="Passe 2 : valide la structure des tokens." alt="" coords="5,23,155,63"/>
+<area shape="rect" id="Node000002" href="$utils_8cpp.html#a1b5a7a9af18908a3839a66bfaa7b0884" title=" " alt="" coords="203,5,338,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="155,31,189,26,190,31,155,36"/>
+<area shape="rect" id="Node000003" href="$utils_8cpp.html#a24b9db616facc9dc6745c15ed0679f6b" title="Contient toutes les directives (key) valides acceptees dans le .conf ex : &#45;&gt;listen&lt;&#45; 0...." alt="" coords="203,55,339,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="155,50,189,54,189,60,155,55"/>
+</map>

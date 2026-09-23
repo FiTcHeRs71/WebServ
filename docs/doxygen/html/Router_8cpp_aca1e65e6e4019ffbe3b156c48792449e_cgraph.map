@@ -1,0 +1,5 @@
+<map id="isInsideRoot" name="isInsideRoot">
+<area shape="rect" id="Node000001" title="true si path, une fois normalise, reste sous root (frontiere &#39;/&#39;)." alt="" coords="5,5,108,31"/>
+<area shape="rect" id="Node000002" href="$Router_8cpp.html#a6249fe9192fdeff4f7bb22db5b077448" title="Normalise un chemin : collapse des &#39;/&#39;, ignore &#39;." alt="" coords="156,5,271,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="108,15,142,15,142,21,108,21"/>
+</map>

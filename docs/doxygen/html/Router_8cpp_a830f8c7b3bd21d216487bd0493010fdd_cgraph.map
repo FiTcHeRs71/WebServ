@@ -1,0 +1,7 @@
+<map id="parse_multipart" name="parse_multipart">
+<area shape="rect" id="Node000001" title="Decoupe un body multipart/form&#45;data sur –boundary (RFC 7578, C&#45;10)." alt="" coords="5,5,131,31"/>
+<area shape="rect" id="Node000002" href="$RouterUtils_8cpp.html#a1560c4313bf2a479e9c458f79364cb1e" title="Extrait la valeur d&#39;un parametre ou d&#39;un header dans une part multipart." alt="" coords="179,5,265,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="131,15,165,15,165,21,131,21"/>
+<area shape="rect" id="Node000003" href="$RouterUtils_8cpp.html#a8fe061bedf9d56cc186f501d426c6bd8" title="true si key ne commence pas au milieu d&#39;un identifiant." alt="" coords="313,5,419,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="265,15,300,15,300,21,265,21"/>
+</map>

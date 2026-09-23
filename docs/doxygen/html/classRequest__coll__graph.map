@@ -1,0 +1,7 @@
+<map id="Request" name="Request">
+<area shape="rect" id="Node000001" title="Represente une requete HTTP recue par le serveur." alt="" coords="85,93,159,119"/>
+<area shape="rect" id="Node000002" href="$classServerConfig.html" title="Represente la configuration d&#39;un serveur virtuel (bloc &quot;server&quot;)." alt="" coords="5,5,111,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="77,40,115,91,111,94,73,43"/>
+<area shape="rect" id="Node000003" href="$classConfigParser.html" title="Represente toute la phase de parsing du .conf." alt="" coords="135,5,237,31"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="171,43,133,94,129,91,167,40"/>
+</map>

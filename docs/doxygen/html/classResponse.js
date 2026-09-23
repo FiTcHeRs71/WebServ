@@ -1,0 +1,26 @@
+var classResponse =
+[
+    [ "Response", "classResponse.html#af724e65cafd400c34e8475f386c70dba", null ],
+    [ "~Response", "classResponse.html#a90b38edd1408c9a654b45d5daa730a27", null ],
+    [ "Response", "classResponse.html#a3276414a281b4342a95555ac376a7c70", null ],
+    [ "AddSetCookie", "classResponse.html#acb0980f3803ca2d1f4351fcd26bc988d", null ],
+    [ "BuildError", "classResponse.html#aeaa3673db99a8c45772c3a5a5b949c4a", null ],
+    [ "ClearSetCookies", "classResponse.html#a2f22204dd3a337013639802eec62c525", null ],
+    [ "generateBuiltInError", "classResponse.html#a2b91a2e06e39090e0ec2dfde64820dbb", null ],
+    [ "getBody", "classResponse.html#adb21fb0b809cb11b411f685251004c18", null ],
+    [ "getStatus", "classResponse.html#a792a88c4ec844dbf3937d51ba88e0835", null ],
+    [ "getStatusText", "classResponse.html#ae41d7f5833cd3c9fd6331d925e068af8", null ],
+    [ "operator=", "classResponse.html#ab79e2fd3342ea975cbabb74904f4dceb", null ],
+    [ "Reset", "classResponse.html#a89dddbee9f17df2d7ea5cbf5c7eea745", null ],
+    [ "Serialize", "classResponse.html#a8851d9a332f43f66d2964b7c6f4bf0f7", null ],
+    [ "SetBody", "classResponse.html#a38d47b3fe3909d0a6851c8f672fa4c8b", null ],
+    [ "setDate", "classResponse.html#acbc922c139261ea3a71a7880d78c317f", null ],
+    [ "SetHeader", "classResponse.html#a57e91a47a4522fa82bd99dd7464e1c87", null ],
+    [ "SetStatus", "classResponse.html#a7f9b175d957559236e0b065e4d495963", null ],
+    [ "SwapBody", "classResponse.html#af3bd401f662e6da863f3e2a99bdbee6f", null ],
+    [ "_Body", "classResponse.html#adf44bd19a8e0349359c30606ad1865f0", null ],
+    [ "_Headers", "classResponse.html#a80f904d7134dfcfcbd2f00cfbb68e142", null ],
+    [ "_SetCookies", "classResponse.html#aaa20193ccdd515e11a5639d0b6e0a66a", null ],
+    [ "_StatusCode", "classResponse.html#a695185a490715656023b3ce2ce5e873c", null ],
+    [ "_StatusText", "classResponse.html#a29f0e72daed3c208f303c7e02e65a771", null ]
+];

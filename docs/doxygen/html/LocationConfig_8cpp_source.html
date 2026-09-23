@@ -1,0 +1,425 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>webserv:  Fichier source de srcs/config/LocationConfig.cpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">webserv
+   </div>
+   <div id="projectbrief">Serveur HTTP/1.1 non bloquant -- 42</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Généré par Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','Recherche');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function() { init_codefold(0); });
+/* @license-end */
+</script>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('LocationConfig_8cpp_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Chargement...</div>
+<div class="SRStatus" id="Searching">Recherche...</div>
+<div class="SRStatus" id="NoMatches">Aucune correspondance</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">LocationConfig.cpp</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="LocationConfig_8cpp.html">Aller à la documentation de ce fichier.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#include &quot;../../includes/LocationConfig.hpp&quot;</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#include &quot;../../includes/Config.hpp&quot;</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &lt;algorithm&gt;</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &lt;map&gt;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;set&gt;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;sstream&gt;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;stdexcept&gt;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span>    <span class="comment">/*===Canonical Form===*/</span></div>
+<div class="foldopen" id="foldopen00011" data-start="{" data-end="}">
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno"><a class="line" href="classLocationConfig.html#a2305d158b0f459910bd695cd40f2d72f">   11</a></span><a class="code hl_function" href="classLocationConfig.html#a2305d158b0f459910bd695cd40f2d72f">LocationConfig::LocationConfig</a>(<span class="keywordtype">void</span>)</div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>    :_AutoIndex(false)</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>    ,_ReturnCode(0)</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>    ,_HasReturn(false)</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    ,_ClientMaxBodySize(0)</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    ,_HasClientMaxBodySize(false)</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>    ,_HasUploadStore(false)</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>{</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    <span class="comment">//std::cout &lt;&lt; &quot;LocationConfig default constructor called&quot; &lt;&lt; std::endl;</span></div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>}</div>
+</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
+<div class="foldopen" id="foldopen00022" data-start="{" data-end="}">
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="classLocationConfig.html#a7ecba2fa22c98fe7b7d49d048144e0f5">   22</a></span><a class="code hl_function" href="classLocationConfig.html#a7ecba2fa22c98fe7b7d49d048144e0f5">LocationConfig::~LocationConfig</a>(<span class="keywordtype">void</span>)</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>{</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    <span class="comment">//std::cout &lt;&lt; &quot;LocationConfig default destructor called&quot; &lt;&lt; std::endl;</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>}</div>
+</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span> </div>
+<div class="foldopen" id="foldopen00027" data-start="{" data-end="}">
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="classLocationConfig.html#a0147e91d21086dce53474fea6ed7019c">   27</a></span><a class="code hl_function" href="classLocationConfig.html#a2305d158b0f459910bd695cd40f2d72f">LocationConfig::LocationConfig</a>(<span class="keyword">const</span> <a class="code hl_class" href="classLocationConfig.html">LocationConfig</a>&amp; to_copy)</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    :_Path(to_copy._Path)</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    ,_Methods(to_copy._Methods)</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    ,_Root(to_copy._Root)</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    ,_Index(to_copy._Index)</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    ,_AutoIndex(to_copy._AutoIndex)</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    ,_ReturnCode(to_copy._ReturnCode)</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    ,_HasReturn(to_copy._HasReturn)</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    ,_Cgi(to_copy._Cgi)</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    ,_ClientMaxBodySize(to_copy._ClientMaxBodySize)</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    ,_HasClientMaxBodySize(to_copy._HasClientMaxBodySize)</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    ,_ReturnTarget(to_copy._ReturnTarget)</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    ,_UploadStore(to_copy._UploadStore)</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    ,_HasUploadStore(to_copy._HasUploadStore)</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>{</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    <span class="comment">//std::cout &lt;&lt; &quot;LocationConfig copy constructor called&quot; &lt;&lt; std::endl;</span></div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>}</div>
+</div>
+<div class="foldopen" id="foldopen00044" data-start="{" data-end="}">
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="classLocationConfig.html#ab74623ed63fda740fc1f8d362cb6e149">   44</a></span><a class="code hl_class" href="classLocationConfig.html">LocationConfig</a>  &amp;<a class="code hl_function" href="classLocationConfig.html#ab74623ed63fda740fc1f8d362cb6e149">LocationConfig::operator=</a>(<span class="keyword">const</span> <a class="code hl_class" href="classLocationConfig.html">LocationConfig</a>&amp; src)</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>{</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    <span class="comment">//std::cout &lt;&lt; &quot;LocationConfig assignement operator(=) constructor called&quot; &lt;&lt; std::endl;</span></div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    <span class="keywordflow">if</span> (<span class="keyword">this</span> != &amp;src)</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    {</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>        this-&gt;<a class="code hl_variable" href="classLocationConfig.html#af72670b654bd085e2953c5c7c86fa44d">_Path</a> = src.<a class="code hl_variable" href="classLocationConfig.html#af72670b654bd085e2953c5c7c86fa44d">_Path</a>;</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>        this-&gt;<a class="code hl_variable" href="classLocationConfig.html#aef5eb81de58ee7ab16520341633fbdb2">_Methods</a> = src.<a class="code hl_variable" href="classLocationConfig.html#aef5eb81de58ee7ab16520341633fbdb2">_Methods</a>;</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>        this-&gt;<a class="code hl_variable" href="classLocationConfig.html#ad30db5c0afd970e7d760949ddde72d41">_Root</a> = src.<a class="code hl_variable" href="classLocationConfig.html#ad30db5c0afd970e7d760949ddde72d41">_Root</a>;</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>        this-&gt;<a class="code hl_variable" href="classLocationConfig.html#af68f52ae074cb1970ffd1f7789f9b32c">_Index</a> = src.<a class="code hl_variable" href="classLocationConfig.html#af68f52ae074cb1970ffd1f7789f9b32c">_Index</a>;</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>        this-&gt;<a class="code hl_variable" href="classLocationConfig.html#a2a57c83ab1395c48898bb4af699a163c">_AutoIndex</a> = src.<a class="code hl_variable" href="classLocationConfig.html#a2a57c83ab1395c48898bb4af699a163c">_AutoIndex</a>;</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>        this-&gt;<a class="code hl_variable" href="classLocationConfig.html#a45cdaf073d4735c6fe6002568e2fb301">_ReturnCode</a> = src.<a class="code hl_variable" href="classLocationConfig.html#a45cdaf073d4735c6fe6002568e2fb301">_ReturnCode</a>;</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>        this-&gt;<a class="code hl_variable" href="classLocationConfig.html#a9e66bffc38d688fe79335f0889344511">_HasReturn</a> = src.<a class="code hl_variable" href="classLocationConfig.html#a9e66bffc38d688fe79335f0889344511">_HasReturn</a>;</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>        this-&gt;<a class="code hl_variable" href="classLocationConfig.html#adce36037e3374b97cd7d6e8de7f6fb11">_Cgi</a> = src.<a class="code hl_variable" href="classLocationConfig.html#adce36037e3374b97cd7d6e8de7f6fb11">_Cgi</a>;</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>        this-&gt;<a class="code hl_variable" href="classLocationConfig.html#ad72d5e8a7528a7467cf2dd7e048fed3d">_ClientMaxBodySize</a> = src.<a class="code hl_variable" href="classLocationConfig.html#ad72d5e8a7528a7467cf2dd7e048fed3d">_ClientMaxBodySize</a>;</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>        this-&gt;<a class="code hl_variable" href="classLocationConfig.html#a53b2dfd29967c139463269b0a1710616">_HasClientMaxBodySize</a> = src.<a class="code hl_variable" href="classLocationConfig.html#a53b2dfd29967c139463269b0a1710616">_HasClientMaxBodySize</a>;</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>        this-&gt;<a class="code hl_variable" href="classLocationConfig.html#a5c863072058901825c73c2e448b81c32">_ReturnTarget</a> = src.<a class="code hl_variable" href="classLocationConfig.html#a5c863072058901825c73c2e448b81c32">_ReturnTarget</a>;</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>        this-&gt;<a class="code hl_variable" href="classLocationConfig.html#a0d3fc18002890113995689d0a25856ee">_UploadStore</a> = src.<a class="code hl_variable" href="classLocationConfig.html#a0d3fc18002890113995689d0a25856ee">_UploadStore</a>;</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>        this-&gt;<a class="code hl_variable" href="classLocationConfig.html#a67535192a26ae9b3fe783bf5c0eb6875">_HasUploadStore</a> = src.<a class="code hl_variable" href="classLocationConfig.html#a67535192a26ae9b3fe783bf5c0eb6875">_HasUploadStore</a>;</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    }</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    <span class="keywordflow">return</span> (*<span class="keyword">this</span>);</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>}</div>
+</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    <span class="comment">/*===Getters &amp; Setters===*/</span></div>
+<div class="foldopen" id="foldopen00072" data-start="{" data-end="}">
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno"><a class="line" href="classLocationConfig.html#a135463e0374d81be4a9e66097f93d6d0">   72</a></span><span class="keyword">const</span> <span class="keywordtype">string</span>    &amp;<a class="code hl_function" href="classLocationConfig.html#a135463e0374d81be4a9e66097f93d6d0">LocationConfig::getPath</a>(<span class="keywordtype">void</span>)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    <span class="keywordflow">return</span> (this-&gt;<a class="code hl_variable" href="classLocationConfig.html#af72670b654bd085e2953c5c7c86fa44d">_Path</a>);</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>}</div>
+</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span> </div>
+<div class="foldopen" id="foldopen00082" data-start="{" data-end="}">
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno"><a class="line" href="classLocationConfig.html#ac8bacc5c7b7ae0faf408e67da88a2b6f">   82</a></span><span class="keyword">const</span> <span class="keywordtype">string</span>    &amp;<a class="code hl_function" href="classLocationConfig.html#ac8bacc5c7b7ae0faf408e67da88a2b6f">LocationConfig::getRoot</a>(<span class="keywordtype">void</span>)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    <span class="keywordflow">return</span> (this-&gt;<a class="code hl_variable" href="classLocationConfig.html#ad30db5c0afd970e7d760949ddde72d41">_Root</a>);</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>}</div>
+</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span> </div>
+<div class="foldopen" id="foldopen00095" data-start="{" data-end="}">
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno"><a class="line" href="classLocationConfig.html#a530feef6f8c15dc2fb695d692fbad207">   95</a></span><span class="keyword">const</span> <span class="keywordtype">string</span>                    &amp;<a class="code hl_function" href="classLocationConfig.html#a530feef6f8c15dc2fb695d692fbad207">LocationConfig::getCgiPass</a>(<span class="keyword">const</span> <span class="keywordtype">string</span> &amp;ext)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">string</span> empty;</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>    map&lt;string, string&gt;::const_iterator it = <a class="code hl_variable" href="classLocationConfig.html#adce36037e3374b97cd7d6e8de7f6fb11">_Cgi</a>.find(ext);</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>    <span class="keywordflow">if</span> (it == <a class="code hl_variable" href="classLocationConfig.html#adce36037e3374b97cd7d6e8de7f6fb11">_Cgi</a>.end())</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>        <span class="keywordflow">return</span> (empty);</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>    <span class="keywordflow">return</span> (it-&gt;second);</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>}</div>
+</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span> </div>
+<div class="foldopen" id="foldopen00109" data-start="{" data-end="}">
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno"><a class="line" href="classLocationConfig.html#adad8b29d8fddbb6039ec19140fa03d21">  109</a></span><span class="keyword">const</span> map&lt;string, string&gt;       &amp;<a class="code hl_function" href="classLocationConfig.html#adad8b29d8fddbb6039ec19140fa03d21">LocationConfig::getCgi</a>(<span class="keywordtype">void</span>)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>    <span class="keywordflow">return</span> (this-&gt;<a class="code hl_variable" href="classLocationConfig.html#adce36037e3374b97cd7d6e8de7f6fb11">_Cgi</a>);</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>}</div>
+</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span> </div>
+<div class="foldopen" id="foldopen00120" data-start="{" data-end="}">
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno"><a class="line" href="classLocationConfig.html#a9a8fd540099f2536c62f9a4a4df99a70">  120</a></span><span class="keyword">const</span> <span class="keywordtype">size_t</span>    &amp;<a class="code hl_function" href="classLocationConfig.html#a9a8fd540099f2536c62f9a4a4df99a70">LocationConfig::getClientMaxBodySize</a>(<span class="keywordtype">void</span>)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>    <span class="keywordflow">return</span> (this-&gt;<a class="code hl_variable" href="classLocationConfig.html#ad72d5e8a7528a7467cf2dd7e048fed3d">_ClientMaxBodySize</a>);</div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>}</div>
+</div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span> </div>
+<div class="foldopen" id="foldopen00125" data-start="{" data-end="}">
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno"><a class="line" href="classLocationConfig.html#a6e9e3d072421dc98dc73805b4117e18c">  125</a></span><span class="keyword">const</span> std::set&lt;std::string&gt; &amp;<a class="code hl_function" href="classLocationConfig.html#a6e9e3d072421dc98dc73805b4117e18c">LocationConfig::getMethods</a>(<span class="keywordtype">void</span>)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>    <span class="keywordflow">return</span>(<a class="code hl_variable" href="classLocationConfig.html#aef5eb81de58ee7ab16520341633fbdb2">_Methods</a>);</div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>}</div>
+</div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span> </div>
+<div class="foldopen" id="foldopen00130" data-start="{" data-end="}">
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno"><a class="line" href="classLocationConfig.html#a001ff50e818dc40ac5baaeff47d604bb">  130</a></span><span class="keyword">const</span> std::vector&lt;string&gt;   &amp;<a class="code hl_function" href="classLocationConfig.html#a001ff50e818dc40ac5baaeff47d604bb">LocationConfig::getIndex</a>(<span class="keywordtype">void</span>)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>    <span class="keywordflow">return</span>(<a class="code hl_variable" href="classLocationConfig.html#af68f52ae074cb1970ffd1f7789f9b32c">_Index</a>);</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>}</div>
+</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span> </div>
+<div class="foldopen" id="foldopen00135" data-start="{" data-end="}">
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno"><a class="line" href="classLocationConfig.html#ab49bec38d910c5db0fb2cf93f81d2095">  135</a></span><span class="keywordtype">bool</span>    <a class="code hl_function" href="classLocationConfig.html#ab49bec38d910c5db0fb2cf93f81d2095">LocationConfig::getAutoIndex</a>(<span class="keywordtype">void</span>)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>    <span class="keywordflow">return</span>(<a class="code hl_variable" href="classLocationConfig.html#a2a57c83ab1395c48898bb4af699a163c">_AutoIndex</a>);</div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>}</div>
+</div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span> </div>
+<div class="foldopen" id="foldopen00140" data-start="{" data-end="}">
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno"><a class="line" href="classLocationConfig.html#ad1ca496370bcad242338589f6890403a">  140</a></span><span class="keywordtype">bool</span>    <a class="code hl_function" href="classLocationConfig.html#ad1ca496370bcad242338589f6890403a">LocationConfig::hasReturn</a>(<span class="keywordtype">void</span>)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>    <span class="keywordflow">return</span>(<a class="code hl_variable" href="classLocationConfig.html#a9e66bffc38d688fe79335f0889344511">_HasReturn</a>);</div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>}</div>
+</div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span> </div>
+<div class="foldopen" id="foldopen00145" data-start="{" data-end="}">
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno"><a class="line" href="classLocationConfig.html#a61a44c067ecb2cb9c411b5b11131f736">  145</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="classLocationConfig.html#a61a44c067ecb2cb9c411b5b11131f736">LocationConfig::getReturnCode</a>(<span class="keywordtype">void</span>)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>    <span class="keywordflow">return</span>(<a class="code hl_variable" href="classLocationConfig.html#a45cdaf073d4735c6fe6002568e2fb301">_ReturnCode</a>);</div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>}</div>
+</div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span> </div>
+<div class="foldopen" id="foldopen00150" data-start="{" data-end="}">
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno"><a class="line" href="classLocationConfig.html#aa7d15792efdb6885680329b9a19f6200">  150</a></span><span class="keyword">const</span> <span class="keywordtype">string</span>    &amp;<a class="code hl_function" href="classLocationConfig.html#aa7d15792efdb6885680329b9a19f6200">LocationConfig::getReturnTarget</a>(<span class="keywordtype">void</span>)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>    <span class="keywordflow">return</span>(<a class="code hl_variable" href="classLocationConfig.html#a5c863072058901825c73c2e448b81c32">_ReturnTarget</a>);</div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>}</div>
+</div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span> </div>
+<div class="foldopen" id="foldopen00155" data-start="{" data-end="}">
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno"><a class="line" href="classLocationConfig.html#af86cabeaeaa19fb84d671911681d1883">  155</a></span><span class="keyword">const</span> <span class="keywordtype">string</span>    &amp;<a class="code hl_function" href="classLocationConfig.html#af86cabeaeaa19fb84d671911681d1883">LocationConfig::getUploadStore</a>(<span class="keywordtype">void</span>)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>    <span class="keywordflow">return</span>(<a class="code hl_variable" href="classLocationConfig.html#a0d3fc18002890113995689d0a25856ee">_UploadStore</a>);</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>}</div>
+</div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span> </div>
+<div class="foldopen" id="foldopen00160" data-start="{" data-end="}">
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno"><a class="line" href="classLocationConfig.html#a6b5e3dc55541cd3ef710fa68cc25bce3">  160</a></span><span class="keywordtype">bool</span>    <a class="code hl_function" href="classLocationConfig.html#a6b5e3dc55541cd3ef710fa68cc25bce3">LocationConfig::hasUploadStore</a>(<span class="keywordtype">void</span>)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>    <span class="keywordflow">return</span>(<a class="code hl_variable" href="classLocationConfig.html#a67535192a26ae9b3fe783bf5c0eb6875">_HasUploadStore</a>);</div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>}</div>
+</div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span> </div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>    <span class="comment">/*===Member Function===*/</span></div>
+<div class="foldopen" id="foldopen00173" data-start="{" data-end="};">
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno"><a class="line" href="classLocationConfig.html#ae1f8d44e16785192c49f43dadbe54412">  173</a></span>ostream &amp;<a class="code hl_function" href="LocationConfig_8cpp.html#ae1f8d44e16785192c49f43dadbe54412">operator&lt;&lt;</a>(ostream &amp;flux, <span class="keyword">const</span> <a class="code hl_class" href="classLocationConfig.html">LocationConfig</a> &amp;src)</div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>{</div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>    flux &lt;&lt; <span class="stringliteral">&quot;=== Location block ===&quot;</span> &lt;&lt; endl;</div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>    flux &lt;&lt; <span class="stringliteral">&quot;Path = &quot;</span> &lt;&lt; src.<a class="code hl_variable" href="classLocationConfig.html#af72670b654bd085e2953c5c7c86fa44d">_Path</a> &lt;&lt; endl;</div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>    flux &lt;&lt; <span class="stringliteral">&quot;Methods = &quot;</span>;</div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>    set&lt;string&gt;::const_iterator it;</div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>    <span class="keywordflow">for</span> (it = src.<a class="code hl_variable" href="classLocationConfig.html#aef5eb81de58ee7ab16520341633fbdb2">_Methods</a>.begin(); it != src.<a class="code hl_variable" href="classLocationConfig.html#aef5eb81de58ee7ab16520341633fbdb2">_Methods</a>.end(); ++it)</div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>        flux  &lt;&lt; *it &lt;&lt; <span class="stringliteral">&quot; | &quot;</span>;</div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>    flux &lt;&lt; endl;</div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>    flux &lt;&lt; <span class="stringliteral">&quot;Root = &quot;</span> &lt;&lt; src.<a class="code hl_variable" href="classLocationConfig.html#ad30db5c0afd970e7d760949ddde72d41">_Root</a> &lt;&lt; endl;</div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>    flux &lt;&lt; <span class="stringliteral">&quot;Index = &quot;</span>;</div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; src.<a class="code hl_variable" href="classLocationConfig.html#af68f52ae074cb1970ffd1f7789f9b32c">_Index</a>.size(); i++)</div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>        flux &lt;&lt; src.<a class="code hl_variable" href="classLocationConfig.html#af68f52ae074cb1970ffd1f7789f9b32c">_Index</a>[i] &lt;&lt; <span class="stringliteral">&quot; | &quot;</span>;</div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>    flux &lt;&lt; endl;</div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>    flux &lt;&lt; <span class="stringliteral">&quot;Auto index = &quot;</span> &lt;&lt; src.<a class="code hl_variable" href="classLocationConfig.html#a2a57c83ab1395c48898bb4af699a163c">_AutoIndex</a> &lt;&lt; endl;</div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>    flux &lt;&lt; <span class="stringliteral">&quot;Return Code = &quot;</span> &lt;&lt; src.<a class="code hl_variable" href="classLocationConfig.html#a45cdaf073d4735c6fe6002568e2fb301">_ReturnCode</a> &lt;&lt; endl;</div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>    flux &lt;&lt; <span class="stringliteral">&quot;Has return = &quot;</span> &lt;&lt; src.<a class="code hl_variable" href="classLocationConfig.html#a9e66bffc38d688fe79335f0889344511">_HasReturn</a> &lt;&lt; endl;</div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>    flux &lt;&lt; <span class="stringliteral">&quot;CGI =&quot;</span> &lt;&lt; endl;</div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>    map&lt;string, string&gt;::const_iterator itCgi;</div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>    <span class="keywordflow">for</span> (itCgi = src.<a class="code hl_variable" href="classLocationConfig.html#adce36037e3374b97cd7d6e8de7f6fb11">_Cgi</a>.begin(); itCgi != src.<a class="code hl_variable" href="classLocationConfig.html#adce36037e3374b97cd7d6e8de7f6fb11">_Cgi</a>.end(); ++itCgi)</div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>        flux &lt;&lt; <span class="stringliteral">&quot; &quot;</span> &lt;&lt; itCgi-&gt;first &lt;&lt; <span class="stringliteral">&quot; -&gt; &quot;</span> &lt;&lt; itCgi-&gt;second &lt;&lt; endl;</div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>    flux &lt;&lt; <span class="stringliteral">&quot;Client max body size = &quot;</span> &lt;&lt; src.<a class="code hl_variable" href="classLocationConfig.html#ad72d5e8a7528a7467cf2dd7e048fed3d">_ClientMaxBodySize</a> &lt;&lt; endl;</div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>    flux &lt;&lt; <span class="stringliteral">&quot;Has client max body size = &quot;</span> &lt;&lt; src.<a class="code hl_variable" href="classLocationConfig.html#a53b2dfd29967c139463269b0a1710616">_HasClientMaxBodySize</a> &lt;&lt; endl;</div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>    flux &lt;&lt; <span class="stringliteral">&quot;Return = &quot;</span> &lt;&lt; src.<a class="code hl_variable" href="classLocationConfig.html#a5c863072058901825c73c2e448b81c32">_ReturnTarget</a> &lt;&lt; endl;</div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>    flux &lt;&lt; <span class="stringliteral">&quot;Upload_store = &quot;</span> &lt;&lt; src.<a class="code hl_variable" href="classLocationConfig.html#a0d3fc18002890113995689d0a25856ee">_UploadStore</a> &lt;&lt; endl;</div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>    flux &lt;&lt; <span class="stringliteral">&quot;Has Upload store = &quot;</span> &lt;&lt; src.<a class="code hl_variable" href="classLocationConfig.html#a67535192a26ae9b3fe783bf5c0eb6875">_HasUploadStore</a> &lt;&lt; endl;</div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>    flux &lt;&lt; <span class="stringliteral">&quot;=====================&quot;</span> &lt;&lt; endl;</div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>    <span class="keywordflow">return</span> (flux);</div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>}</div>
+</div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span> </div>
+<div class="foldopen" id="foldopen00213" data-start="{" data-end="}">
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno"><a class="line" href="classLocationConfig.html#a65be75a5ac5c9a662d497d51667144bb">  213</a></span><span class="keywordtype">void</span>    <a class="code hl_function" href="classLocationConfig.html#a65be75a5ac5c9a662d497d51667144bb">LocationConfig::parse_location</a>(vector&lt;string&gt; &amp;token, <span class="keywordtype">size_t</span> &amp;i)</div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>{</div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>    set&lt;string&gt; seen;</div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>    <span class="keywordtype">string</span> CgiExt;</div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span> </div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>    this-&gt;<a class="code hl_variable" href="classLocationConfig.html#af72670b654bd085e2953c5c7c86fa44d">_Path</a> = token[i];</div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>    i += 2; <span class="comment">// saute le PATH + &quot;{&quot;</span></div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>    <span class="keywordflow">while</span> (i &lt; token.size() &amp;&amp; token[i] != <span class="stringliteral">&quot;}&quot;</span>)</div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>    {</div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>        <span class="keywordtype">string</span>  key = token[i];</div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>        i++;</div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span> </div>
+<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>        <span class="keywordflow">if</span> (!seen.insert(key).second &amp;&amp; key != <span class="stringliteral">&quot;cgi_ext&quot;</span> &amp;&amp; key != <span class="stringliteral">&quot;cgi_pass&quot;</span>)</div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>            <span class="keywordflow">throw</span> runtime_error(<span class="stringliteral">&quot;Multiple definition of &quot;</span> + key + <span class="stringliteral">&quot; not allowed in same location blocks&quot;</span>);</div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span> </div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>        vector&lt;string&gt;  value = <a class="code hl_function" href="utils_8cpp.html#a4bd4204c0a89d7173d4e1c400770b74f">collect_values</a>(token, i);</div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>        <span class="keywordflow">if</span> (key == <span class="stringliteral">&quot;allow_methods&quot;</span>)</div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>            this-&gt;<a class="code hl_variable" href="classLocationConfig.html#aef5eb81de58ee7ab16520341633fbdb2">_Methods</a> = <a class="code hl_function" href="utils_8cpp.html#ac27743f1e2355a52bc397fd323718c11">parse_allow_methods</a>(value);</div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (key == <span class="stringliteral">&quot;root&quot;</span>)</div>
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>            this-&gt;<a class="code hl_variable" href="classLocationConfig.html#ad30db5c0afd970e7d760949ddde72d41">_Root</a> = <a class="code hl_function" href="utils_8cpp.html#a43b26f4f2943f506a02a431384e5853a">parse_root</a>(value);</div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (key == <span class="stringliteral">&quot;index&quot;</span>)</div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>            this-&gt;<a class="code hl_variable" href="classLocationConfig.html#af68f52ae074cb1970ffd1f7789f9b32c">_Index</a> = <a class="code hl_function" href="utils_8cpp.html#affdc8f9ddaaa0d740201412979146e4d">parse_index</a>(value);</div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (key == <span class="stringliteral">&quot;autoindex&quot;</span>)</div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>            this-&gt;<a class="code hl_variable" href="classLocationConfig.html#a2a57c83ab1395c48898bb4af699a163c">_AutoIndex</a> = <a class="code hl_function" href="utils_8cpp.html#aa00761e511b31cc62839e04645b6f0df">parse_auto_index</a>(value);</div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (key == <span class="stringliteral">&quot;cgi_ext&quot;</span>)</div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>        {</div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>            <span class="keywordflow">if</span> (!CgiExt.empty())</div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>                <span class="keywordflow">throw</span> runtime_error(<span class="stringliteral">&quot;Consecutive cgi_ext without any cgi_pass&quot;</span>);</div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>            CgiExt = <a class="code hl_function" href="utils_8cpp.html#afc812568aa7f2d9693bea69ff6cebabb">parse_cgi_ext</a>(value);</div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>        }</div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (key == <span class="stringliteral">&quot;cgi_pass&quot;</span>)</div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>        {</div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>            <span class="keywordflow">if</span> (CgiExt.empty())</div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>                <span class="keywordflow">throw</span> runtime_error(<span class="stringliteral">&quot;No cgi_ext preceding cgi_pass&quot;</span>);</div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>            <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code hl_variable" href="classLocationConfig.html#adce36037e3374b97cd7d6e8de7f6fb11">_Cgi</a>.count(CgiExt))</div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>                <span class="keywordflow">throw</span> runtime_error(<span class="stringliteral">&quot;Multiple definition for the same cgi_ext&quot;</span>);</div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>            <a class="code hl_variable" href="classLocationConfig.html#adce36037e3374b97cd7d6e8de7f6fb11">_Cgi</a>[CgiExt] = <a class="code hl_function" href="utils_8cpp.html#a63cff8877b806e6eedc5100e65f348b3">parse_cgi_pass</a>(value);</div>
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>            CgiExt.clear();</div>
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>        }</div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span>        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (key == <span class="stringliteral">&quot;client_max_body_size&quot;</span>)</div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>        {</div>
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>            <span class="keywordflow">if</span> (value.size() != 1)</div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>                <span class="keywordflow">throw</span> runtime_error(key + <span class="stringliteral">&quot; needs only one arguments&quot;</span>);</div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>            this-&gt;<a class="code hl_variable" href="classLocationConfig.html#a53b2dfd29967c139463269b0a1710616">_HasClientMaxBodySize</a> = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>            this-&gt;<a class="code hl_variable" href="classLocationConfig.html#ad72d5e8a7528a7467cf2dd7e048fed3d">_ClientMaxBodySize</a> = <a class="code hl_function" href="utils_8cpp.html#ac3d997aa0c902e9a392a2fefa13dcaf3">parse_body_size</a>(value[0]);</div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>        }</div>
+<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (key == <span class="stringliteral">&quot;return&quot;</span>)</div>
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>        {</div>
+<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>            <span class="keywordflow">if</span> (value.empty() || value.size() &gt; 2)</div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>                <span class="keywordflow">throw</span> runtime_error(key + <span class="stringliteral">&quot; needs one or two arguments&quot;</span>);</div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>            this-&gt;<a class="code hl_variable" href="classLocationConfig.html#a9e66bffc38d688fe79335f0889344511">_HasReturn</a> = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>            this-&gt;<a class="code hl_variable" href="classLocationConfig.html#a45cdaf073d4735c6fe6002568e2fb301">_ReturnCode</a> = <a class="code hl_function" href="utils_8cpp.html#ad8308dcbd234856efeffc00316801af7">parser_return_code</a>(value[0], value.size());</div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>            <span class="keywordflow">if</span> (value.size() == 2)</div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>                this-&gt;<a class="code hl_variable" href="classLocationConfig.html#a5c863072058901825c73c2e448b81c32">_ReturnTarget</a> = value[1];</div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>        }</div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (key == <span class="stringliteral">&quot;upload_store&quot;</span>)</div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>        {</div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>            this-&gt;<a class="code hl_variable" href="classLocationConfig.html#a0d3fc18002890113995689d0a25856ee">_UploadStore</a> = <a class="code hl_function" href="utils_8cpp.html#a008459d98b1be4d08ff79981af874736">parse_upload_store</a>(value);</div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>            this-&gt;<a class="code hl_variable" href="classLocationConfig.html#a67535192a26ae9b3fe783bf5c0eb6875">_HasUploadStore</a> = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>        }</div>
+<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>        <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>            <span class="keywordflow">throw</span> runtime_error(key + <span class="stringliteral">&quot; is not a valid instructions in location bloc&quot;</span>);</div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>    }</div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>    <span class="keywordflow">if</span> (!CgiExt.empty())</div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>        <span class="keywordflow">throw</span> runtime_error(<span class="stringliteral">&quot;cgi_pass is mandatory with a cgi_ext key&quot;</span>);</div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>    i++; <span class="comment">// saute le &quot;}&quot; avant de rendre le i aparse bloc server</span></div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>}</div>
+</div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span> </div>
+<div class="ttc" id="aLocationConfig_8cpp_html_ae1f8d44e16785192c49f43dadbe54412"><div class="ttname"><a href="LocationConfig_8cpp.html#ae1f8d44e16785192c49f43dadbe54412">operator&lt;&lt;</a></div><div class="ttdeci">ostream &amp; operator&lt;&lt;(ostream &amp;flux, const LocationConfig &amp;src)</div><div class="ttdoc">Surcharge d'operateur pour l'impression des attributs de la classe LocationConfig.</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8cpp_source.html#l00173">LocationConfig.cpp:173</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html"><div class="ttname"><a href="classLocationConfig.html">LocationConfig</a></div><div class="ttdoc">Represente la configuration d'une location (bloc &quot;location&quot;) d'un serveur.</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8hpp_source.html#l00018">LocationConfig.hpp:19</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_a001ff50e818dc40ac5baaeff47d604bb"><div class="ttname"><a href="classLocationConfig.html#a001ff50e818dc40ac5baaeff47d604bb">LocationConfig::getIndex</a></div><div class="ttdeci">const std::vector&lt; std::string &gt; &amp; getIndex(void) const</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8cpp_source.html#l00130">LocationConfig.cpp:130</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_a0d3fc18002890113995689d0a25856ee"><div class="ttname"><a href="classLocationConfig.html#a0d3fc18002890113995689d0a25856ee">LocationConfig::_UploadStore</a></div><div class="ttdeci">string _UploadStore</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8hpp_source.html#l00036">LocationConfig.hpp:36</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_a135463e0374d81be4a9e66097f93d6d0"><div class="ttname"><a href="classLocationConfig.html#a135463e0374d81be4a9e66097f93d6d0">LocationConfig::getPath</a></div><div class="ttdeci">const string &amp; getPath(void) const</div><div class="ttdoc">Le prefixe d'URI declare par le bloc &quot;location&quot;.</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8cpp_source.html#l00072">LocationConfig.cpp:72</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_a2305d158b0f459910bd695cd40f2d72f"><div class="ttname"><a href="classLocationConfig.html#a2305d158b0f459910bd695cd40f2d72f">LocationConfig::LocationConfig</a></div><div class="ttdeci">LocationConfig(void)</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8cpp_source.html#l00011">LocationConfig.cpp:11</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_a2a57c83ab1395c48898bb4af699a163c"><div class="ttname"><a href="classLocationConfig.html#a2a57c83ab1395c48898bb4af699a163c">LocationConfig::_AutoIndex</a></div><div class="ttdeci">bool _AutoIndex</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8hpp_source.html#l00029">LocationConfig.hpp:29</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_a45cdaf073d4735c6fe6002568e2fb301"><div class="ttname"><a href="classLocationConfig.html#a45cdaf073d4735c6fe6002568e2fb301">LocationConfig::_ReturnCode</a></div><div class="ttdeci">int _ReturnCode</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8hpp_source.html#l00030">LocationConfig.hpp:30</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_a530feef6f8c15dc2fb695d692fbad207"><div class="ttname"><a href="classLocationConfig.html#a530feef6f8c15dc2fb695d692fbad207">LocationConfig::getCgiPass</a></div><div class="ttdeci">const string &amp; getCgiPass(const string &amp;ext) const</div><div class="ttdoc">Interpreteur pour ext (&quot;.py&quot;), &quot;&quot; si absent.</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8cpp_source.html#l00095">LocationConfig.cpp:95</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_a53b2dfd29967c139463269b0a1710616"><div class="ttname"><a href="classLocationConfig.html#a53b2dfd29967c139463269b0a1710616">LocationConfig::_HasClientMaxBodySize</a></div><div class="ttdeci">bool _HasClientMaxBodySize</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8hpp_source.html#l00034">LocationConfig.hpp:34</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_a5c863072058901825c73c2e448b81c32"><div class="ttname"><a href="classLocationConfig.html#a5c863072058901825c73c2e448b81c32">LocationConfig::_ReturnTarget</a></div><div class="ttdeci">string _ReturnTarget</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8hpp_source.html#l00035">LocationConfig.hpp:35</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_a61a44c067ecb2cb9c411b5b11131f736"><div class="ttname"><a href="classLocationConfig.html#a61a44c067ecb2cb9c411b5b11131f736">LocationConfig::getReturnCode</a></div><div class="ttdeci">int getReturnCode(void) const</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8cpp_source.html#l00145">LocationConfig.cpp:145</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_a65be75a5ac5c9a662d497d51667144bb"><div class="ttname"><a href="classLocationConfig.html#a65be75a5ac5c9a662d497d51667144bb">LocationConfig::parse_location</a></div><div class="ttdeci">void parse_location(vector&lt; string &gt; &amp;token, size_t &amp;i)</div><div class="ttdoc">Fonction d'entree pour le parsing des blocs location contenus dans chaque bloc serveur.</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8cpp_source.html#l00213">LocationConfig.cpp:213</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_a67535192a26ae9b3fe783bf5c0eb6875"><div class="ttname"><a href="classLocationConfig.html#a67535192a26ae9b3fe783bf5c0eb6875">LocationConfig::_HasUploadStore</a></div><div class="ttdeci">bool _HasUploadStore</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8hpp_source.html#l00037">LocationConfig.hpp:37</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_a6b5e3dc55541cd3ef710fa68cc25bce3"><div class="ttname"><a href="classLocationConfig.html#a6b5e3dc55541cd3ef710fa68cc25bce3">LocationConfig::hasUploadStore</a></div><div class="ttdeci">bool hasUploadStore(void) const</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8cpp_source.html#l00160">LocationConfig.cpp:160</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_a6e9e3d072421dc98dc73805b4117e18c"><div class="ttname"><a href="classLocationConfig.html#a6e9e3d072421dc98dc73805b4117e18c">LocationConfig::getMethods</a></div><div class="ttdeci">const std::set&lt; std::string &gt; &amp; getMethods(void) const</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8cpp_source.html#l00125">LocationConfig.cpp:125</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_a7ecba2fa22c98fe7b7d49d048144e0f5"><div class="ttname"><a href="classLocationConfig.html#a7ecba2fa22c98fe7b7d49d048144e0f5">LocationConfig::~LocationConfig</a></div><div class="ttdeci">~LocationConfig(void)</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8cpp_source.html#l00022">LocationConfig.cpp:22</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_a9a8fd540099f2536c62f9a4a4df99a70"><div class="ttname"><a href="classLocationConfig.html#a9a8fd540099f2536c62f9a4a4df99a70">LocationConfig::getClientMaxBodySize</a></div><div class="ttdeci">const size_t &amp; getClientMaxBodySize(void) const</div><div class="ttdoc">Accesseur sur le Client max body size declarer dans le .conf ou set up par la valeur par default de N...</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8cpp_source.html#l00120">LocationConfig.cpp:120</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_a9e66bffc38d688fe79335f0889344511"><div class="ttname"><a href="classLocationConfig.html#a9e66bffc38d688fe79335f0889344511">LocationConfig::_HasReturn</a></div><div class="ttdeci">bool _HasReturn</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8hpp_source.html#l00031">LocationConfig.hpp:31</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_aa7d15792efdb6885680329b9a19f6200"><div class="ttname"><a href="classLocationConfig.html#aa7d15792efdb6885680329b9a19f6200">LocationConfig::getReturnTarget</a></div><div class="ttdeci">const std::string &amp; getReturnTarget(void) const</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8cpp_source.html#l00150">LocationConfig.cpp:150</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_ab49bec38d910c5db0fb2cf93f81d2095"><div class="ttname"><a href="classLocationConfig.html#ab49bec38d910c5db0fb2cf93f81d2095">LocationConfig::getAutoIndex</a></div><div class="ttdeci">bool getAutoIndex(void) const</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8cpp_source.html#l00135">LocationConfig.cpp:135</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_ab74623ed63fda740fc1f8d362cb6e149"><div class="ttname"><a href="classLocationConfig.html#ab74623ed63fda740fc1f8d362cb6e149">LocationConfig::operator=</a></div><div class="ttdeci">LocationConfig &amp; operator=(const LocationConfig &amp;src)</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8cpp_source.html#l00044">LocationConfig.cpp:44</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_ac8bacc5c7b7ae0faf408e67da88a2b6f"><div class="ttname"><a href="classLocationConfig.html#ac8bacc5c7b7ae0faf408e67da88a2b6f">LocationConfig::getRoot</a></div><div class="ttdeci">const string &amp; getRoot(void) const</div><div class="ttdoc">La racine disque associee a ce bloc.</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8cpp_source.html#l00082">LocationConfig.cpp:82</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_ad1ca496370bcad242338589f6890403a"><div class="ttname"><a href="classLocationConfig.html#ad1ca496370bcad242338589f6890403a">LocationConfig::hasReturn</a></div><div class="ttdeci">bool hasReturn(void) const</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8cpp_source.html#l00140">LocationConfig.cpp:140</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_ad30db5c0afd970e7d760949ddde72d41"><div class="ttname"><a href="classLocationConfig.html#ad30db5c0afd970e7d760949ddde72d41">LocationConfig::_Root</a></div><div class="ttdeci">string _Root</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8hpp_source.html#l00027">LocationConfig.hpp:27</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_ad72d5e8a7528a7467cf2dd7e048fed3d"><div class="ttname"><a href="classLocationConfig.html#ad72d5e8a7528a7467cf2dd7e048fed3d">LocationConfig::_ClientMaxBodySize</a></div><div class="ttdeci">size_t _ClientMaxBodySize</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8hpp_source.html#l00033">LocationConfig.hpp:33</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_adad8b29d8fddbb6039ec19140fa03d21"><div class="ttname"><a href="classLocationConfig.html#adad8b29d8fddbb6039ec19140fa03d21">LocationConfig::getCgi</a></div><div class="ttdeci">const map&lt; string, string &gt; &amp; getCgi(void) const</div><div class="ttdoc">Table cgi_ext -&gt; cgi_pass.</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8cpp_source.html#l00109">LocationConfig.cpp:109</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_adce36037e3374b97cd7d6e8de7f6fb11"><div class="ttname"><a href="classLocationConfig.html#adce36037e3374b97cd7d6e8de7f6fb11">LocationConfig::_Cgi</a></div><div class="ttdeci">map&lt; string, string &gt; _Cgi</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8hpp_source.html#l00032">LocationConfig.hpp:32</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_aef5eb81de58ee7ab16520341633fbdb2"><div class="ttname"><a href="classLocationConfig.html#aef5eb81de58ee7ab16520341633fbdb2">LocationConfig::_Methods</a></div><div class="ttdeci">set&lt; string &gt; _Methods</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8hpp_source.html#l00026">LocationConfig.hpp:26</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_af68f52ae074cb1970ffd1f7789f9b32c"><div class="ttname"><a href="classLocationConfig.html#af68f52ae074cb1970ffd1f7789f9b32c">LocationConfig::_Index</a></div><div class="ttdeci">vector&lt; string &gt; _Index</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8hpp_source.html#l00028">LocationConfig.hpp:28</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_af72670b654bd085e2953c5c7c86fa44d"><div class="ttname"><a href="classLocationConfig.html#af72670b654bd085e2953c5c7c86fa44d">LocationConfig::_Path</a></div><div class="ttdeci">string _Path</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8hpp_source.html#l00025">LocationConfig.hpp:25</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_af86cabeaeaa19fb84d671911681d1883"><div class="ttname"><a href="classLocationConfig.html#af86cabeaeaa19fb84d671911681d1883">LocationConfig::getUploadStore</a></div><div class="ttdeci">const std::string &amp; getUploadStore(void) const</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8cpp_source.html#l00155">LocationConfig.cpp:155</a></div></div>
+<div class="ttc" id="autils_8cpp_html_a008459d98b1be4d08ff79981af874736"><div class="ttname"><a href="utils_8cpp.html#a008459d98b1be4d08ff79981af874736">parse_upload_store</a></div><div class="ttdeci">string parse_upload_store(const vector&lt; string &gt; &amp;value)</div><div class="ttdoc">Prend tous les arguments de &lt;upload_store&gt; et verifie leurs valeurs.</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00347">utils.cpp:347</a></div></div>
+<div class="ttc" id="autils_8cpp_html_a43b26f4f2943f506a02a431384e5853a"><div class="ttname"><a href="utils_8cpp.html#a43b26f4f2943f506a02a431384e5853a">parse_root</a></div><div class="ttdeci">string parse_root(const vector&lt; string &gt; &amp;value)</div><div class="ttdoc">Prend tous les arguments de &lt;root&gt; et verifie leurs valeurs.</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00245">utils.cpp:245</a></div></div>
+<div class="ttc" id="autils_8cpp_html_a4bd4204c0a89d7173d4e1c400770b74f"><div class="ttname"><a href="utils_8cpp.html#a4bd4204c0a89d7173d4e1c400770b74f">collect_values</a></div><div class="ttdeci">vector&lt; string &gt; collect_values(vector&lt; string &gt; &amp;token, size_t &amp;i)</div><div class="ttdoc">Remplit un vecteur de toutes les valeurs associees a une key.</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00207">utils.cpp:207</a></div></div>
+<div class="ttc" id="autils_8cpp_html_a63cff8877b806e6eedc5100e65f348b3"><div class="ttname"><a href="utils_8cpp.html#a63cff8877b806e6eedc5100e65f348b3">parse_cgi_pass</a></div><div class="ttdeci">string parse_cgi_pass(const vector&lt; string &gt; &amp;value)</div><div class="ttdoc">Prend tous les arguments de &lt;cgi_pass&gt; et verifie leurs valeurs.</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00308">utils.cpp:308</a></div></div>
+<div class="ttc" id="autils_8cpp_html_aa00761e511b31cc62839e04645b6f0df"><div class="ttname"><a href="utils_8cpp.html#aa00761e511b31cc62839e04645b6f0df">parse_auto_index</a></div><div class="ttdeci">bool parse_auto_index(const vector&lt; string &gt; &amp;value)</div><div class="ttdoc">Prend tous les arguments de &lt;auto_index&gt; et verifie leurs valeurs.</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00276">utils.cpp:276</a></div></div>
+<div class="ttc" id="autils_8cpp_html_ac27743f1e2355a52bc397fd323718c11"><div class="ttname"><a href="utils_8cpp.html#ac27743f1e2355a52bc397fd323718c11">parse_allow_methods</a></div><div class="ttdeci">set&lt; string &gt; parse_allow_methods(const vector&lt; string &gt; &amp;value)</div><div class="ttdoc">Prend tous les arguments de &lt;allow_methods&gt; et verifie leurs valeurs.</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00226">utils.cpp:226</a></div></div>
+<div class="ttc" id="autils_8cpp_html_ac3d997aa0c902e9a392a2fefa13dcaf3"><div class="ttname"><a href="utils_8cpp.html#ac3d997aa0c902e9a392a2fefa13dcaf3">parse_body_size</a></div><div class="ttdeci">size_t parse_body_size(const string &amp;value)</div><div class="ttdoc">Fait la conversion de la value donnee par client_max_body_size en size_t Check si un suffixe de taill...</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00144">utils.cpp:144</a></div></div>
+<div class="ttc" id="autils_8cpp_html_ad8308dcbd234856efeffc00316801af7"><div class="ttname"><a href="utils_8cpp.html#ad8308dcbd234856efeffc00316801af7">parser_return_code</a></div><div class="ttdeci">int parser_return_code(const string &amp;value, const size_t nb_args)</div><div class="ttdoc">Verifie le code HTTP de la directive &lt;return&gt;.</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00324">utils.cpp:324</a></div></div>
+<div class="ttc" id="autils_8cpp_html_afc812568aa7f2d9693bea69ff6cebabb"><div class="ttname"><a href="utils_8cpp.html#afc812568aa7f2d9693bea69ff6cebabb">parse_cgi_ext</a></div><div class="ttdeci">string parse_cgi_ext(const vector&lt; string &gt; &amp;value)</div><div class="ttdoc">Prend tous les arguments de &lt;cgi_ext&gt; et verifie leurs valeurs.</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00293">utils.cpp:293</a></div></div>
+<div class="ttc" id="autils_8cpp_html_affdc8f9ddaaa0d740201412979146e4d"><div class="ttname"><a href="utils_8cpp.html#affdc8f9ddaaa0d740201412979146e4d">parse_index</a></div><div class="ttdeci">vector&lt; string &gt; parse_index(const vector&lt; string &gt; &amp;value)</div><div class="ttdoc">Prend tous les arguments de &lt;index&gt; et verifie leurs valeurs.</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00258">utils.cpp:258</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_b73b02d482d1c4a3db20c3d9ad52d395.html">srcs</a></li><li class="navelem"><a class="el" href="dir_75f89b9acdab752b2bbef02cc947a412.html">config</a></li><li class="navelem"><a class="el" href="LocationConfig_8cpp.html">LocationConfig.cpp</a></li>
+    <li class="footer">Généré par <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

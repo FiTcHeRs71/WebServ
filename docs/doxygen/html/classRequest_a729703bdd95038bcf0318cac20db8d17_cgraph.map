@@ -1,0 +1,9 @@
+<map id="Request::getCookie" name="Request::getCookie">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,31,155,56"/>
+<area shape="rect" id="Node000002" href="$classRequest.html#a26b9bd70d82df734bfc0d8745a5bfed4" title=" " alt="" coords="203,31,359,56"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="155,41,189,41,189,46,155,46"/>
+<area shape="rect" id="Node000003" href="$classRequest.html#a72c8eeae6ccf7dd1c9f88064894106f8" title="Getters de header /!\ Il est retourner par valeur et non par reference." alt="" coords="407,5,557,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="358,31,392,27,393,32,359,36"/>
+<area shape="rect" id="Node000004" href="$httpUtils_8cpp.html#a8bddc3dcbfa8ff455abebaf144a1f5cf" title="Fonction permettant de trim les espaes de debut det de fin." alt="" coords="457,55,507,80"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="359,50,444,60,444,66,358,55"/>
+</map>

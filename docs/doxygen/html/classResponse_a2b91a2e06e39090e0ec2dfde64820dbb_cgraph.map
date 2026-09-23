@@ -1,0 +1,7 @@
+<map id="Response::generateBuiltInError" name="Response::generateBuiltInError">
+<area shape="rect" id="Node000001" title="Cree un body de reponse http en fonction de l&#39;erreur." alt="" coords="5,5,199,45"/>
+<area shape="rect" id="Node000002" href="$classResponse.html#a38d47b3fe3909d0a6851c8f672fa4c8b" title="pose aussi Content&#45;Length" alt="" coords="247,13,393,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="199,23,233,23,233,28,199,28"/>
+<area shape="rect" id="Node000003" href="$classResponse.html#a57e91a47a4522fa82bd99dd7464e1c87" title=" " alt="" coords="441,13,603,38"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="394,23,427,23,427,28,394,28"/>
+</map>

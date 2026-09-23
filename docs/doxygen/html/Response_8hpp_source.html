@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>webserv:  Fichier source de includes/Response.hpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">webserv
+   </div>
+   <div id="projectbrief">Serveur HTTP/1.1 non bloquant -- 42</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Généré par Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','Recherche');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function() { init_codefold(0); });
+/* @license-end */
+</script>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('Response_8hpp_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Chargement...</div>
+<div class="SRStatus" id="Searching">Recherche...</div>
+<div class="SRStatus" id="NoMatches">Aucune correspondance</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">Response.hpp</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="Response_8hpp.html">Aller à la documentation de ce fichier.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef RESPONSE_HPP</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor"># define RESPONSE_HPP</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor"># include &quot;<a class="code" href="ServerConfig_8hpp.html">ServerConfig.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor"># include &lt;iostream&gt;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor"># include &lt;vector&gt;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor"># include &lt;string&gt;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor"># include &lt;map&gt;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor"># include &lt;ctime&gt;</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor"># include &lt;clocale&gt;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor"># include &lt;sstream&gt;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span> </div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="keyword">using namespace </span>std;</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
+<div class="foldopen" id="foldopen00021" data-start="{" data-end="};">
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="classResponse.html">   21</a></span><span class="keyword">class </span><a class="code hl_class" href="classResponse.html">Response</a></div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>{</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="classResponse.html#a695185a490715656023b3ce2ce5e873c">   25</a></span>    <span class="keywordtype">int</span>                                 <a class="code hl_variable" href="classResponse.html#a695185a490715656023b3ce2ce5e873c">_StatusCode</a>;    </div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno"><a class="line" href="classResponse.html#a29f0e72daed3c208f303c7e02e65a771">   26</a></span>    std::string                         <a class="code hl_variable" href="classResponse.html#a29f0e72daed3c208f303c7e02e65a771">_StatusText</a>;    </div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="classResponse.html#a80f904d7134dfcfcbd2f00cfbb68e142">   27</a></span>    std::map&lt;std::string, std::string&gt;  <a class="code hl_variable" href="classResponse.html#a80f904d7134dfcfcbd2f00cfbb68e142">_Headers</a>;   </div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="classResponse.html#adf44bd19a8e0349359c30606ad1865f0">   28</a></span>    std::string                         <a class="code hl_variable" href="classResponse.html#adf44bd19a8e0349359c30606ad1865f0">_Body</a>;</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="classResponse.html#aaa20193ccdd515e11a5639d0b6e0a66a">   29</a></span>    vector&lt;string&gt;                      <a class="code hl_variable" href="classResponse.html#aaa20193ccdd515e11a5639d0b6e0a66a">_SetCookies</a>;</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> </div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    <span class="keywordtype">void</span>    <a class="code hl_function" href="classResponse.html#acbc922c139261ea3a71a7880d78c317f">setDate</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span> </div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    <span class="keyword">protected</span>:</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span> </div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span> </div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    <span class="keyword">public</span>:</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span> </div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    <span class="comment">/*===Canonical Form===*/</span></div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    <a class="code hl_function" href="classResponse.html#af724e65cafd400c34e8475f386c70dba">Response</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    <a class="code hl_function" href="classResponse.html#a90b38edd1408c9a654b45d5daa730a27">~Response</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    <a class="code hl_function" href="classResponse.html#af724e65cafd400c34e8475f386c70dba">Response</a>(<span class="keyword">const</span> <a class="code hl_class" href="classResponse.html">Response</a>&amp; to_copy);</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    <a class="code hl_class" href="classResponse.html">Response</a> &amp;<a class="code hl_function" href="classResponse.html#ab79e2fd3342ea975cbabb74904f4dceb">operator=</a>(<span class="keyword">const</span> <a class="code hl_class" href="classResponse.html">Response</a>&amp; src);</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    <span class="comment">/*===Getters &amp; Setters===*/</span></div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    <span class="keywordtype">void</span>                <a class="code hl_function" href="classResponse.html#a7f9b175d957559236e0b065e4d495963">SetStatus</a>(<span class="keywordtype">int</span> code);                    </div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    <span class="keywordtype">void</span>                <a class="code hl_function" href="classResponse.html#a57e91a47a4522fa82bd99dd7464e1c87">SetHeader</a>(<span class="keyword">const</span> std::string &amp;key, <span class="keyword">const</span> std::string &amp;value);</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    <span class="keywordtype">void</span>                <a class="code hl_function" href="classResponse.html#a38d47b3fe3909d0a6851c8f672fa4c8b">SetBody</a>(<span class="keyword">const</span> std::string &amp;body);   </div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    <span class="keywordtype">void</span>                <a class="code hl_function" href="classResponse.html#af3bd401f662e6da863f3e2a99bdbee6f">SwapBody</a>(std::string &amp;body);            </div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    <span class="keyword">const</span> std::string   &amp;<a class="code hl_function" href="classResponse.html#adb21fb0b809cb11b411f685251004c18">getBody</a>(<span class="keywordtype">void</span>) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    <span class="keywordtype">int</span>                 <a class="code hl_function" href="classResponse.html#a792a88c4ec844dbf3937d51ba88e0835">getStatus</a>(<span class="keywordtype">void</span>) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    <span class="keyword">const</span> <span class="keywordtype">string</span>        &amp;<a class="code hl_function" href="classResponse.html#ae41d7f5833cd3c9fd6331d925e068af8">getStatusText</a>(<span class="keywordtype">void</span>) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    <span class="comment">/*=== Cookies ===*/</span></div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    <span class="keywordtype">bool</span>    <a class="code hl_function" href="classResponse.html#acb0980f3803ca2d1f4351fcd26bc988d">AddSetCookie</a>(<span class="keyword">const</span> <span class="keywordtype">string</span> &amp;value);  </div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    <span class="keywordtype">void</span>    <a class="code hl_function" href="classResponse.html#a2f22204dd3a337013639802eec62c525">ClearSetCookies</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span> </div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    <span class="comment">/*===Member Function===*/</span></div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    <span class="keywordtype">bool</span>                <a class="code hl_function" href="classResponse.html#a8851d9a332f43f66d2964b7c6f4bf0f7">Serialize</a>(std::string &amp;out);</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    <span class="keywordtype">void</span>                <a class="code hl_function" href="classResponse.html#a89dddbee9f17df2d7ea5cbf5c7eea745">Reset</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    <span class="keyword">static</span> <a class="code hl_class" href="classResponse.html">Response</a>     <a class="code hl_function" href="classResponse.html#aeaa3673db99a8c45772c3a5a5b949c4a">BuildError</a>(<span class="keywordtype">int</span> code, <span class="keyword">const</span> <a class="code hl_class" href="classServerConfig.html">ServerConfig</a> &amp;server);</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    <span class="keywordtype">void</span>                <a class="code hl_function" href="classResponse.html#a2b91a2e06e39090e0ec2dfde64820dbb">generateBuiltInError</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>};</div>
+</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span> </div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span><span class="preprocessor">#endif </span><span class="comment">/*RESPONSE_HPP*/</span><span class="preprocessor"></span></div>
+<div class="ttc" id="aServerConfig_8hpp_html"><div class="ttname"><a href="ServerConfig_8hpp.html">ServerConfig.hpp</a></div></div>
+<div class="ttc" id="aclassResponse_html"><div class="ttname"><a href="classResponse.html">Response</a></div><div class="ttdoc">Represente une reponse HTTP a construire et a envoyer au client.</div><div class="ttdef"><b>Definition</b> <a href="Response_8hpp_source.html#l00021">Response.hpp:22</a></div></div>
+<div class="ttc" id="aclassResponse_html_a29f0e72daed3c208f303c7e02e65a771"><div class="ttname"><a href="classResponse.html#a29f0e72daed3c208f303c7e02e65a771">Response::_StatusText</a></div><div class="ttdeci">std::string _StatusText</div><div class="ttdoc">&quot;OK&quot;, &quot;Not Found&quot;...</div><div class="ttdef"><b>Definition</b> <a href="Response_8hpp_source.html#l00026">Response.hpp:26</a></div></div>
+<div class="ttc" id="aclassResponse_html_a2b91a2e06e39090e0ec2dfde64820dbb"><div class="ttname"><a href="classResponse.html#a2b91a2e06e39090e0ec2dfde64820dbb">Response::generateBuiltInError</a></div><div class="ttdeci">void generateBuiltInError(void)</div><div class="ttdoc">Cree un body de reponse http en fonction de l'erreur.</div><div class="ttdef"><b>Definition</b> <a href="Response_8cpp_source.html#l00205">Response.cpp:205</a></div></div>
+<div class="ttc" id="aclassResponse_html_a2f22204dd3a337013639802eec62c525"><div class="ttname"><a href="classResponse.html#a2f22204dd3a337013639802eec62c525">Response::ClearSetCookies</a></div><div class="ttdeci">void ClearSetCookies(void)</div><div class="ttdef"><b>Definition</b> <a href="Response_8cpp_source.html#l00278">Response.cpp:278</a></div></div>
+<div class="ttc" id="aclassResponse_html_a38d47b3fe3909d0a6851c8f672fa4c8b"><div class="ttname"><a href="classResponse.html#a38d47b3fe3909d0a6851c8f672fa4c8b">Response::SetBody</a></div><div class="ttdeci">void SetBody(const std::string &amp;body)</div><div class="ttdoc">pose aussi Content-Length</div><div class="ttdef"><b>Definition</b> <a href="Response_8cpp_source.html#l00112">Response.cpp:112</a></div></div>
+<div class="ttc" id="aclassResponse_html_a57e91a47a4522fa82bd99dd7464e1c87"><div class="ttname"><a href="classResponse.html#a57e91a47a4522fa82bd99dd7464e1c87">Response::SetHeader</a></div><div class="ttdeci">void SetHeader(const std::string &amp;key, const std::string &amp;value)</div><div class="ttdef"><b>Definition</b> <a href="Response_8cpp_source.html#l00107">Response.cpp:107</a></div></div>
+<div class="ttc" id="aclassResponse_html_a695185a490715656023b3ce2ce5e873c"><div class="ttname"><a href="classResponse.html#a695185a490715656023b3ce2ce5e873c">Response::_StatusCode</a></div><div class="ttdeci">int _StatusCode</div><div class="ttdoc">200, 404, 500...</div><div class="ttdef"><b>Definition</b> <a href="Response_8hpp_source.html#l00025">Response.hpp:25</a></div></div>
+<div class="ttc" id="aclassResponse_html_a792a88c4ec844dbf3937d51ba88e0835"><div class="ttname"><a href="classResponse.html#a792a88c4ec844dbf3937d51ba88e0835">Response::getStatus</a></div><div class="ttdeci">int getStatus(void) const</div><div class="ttdef"><b>Definition</b> <a href="Response_8cpp_source.html#l00133">Response.cpp:133</a></div></div>
+<div class="ttc" id="aclassResponse_html_a7f9b175d957559236e0b065e4d495963"><div class="ttname"><a href="classResponse.html#a7f9b175d957559236e0b065e4d495963">Response::SetStatus</a></div><div class="ttdeci">void SetStatus(int code)</div><div class="ttdoc">pose _StatusCode ET _StatusText</div><div class="ttdef"><b>Definition</b> <a href="Response_8cpp_source.html#l00101">Response.cpp:101</a></div></div>
+<div class="ttc" id="aclassResponse_html_a80f904d7134dfcfcbd2f00cfbb68e142"><div class="ttname"><a href="classResponse.html#a80f904d7134dfcfcbd2f00cfbb68e142">Response::_Headers</a></div><div class="ttdeci">std::map&lt; std::string, std::string &gt; _Headers</div><div class="ttdoc">cles telles quelles (&quot;Content-Type&quot;)</div><div class="ttdef"><b>Definition</b> <a href="Response_8hpp_source.html#l00027">Response.hpp:27</a></div></div>
+<div class="ttc" id="aclassResponse_html_a8851d9a332f43f66d2964b7c6f4bf0f7"><div class="ttname"><a href="classResponse.html#a8851d9a332f43f66d2964b7c6f4bf0f7">Response::Serialize</a></div><div class="ttdeci">bool Serialize(std::string &amp;out)</div><div class="ttdoc">Serialise la reponse HTTP en une chaine prete a etre envoyee sur le socket.</div><div class="ttdef"><b>Definition</b> <a href="Response_8cpp_source.html#l00181">Response.cpp:181</a></div></div>
+<div class="ttc" id="aclassResponse_html_a89dddbee9f17df2d7ea5cbf5c7eea745"><div class="ttname"><a href="classResponse.html#a89dddbee9f17df2d7ea5cbf5c7eea745">Response::Reset</a></div><div class="ttdeci">void Reset(void)</div><div class="ttdoc">Reset les valeurs de la class Response pour reprendre la prochaine serialization.</div><div class="ttdef"><b>Definition</b> <a href="Response_8cpp_source.html#l00149">Response.cpp:149</a></div></div>
+<div class="ttc" id="aclassResponse_html_a90b38edd1408c9a654b45d5daa730a27"><div class="ttname"><a href="classResponse.html#a90b38edd1408c9a654b45d5daa730a27">Response::~Response</a></div><div class="ttdeci">~Response(void)</div><div class="ttdef"><b>Definition</b> <a href="Response_8cpp_source.html#l00020">Response.cpp:20</a></div></div>
+<div class="ttc" id="aclassResponse_html_aaa20193ccdd515e11a5639d0b6e0a66a"><div class="ttname"><a href="classResponse.html#aaa20193ccdd515e11a5639d0b6e0a66a">Response::_SetCookies</a></div><div class="ttdeci">vector&lt; string &gt; _SetCookies</div><div class="ttdef"><b>Definition</b> <a href="Response_8hpp_source.html#l00029">Response.hpp:29</a></div></div>
+<div class="ttc" id="aclassResponse_html_ab79e2fd3342ea975cbabb74904f4dceb"><div class="ttname"><a href="classResponse.html#ab79e2fd3342ea975cbabb74904f4dceb">Response::operator=</a></div><div class="ttdeci">Response &amp; operator=(const Response &amp;src)</div><div class="ttdef"><b>Definition</b> <a href="Response_8cpp_source.html#l00035">Response.cpp:35</a></div></div>
+<div class="ttc" id="aclassResponse_html_acb0980f3803ca2d1f4351fcd26bc988d"><div class="ttname"><a href="classResponse.html#acb0980f3803ca2d1f4351fcd26bc988d">Response::AddSetCookie</a></div><div class="ttdeci">bool AddSetCookie(const string &amp;value)</div><div class="ttdoc">false si valeur invalide</div><div class="ttdef"><b>Definition</b> <a href="Response_8cpp_source.html#l00268">Response.cpp:268</a></div></div>
+<div class="ttc" id="aclassResponse_html_acbc922c139261ea3a71a7880d78c317f"><div class="ttname"><a href="classResponse.html#acbc922c139261ea3a71a7880d78c317f">Response::setDate</a></div><div class="ttdeci">void setDate(void)</div><div class="ttdoc">Calcule et ajoute aux headers la date en anglais a l'instant T.</div><div class="ttdef"><b>Definition</b> <a href="Response_8cpp_source.html#l00161">Response.cpp:161</a></div></div>
+<div class="ttc" id="aclassResponse_html_adb21fb0b809cb11b411f685251004c18"><div class="ttname"><a href="classResponse.html#adb21fb0b809cb11b411f685251004c18">Response::getBody</a></div><div class="ttdeci">const std::string &amp; getBody(void) const</div><div class="ttdef"><b>Definition</b> <a href="Response_8cpp_source.html#l00128">Response.cpp:128</a></div></div>
+<div class="ttc" id="aclassResponse_html_adf44bd19a8e0349359c30606ad1865f0"><div class="ttname"><a href="classResponse.html#adf44bd19a8e0349359c30606ad1865f0">Response::_Body</a></div><div class="ttdeci">std::string _Body</div><div class="ttdef"><b>Definition</b> <a href="Response_8hpp_source.html#l00028">Response.hpp:28</a></div></div>
+<div class="ttc" id="aclassResponse_html_ae41d7f5833cd3c9fd6331d925e068af8"><div class="ttname"><a href="classResponse.html#ae41d7f5833cd3c9fd6331d925e068af8">Response::getStatusText</a></div><div class="ttdeci">const string &amp; getStatusText(void) const</div><div class="ttdef"><b>Definition</b> <a href="Response_8cpp_source.html#l00138">Response.cpp:138</a></div></div>
+<div class="ttc" id="aclassResponse_html_aeaa3673db99a8c45772c3a5a5b949c4a"><div class="ttname"><a href="classResponse.html#aeaa3673db99a8c45772c3a5a5b949c4a">Response::BuildError</a></div><div class="ttdeci">static Response BuildError(int code, const ServerConfig &amp;server)</div><div class="ttdoc">Lit le fichier d'erreur s'il existe, sinon cree un built in, renvoie le tout comme reponse.</div><div class="ttdef"><b>Definition</b> <a href="Response_8cpp_source.html#l00220">Response.cpp:220</a></div></div>
+<div class="ttc" id="aclassResponse_html_af3bd401f662e6da863f3e2a99bdbee6f"><div class="ttname"><a href="classResponse.html#af3bd401f662e6da863f3e2a99bdbee6f">Response::SwapBody</a></div><div class="ttdeci">void SwapBody(std::string &amp;body)</div><div class="ttdoc">idem, mais vole le buffer : pas de copie du corps CGI</div><div class="ttdef"><b>Definition</b> <a href="Response_8cpp_source.html#l00120">Response.cpp:120</a></div></div>
+<div class="ttc" id="aclassResponse_html_af724e65cafd400c34e8475f386c70dba"><div class="ttname"><a href="classResponse.html#af724e65cafd400c34e8475f386c70dba">Response::Response</a></div><div class="ttdeci">Response(void)</div><div class="ttdef"><b>Definition</b> <a href="Response_8cpp_source.html#l00012">Response.cpp:12</a></div></div>
+<div class="ttc" id="aclassServerConfig_html"><div class="ttname"><a href="classServerConfig.html">ServerConfig</a></div><div class="ttdoc">Represente la configuration d'un serveur virtuel (bloc &quot;server&quot;).</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8hpp_source.html#l00021">ServerConfig.hpp:22</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_09e761304027c904456130627fd4dcf5.html">includes</a></li><li class="navelem"><a class="el" href="Response_8hpp.html">Response.hpp</a></li>
+    <li class="footer">Généré par <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

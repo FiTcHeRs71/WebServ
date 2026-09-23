@@ -1,0 +1,5 @@
+<map id="EventLoop::AddFd" name="EventLoop::AddFd">
+<area shape="rect" id="Node000001" title="Utilise aussi par B&#45;07 pour les pipes CGI." alt="" coords="5,5,144,31"/>
+<area shape="rect" id="Node000002" href="$classEventLoop.html#a4064611cef5aca07311693bc8937fec6" title="Index de fd dans _Pollfds, &#45;1 si absent." alt="" coords="192,5,333,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="144,15,178,15,178,21,144,21"/>
+</map>

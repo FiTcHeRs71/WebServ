@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>webserv:  Fichier source de includes/CgiProcess.hpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">webserv
+   </div>
+   <div id="projectbrief">Serveur HTTP/1.1 non bloquant -- 42</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Généré par Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','Recherche');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function() { init_codefold(0); });
+/* @license-end */
+</script>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('CgiProcess_8hpp_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Chargement...</div>
+<div class="SRStatus" id="Searching">Recherche...</div>
+<div class="SRStatus" id="NoMatches">Aucune correspondance</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">CgiProcess.hpp</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="CgiProcess_8hpp.html">Aller à la documentation de ce fichier.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef CGI_PROCESS_HPP</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor"># define CGI_PROCESS_HPP</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor"># include &quot;<a class="code" href="LocationConfig_8hpp.html">./LocationConfig.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor"># include &quot;<a class="code" href="ServerConfig_8hpp.html">./ServerConfig.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor"># include &quot;<a class="code" href="Config_8hpp.html">./Config.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor"># include &lt;ctime&gt;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor"># include &lt;iostream&gt;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor"># include &lt;sys/types.h&gt;</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor"># include &lt;string&gt;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="keyword">using namespace </span>std;</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keyword">class </span><a class="code hl_class" href="classRequest.html">Request</a>;</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="keyword">class </span><a class="code hl_class" href="classLocationConfig.html">LocationConfig</a>;</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="keyword">class </span><a class="code hl_class" href="classConnection.html">Connection</a>;</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="keyword">class </span><a class="code hl_class" href="classResponse.html">Response</a>;</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span> </div>
+<div class="foldopen" id="foldopen00027" data-start="{" data-end="};">
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="classCgiProcess.html">   27</a></span><span class="keyword">class </span><a class="code hl_class" href="classCgiProcess.html">CgiProcess</a></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>{</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> </div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno"><a class="line" href="classCgiProcess.html#a1acc42858fda411a6dcf1c120e696e22">   31</a></span>    pid_t   <a class="code hl_variable" href="classCgiProcess.html#a1acc42858fda411a6dcf1c120e696e22">_Pid</a>;</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="classCgiProcess.html#a3c336976d144b6c1398f88324e6b9984">   32</a></span>    <span class="keywordtype">int</span>     <a class="code hl_variable" href="classCgiProcess.html#a3c336976d144b6c1398f88324e6b9984">_ReadFd</a>;</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="classCgiProcess.html#af40a4568b2f649c860c1e0f3243f3caf">   33</a></span>    <span class="keywordtype">int</span>     <a class="code hl_variable" href="classCgiProcess.html#af40a4568b2f649c860c1e0f3243f3caf">_WriteFd</a>;</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno"><a class="line" href="classCgiProcess.html#a52aaf6d0ea660f716166597db6351e1f">   34</a></span>    time_t  <a class="code hl_variable" href="classCgiProcess.html#a52aaf6d0ea660f716166597db6351e1f">_LastIo</a>;    </div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="classCgiProcess.html#a7b31194295c8c7a69195184bdbca79d8">   35</a></span>    time_t  <a class="code hl_variable" href="classCgiProcess.html#a7b31194295c8c7a69195184bdbca79d8">_StartTime</a>; </div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="classCgiProcess.html#ab713e63f53f33e900bead90464768d17">   36</a></span>    <span class="keywordtype">string</span>  <a class="code hl_variable" href="classCgiProcess.html#ab713e63f53f33e900bead90464768d17">_InBuf</a>;     </div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="classCgiProcess.html#a6cb01eae25d2beef089cccde60340d20">   37</a></span>    <span class="keywordtype">size_t</span>  <a class="code hl_variable" href="classCgiProcess.html#a6cb01eae25d2beef089cccde60340d20">_InOff</a>;     </div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="classCgiProcess.html#aecf6a8bec08eb89466948cb97a5bcccf">   38</a></span>    <span class="keywordtype">string</span>  <a class="code hl_variable" href="classCgiProcess.html#aecf6a8bec08eb89466948cb97a5bcccf">_OutBuf</a>;    </div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="classCgiProcess.html#a89993187b894f8bfe576a56031b24fad">   39</a></span>    <span class="keywordtype">bool</span>    <a class="code hl_variable" href="classCgiProcess.html#a89993187b894f8bfe576a56031b24fad">_Finished</a>;</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    <span class="keywordtype">bool</span>        <a class="code hl_function" href="classCgiProcess.html#ae31c78bc9ac9984f6cf36a728b9ef80a">SetupPipes</a>(<span class="keywordtype">int</span> pip_in[2], <span class="keywordtype">int</span> pip_out[2]);</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span> </div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    <span class="keyword">public</span>:</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    <span class="comment">/*===Canonical Form===*/</span></div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    <a class="code hl_function" href="classCgiProcess.html#a7314e55f3d3c3b37a11e570c728fab71">CgiProcess</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    <a class="code hl_function" href="classCgiProcess.html#ac49b03ffd334b9e55051d677b5a63125">~CgiProcess</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    <a class="code hl_function" href="classCgiProcess.html#a7314e55f3d3c3b37a11e570c728fab71">CgiProcess</a>(<span class="keyword">const</span> <a class="code hl_class" href="classCgiProcess.html">CgiProcess</a>&amp; to_copy);</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    <a class="code hl_class" href="classCgiProcess.html">CgiProcess</a> &amp;<a class="code hl_function" href="classCgiProcess.html#a190e62dff53ee485505c9c6abaa87078">operator=</a>(<span class="keyword">const</span> <a class="code hl_class" href="classCgiProcess.html">CgiProcess</a>&amp; src);</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span> </div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    <span class="comment">/*===Getters &amp; Setters===*/</span></div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    <span class="keywordtype">int</span>     <a class="code hl_function" href="classCgiProcess.html#ad718f5bbc4da3d1fb5fe1e6687218319">GetReadFd</a>(<span class="keywordtype">void</span>) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <span class="keywordtype">int</span>     <a class="code hl_function" href="classCgiProcess.html#aa85023e28d1083c853f33238c12e1bbe">GetWriteFd</a>(<span class="keywordtype">void</span>) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    pid_t   <a class="code hl_function" href="classCgiProcess.html#a2c9cf855bc8bd2230898e456861bf54a">GetPid</a>(<span class="keywordtype">void</span>) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    <span class="keyword">const</span> <span class="keywordtype">string</span>&amp;   <a class="code hl_function" href="classCgiProcess.html#a782f9a995e91b8398cda546b4489998a">GetOutBuf</a>() <span class="keyword">const</span>;  </div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    <span class="keywordtype">void</span>            <a class="code hl_function" href="classCgiProcess.html#a5110d793370ab14acc4786f68d5155cc">ClearOutBuf</a>();      </div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span> </div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    <span class="comment">/*===Member Function===*/</span></div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    <span class="keywordtype">bool</span>    <a class="code hl_function" href="classCgiProcess.html#a6349ba607993d2138eb7cf77164dd431">Start</a>(<span class="keyword">const</span> <a class="code hl_class" href="classRequest.html">Request</a> &amp;request, <span class="keyword">const</span> <a class="code hl_class" href="classLocationConfig.html">LocationConfig</a> &amp;location,</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>                <span class="keyword">const</span> <a class="code hl_class" href="classServerConfig.html">ServerConfig</a> &amp;server, <span class="keyword">const</span> <a class="code hl_class" href="classConnection.html">Connection</a> &amp;connection,</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>                <span class="keyword">const</span> <a class="code hl_class" href="classConfigParser.html">ConfigParser</a> &amp;config, <span class="keyword">const</span> <span class="keywordtype">string</span> &amp;script_path);</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    <span class="keywordtype">bool</span>    <a class="code hl_function" href="classCgiProcess.html#a41efc2bdc0e9856da0f982ea16417349">IsTimedOut</a>(time_t now) <span class="keyword">const</span>; </div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    <span class="keywordtype">bool</span>    <a class="code hl_function" href="classCgiProcess.html#a3afe3860325ee426a7a319b06d5e2629">Reap</a>(<span class="keywordtype">int</span> &amp;exit_status); </div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    <span class="keywordtype">void</span>    <a class="code hl_function" href="classCgiProcess.html#ad4f0610d3561243c8dd37a84cbc2a935">Kill</a>(<span class="keywordtype">void</span>);             </div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    <span class="keywordtype">void</span>    <a class="code hl_function" href="classCgiProcess.html#a1913ec306dc108516d78d32798714887">CloseFds</a>(<span class="keywordtype">void</span>);         </div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    <span class="keywordtype">void</span>    <a class="code hl_function" href="classCgiProcess.html#aec364e3e87c41ce73dcafea03532a335">OnWritableCgi</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    <span class="keywordtype">void</span>    <a class="code hl_function" href="classCgiProcess.html#aef02846916ff0c0209bdd3707b613b17">CloseWriteFd</a>(<span class="keywordtype">void</span>);     </div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    <span class="keywordtype">void</span>    <a class="code hl_function" href="classCgiProcess.html#ad3bc070224d604bbeb3ad7609914d31c">OnReadableCgi</a>();</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    <span class="keywordtype">void</span>    <a class="code hl_function" href="classCgiProcess.html#a069cb5dc52300f7dcbe4e86179e97cb9">CloseReadFd</a>();</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>};</div>
+</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span> </div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>vector&lt;string&gt;  <a class="code hl_function" href="CgiProcess_8hpp.html#ad04266f6bf181d67247721cf5c769d70">build_cgi_env</a>(<span class="keyword">const</span> <a class="code hl_class" href="classRequest.html">Request</a> &amp;request, <span class="keyword">const</span> <a class="code hl_class" href="classLocationConfig.html">LocationConfig</a> &amp;location,</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>                            <span class="keyword">const</span> <a class="code hl_class" href="classServerConfig.html">ServerConfig</a> &amp;server, <span class="keyword">const</span> <a class="code hl_class" href="classConnection.html">Connection</a> &amp;connection,</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>                            <span class="keyword">const</span> <a class="code hl_class" href="classConfigParser.html">ConfigParser</a> &amp;config, <span class="keyword">const</span> <span class="keywordtype">string</span> &amp;script_path);</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span><span class="keywordtype">char</span>            **<a class="code hl_function" href="CgiProcess_8hpp.html#afc302eae58fa92a9772e627052e58016">VectorToChar</a>(vector&lt;string&gt; &amp;storage);</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span><span class="keywordtype">bool</span>            <a class="code hl_function" href="CgiProcess_8hpp.html#ac300ea8c2409fbc00c754021ea20f7b2">parse_cgi_output</a>(<span class="keyword">const</span> std::string &amp;raw, <a class="code hl_class" href="classResponse.html">Response</a> &amp;out);</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span><span class="keywordtype">string</span>          <a class="code hl_function" href="CgiProcess_8hpp.html#a676c4b56d4e3c9734be563a0707de682">findCgiExt</a>(<span class="keyword">const</span> <span class="keywordtype">string</span> &amp;path, <span class="keyword">const</span> <a class="code hl_class" href="classLocationConfig.html">LocationConfig</a> &amp;loc);  </div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span><span class="preprocessor">#endif </span><span class="comment">/*CGI_PROCESS_HPP*/</span><span class="preprocessor"></span></div>
+<div class="ttc" id="aCgiProcess_8hpp_html_a676c4b56d4e3c9734be563a0707de682"><div class="ttname"><a href="CgiProcess_8hpp.html#a676c4b56d4e3c9734be563a0707de682">findCgiExt</a></div><div class="ttdeci">string findCgiExt(const string &amp;path, const LocationConfig &amp;loc)</div><div class="ttdoc">ext CGI dans path, ou &quot;&quot;</div><div class="ttdef"><b>Definition</b> <a href="cgi_8cpp_source.html#l00274">cgi.cpp:274</a></div></div>
+<div class="ttc" id="aCgiProcess_8hpp_html_ac300ea8c2409fbc00c754021ea20f7b2"><div class="ttname"><a href="CgiProcess_8hpp.html#ac300ea8c2409fbc00c754021ea20f7b2">parse_cgi_output</a></div><div class="ttdeci">bool parse_cgi_output(const std::string &amp;raw, Response &amp;out)</div><div class="ttdoc">Convertit la sortie brute d'un CGI en Response prete a serialiser.</div><div class="ttdef"><b>Definition</b> <a href="cgi_8cpp_source.html#l00189">cgi.cpp:189</a></div></div>
+<div class="ttc" id="aCgiProcess_8hpp_html_ad04266f6bf181d67247721cf5c769d70"><div class="ttname"><a href="CgiProcess_8hpp.html#ad04266f6bf181d67247721cf5c769d70">build_cgi_env</a></div><div class="ttdeci">vector&lt; string &gt; build_cgi_env(const Request &amp;request, const LocationConfig &amp;location, const ServerConfig &amp;server, const Connection &amp;connection, const ConfigParser &amp;config, const string &amp;script_path)</div><div class="ttdoc">Construit les meta-variables CGI/1.1 de la requete.</div><div class="ttdef"><b>Definition</b> <a href="cgi_8cpp_source.html#l00129">cgi.cpp:129</a></div></div>
+<div class="ttc" id="aCgiProcess_8hpp_html_afc302eae58fa92a9772e627052e58016"><div class="ttname"><a href="CgiProcess_8hpp.html#afc302eae58fa92a9772e627052e58016">VectorToChar</a></div><div class="ttdeci">char ** VectorToChar(vector&lt; string &gt; &amp;storage)</div><div class="ttdoc">Converti un vecteur de string en tableau de char*.</div><div class="ttdef"><b>Definition</b> <a href="cgi_8cpp_source.html#l00078">cgi.cpp:78</a></div></div>
+<div class="ttc" id="aConfig_8hpp_html"><div class="ttname"><a href="Config_8hpp.html">Config.hpp</a></div></div>
+<div class="ttc" id="aLocationConfig_8hpp_html"><div class="ttname"><a href="LocationConfig_8hpp.html">LocationConfig.hpp</a></div></div>
+<div class="ttc" id="aServerConfig_8hpp_html"><div class="ttname"><a href="ServerConfig_8hpp.html">ServerConfig.hpp</a></div></div>
+<div class="ttc" id="aclassCgiProcess_html"><div class="ttname"><a href="classCgiProcess.html">CgiProcess</a></div><div class="ttdoc">Gere le cycle de vie d'un processus CGI externe.</div><div class="ttdef"><b>Definition</b> <a href="CgiProcess_8hpp_source.html#l00027">CgiProcess.hpp:28</a></div></div>
+<div class="ttc" id="aclassCgiProcess_html_a069cb5dc52300f7dcbe4e86179e97cb9"><div class="ttname"><a href="classCgiProcess.html#a069cb5dc52300f7dcbe4e86179e97cb9">CgiProcess::CloseReadFd</a></div><div class="ttdeci">void CloseReadFd()</div><div class="ttdef"><b>Definition</b> <a href="CgiProcess_8cpp_source.html#l00349">CgiProcess.cpp:349</a></div></div>
+<div class="ttc" id="aclassCgiProcess_html_a190e62dff53ee485505c9c6abaa87078"><div class="ttname"><a href="classCgiProcess.html#a190e62dff53ee485505c9c6abaa87078">CgiProcess::operator=</a></div><div class="ttdeci">CgiProcess &amp; operator=(const CgiProcess &amp;src)</div><div class="ttdef"><b>Definition</b> <a href="CgiProcess_8cpp_source.html#l00052">CgiProcess.cpp:52</a></div></div>
+<div class="ttc" id="aclassCgiProcess_html_a1913ec306dc108516d78d32798714887"><div class="ttname"><a href="classCgiProcess.html#a1913ec306dc108516d78d32798714887">CgiProcess::CloseFds</a></div><div class="ttdeci">void CloseFds(void)</div><div class="ttdoc">Ferme les 2 pipes. Idempotente.</div><div class="ttdef"><b>Definition</b> <a href="CgiProcess_8cpp_source.html#l00294">CgiProcess.cpp:294</a></div></div>
+<div class="ttc" id="aclassCgiProcess_html_a1acc42858fda411a6dcf1c120e696e22"><div class="ttname"><a href="classCgiProcess.html#a1acc42858fda411a6dcf1c120e696e22">CgiProcess::_Pid</a></div><div class="ttdeci">pid_t _Pid</div><div class="ttdef"><b>Definition</b> <a href="CgiProcess_8hpp_source.html#l00031">CgiProcess.hpp:31</a></div></div>
+<div class="ttc" id="aclassCgiProcess_html_a2c9cf855bc8bd2230898e456861bf54a"><div class="ttname"><a href="classCgiProcess.html#a2c9cf855bc8bd2230898e456861bf54a">CgiProcess::GetPid</a></div><div class="ttdeci">pid_t GetPid(void) const</div><div class="ttdoc">Retourne le PID du processus CGI.</div><div class="ttdef"><b>Definition</b> <a href="CgiProcess_8cpp_source.html#l00103">CgiProcess.cpp:103</a></div></div>
+<div class="ttc" id="aclassCgiProcess_html_a3afe3860325ee426a7a319b06d5e2629"><div class="ttname"><a href="classCgiProcess.html#a3afe3860325ee426a7a319b06d5e2629">CgiProcess::Reap</a></div><div class="ttdeci">bool Reap(int &amp;exit_status)</div><div class="ttdoc">waitpid</div><div class="ttdef"><b>Definition</b> <a href="CgiProcess_8cpp_source.html#l00383">CgiProcess.cpp:383</a></div></div>
+<div class="ttc" id="aclassCgiProcess_html_a3c336976d144b6c1398f88324e6b9984"><div class="ttname"><a href="classCgiProcess.html#a3c336976d144b6c1398f88324e6b9984">CgiProcess::_ReadFd</a></div><div class="ttdeci">int _ReadFd</div><div class="ttdef"><b>Definition</b> <a href="CgiProcess_8hpp_source.html#l00032">CgiProcess.hpp:32</a></div></div>
+<div class="ttc" id="aclassCgiProcess_html_a41efc2bdc0e9856da0f982ea16417349"><div class="ttname"><a href="classCgiProcess.html#a41efc2bdc0e9856da0f982ea16417349">CgiProcess::IsTimedOut</a></div><div class="ttdeci">bool IsTimedOut(time_t now) const</div><div class="ttdoc">now = _StartTime &gt; CGI_TIMEOUT</div><div class="ttdef"><b>Definition</b> <a href="CgiProcess_8cpp_source.html#l00376">CgiProcess.cpp:376</a></div></div>
+<div class="ttc" id="aclassCgiProcess_html_a5110d793370ab14acc4786f68d5155cc"><div class="ttname"><a href="classCgiProcess.html#a5110d793370ab14acc4786f68d5155cc">CgiProcess::ClearOutBuf</a></div><div class="ttdeci">void ClearOutBuf()</div><div class="ttdoc">libere la sortie brute des qu'elle est parsee</div><div class="ttdef"><b>Definition</b> <a href="CgiProcess_8cpp_source.html#l00112">CgiProcess.cpp:112</a></div></div>
+<div class="ttc" id="aclassCgiProcess_html_a52aaf6d0ea660f716166597db6351e1f"><div class="ttname"><a href="classCgiProcess.html#a52aaf6d0ea660f716166597db6351e1f">CgiProcess::_LastIo</a></div><div class="ttdeci">time_t _LastIo</div><div class="ttdoc">derniere I/O reussie avec le CGI : le timeout est un timeout d'inactivite</div><div class="ttdef"><b>Definition</b> <a href="CgiProcess_8hpp_source.html#l00034">CgiProcess.hpp:34</a></div></div>
+<div class="ttc" id="aclassCgiProcess_html_a6349ba607993d2138eb7cf77164dd431"><div class="ttname"><a href="classCgiProcess.html#a6349ba607993d2138eb7cf77164dd431">CgiProcess::Start</a></div><div class="ttdeci">bool Start(const Request &amp;request, const LocationConfig &amp;location, const ServerConfig &amp;server, const Connection &amp;connection, const ConfigParser &amp;config, const string &amp;script_path)</div><div class="ttdoc">Demarre l'execution du script CGI correspondant a la requete.</div><div class="ttdef"><b>Definition</b> <a href="CgiProcess_8cpp_source.html#l00162">CgiProcess.cpp:162</a></div></div>
+<div class="ttc" id="aclassCgiProcess_html_a6cb01eae25d2beef089cccde60340d20"><div class="ttname"><a href="classCgiProcess.html#a6cb01eae25d2beef089cccde60340d20">CgiProcess::_InOff</a></div><div class="ttdeci">size_t _InOff</div><div class="ttdoc">octets deja ecrits dans _InBuf (evite erase(0,n) en O(n^2))</div><div class="ttdef"><b>Definition</b> <a href="CgiProcess_8hpp_source.html#l00037">CgiProcess.hpp:37</a></div></div>
+<div class="ttc" id="aclassCgiProcess_html_a7314e55f3d3c3b37a11e570c728fab71"><div class="ttname"><a href="classCgiProcess.html#a7314e55f3d3c3b37a11e570c728fab71">CgiProcess::CgiProcess</a></div><div class="ttdeci">CgiProcess(void)</div><div class="ttdef"><b>Definition</b> <a href="CgiProcess_8cpp_source.html#l00022">CgiProcess.cpp:22</a></div></div>
+<div class="ttc" id="aclassCgiProcess_html_a782f9a995e91b8398cda546b4489998a"><div class="ttname"><a href="classCgiProcess.html#a782f9a995e91b8398cda546b4489998a">CgiProcess::GetOutBuf</a></div><div class="ttdeci">const string &amp; GetOutBuf() const</div><div class="ttdoc">par reference : la sortie CGI peut peser 100 Mo</div><div class="ttdef"><b>Definition</b> <a href="CgiProcess_8cpp_source.html#l00108">CgiProcess.cpp:108</a></div></div>
+<div class="ttc" id="aclassCgiProcess_html_a7b31194295c8c7a69195184bdbca79d8"><div class="ttname"><a href="classCgiProcess.html#a7b31194295c8c7a69195184bdbca79d8">CgiProcess::_StartTime</a></div><div class="ttdeci">time_t _StartTime</div><div class="ttdoc">when the cgi process start used for waitpid with default_cgitimeout</div><div class="ttdef"><b>Definition</b> <a href="CgiProcess_8hpp_source.html#l00035">CgiProcess.hpp:35</a></div></div>
+<div class="ttc" id="aclassCgiProcess_html_a89993187b894f8bfe576a56031b24fad"><div class="ttname"><a href="classCgiProcess.html#a89993187b894f8bfe576a56031b24fad">CgiProcess::_Finished</a></div><div class="ttdeci">bool _Finished</div><div class="ttdef"><b>Definition</b> <a href="CgiProcess_8hpp_source.html#l00039">CgiProcess.hpp:39</a></div></div>
+<div class="ttc" id="aclassCgiProcess_html_aa85023e28d1083c853f33238c12e1bbe"><div class="ttname"><a href="classCgiProcess.html#aa85023e28d1083c853f33238c12e1bbe">CgiProcess::GetWriteFd</a></div><div class="ttdeci">int GetWriteFd(void) const</div><div class="ttdoc">Retourne le descripteur d'ecriture du pipe vers le CGI.</div><div class="ttdef"><b>Definition</b> <a href="CgiProcess_8cpp_source.html#l00084">CgiProcess.cpp:84</a></div></div>
+<div class="ttc" id="aclassCgiProcess_html_ab713e63f53f33e900bead90464768d17"><div class="ttname"><a href="classCgiProcess.html#ab713e63f53f33e900bead90464768d17">CgiProcess::_InBuf</a></div><div class="ttdeci">string _InBuf</div><div class="ttdoc">body restant a ecrire (D-03)</div><div class="ttdef"><b>Definition</b> <a href="CgiProcess_8hpp_source.html#l00036">CgiProcess.hpp:36</a></div></div>
+<div class="ttc" id="aclassCgiProcess_html_ac49b03ffd334b9e55051d677b5a63125"><div class="ttname"><a href="classCgiProcess.html#ac49b03ffd334b9e55051d677b5a63125">CgiProcess::~CgiProcess</a></div><div class="ttdeci">~CgiProcess(void)</div><div class="ttdef"><b>Definition</b> <a href="CgiProcess_8cpp_source.html#l00034">CgiProcess.cpp:34</a></div></div>
+<div class="ttc" id="aclassCgiProcess_html_ad3bc070224d604bbeb3ad7609914d31c"><div class="ttname"><a href="classCgiProcess.html#ad3bc070224d604bbeb3ad7609914d31c">CgiProcess::OnReadableCgi</a></div><div class="ttdeci">void OnReadableCgi()</div><div class="ttdoc">Ferme le stdin du CGI : D-03, quand le body est entierement ecrit.</div><div class="ttdef"><b>Definition</b> <a href="CgiProcess_8cpp_source.html#l00363">CgiProcess.cpp:363</a></div></div>
+<div class="ttc" id="aclassCgiProcess_html_ad4f0610d3561243c8dd37a84cbc2a935"><div class="ttname"><a href="classCgiProcess.html#ad4f0610d3561243c8dd37a84cbc2a935">CgiProcess::Kill</a></div><div class="ttdeci">void Kill(void)</div><div class="ttdoc">SIGKILL puis Reap()</div><div class="ttdef"><b>Definition</b> <a href="CgiProcess_8cpp_source.html#l00247">CgiProcess.cpp:247</a></div></div>
+<div class="ttc" id="aclassCgiProcess_html_ad718f5bbc4da3d1fb5fe1e6687218319"><div class="ttname"><a href="classCgiProcess.html#ad718f5bbc4da3d1fb5fe1e6687218319">CgiProcess::GetReadFd</a></div><div class="ttdeci">int GetReadFd(void) const</div><div class="ttdoc">Retourne le descripteur de lecture du pipe vers le CGI.</div><div class="ttdef"><b>Definition</b> <a href="CgiProcess_8cpp_source.html#l00075">CgiProcess.cpp:75</a></div></div>
+<div class="ttc" id="aclassCgiProcess_html_ae31c78bc9ac9984f6cf36a728b9ef80a"><div class="ttname"><a href="classCgiProcess.html#ae31c78bc9ac9984f6cf36a728b9ef80a">CgiProcess::SetupPipes</a></div><div class="ttdeci">bool SetupPipes(int pip_in[2], int pip_out[2])</div><div class="ttdoc">Cree les deux pipes de communication avec le futur processus CGI.</div><div class="ttdef"><b>Definition</b> <a href="CgiProcess_8cpp_source.html#l00266">CgiProcess.cpp:266</a></div></div>
+<div class="ttc" id="aclassCgiProcess_html_aec364e3e87c41ce73dcafea03532a335"><div class="ttname"><a href="classCgiProcess.html#aec364e3e87c41ce73dcafea03532a335">CgiProcess::OnWritableCgi</a></div><div class="ttdeci">void OnWritableCgi(void)</div><div class="ttdef"><b>Definition</b> <a href="CgiProcess_8cpp_source.html#l00309">CgiProcess.cpp:309</a></div></div>
+<div class="ttc" id="aclassCgiProcess_html_aecf6a8bec08eb89466948cb97a5bcccf"><div class="ttname"><a href="classCgiProcess.html#aecf6a8bec08eb89466948cb97a5bcccf">CgiProcess::_OutBuf</a></div><div class="ttdeci">string _OutBuf</div><div class="ttdoc">sortie brute accumulee (D-04)</div><div class="ttdef"><b>Definition</b> <a href="CgiProcess_8hpp_source.html#l00038">CgiProcess.hpp:38</a></div></div>
+<div class="ttc" id="aclassCgiProcess_html_aef02846916ff0c0209bdd3707b613b17"><div class="ttname"><a href="classCgiProcess.html#aef02846916ff0c0209bdd3707b613b17">CgiProcess::CloseWriteFd</a></div><div class="ttdeci">void CloseWriteFd(void)</div><div class="ttdoc">Ferme le stdin du CGI : D-03, quand le body est entierement ecrit.</div><div class="ttdef"><b>Definition</b> <a href="CgiProcess_8cpp_source.html#l00336">CgiProcess.cpp:336</a></div></div>
+<div class="ttc" id="aclassCgiProcess_html_af40a4568b2f649c860c1e0f3243f3caf"><div class="ttname"><a href="classCgiProcess.html#af40a4568b2f649c860c1e0f3243f3caf">CgiProcess::_WriteFd</a></div><div class="ttdeci">int _WriteFd</div><div class="ttdef"><b>Definition</b> <a href="CgiProcess_8hpp_source.html#l00033">CgiProcess.hpp:33</a></div></div>
+<div class="ttc" id="aclassConfigParser_html"><div class="ttname"><a href="classConfigParser.html">ConfigParser</a></div><div class="ttdoc">Represente toute la phase de parsing du .conf.</div><div class="ttdef"><b>Definition</b> <a href="Config_8hpp_source.html#l00031">Config.hpp:32</a></div></div>
+<div class="ttc" id="aclassConnection_html"><div class="ttname"><a href="classConnection.html">Connection</a></div><div class="ttdef"><b>Definition</b> <a href="Connection_8hpp_source.html#l00029">Connection.hpp:30</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html"><div class="ttname"><a href="classLocationConfig.html">LocationConfig</a></div><div class="ttdoc">Represente la configuration d'une location (bloc &quot;location&quot;) d'un serveur.</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8hpp_source.html#l00018">LocationConfig.hpp:19</a></div></div>
+<div class="ttc" id="aclassRequest_html"><div class="ttname"><a href="classRequest.html">Request</a></div><div class="ttdoc">Represente une requete HTTP recue par le serveur.</div><div class="ttdef"><b>Definition</b> <a href="Request_8hpp_source.html#l00044">Request.hpp:45</a></div></div>
+<div class="ttc" id="aclassResponse_html"><div class="ttname"><a href="classResponse.html">Response</a></div><div class="ttdoc">Represente une reponse HTTP a construire et a envoyer au client.</div><div class="ttdef"><b>Definition</b> <a href="Response_8hpp_source.html#l00021">Response.hpp:22</a></div></div>
+<div class="ttc" id="aclassServerConfig_html"><div class="ttname"><a href="classServerConfig.html">ServerConfig</a></div><div class="ttdoc">Represente la configuration d'un serveur virtuel (bloc &quot;server&quot;).</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8hpp_source.html#l00021">ServerConfig.hpp:22</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_09e761304027c904456130627fd4dcf5.html">includes</a></li><li class="navelem"><a class="el" href="CgiProcess_8hpp.html">CgiProcess.hpp</a></li>
+    <li class="footer">Généré par <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

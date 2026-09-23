@@ -1,0 +1,376 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>webserv: Référence du fichier srcs/http/Autoindex.cpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">webserv
+   </div>
+   <div id="projectbrief">Serveur HTTP/1.1 non bloquant -- 42</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Généré par Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','Recherche');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('Autoindex_8cpp.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Chargement...</div>
+<div class="SRStatus" id="Searching">Recherche...</div>
+<div class="SRStatus" id="NoMatches">Aucune correspondance</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#func-members">Fonctions</a>  </div>
+  <div class="headertitle"><div class="title">Référence du fichier Autoindex.cpp</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="Autoindex_8hpp_source.html">../../includes/Autoindex.hpp</a>&quot;</code><br />
+<code>#include &lt;algorithm&gt;</code><br />
+<code>#include &lt;cctype&gt;</code><br />
+<code>#include &lt;clocale&gt;</code><br />
+<code>#include &lt;cstddef&gt;</code><br />
+<code>#include &lt;ctime&gt;</code><br />
+<code>#include &lt;sstream&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
+<code>#include &lt;dirent.h&gt;</code><br />
+<code>#include &lt;sys/stat.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Graphe des dépendances par inclusion de Autoindex.cpp:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="Autoindex_8cpp__incl.svg" width="100%" height="437"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+</div>
+<p><a href="Autoindex_8cpp_source.html">Aller au code source de ce fichier.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Fonctions</h2></td></tr>
+<tr class="memitem:ac3588a395e7bbcdb3bbdb7488fddd904" id="r_ac3588a395e7bbcdb3bbdb7488fddd904"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Autoindex_8cpp.html#ac3588a395e7bbcdb3bbdb7488fddd904">list_dir</a> (const string &amp;dir_path, vector&lt; <a class="el" href="structTDirEntry.html">TDirEntry</a> &gt; &amp;out)</td></tr>
+<tr class="separator:ac3588a395e7bbcdb3bbdb7488fddd904"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ea6484660b95129d638c080540d7bf8" id="r_a1ea6484660b95129d638c080540d7bf8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Autoindex_8cpp.html#a1ea6484660b95129d638c080540d7bf8">operator&lt;</a> (const <a class="el" href="structTDirEntry.html">TDirEntry</a> &amp;a, const <a class="el" href="structTDirEntry.html">TDirEntry</a> &amp;b)</td></tr>
+<tr class="separator:a1ea6484660b95129d638c080540d7bf8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a45cf1c0ce8813ad25f63423b07632dad" id="r_a45cf1c0ce8813ad25f63423b07632dad"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Autoindex_8cpp.html#a45cf1c0ce8813ad25f63423b07632dad">format_time</a> (time_t mtime)</td></tr>
+<tr class="memdesc:a45cf1c0ce8813ad25f63423b07632dad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Formate une date de modification en UTC, style NGINX.  <br /></td></tr>
+<tr class="separator:a45cf1c0ce8813ad25f63423b07632dad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1bf126b1fd7553197aaf979af8cb630c" id="r_a1bf126b1fd7553197aaf979af8cb630c"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Autoindex_8cpp.html#a1bf126b1fd7553197aaf979af8cb630c">format_size</a> (const <a class="el" href="structTDirEntry.html">TDirEntry</a> &amp;e)</td></tr>
+<tr class="memdesc:a1bf126b1fd7553197aaf979af8cb630c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rend la taille affichable d'une entree.  <br /></td></tr>
+<tr class="separator:a1bf126b1fd7553197aaf979af8cb630c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7986baaa776b1b3a32f5de20d1d9d897" id="r_a7986baaa776b1b3a32f5de20d1d9d897"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Autoindex_8cpp.html#a7986baaa776b1b3a32f5de20d1d9d897">build_autoindex</a> (const string &amp;dir_path, const string &amp;uri)</td></tr>
+<tr class="memdesc:a7986baaa776b1b3a32f5de20d1d9d897"><td class="mdescLeft">&#160;</td><td class="mdescRight">Genere le listing HTML d'un dossier (autoindex on).  <br /></td></tr>
+<tr class="separator:a7986baaa776b1b3a32f5de20d1d9d897"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10f4b6f7e66606b753817e427564bd93" id="r_a10f4b6f7e66606b753817e427564bd93"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Autoindex_8cpp.html#a10f4b6f7e66606b753817e427564bd93">html_escape</a> (const string &amp;s)</td></tr>
+<tr class="separator:a10f4b6f7e66606b753817e427564bd93"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a750e3742737086f86d7cb54e06105fe7" id="r_a750e3742737086f86d7cb54e06105fe7"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Autoindex_8cpp.html#a750e3742737086f86d7cb54e06105fe7">url_encode</a> (const string &amp;s)</td></tr>
+<tr class="separator:a750e3742737086f86d7cb54e06105fe7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Documentation des fonctions</h2>
+<a id="a7986baaa776b1b3a32f5de20d1d9d897" name="a7986baaa776b1b3a32f5de20d1d9d897"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7986baaa776b1b3a32f5de20d1d9d897">&#9670;&#160;</a></span>build_autoindex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">string build_autoindex </td>
+          <td>(</td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>dir_path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>uri</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Genere le listing HTML d'un dossier (autoindex on). </p>
+<p>Le HTML est autonome : style inline, aucun asset externe. Les noms sont echappes pour l'affichage (html_escape) et encodes pour les liens (url_encode) ; les href sont relatifs a l'URI, avec un '/' final sur les dossiers pour eviter un 301 a chaque clic.</p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dir_path</td><td>Chemin disque du dossier, terminé par '/'. </td></tr>
+    <tr><td class="paramname">uri</td><td>URI de la requete, terminee par '/'. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>Le HTML complet, ou "" si opendir echoue (le caller rend 403). </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="Autoindex_8cpp_source.html#l00091">91</a> du fichier <a class="el" href="Autoindex_8cpp_source.html">Autoindex.cpp</a>.</p>
+<div class="dynheader">
+Voici le graphe d'appel pour cette fonction :</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="Autoindex_8cpp_a7986baaa776b1b3a32f5de20d1d9d897_cgraph.svg" width="291" height="234"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a1bf126b1fd7553197aaf979af8cb630c" name="a1bf126b1fd7553197aaf979af8cb630c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1bf126b1fd7553197aaf979af8cb630c">&#9670;&#160;</a></span>format_size()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static string format_size </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structTDirEntry.html">TDirEntry</a> &amp;&#160;</td>
+          <td class="paramname"><em>e</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Rend la taille affichable d'une entree. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">e</td><td>Entree du listing. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>"-" pour un dossier, la taille en octets sinon. </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="Autoindex_8cpp_source.html#l00069">69</a> du fichier <a class="el" href="Autoindex_8cpp_source.html">Autoindex.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a45cf1c0ce8813ad25f63423b07632dad" name="a45cf1c0ce8813ad25f63423b07632dad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a45cf1c0ce8813ad25f63423b07632dad">&#9670;&#160;</a></span>format_time()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static string format_time </td>
+          <td>(</td>
+          <td class="paramtype">time_t&#160;</td>
+          <td class="paramname"><em>mtime</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Formate une date de modification en UTC, style NGINX. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mtime</td><td>Champ st_mtime releve par stat(). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>"20-Jul-2025 14:19", ou "-" si gmtime echoue. </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="Autoindex_8cpp_source.html#l00052">52</a> du fichier <a class="el" href="Autoindex_8cpp_source.html">Autoindex.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a10f4b6f7e66606b753817e427564bd93" name="a10f4b6f7e66606b753817e427564bd93"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a10f4b6f7e66606b753817e427564bd93">&#9670;&#160;</a></span>html_escape()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">string html_escape </td>
+          <td>(</td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Définition à la ligne <a class="el" href="Autoindex_8cpp_source.html#l00124">124</a> du fichier <a class="el" href="Autoindex_8cpp_source.html">Autoindex.cpp</a>.</p>
+
+</div>
+</div>
+<a id="ac3588a395e7bbcdb3bbdb7488fddd904" name="ac3588a395e7bbcdb3bbdb7488fddd904"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac3588a395e7bbcdb3bbdb7488fddd904">&#9670;&#160;</a></span>list_dir()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool list_dir </td>
+          <td>(</td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>dir_path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vector&lt; <a class="el" href="structTDirEntry.html">TDirEntry</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>out</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Définition à la ligne <a class="el" href="Autoindex_8cpp_source.html#l00013">13</a> du fichier <a class="el" href="Autoindex_8cpp_source.html">Autoindex.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a1ea6484660b95129d638c080540d7bf8" name="a1ea6484660b95129d638c080540d7bf8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1ea6484660b95129d638c080540d7bf8">&#9670;&#160;</a></span>operator&lt;()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool operator&lt; </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structTDirEntry.html">TDirEntry</a> &amp;&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structTDirEntry.html">TDirEntry</a> &amp;&#160;</td>
+          <td class="paramname"><em>b</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Définition à la ligne <a class="el" href="Autoindex_8cpp_source.html#l00040">40</a> du fichier <a class="el" href="Autoindex_8cpp_source.html">Autoindex.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a750e3742737086f86d7cb54e06105fe7" name="a750e3742737086f86d7cb54e06105fe7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a750e3742737086f86d7cb54e06105fe7">&#9670;&#160;</a></span>url_encode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">string url_encode </td>
+          <td>(</td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Définition à la ligne <a class="el" href="Autoindex_8cpp_source.html#l00145">145</a> du fichier <a class="el" href="Autoindex_8cpp_source.html">Autoindex.cpp</a>.</p>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_b73b02d482d1c4a3db20c3d9ad52d395.html">srcs</a></li><li class="navelem"><a class="el" href="dir_e3d31d8540122c9e7284d3387c2a30be.html">http</a></li><li class="navelem"><a class="el" href="Autoindex_8cpp.html">Autoindex.cpp</a></li>
+    <li class="footer">Généré par <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

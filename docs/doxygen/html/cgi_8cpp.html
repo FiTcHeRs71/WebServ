@@ -1,0 +1,531 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>webserv: Référence du fichier srcs/cgi/cgi.cpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">webserv
+   </div>
+   <div id="projectbrief">Serveur HTTP/1.1 non bloquant -- 42</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Généré par Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','Recherche');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('cgi_8cpp.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Chargement...</div>
+<div class="SRStatus" id="Searching">Recherche...</div>
+<div class="SRStatus" id="NoMatches">Aucune correspondance</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#func-members">Fonctions</a>  </div>
+  <div class="headertitle"><div class="title">Référence du fichier cgi.cpp</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="CgiProcess_8hpp_source.html">../../includes/CgiProcess.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ServerConfig_8hpp_source.html">../../includes/ServerConfig.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Request_8hpp_source.html">../../includes/Request.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Connection_8hpp_source.html">../../includes/Connection.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Config_8hpp_source.html">../../includes/Config.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Response_8hpp_source.html">../../includes/Response.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Router_8hpp_source.html">../../includes/Router.hpp</a>&quot;</code><br />
+<code>#include &lt;cctype&gt;</code><br />
+<code>#include &lt;map&gt;</code><br />
+<code>#include &lt;sstream&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Graphe des dépendances par inclusion de cgi.cpp:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="cgi_8cpp__incl.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+</div>
+<p><a href="cgi_8cpp_source.html">Aller au code source de ce fichier.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Fonctions</h2></td></tr>
+<tr class="memitem:a3e4daad6f7419311c24c1cc68b63f3bc" id="r_a3e4daad6f7419311c24c1cc68b63f3bc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cgi_8cpp.html#a3e4daad6f7419311c24c1cc68b63f3bc">addEnv</a> (vector&lt; string &gt; &amp;storage, const string &amp;key, const string &amp;value)</td></tr>
+<tr class="memdesc:a3e4daad6f7419311c24c1cc68b63f3bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ajouter une nouvelle valeur a l'environnement cgi.  <br /></td></tr>
+<tr class="separator:a3e4daad6f7419311c24c1cc68b63f3bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6826f4fde32cf27a1856b154ed017d94" id="r_a6826f4fde32cf27a1856b154ed017d94"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cgi_8cpp.html#a6826f4fde32cf27a1856b154ed017d94">findScriptName</a> (const <a class="el" href="classRequest.html">Request</a> &amp;request, const <a class="el" href="classLocationConfig.html">LocationConfig</a> &amp;location)</td></tr>
+<tr class="memdesc:a6826f4fde32cf27a1856b154ed017d94"><td class="mdescLeft">&#160;</td><td class="mdescRight">SCRIPT_NAME : URI jusqu'a l'extension CGI comprise (RFC 3875).  <br /></td></tr>
+<tr class="separator:a6826f4fde32cf27a1856b154ed017d94"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc5cf01c2075278c8d2ee8f16e107630" id="r_acc5cf01c2075278c8d2ee8f16e107630"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cgi_8cpp.html#acc5cf01c2075278c8d2ee8f16e107630">findPathInfo</a> (const <a class="el" href="classRequest.html">Request</a> &amp;request, const <a class="el" href="classLocationConfig.html">LocationConfig</a> &amp;location)</td></tr>
+<tr class="memdesc:acc5cf01c2075278c8d2ee8f16e107630"><td class="mdescLeft">&#160;</td><td class="mdescRight">PATH_INFO : suffixe apres l'extension CGI, ou "".  <br /></td></tr>
+<tr class="separator:acc5cf01c2075278c8d2ee8f16e107630"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc302eae58fa92a9772e627052e58016" id="r_afc302eae58fa92a9772e627052e58016"><td class="memItemLeft" align="right" valign="top">char **&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cgi_8cpp.html#afc302eae58fa92a9772e627052e58016">VectorToChar</a> (vector&lt; string &gt; &amp;storage)</td></tr>
+<tr class="memdesc:afc302eae58fa92a9772e627052e58016"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converti un vecteur de string en tableau de char*.  <br /></td></tr>
+<tr class="separator:afc302eae58fa92a9772e627052e58016"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad1751c5b2a6326543fe1b53ae171d0a0" id="r_ad1751c5b2a6326543fe1b53ae171d0a0"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cgi_8cpp.html#ad1751c5b2a6326543fe1b53ae171d0a0">header_to_meta</a> (const std::string &amp;name)</td></tr>
+<tr class="memdesc:ad1751c5b2a6326543fe1b53ae171d0a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Transforme les headers dans le bon format de l'env.  <br /></td></tr>
+<tr class="separator:ad1751c5b2a6326543fe1b53ae171d0a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad04266f6bf181d67247721cf5c769d70" id="r_ad04266f6bf181d67247721cf5c769d70"><td class="memItemLeft" align="right" valign="top">vector&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cgi_8cpp.html#ad04266f6bf181d67247721cf5c769d70">build_cgi_env</a> (const <a class="el" href="classRequest.html">Request</a> &amp;request, const <a class="el" href="classLocationConfig.html">LocationConfig</a> &amp;location, const <a class="el" href="classServerConfig.html">ServerConfig</a> &amp;server, const <a class="el" href="classConnection.html">Connection</a> &amp;connection, const <a class="el" href="classConfigParser.html">ConfigParser</a> &amp;config, const string &amp;script_path)</td></tr>
+<tr class="memdesc:ad04266f6bf181d67247721cf5c769d70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construit les meta-variables CGI/1.1 de la requete.  <br /></td></tr>
+<tr class="separator:ad04266f6bf181d67247721cf5c769d70"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac300ea8c2409fbc00c754021ea20f7b2" id="r_ac300ea8c2409fbc00c754021ea20f7b2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cgi_8cpp.html#ac300ea8c2409fbc00c754021ea20f7b2">parse_cgi_output</a> (const std::string &amp;raw, <a class="el" href="classResponse.html">Response</a> &amp;out)</td></tr>
+<tr class="memdesc:ac300ea8c2409fbc00c754021ea20f7b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convertit la sortie brute d'un CGI en <a class="el" href="classResponse.html" title="Represente une reponse HTTP a construire et a envoyer au client.">Response</a> prete a serialiser.  <br /></td></tr>
+<tr class="separator:ac300ea8c2409fbc00c754021ea20f7b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a676c4b56d4e3c9734be563a0707de682" id="r_a676c4b56d4e3c9734be563a0707de682"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cgi_8cpp.html#a676c4b56d4e3c9734be563a0707de682">findCgiExt</a> (const string &amp;path, const <a class="el" href="classLocationConfig.html">LocationConfig</a> &amp;loc)</td></tr>
+<tr class="memdesc:a676c4b56d4e3c9734be563a0707de682"><td class="mdescLeft">&#160;</td><td class="mdescRight">Premiere extension CGI de loc._Cgi trouvee dans path (E-03).  <br /></td></tr>
+<tr class="separator:a676c4b56d4e3c9734be563a0707de682"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Documentation des fonctions</h2>
+<a id="a3e4daad6f7419311c24c1cc68b63f3bc" name="a3e4daad6f7419311c24c1cc68b63f3bc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e4daad6f7419311c24c1cc68b63f3bc">&#9670;&#160;</a></span>addEnv()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void addEnv </td>
+          <td>(</td>
+          <td class="paramtype">vector&lt; string &gt; &amp;&#160;</td>
+          <td class="paramname"><em>storage</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Ajouter une nouvelle valeur a l'environnement cgi. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">storage</td><td>L'environnement ou ajouter la valeur. </td></tr>
+    <tr><td class="paramname">key</td><td>Le nom ou assigner la valeur. </td></tr>
+    <tr><td class="paramname">value</td><td>La valeur a assigner. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>Le nom du script. </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="cgi_8cpp_source.html#l00024">24</a> du fichier <a class="el" href="cgi_8cpp_source.html">cgi.cpp</a>.</p>
+
+</div>
+</div>
+<a id="ad04266f6bf181d67247721cf5c769d70" name="ad04266f6bf181d67247721cf5c769d70"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad04266f6bf181d67247721cf5c769d70">&#9670;&#160;</a></span>build_cgi_env()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt; string &gt; build_cgi_env </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classRequest.html">Request</a> &amp;&#160;</td>
+          <td class="paramname"><em>request</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classLocationConfig.html">LocationConfig</a> &amp;&#160;</td>
+          <td class="paramname"><em>location</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classServerConfig.html">ServerConfig</a> &amp;&#160;</td>
+          <td class="paramname"><em>server</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classConnection.html">Connection</a> &amp;&#160;</td>
+          <td class="paramname"><em>connection</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classConfigParser.html">ConfigParser</a> &amp;&#160;</td>
+          <td class="paramname"><em>config</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>script_path</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Construit les meta-variables CGI/1.1 de la requete. </p>
+<p>Les chaines sont conservees dans "storage" : les char* de l'envp rendu pointent dedans et ne survivent pas a sa destruction. Construire AVANT le fork() et garder "storage" vivant jusqu'a l'execve().</p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">request</td><td>La requete parsee (C-01). </td></tr>
+    <tr><td class="paramname">location</td><td>La <a class="el" href="classLocationConfig.html" title="Represente la configuration d&#39;une location (bloc &quot;location&quot;) d&#39;un serveur.">LocationConfig</a> resolue (A-05). </td></tr>
+    <tr><td class="paramname">storage</td><td>Recoit les chaines "CLE=valeur". </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>Le tableau char** terminé par NULL, a passer a execve(). </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="cgi_8cpp_source.html#l00129">129</a> du fichier <a class="el" href="cgi_8cpp_source.html">cgi.cpp</a>.</p>
+<div class="dynheader">
+Voici le graphe d'appel pour cette fonction :</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="cgi_8cpp_ad04266f6bf181d67247721cf5c769d70_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="a676c4b56d4e3c9734be563a0707de682" name="a676c4b56d4e3c9734be563a0707de682"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a676c4b56d4e3c9734be563a0707de682">&#9670;&#160;</a></span>findCgiExt()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">string findCgiExt </td>
+          <td>(</td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classLocationConfig.html">LocationConfig</a> &amp;&#160;</td>
+          <td class="paramname"><em>loc</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Premiere extension CGI de loc._Cgi trouvee dans path (E-03). </p>
+<p>ext CGI dans path, ou ""</p>
+<p>Sert isCgi, SCRIPT_NAME, PATH_INFO et argv[0]. Marche avec un PATH_INFO (/cgi-bin/echo.py/extra) ou getKey verrait "unknown".</p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>URI de la requete (getPath()), query deja retiree. </td></tr>
+    <tr><td class="paramname">loc</td><td>Location resolue, source de getCgi(). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>".py" / ".php", ou "" si aucune cle ne matche. </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="cgi_8cpp_source.html#l00274">274</a> du fichier <a class="el" href="cgi_8cpp_source.html">cgi.cpp</a>.</p>
+<div class="dynheader">
+Voici le graphe d'appel pour cette fonction :</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="cgi_8cpp_a676c4b56d4e3c9734be563a0707de682_cgraph.svg" width="315" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="acc5cf01c2075278c8d2ee8f16e107630" name="acc5cf01c2075278c8d2ee8f16e107630"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acc5cf01c2075278c8d2ee8f16e107630">&#9670;&#160;</a></span>findPathInfo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">string findPathInfo </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classRequest.html">Request</a> &amp;&#160;</td>
+          <td class="paramname"><em>request</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classLocationConfig.html">LocationConfig</a> &amp;&#160;</td>
+          <td class="paramname"><em>location</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>PATH_INFO : suffixe apres l'extension CGI, ou "". </p>
+<p>/cgi-bin/echo.py -&gt; "" /cgi-bin/echo.py/extra -&gt; /extra</p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">request</td><td>Pour getPath(). </td></tr>
+    <tr><td class="paramname">location</td><td>Table _Cgi. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>Extra path, jamais NULL. </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="cgi_8cpp_source.html#l00060">60</a> du fichier <a class="el" href="cgi_8cpp_source.html">cgi.cpp</a>.</p>
+<div class="dynheader">
+Voici le graphe d'appel pour cette fonction :</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="cgi_8cpp_acc5cf01c2075278c8d2ee8f16e107630_cgraph.svg" width="506" height="86"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a6826f4fde32cf27a1856b154ed017d94" name="a6826f4fde32cf27a1856b154ed017d94"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6826f4fde32cf27a1856b154ed017d94">&#9670;&#160;</a></span>findScriptName()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">string findScriptName </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classRequest.html">Request</a> &amp;&#160;</td>
+          <td class="paramname"><em>request</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classLocationConfig.html">LocationConfig</a> &amp;&#160;</td>
+          <td class="paramname"><em>location</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>SCRIPT_NAME : URI jusqu'a l'extension CGI comprise (RFC 3875). </p>
+<p>/cgi-bin/echo.py/extra -&gt; /cgi-bin/echo.py Aucune ext CGI dans le path -&gt; path entier.</p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">request</td><td>Pour getPath(). </td></tr>
+    <tr><td class="paramname">location</td><td>Table _Cgi (quelle ext chercher). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>Prefix jusqu'a ".py" / ".php" inclus. </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="cgi_8cpp_source.html#l00039">39</a> du fichier <a class="el" href="cgi_8cpp_source.html">cgi.cpp</a>.</p>
+<div class="dynheader">
+Voici le graphe d'appel pour cette fonction :</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="cgi_8cpp_a6826f4fde32cf27a1856b154ed017d94_cgraph.svg" width="530" height="86"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="ad1751c5b2a6326543fe1b53ae171d0a0" name="ad1751c5b2a6326543fe1b53ae171d0a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad1751c5b2a6326543fe1b53ae171d0a0">&#9670;&#160;</a></span>header_to_meta()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string header_to_meta </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Transforme les headers dans le bon format de l'env. </p>
+<p>On prend le nom du header puis on ajoute "HTTP_" au debut du string, les '-' deviennent '_' et tous les caracteres deviennent majuscule.</p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>Le nom du header. </td></tr>
+    <tr><td class="paramname">meta</td><td>Name mis en majuscule avec des '_'. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>"HTTP_" joint au nom transforme. </dd></dl>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>"Accept-Language" -&gt; "HTTP_ACCEPT_LANGUAGE" </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="cgi_8cpp_source.html#l00100">100</a> du fichier <a class="el" href="cgi_8cpp_source.html">cgi.cpp</a>.</p>
+
+</div>
+</div>
+<a id="ac300ea8c2409fbc00c754021ea20f7b2" name="ac300ea8c2409fbc00c754021ea20f7b2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac300ea8c2409fbc00c754021ea20f7b2">&#9670;&#160;</a></span>parse_cgi_output()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool parse_cgi_output </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>raw</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classResponse.html">Response</a> &amp;&#160;</td>
+          <td class="paramname"><em>out</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Convertit la sortie brute d'un CGI en <a class="el" href="classResponse.html" title="Represente une reponse HTTP a construire et a envoyer au client.">Response</a> prete a serialiser. </p>
+<p>Separe headers CGI et corps sur le premier \r<br  />
+\r<br  />
+ (ou <br  />
+<br  />
+), interprete Status: et Location:, recalcule systematiquement Content-Length.</p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">raw</td><td>La sortie complete du script, lue jusqu'a EOF. </td></tr>
+    <tr><td class="paramname">out</td><td>La reponse a remplir. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>true si la sortie etait exploitable, false -&gt; l'appelant fait un 502. </dd></dl>
+<p>&lt; body peut peser 100 Mo : on vole le buffer</p>
+
+<p class="definition">Définition à la ligne <a class="el" href="cgi_8cpp_source.html#l00189">189</a> du fichier <a class="el" href="cgi_8cpp_source.html">cgi.cpp</a>.</p>
+<div class="dynheader">
+Voici le graphe d'appel pour cette fonction :</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="cgi_8cpp_ac300ea8c2409fbc00c754021ea20f7b2_cgraph.svg" width="586" height="286"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="afc302eae58fa92a9772e627052e58016" name="afc302eae58fa92a9772e627052e58016"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc302eae58fa92a9772e627052e58016">&#9670;&#160;</a></span>VectorToChar()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char ** VectorToChar </td>
+          <td>(</td>
+          <td class="paramtype">vector&lt; string &gt; &amp;&#160;</td>
+          <td class="paramname"><em>storage</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Converti un vecteur de string en tableau de char*. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">strorage</td><td>Le vecteur. </td></tr>
+    <tr><td class="paramname">envp</td><td>Le tableau contenant les valeurs du vecteur. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>Le tableau contenant l'env final. </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="cgi_8cpp_source.html#l00078">78</a> du fichier <a class="el" href="cgi_8cpp_source.html">cgi.cpp</a>.</p>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_b73b02d482d1c4a3db20c3d9ad52d395.html">srcs</a></li><li class="navelem"><a class="el" href="dir_3c4d8b85056da8f9a652e90583895168.html">cgi</a></li><li class="navelem"><a class="el" href="cgi_8cpp.html">cgi.cpp</a></li>
+    <li class="footer">Généré par <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

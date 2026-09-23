@@ -1,0 +1,18 @@
+<map id="EventLoop::HandleClientEvent" name="EventLoop::HandleClientEvent">
+<area shape="rect" id="Node000001" title="I/O client (B&#45;03) : recv/send selon revents." alt="" coords="5,80,224,105"/>
+<area shape="rect" id="Node000002" href="$classCgiProcess.html#ad718f5bbc4da3d1fb5fe1e6687218319" title="Retourne le descripteur de lecture du pipe vers le CGI." alt="" coords="273,5,446,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="153,77,271,39,297,32,298,37,273,45,155,82"/>
+<area shape="rect" id="Node000003" href="$classCgiProcess.html#aa85023e28d1083c853f33238c12e1bbe" title="Retourne le descripteur d&#39;ecriture du pipe vers le CGI." alt="" coords="272,55,447,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="224,79,258,75,259,80,225,84"/>
+<area shape="rect" id="Node000004" href="$classEventLoop.html#a051b8afe601dd8e0882a6e7c2d5fe4d5" title="Branche les pipes CGI sur le poll (B&#45;07)" alt="" coords="273,104,446,129"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="225,101,259,104,259,110,224,106"/>
+<area shape="rect" id="Node000007" href="$classEventLoop.html#a7c1b4adc44f2e5867b5461fb2c530ad1" title="Re&#45;arme POLLIN / POLLOUT sur un fd deja surveille." alt="" coords="278,153,441,179"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="158,103,273,138,302,147,300,152,271,143,156,108"/>
+<area shape="rect" id="Node000005" href="$classEventLoop.html#acc263db44eb3561bda0c7a531c707a18" title="Utilise aussi par B&#45;07 pour les pipes CGI." alt="" coords="495,103,633,128"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="446,113,481,113,481,119,446,119"/>
+<area shape="rect" id="Node000006" href="$classEventLoop.html#a4064611cef5aca07311693bc8937fec6" title="Index de fd dans _Pollfds, &#45;1 si absent." alt="" coords="681,128,823,153"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="634,122,668,127,668,132,633,127"/>
+<area shape="poly" id="edge7_Node000007_Node000006" title=" " alt="" coords="441,158,667,143,668,149,441,163"/>
+<area shape="rect" id="Node000008" href="$classLogger.html#abf1a44e82213ce8094057b5fa926cf72" title="Ligne horodatee &quot;date [level] msg&quot;." alt="" coords="511,204,617,229"/>
+<area shape="poly" id="edge8_Node000007_Node000008" title=" " alt="" coords="412,176,500,198,498,203,411,181"/>
+</map>

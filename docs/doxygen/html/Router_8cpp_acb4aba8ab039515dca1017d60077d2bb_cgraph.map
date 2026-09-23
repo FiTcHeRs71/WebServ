@@ -1,0 +1,9 @@
+<map id="isCgi" name="isCgi">
+<area shape="rect" id="Node000001" title="true si l&#39;URI correspond a une extension CGI de la location (E&#45;03)." alt="" coords="5,31,60,56"/>
+<area shape="rect" id="Node000002" href="$cgi_8cpp.html#a676c4b56d4e3c9734be563a0707de682" title="Premiere extension CGI de loc._Cgi trouvee dans path (E&#45;03)." alt="" coords="130,5,218,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="60,36,116,26,117,31,61,41"/>
+<area shape="rect" id="Node000004" href="$classRequest.html#aed56fbd5b75b512f8edc5d92f04a8487" title="Getter de path, /!\ Ne jamais repasser la string en string_c car &#39;\0&#39; possible dans la string." alt="" coords="108,55,240,80"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="61,45,95,51,94,56,60,50"/>
+<area shape="rect" id="Node000003" href="$classLocationConfig.html#adad8b29d8fddbb6039ec19140fa03d21" title="Table cgi_ext &#45;&gt; cgi_pass." alt="" coords="288,5,456,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="218,15,274,15,274,21,218,21"/>
+</map>

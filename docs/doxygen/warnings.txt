@@ -1,0 +1,161 @@
+warning: The selected output language "french" has not been updated
+since release 1.9.5.  As a result some sentences may appear in English.
+
+/home/fitchers/common_core/webServ/srcs/http/Request.cpp:712: warning: Found unknown command '\r'
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:288: warning: Unsupported xml/html tag <cgi_ext> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:288: warning: Unsupported xml/html tag <cgi_ext> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:271: warning: Unsupported xml/html tag <auto_index> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:271: warning: Unsupported xml/html tag <auto_index> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:317: warning: Unsupported xml/html tag <return> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:317: warning: Unsupported xml/html tag <return> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:253: warning: Unsupported xml/html tag <index> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:253: warning: Unsupported xml/html tag <index> found
+/home/fitchers/common_core/webServ/includes/Struct_webserv.hpp:46: warning: Unsupported xml/html tag <listen> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:342: warning: Unsupported xml/html tag <upload_store> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:342: warning: Unsupported xml/html tag <upload_store> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:303: warning: Unsupported xml/html tag <cgi_pass> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:303: warning: Unsupported xml/html tag <cgi_pass> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:240: warning: Unsupported xml/html tag <root> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:240: warning: Unsupported xml/html tag <root> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:221: warning: Unsupported xml/html tag <allow_methods> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:221: warning: Unsupported xml/html tag <allow_methods> found
+/home/fitchers/common_core/webServ/srcs/cgi/cgi.cpp:109: warning: argument 'storage' of command @param is not found in the argument list of build_cgi_env(const Request &request, const LocationConfig &location, const ServerConfig &server, const Connection &connection, const ConfigParser &config, const string &script_path)
+/home/fitchers/common_core/webServ/srcs/cgi/cgi.cpp:109: warning: The following parameters of build_cgi_env(const Request &request, const LocationConfig &location, const ServerConfig &server, const Connection &connection, const ConfigParser &config, const string &script_path) are not documented:
+  parameter 'server'
+  parameter 'connection'
+  parameter 'config'
+  parameter 'script_path'
+/home/fitchers/common_core/webServ/srcs/cgi/cgi.cpp:165: warning: Found unknown command '\r'
+/home/fitchers/common_core/webServ/srcs/cgi/cgi.cpp:165: warning: Found unknown command '\r'
+/home/fitchers/common_core/webServ/srcs/cgi/cgi.cpp:63: warning: argument 'strorage' of command @param is not found in the argument list of VectorToChar(vector< string > &storage)
+/home/fitchers/common_core/webServ/srcs/cgi/cgi.cpp:63: warning: argument 'envp' of command @param is not found in the argument list of VectorToChar(vector< string > &storage)
+/home/fitchers/common_core/webServ/srcs/cgi/cgi.cpp:63: warning: The following parameter of VectorToChar(vector< string > &storage) is not documented:
+  parameter 'storage'
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:221: warning: Unsupported xml/html tag <allow_methods> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:240: warning: Unsupported xml/html tag <root> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:253: warning: Unsupported xml/html tag <index> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:271: warning: Unsupported xml/html tag <auto_index> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:288: warning: Unsupported xml/html tag <cgi_ext> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:303: warning: Unsupported xml/html tag <cgi_pass> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:317: warning: Unsupported xml/html tag <return> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:342: warning: Unsupported xml/html tag <upload_store> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:21: warning: found documented return type for is_valid_file that does not return anything
+/home/fitchers/common_core/webServ/srcs/config/config.cpp:75: warning: found documented return type for parse that does not return anything
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:221: warning: Unsupported xml/html tag <allow_methods> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:223: warning: Unsupported xml/html tag <allow_methods> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:271: warning: Unsupported xml/html tag <auto_index> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:273: warning: Unsupported xml/html tag <auto_index> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:141: warning: Unsupported xml/html tag <client_max_body_size> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:288: warning: Unsupported xml/html tag <cgi_ext> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:290: warning: Unsupported xml/html tag <cgi_ext> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:303: warning: Unsupported xml/html tag <cgi_pass> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:305: warning: Unsupported xml/html tag <cgi_pass> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:174: warning: Unsupported xml/html tag <error_page> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:176: warning: Unsupported xml/html tag <Error_code> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:253: warning: Unsupported xml/html tag <index> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:255: warning: Unsupported xml/html tag <index> found
+/home/fitchers/common_core/webServ/srcs/config/listen.cpp:89: warning: Unsupported xml/html tag <DEFAULT_PORT> found
+/home/fitchers/common_core/webServ/srcs/config/listen.cpp:93: warning: Unsupported xml/html tag <listen> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:240: warning: Unsupported xml/html tag <root> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:242: warning: Unsupported xml/html tag <root> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:342: warning: Unsupported xml/html tag <upload_store> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:344: warning: Unsupported xml/html tag <upload_store> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:317: warning: Unsupported xml/html tag <return> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:319: warning: Unsupported xml/html tag <URL> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:320: warning: Unsupported xml/html tag <return> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:321: warning: Unsupported xml/html tag <return> found
+/home/fitchers/common_core/webServ/srcs/config/resolve_server.cpp:28: warning: End of list marker found without any preceding list items
+/home/fitchers/common_core/webServ/includes/Struct_webserv.hpp:46: warning: Unsupported xml/html tag <listen> found
+/home/fitchers/common_core/webServ/srcs/cgi/cgi.cpp:18: warning: found documented return type for addEnv that does not return anything
+/home/fitchers/common_core/webServ/srcs/cgi/cgi.cpp:109: warning: argument 'storage' of command @param is not found in the argument list of build_cgi_env(const Request &request, const LocationConfig &location, const ServerConfig &server, const Connection &connection, const ConfigParser &config, const string &script_path)
+/home/fitchers/common_core/webServ/srcs/cgi/cgi.cpp:109: warning: The following parameters of build_cgi_env(const Request &request, const LocationConfig &location, const ServerConfig &server, const Connection &connection, const ConfigParser &config, const string &script_path) are not documented:
+  parameter 'server'
+  parameter 'connection'
+  parameter 'config'
+  parameter 'script_path'
+/home/fitchers/common_core/webServ/srcs/cgi/cgi.cpp:82: warning: argument 'meta' of command @param is not found in the argument list of header_to_meta(const std::string &name)
+/home/fitchers/common_core/webServ/srcs/cgi/cgi.cpp:165: warning: Found unknown command '\r'
+/home/fitchers/common_core/webServ/srcs/cgi/cgi.cpp:165: warning: Found unknown command '\r'
+/home/fitchers/common_core/webServ/srcs/cgi/cgi.cpp:63: warning: argument 'strorage' of command @param is not found in the argument list of VectorToChar(vector< string > &storage)
+/home/fitchers/common_core/webServ/srcs/cgi/cgi.cpp:63: warning: argument 'envp' of command @param is not found in the argument list of VectorToChar(vector< string > &storage)
+/home/fitchers/common_core/webServ/srcs/cgi/cgi.cpp:63: warning: The following parameter of VectorToChar(vector< string > &storage) is not documented:
+  parameter 'storage'
+/home/fitchers/common_core/webServ/srcs/config/config.cpp:75: warning: found documented return type for parse that does not return anything
+/home/fitchers/common_core/webServ/srcs/config/listen.cpp:89: warning: Unsupported xml/html tag <DEFAULT_PORT> found
+/home/fitchers/common_core/webServ/srcs/config/listen.cpp:93: warning: Unsupported xml/html tag <listen> found
+/home/fitchers/common_core/webServ/srcs/config/listen.cpp:145: warning: found documented return type for resolve_host that does not return anything
+/home/fitchers/common_core/webServ/srcs/config/listen.cpp:206: warning: found documented return type for split_addr_port that does not return anything
+/home/fitchers/common_core/webServ/srcs/config/resolve_server.cpp:28: warning: End of list marker found without any preceding list items
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:221: warning: Unsupported xml/html tag <allow_methods> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:240: warning: Unsupported xml/html tag <root> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:253: warning: Unsupported xml/html tag <index> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:271: warning: Unsupported xml/html tag <auto_index> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:288: warning: Unsupported xml/html tag <cgi_ext> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:303: warning: Unsupported xml/html tag <cgi_pass> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:317: warning: Unsupported xml/html tag <return> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:342: warning: Unsupported xml/html tag <upload_store> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:21: warning: found documented return type for is_valid_file that does not return anything
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:221: warning: Unsupported xml/html tag <allow_methods> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:223: warning: Unsupported xml/html tag <allow_methods> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:271: warning: Unsupported xml/html tag <auto_index> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:273: warning: Unsupported xml/html tag <auto_index> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:141: warning: Unsupported xml/html tag <client_max_body_size> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:288: warning: Unsupported xml/html tag <cgi_ext> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:290: warning: Unsupported xml/html tag <cgi_ext> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:303: warning: Unsupported xml/html tag <cgi_pass> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:305: warning: Unsupported xml/html tag <cgi_pass> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:174: warning: Unsupported xml/html tag <error_page> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:176: warning: Unsupported xml/html tag <Error_code> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:253: warning: Unsupported xml/html tag <index> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:255: warning: Unsupported xml/html tag <index> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:240: warning: Unsupported xml/html tag <root> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:242: warning: Unsupported xml/html tag <root> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:342: warning: Unsupported xml/html tag <upload_store> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:344: warning: Unsupported xml/html tag <upload_store> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:317: warning: Unsupported xml/html tag <return> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:319: warning: Unsupported xml/html tag <URL> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:320: warning: Unsupported xml/html tag <return> found
+/home/fitchers/common_core/webServ/srcs/config/utils.cpp:321: warning: Unsupported xml/html tag <return> found
+/home/fitchers/common_core/webServ/srcs/cgi/CgiProcess.cpp:199: warning: argument 'pipe_in' of command @param is not found in the argument list of CgiProcess::SetupPipes(int pip_in[2], int pip_out[2])
+/home/fitchers/common_core/webServ/srcs/cgi/CgiProcess.cpp:199: warning: argument 'pipe_out' of command @param is not found in the argument list of CgiProcess::SetupPipes(int pip_in[2], int pip_out[2])
+/home/fitchers/common_core/webServ/srcs/cgi/CgiProcess.cpp:199: warning: The following parameters of CgiProcess::SetupPipes(int pip_in[2], int pip_out[2]) are not documented:
+  parameter 'pip_in'
+  parameter 'pip_out'
+/home/fitchers/common_core/webServ/srcs/cgi/CgiProcess.cpp:103: warning: The following parameters of CgiProcess::Start(const Request &request, const LocationConfig &location, const ServerConfig &server, const Connection &connection, const ConfigParser &config, const string &script_path) are not documented:
+  parameter 'server'
+  parameter 'connection'
+  parameter 'config'
+/home/fitchers/common_core/webServ/srcs/config/config.cpp:314: warning: argument 'void' of command @param is not found in the argument list of ConfigParser::apply_defaults(void)
+/home/fitchers/common_core/webServ/srcs/config/config.cpp:314: warning: found documented return type for ConfigParser::apply_defaults that does not return anything
+/home/fitchers/common_core/webServ/srcs/config/config.cpp:375: warning: Unsupported xml/html tag <default_server> found
+/home/fitchers/common_core/webServ/srcs/config/config.cpp:378: warning: Unsupported xml/html tag <default_server> found
+/home/fitchers/common_core/webServ/srcs/config/config.cpp:379: warning: Unsupported xml/html tag <server_name> found
+/home/fitchers/common_core/webServ/srcs/config/config.cpp:372: warning: argument 'void' of command @param is not found in the argument list of ConfigParser::build_addr_port_groups(void)
+/home/fitchers/common_core/webServ/srcs/config/config.cpp:372: warning: found documented return type for ConfigParser::build_addr_port_groups that does not return anything
+/home/fitchers/common_core/webServ/srcs/config/config.cpp:145: warning: found documented return type for ConfigParser::check_syntax that does not return anything
+/home/fitchers/common_core/webServ/srcs/config/config.cpp:243: warning: found documented return type for ConfigParser::fill_one_server that does not return anything
+/home/fitchers/common_core/webServ/srcs/config/config.cpp:217: warning: found documented return type for ConfigParser::fill_servers_config that does not return anything
+/home/fitchers/common_core/webServ/srcs/config/config.cpp:93: warning: found documented return type for ConfigParser::tokenize that does not return anything
+/home/fitchers/common_core/webServ/srcs/config/config.cpp:75: warning: found documented return type for ConfigParser::parse that does not return anything
+/home/fitchers/common_core/webServ/srcs/network/EventLoop.cpp:221: warning: found documented return type for EventLoop::AcceptNewClients that does not return anything
+/home/fitchers/common_core/webServ/srcs/network/EventLoop.cpp:145: warning: found documented return type for EventLoop::AddFd that does not return anything
+/home/fitchers/common_core/webServ/srcs/network/EventLoop.cpp:362: warning: found documented return type for EventLoop::CloseConnection that does not return anything
+/home/fitchers/common_core/webServ/srcs/network/EventLoop.cpp:474: warning: found documented return type for EventLoop::HandleCgiEvent that does not return anything
+/home/fitchers/common_core/webServ/srcs/network/EventLoop.cpp:435: warning: found documented return type for EventLoop::RegisterCgi that does not return anything
+/home/fitchers/common_core/webServ/srcs/network/EventLoop.cpp:173: warning: found documented return type for EventLoop::RemoveFd that does not return anything
+/home/fitchers/common_core/webServ/srcs/network/EventLoop.cpp:73: warning: found documented return type for EventLoop::Run that does not return anything
+/home/fitchers/common_core/webServ/srcs/network/EventLoop.cpp:197: warning: found documented return type for EventLoop::SetEvents that does not return anything
+/home/fitchers/common_core/webServ/srcs/network/EventLoop.cpp:554: warning: found documented return type for EventLoop::Shutdown that does not return anything
+/home/fitchers/common_core/webServ/srcs/network/EventLoop.cpp:374: warning: found documented return type for EventLoop::SweepTimeouts that does not return anything
+/home/fitchers/common_core/webServ/srcs/network/EventLoop.cpp:456: warning: argument 'client_fd' of command @param is not found in the argument list of EventLoop::UnregisterCgi(int fd)
+/home/fitchers/common_core/webServ/srcs/network/EventLoop.cpp:456: warning: The following parameter of EventLoop::UnregisterCgi(int fd) is not documented:
+  parameter 'fd'
+/home/fitchers/common_core/webServ/srcs/network/EventLoop.cpp:456: warning: found documented return type for EventLoop::UnregisterCgi that does not return anything
+/home/fitchers/common_core/webServ/srcs/config/LocationConfig.cpp:199: warning: Unsupported xml/html tag <KEY> found
+/home/fitchers/common_core/webServ/srcs/config/LocationConfig.cpp:198: warning: found documented return type for LocationConfig::parse_location that does not return anything
+/home/fitchers/common_core/webServ/srcs/http/Request.cpp:712: warning: Found unknown command '\r'
+/home/fitchers/common_core/webServ/srcs/http/Request.cpp:712: warning: Found unknown command '\r'
+/home/fitchers/common_core/webServ/includes/Struct_webserv.hpp:46: warning: Unsupported xml/html tag <listen> found
+/home/fitchers/common_core/webServ/includes/Struct_webserv.hpp:46: warning: Unsupported xml/html tag <listen> found
+/home/fitchers/common_core/webServ/srcs/config/listen.cpp:35: warning: Unsupported xml/html tag <default_server> found
+/home/fitchers/common_core/webServ/includes/Struct_webserv.hpp:46: warning: Unsupported xml/html tag <listen> found

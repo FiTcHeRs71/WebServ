@@ -1,0 +1,40 @@
+<map id="handleSession" name="handleSession">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,297,121,323"/>
+<area shape="rect" id="Node000002" href="$classResponse.html#acb0980f3803ca2d1f4351fcd26bc988d" title="false si valeur invalide" alt="" coords="169,5,353,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="63,297,71,250,89,184,120,112,141,78,168,48,187,34,190,39,171,52,146,81,125,114,94,186,77,252,69,298"/>
+<area shape="rect" id="Node000003" href="$classResponse.html#aeaa3673db99a8c45772c3a5a5b949c4a" title="Lit le fichier d&#39;erreur s&#39;il existe, sinon cree un built in, renvoie le tout comme reponse." alt="" coords="183,297,340,323"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="122,307,169,307,169,313,122,313"/>
+<area shape="rect" id="Node000006" href="$classResponse.html#a38d47b3fe3909d0a6851c8f672fa4c8b" title="pose aussi Content&#45;Length" alt="" coords="661,157,808,183"/>
+<area shape="poly" id="edge19_Node000001_Node000006" title=" " alt="" coords="84,295,137,264,214,225,305,186,401,158,465,149,530,146,648,154,647,159,530,152,465,154,402,163,306,192,216,230,140,269,87,299"/>
+<area shape="rect" id="Node000007" href="$classResponse.html#a57e91a47a4522fa82bd99dd7464e1c87" title=" " alt="" coords="865,157,1027,183"/>
+<area shape="poly" id="edge20_Node000001_Node000007" title=" " alt="" coords="70,296,108,244,135,215,168,190,228,160,279,146,401,134,518,123,609,122,701,129,818,142,877,152,876,157,817,147,700,134,609,127,518,128,402,139,280,152,230,165,171,195,139,219,112,248,75,299"/>
+<area shape="rect" id="Node000011" href="$classResponse.html#a7f9b175d957559236e0b065e4d495963" title="pose _StatusCode ET _StatusText" alt="" coords="425,472,580,497"/>
+<area shape="poly" id="edge21_Node000001_Node000011" title=" " alt="" coords="117,320,262,357,355,384,372,402,380,422,387,440,403,457,414,464,412,469,400,461,383,443,375,424,367,405,352,388,261,362,116,325"/>
+<area shape="rect" id="Node000013" href="$classRequest.html#a729703bdd95038bcf0318cac20db8d17" title=" " alt="" coords="187,399,336,424"/>
+<area shape="poly" id="edge14_Node000001_Node000013" title=" " alt="" coords="83,321,122,348,171,377,206,392,203,397,168,382,119,353,80,325"/>
+<area shape="rect" id="Node000017" href="$RouterUtils_8cpp.html#a4573ab00f2db052c05c00c393aecbc53" title=" " alt="" coords="205,448,318,473"/>
+<area shape="poly" id="edge18_Node000001_Node000017" title=" " alt="" coords="74,321,111,376,138,407,171,433,193,444,190,449,168,438,135,411,107,379,70,324"/>
+<area shape="rect" id="Node000004" href="$classServerConfig.html#abc10b3c8133bbe2715745435befd5c76" title="Traduit une URI en chemin disque via le root de la location." alt="" coords="412,321,593,347"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="340,315,399,321,398,326,340,320"/>
+<area shape="rect" id="Node000005" href="$classResponse.html#a2b91a2e06e39090e0ec2dfde64820dbb" title="Cree un body de reponse http en fonction de l&#39;erreur." alt="" coords="406,207,599,247"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="295,295,400,257,423,249,425,254,402,262,297,300"/>
+<area shape="poly" id="edge10_Node000003_Node000006" title=" " alt="" coords="271,295,322,243,359,215,400,193,463,174,528,163,591,159,648,160,648,165,591,165,529,169,464,179,402,198,362,220,326,247,275,299"/>
+<area shape="poly" id="edge11_Node000003_Node000007" title=" " alt="" coords="298,320,402,355,459,365,503,369,548,367,603,355,651,341,698,322,787,276,862,228,916,189,919,193,865,233,789,280,700,326,653,346,605,361,548,372,503,375,458,370,401,361,297,325"/>
+<area shape="rect" id="Node000008" href="$classServerConfig.html#a81447d6457e725384798527b8587ccaa" title=" " alt="" coords="401,272,604,297"/>
+<area shape="poly" id="edge7_Node000003_Node000008" title=" " alt="" coords="340,299,387,294,388,299,340,304"/>
+<area shape="rect" id="Node000009" href="$classServerConfig.html#aa65c203b34f8636d4f9f1dbcd8e157be" title="La location matchant l&#39;URI, prefixe le plus long." alt="" coords="420,423,585,448"/>
+<area shape="poly" id="edge8_Node000003_Node000009" title=" " alt="" coords="316,320,355,340,371,356,380,372,388,387,403,401,430,415,427,420,400,405,384,390,375,374,367,359,352,344,313,325"/>
+<area shape="poly" id="edge12_Node000003_Node000011" title=" " alt="" coords="323,321,355,340,368,355,375,371,379,401,384,430,391,444,403,457,414,465,411,470,400,461,387,447,379,432,374,402,370,372,363,358,352,344,321,325"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="584,205,669,183,670,189,585,210"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="808,167,852,167,852,173,808,173"/>
+<area shape="rect" id="Node000010" href="$utils_8cpp.html#a6c5106f7f4691c9fcce1d810962fbe8f" title="check si le prefixe path s&#39;arrete sur une frontiere de segment de l&#39;URI" alt="" coords="652,423,817,448"/>
+<area shape="poly" id="edge9_Node000009_Node000010" title=" " alt="" coords="586,433,638,433,638,438,586,438"/>
+<area shape="rect" id="Node000012" href="$Response_8cpp.html#a3c5697cdaf5346a857f580182a004a6a" title=" " alt="" coords="689,472,780,497"/>
+<area shape="poly" id="edge13_Node000011_Node000012" title=" " alt="" coords="580,482,675,482,675,487,580,487"/>
+<area shape="rect" id="Node000014" href="$classRequest.html#a26b9bd70d82df734bfc0d8745a5bfed4" title=" " alt="" coords="425,521,581,547"/>
+<area shape="poly" id="edge15_Node000013_Node000014" title=" " alt="" coords="334,422,355,433,372,452,380,472,387,491,403,508,413,514,411,519,400,512,382,493,375,474,367,455,352,437,331,426"/>
+<area shape="rect" id="Node000015" href="$classRequest.html#a72c8eeae6ccf7dd1c9f88064894106f8" title="Getters de header /!\ Il est retourner par valeur et non par reference." alt="" coords="659,571,810,596"/>
+<area shape="poly" id="edge16_Node000014_Node000015" title=" " alt="" coords="564,544,661,565,660,570,562,549"/>
+<area shape="rect" id="Node000016" href="$httpUtils_8cpp.html#a8bddc3dcbfa8ff455abebaf144a1f5cf" title="Fonction permettant de trim les espaes de debut det de fin." alt="" coords="710,521,759,547"/>
+<area shape="poly" id="edge17_Node000014_Node000016" title=" " alt="" coords="581,531,696,531,696,537,581,537"/>
+</map>

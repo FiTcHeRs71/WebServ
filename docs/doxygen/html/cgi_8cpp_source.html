@@ -1,0 +1,365 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>webserv:  Fichier source de srcs/cgi/cgi.cpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">webserv
+   </div>
+   <div id="projectbrief">Serveur HTTP/1.1 non bloquant -- 42</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Généré par Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','Recherche');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function() { init_codefold(0); });
+/* @license-end */
+</script>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('cgi_8cpp_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Chargement...</div>
+<div class="SRStatus" id="Searching">Recherche...</div>
+<div class="SRStatus" id="NoMatches">Aucune correspondance</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">cgi.cpp</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="cgi_8cpp.html">Aller à la documentation de ce fichier.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#include &quot;../../includes/CgiProcess.hpp&quot;</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#include &quot;../../includes/ServerConfig.hpp&quot;</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &quot;../../includes/Request.hpp&quot;</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;../../includes/Connection.hpp&quot;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &quot;../../includes/Config.hpp&quot;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;../../includes/Response.hpp&quot;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &quot;../../includes/Router.hpp&quot;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;cctype&gt;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;map&gt;</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;sstream&gt;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
+<div class="foldopen" id="foldopen00024" data-start="{" data-end="}">
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="cgi_8cpp.html#a3e4daad6f7419311c24c1cc68b63f3bc">   24</a></span><span class="keywordtype">void</span>    <a class="code hl_function" href="cgi_8cpp.html#a3e4daad6f7419311c24c1cc68b63f3bc">addEnv</a>(vector&lt;string&gt;&amp; storage, <span class="keyword">const</span> <span class="keywordtype">string</span> &amp;key, <span class="keyword">const</span> <span class="keywordtype">string</span> &amp;value)</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>{</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    storage.push_back(key + <span class="stringliteral">&quot;=&quot;</span> + value);</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>}</div>
+</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
+<div class="foldopen" id="foldopen00039" data-start="{" data-end="}">
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="cgi_8cpp.html#a6826f4fde32cf27a1856b154ed017d94">   39</a></span><span class="keywordtype">string</span> <a class="code hl_function" href="cgi_8cpp.html#a6826f4fde32cf27a1856b154ed017d94">findScriptName</a>(<span class="keyword">const</span> <a class="code hl_class" href="classRequest.html">Request</a> &amp;request, <span class="keyword">const</span> <a class="code hl_class" href="classLocationConfig.html">LocationConfig</a> &amp;location)</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>{</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    <span class="keyword">const</span> <span class="keywordtype">string</span> &amp;path = request.<a class="code hl_function" href="classRequest.html#aed56fbd5b75b512f8edc5d92f04a8487">getPath</a>();</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    <span class="keywordtype">string</span>  ext = <a class="code hl_function" href="cgi_8cpp.html#a676c4b56d4e3c9734be563a0707de682">findCgiExt</a>(path, location);</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    </div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    <span class="keywordflow">if</span> (ext.empty())</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>        <span class="keywordflow">return</span> (path);</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    <span class="keywordtype">size_t</span> idx = path.find(ext);</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    <span class="keywordflow">return</span> (path.substr(0, idx + ext.size()));</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>}</div>
+</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span> </div>
+<div class="foldopen" id="foldopen00060" data-start="{" data-end="}">
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno"><a class="line" href="cgi_8cpp.html#acc5cf01c2075278c8d2ee8f16e107630">   60</a></span><span class="keywordtype">string</span> <a class="code hl_function" href="cgi_8cpp.html#acc5cf01c2075278c8d2ee8f16e107630">findPathInfo</a>(<span class="keyword">const</span> <a class="code hl_class" href="classRequest.html">Request</a> &amp;request, <span class="keyword">const</span> <a class="code hl_class" href="classLocationConfig.html">LocationConfig</a> &amp;location)</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>{</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    <span class="keyword">const</span> <span class="keywordtype">string</span> &amp;path = request.<a class="code hl_function" href="classRequest.html#aed56fbd5b75b512f8edc5d92f04a8487">getPath</a>();</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    <span class="keywordtype">string</span>  ext = <a class="code hl_function" href="cgi_8cpp.html#a676c4b56d4e3c9734be563a0707de682">findCgiExt</a>(path, location);</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span> </div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    <span class="keywordflow">if</span> (ext.empty())</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>        <span class="keywordflow">return</span> (<span class="stringliteral">&quot;&quot;</span>);</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    <span class="keywordtype">size_t</span> idx = path.find(ext);</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    <span class="keywordflow">return</span> (path.substr(idx + ext.size()));</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>}</div>
+</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span> </div>
+<div class="foldopen" id="foldopen00078" data-start="{" data-end="}">
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno"><a class="line" href="cgi_8cpp.html#afc302eae58fa92a9772e627052e58016">   78</a></span><span class="keywordtype">char</span>    **<a class="code hl_function" href="cgi_8cpp.html#afc302eae58fa92a9772e627052e58016">VectorToChar</a>(vector&lt;string&gt; &amp;storage)</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>{</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    <span class="keywordtype">char</span> **envp = <span class="keyword">new</span> <span class="keywordtype">char</span>*[storage.size() + 1];</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span> </div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = 0; i &lt; storage.size(); i++)</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    {</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>        envp[i] = <span class="keyword">const_cast&lt;</span><span class="keywordtype">char</span>*<span class="keyword">&gt;</span>(storage[i].c_str());</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    }</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    envp[storage.size()] = NULL;</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    <span class="keywordflow">return</span> (envp);</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>}</div>
+</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span> </div>
+<div class="foldopen" id="foldopen00100" data-start="{" data-end="}">
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno"><a class="line" href="cgi_8cpp.html#ad1751c5b2a6326543fe1b53ae171d0a0">  100</a></span>std::string <a class="code hl_function" href="cgi_8cpp.html#ad1751c5b2a6326543fe1b53ae171d0a0">header_to_meta</a>(<span class="keyword">const</span> std::string &amp;name) </div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>{</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>    <span class="keywordtype">string</span>  meta;</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>    <span class="keywordflow">if</span> (name.empty())</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>        <span class="keywordflow">return</span> (<span class="stringliteral">&quot;&quot;</span>);</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; name.length(); i++)</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>    {</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>        <span class="keywordflow">if</span> (name[i] == <span class="charliteral">&#39;-&#39;</span>)</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>        {</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>            meta += <span class="charliteral">&#39;_&#39;</span>;</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>            continue ;</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>        }</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>        meta += <span class="keyword">static_cast&lt;</span><span class="keywordtype">char</span><span class="keyword">&gt;</span>(toupper(<span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span> <span class="keywordtype">char</span><span class="keyword">&gt;</span>(name[i])));</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>    }</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>    <span class="keywordflow">return</span>(<span class="stringliteral">&quot;HTTP_&quot;</span> + meta);</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>}</div>
+</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span> </div>
+<div class="foldopen" id="foldopen00129" data-start="{" data-end="}">
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno"><a class="line" href="cgi_8cpp.html#ad04266f6bf181d67247721cf5c769d70">  129</a></span>vector&lt;string&gt;  <a class="code hl_function" href="cgi_8cpp.html#ad04266f6bf181d67247721cf5c769d70">build_cgi_env</a>(<span class="keyword">const</span> <a class="code hl_class" href="classRequest.html">Request</a> &amp;request, <span class="keyword">const</span> <a class="code hl_class" href="classLocationConfig.html">LocationConfig</a> &amp;location,</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>                    <span class="keyword">const</span> <a class="code hl_class" href="classServerConfig.html">ServerConfig</a> &amp;server, <span class="keyword">const</span> <a class="code hl_class" href="classConnection.html">Connection</a> &amp;connection,</div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>                    <span class="keyword">const</span> <a class="code hl_class" href="classConfigParser.html">ConfigParser</a> &amp;config, <span class="keyword">const</span> <span class="keywordtype">string</span> &amp;script_path)</div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>{</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>    vector&lt;string&gt;  storage;</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>    vector&lt;string&gt;  serverNames = server.<a class="code hl_function" href="classServerConfig.html#aba7a44995f4461d6a655277eeab4fd63">getServerNames</a>();</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>    <span class="keywordtype">string</span>          path_translated;</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>    <span class="keywordtype">string</span>          path_info = <a class="code hl_function" href="cgi_8cpp.html#acc5cf01c2075278c8d2ee8f16e107630">findPathInfo</a>(request, location);</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>    <span class="keywordtype">string</span>          script_to_export = <a class="code hl_function" href="cgi_8cpp.html#a6826f4fde32cf27a1856b154ed017d94">findScriptName</a>(request, location);</div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>    ostringstream   ss;</div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>    ss &lt;&lt; config.<a class="code hl_function" href="classConfigParser.html#ad7e54a715496137af9e7b4ab7a7900ee">getAddrPorts</a>()[connection.<a class="code hl_function" href="classConnection.html#ae8aa81a8b6f303d40ece379828cd9b2a">getGroupIndex</a>()].Port;</div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span> </div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>    <span class="keywordflow">if</span> (path_info.empty())</div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>    {</div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>        path_info = script_path;</div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>        path_translated = script_path;</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>        script_to_export.clear();</div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>    }</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>    <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>        path_translated = location.<a class="code hl_function" href="classLocationConfig.html#ac8bacc5c7b7ae0faf408e67da88a2b6f">getRoot</a>() + path_info;</div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>    <a class="code hl_function" href="cgi_8cpp.html#a3e4daad6f7419311c24c1cc68b63f3bc">addEnv</a>(storage, <span class="stringliteral">&quot;REQUEST_METHOD&quot;</span>, request.<a class="code hl_function" href="classRequest.html#a57c0cbefe4446e2ecfe21634ae67d397">getMethod</a>());</div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>    <a class="code hl_function" href="cgi_8cpp.html#a3e4daad6f7419311c24c1cc68b63f3bc">addEnv</a>(storage, <span class="stringliteral">&quot;SCRIPT_NAME&quot;</span>, script_to_export);</div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>    <a class="code hl_function" href="cgi_8cpp.html#a3e4daad6f7419311c24c1cc68b63f3bc">addEnv</a>(storage, <span class="stringliteral">&quot;SCRIPT_FILENAME&quot;</span>, script_path);</div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>    <a class="code hl_function" href="cgi_8cpp.html#a3e4daad6f7419311c24c1cc68b63f3bc">addEnv</a>(storage, <span class="stringliteral">&quot;PATH_INFO&quot;</span>, path_info);</div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>    <a class="code hl_function" href="cgi_8cpp.html#a3e4daad6f7419311c24c1cc68b63f3bc">addEnv</a>(storage, <span class="stringliteral">&quot;PATH_TRANSLATED&quot;</span>, path_translated);</div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>    <a class="code hl_function" href="cgi_8cpp.html#a3e4daad6f7419311c24c1cc68b63f3bc">addEnv</a>(storage, <span class="stringliteral">&quot;QUERY_STRING&quot;</span>, request.<a class="code hl_function" href="classRequest.html#af8181b31b7e519cb2de43f3d5615e207">getQuery</a>());</div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>    <a class="code hl_function" href="cgi_8cpp.html#a3e4daad6f7419311c24c1cc68b63f3bc">addEnv</a>(storage, <span class="stringliteral">&quot;CONTENT_LENGTH&quot;</span>, request.<a class="code hl_function" href="classRequest.html#a72c8eeae6ccf7dd1c9f88064894106f8">getHeader</a>(<span class="stringliteral">&quot;content-length&quot;</span>));</div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>    <a class="code hl_function" href="cgi_8cpp.html#a3e4daad6f7419311c24c1cc68b63f3bc">addEnv</a>(storage, <span class="stringliteral">&quot;CONTENT_TYPE&quot;</span>, request.<a class="code hl_function" href="classRequest.html#a72c8eeae6ccf7dd1c9f88064894106f8">getHeader</a>(<span class="stringliteral">&quot;content-type&quot;</span>));</div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>    <a class="code hl_function" href="cgi_8cpp.html#a3e4daad6f7419311c24c1cc68b63f3bc">addEnv</a>(storage, <span class="stringliteral">&quot;SERVER_PROTOCOL&quot;</span>, <span class="stringliteral">&quot;HTTP/1.1&quot;</span>);</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>    <a class="code hl_function" href="cgi_8cpp.html#a3e4daad6f7419311c24c1cc68b63f3bc">addEnv</a>(storage, <span class="stringliteral">&quot;SERVER_SOFTWARE&quot;</span>, <span class="stringliteral">&quot;webserv/1.0&quot;</span>);</div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>    <span class="keywordflow">if</span> (!serverNames.empty())</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>        <a class="code hl_function" href="cgi_8cpp.html#a3e4daad6f7419311c24c1cc68b63f3bc">addEnv</a>(storage, <span class="stringliteral">&quot;SERVER_NAME&quot;</span>, serverNames[0]);</div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>    <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>        <a class="code hl_function" href="cgi_8cpp.html#a3e4daad6f7419311c24c1cc68b63f3bc">addEnv</a>(storage, <span class="stringliteral">&quot;SERVER_NAME&quot;</span>, request.<a class="code hl_function" href="classRequest.html#a72c8eeae6ccf7dd1c9f88064894106f8">getHeader</a>(<span class="stringliteral">&quot;host&quot;</span>));</div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>    <a class="code hl_function" href="cgi_8cpp.html#a3e4daad6f7419311c24c1cc68b63f3bc">addEnv</a>(storage, <span class="stringliteral">&quot;SERVER_PORT&quot;</span>, ss.str());</div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>    <a class="code hl_function" href="cgi_8cpp.html#a3e4daad6f7419311c24c1cc68b63f3bc">addEnv</a>(storage, <span class="stringliteral">&quot;GATEWAY_INTERFACE&quot;</span>, <span class="stringliteral">&quot;CGI/1.1&quot;</span>);</div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>    <a class="code hl_function" href="cgi_8cpp.html#a3e4daad6f7419311c24c1cc68b63f3bc">addEnv</a>(storage, <span class="stringliteral">&quot;REMOTE_ADDR&quot;</span>, connection.<a class="code hl_function" href="classConnection.html#a7951b0ad16e3ad948b7ec67ed7d4aad6">getIpV4</a>());</div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>    <a class="code hl_function" href="cgi_8cpp.html#a3e4daad6f7419311c24c1cc68b63f3bc">addEnv</a>(storage, <span class="stringliteral">&quot;REDIRECT_STATUS&quot;</span>, <span class="stringliteral">&quot;200&quot;</span>);</div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span> </div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>    <span class="keyword">const</span> map&lt;string, string&gt;   headers = request.<a class="code hl_function" href="classRequest.html#a8d6b4373329076f14dff249072276761">getHeaders</a>();</div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>    <span class="keywordflow">for</span>(map&lt;string, string&gt;::const_iterator it = headers.begin(); it != headers.end(); it++)</div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>    {</div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>        <span class="keywordflow">if</span> (it-&gt;first == <span class="stringliteral">&quot;content-length&quot;</span> || it-&gt;first == <span class="stringliteral">&quot;content-type&quot;</span>)</div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>            continue ;</div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>        <a class="code hl_function" href="cgi_8cpp.html#a3e4daad6f7419311c24c1cc68b63f3bc">addEnv</a>(storage, <a class="code hl_function" href="cgi_8cpp.html#ad1751c5b2a6326543fe1b53ae171d0a0">header_to_meta</a>(it-&gt;first), it-&gt;second);</div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>    }</div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>    <span class="keywordflow">return</span> (storage);</div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>}</div>
+</div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span> </div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span><span class="comment">// srcs/cgi/cgi.cpp</span></div>
+<div class="foldopen" id="foldopen00189" data-start="{" data-end="}">
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno"><a class="line" href="cgi_8cpp.html#ac300ea8c2409fbc00c754021ea20f7b2">  189</a></span><span class="keywordtype">bool</span>    <a class="code hl_function" href="cgi_8cpp.html#ac300ea8c2409fbc00c754021ea20f7b2">parse_cgi_output</a>(<span class="keyword">const</span> std::string &amp;raw, <a class="code hl_class" href="classResponse.html">Response</a> &amp;out){</div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>    <span class="keywordtype">size_t</span> crlf = raw.find(<span class="stringliteral">&quot;\r\n\r\n&quot;</span>);</div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>    <span class="keywordtype">size_t</span> lf = raw.find(<span class="stringliteral">&quot;\n\n&quot;</span>);</div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>    <span class="keywordtype">size_t</span> pos;</div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>    <span class="keywordtype">int</span> sep;</div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>    <span class="keywordflow">if</span> (crlf != string::npos &amp;&amp; (lf == string::npos || crlf &lt;= lf)){</div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>        pos = crlf;</div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>        sep = 4;</div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>    }</div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (lf != string::npos){</div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>        pos = lf;</div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>        sep = 2;</div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>    }</div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>    <span class="keywordflow">else</span>{</div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>        out.<a class="code hl_function" href="classResponse.html#a7f9b175d957559236e0b065e4d495963">SetStatus</a>(502);</div>
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>    }</div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>    <span class="keywordtype">int</span> flagStatus = 0;</div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>    <span class="keywordtype">string</span> body = raw.substr(pos + sep);</div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>    <span class="keywordtype">string</span> header = raw.substr(0, pos);</div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>    <span class="keywordflow">while</span>(header.size() &gt; 0){</div>
+<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>        <span class="keywordtype">size_t</span> del = header.find(<span class="stringliteral">&quot;:&quot;</span>);</div>
+<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>        <span class="keywordflow">if</span> (del == string::npos){</div>
+<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>            out.<a class="code hl_function" href="classResponse.html#a7f9b175d957559236e0b065e4d495963">SetStatus</a>(502);</div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>        }</div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>        <span class="keywordtype">size_t</span> end = 0;</div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>        <span class="keywordtype">size_t</span> line_end = header.find(<span class="stringliteral">&quot;\n&quot;</span>);</div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>        <span class="keywordflow">if</span> (line_end == string::npos){</div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>            end = header.size();</div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>        }</div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>        <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>            end = line_end;</div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>        <span class="keywordtype">string</span> key = header.substr(0, del);</div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>        <a class="code hl_function" href="httpUtils_8cpp.html#a8bddc3dcbfa8ff455abebaf144a1f5cf">trim</a>(key);</div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>        <span class="keywordtype">string</span> value = header.substr(del + 1, end - del);</div>
+<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>        <span class="keywordflow">if</span> (key == <span class="stringliteral">&quot;Status&quot;</span>){</div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>            stringstream ss(value);</div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>            <span class="keywordtype">int</span> num = 0;</div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>            ss &gt;&gt; num;</div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>            <span class="keywordflow">if</span> (ss.fail()){</div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>                out.<a class="code hl_function" href="classResponse.html#a7f9b175d957559236e0b065e4d495963">SetStatus</a>(502);</div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>            }</div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>            <span class="keywordflow">if</span> (num &lt; 100 || num &gt; 599){</div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>                out.<a class="code hl_function" href="classResponse.html#a7f9b175d957559236e0b065e4d495963">SetStatus</a>(502);</div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>            }</div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>            out.<a class="code hl_function" href="classResponse.html#a7f9b175d957559236e0b065e4d495963">SetStatus</a>(num);</div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>            flagStatus = 1;</div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>            <span class="keywordflow">if</span> (end == header.size())</div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>                header.clear();</div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>            <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>                header.erase(0, end + 1);</div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>            <span class="keywordflow">continue</span>;</div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>        }</div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (key == <span class="stringliteral">&quot;Location&quot;</span> &amp;&amp; flagStatus == 0)</div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>                out.<a class="code hl_function" href="classResponse.html#a7f9b175d957559236e0b065e4d495963">SetStatus</a>(302);</div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>        <span class="keywordflow">if</span> (!value.empty())</div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>            <a class="code hl_function" href="httpUtils_8cpp.html#a8bddc3dcbfa8ff455abebaf144a1f5cf">trim</a>(value);</div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>        <span class="keywordtype">string</span>  lower = key;</div>
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>        <a class="code hl_function" href="httpUtils_8cpp.html#a6c24f17c6b20cf20061f666f2a3ff8de">MyToLower</a>(lower);</div>
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>        <span class="keywordflow">if</span> (lower == <span class="stringliteral">&quot;set-cookie&quot;</span>)</div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span>            out.<a class="code hl_function" href="classResponse.html#acb0980f3803ca2d1f4351fcd26bc988d">AddSetCookie</a>(value);</div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>        <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>            out.<a class="code hl_function" href="classResponse.html#a57e91a47a4522fa82bd99dd7464e1c87">SetHeader</a>(key, value);</div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>        <span class="keywordflow">if</span> (end == header.size())</div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>            header.clear();</div>
+<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>        <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>            header.erase(0, end + 1);</div>
+<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>    }</div>
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>    out.<a class="code hl_function" href="classResponse.html#af3bd401f662e6da863f3e2a99bdbee6f">SwapBody</a>(body); </div>
+<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>}</div>
+</div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span> </div>
+<div class="foldopen" id="foldopen00274" data-start="{" data-end="}">
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno"><a class="line" href="cgi_8cpp.html#a676c4b56d4e3c9734be563a0707de682">  274</a></span><span class="keywordtype">string</span>  <a class="code hl_function" href="cgi_8cpp.html#a676c4b56d4e3c9734be563a0707de682">findCgiExt</a>(<span class="keyword">const</span> <span class="keywordtype">string</span> &amp;path, <span class="keyword">const</span> <a class="code hl_class" href="classLocationConfig.html">LocationConfig</a> &amp;loc)</div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>{</div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>    <span class="keyword">const</span> map&lt;string, string&gt;           &amp;cgi = loc.<a class="code hl_function" href="classLocationConfig.html#adad8b29d8fddbb6039ec19140fa03d21">getCgi</a>();</div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>    map&lt;string, string&gt;::const_iterator it;</div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>    <span class="keywordflow">for</span> (it = cgi.begin(); it != cgi.end(); ++it)</div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>    {</div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>        <span class="keywordflow">if</span> (path.find(it-&gt;first) != string::npos &amp;&amp; !it-&gt;second.empty())</div>
+<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>            <span class="keywordflow">return</span> (it-&gt;first);</div>
+<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>    }</div>
+<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>    <span class="keywordflow">return</span> (<span class="stringliteral">&quot;&quot;</span>);</div>
+<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>}</div>
+</div>
+<div class="ttc" id="acgi_8cpp_html_a3e4daad6f7419311c24c1cc68b63f3bc"><div class="ttname"><a href="cgi_8cpp.html#a3e4daad6f7419311c24c1cc68b63f3bc">addEnv</a></div><div class="ttdeci">void addEnv(vector&lt; string &gt; &amp;storage, const string &amp;key, const string &amp;value)</div><div class="ttdoc">Ajouter une nouvelle valeur a l'environnement cgi.</div><div class="ttdef"><b>Definition</b> <a href="cgi_8cpp_source.html#l00024">cgi.cpp:24</a></div></div>
+<div class="ttc" id="acgi_8cpp_html_a676c4b56d4e3c9734be563a0707de682"><div class="ttname"><a href="cgi_8cpp.html#a676c4b56d4e3c9734be563a0707de682">findCgiExt</a></div><div class="ttdeci">string findCgiExt(const string &amp;path, const LocationConfig &amp;loc)</div><div class="ttdoc">Premiere extension CGI de loc._Cgi trouvee dans path (E-03).</div><div class="ttdef"><b>Definition</b> <a href="cgi_8cpp_source.html#l00274">cgi.cpp:274</a></div></div>
+<div class="ttc" id="acgi_8cpp_html_a6826f4fde32cf27a1856b154ed017d94"><div class="ttname"><a href="cgi_8cpp.html#a6826f4fde32cf27a1856b154ed017d94">findScriptName</a></div><div class="ttdeci">string findScriptName(const Request &amp;request, const LocationConfig &amp;location)</div><div class="ttdoc">SCRIPT_NAME : URI jusqu'a l'extension CGI comprise (RFC 3875).</div><div class="ttdef"><b>Definition</b> <a href="cgi_8cpp_source.html#l00039">cgi.cpp:39</a></div></div>
+<div class="ttc" id="acgi_8cpp_html_ac300ea8c2409fbc00c754021ea20f7b2"><div class="ttname"><a href="cgi_8cpp.html#ac300ea8c2409fbc00c754021ea20f7b2">parse_cgi_output</a></div><div class="ttdeci">bool parse_cgi_output(const std::string &amp;raw, Response &amp;out)</div><div class="ttdoc">Convertit la sortie brute d'un CGI en Response prete a serialiser.</div><div class="ttdef"><b>Definition</b> <a href="cgi_8cpp_source.html#l00189">cgi.cpp:189</a></div></div>
+<div class="ttc" id="acgi_8cpp_html_acc5cf01c2075278c8d2ee8f16e107630"><div class="ttname"><a href="cgi_8cpp.html#acc5cf01c2075278c8d2ee8f16e107630">findPathInfo</a></div><div class="ttdeci">string findPathInfo(const Request &amp;request, const LocationConfig &amp;location)</div><div class="ttdoc">PATH_INFO : suffixe apres l'extension CGI, ou &quot;&quot;.</div><div class="ttdef"><b>Definition</b> <a href="cgi_8cpp_source.html#l00060">cgi.cpp:60</a></div></div>
+<div class="ttc" id="acgi_8cpp_html_ad04266f6bf181d67247721cf5c769d70"><div class="ttname"><a href="cgi_8cpp.html#ad04266f6bf181d67247721cf5c769d70">build_cgi_env</a></div><div class="ttdeci">vector&lt; string &gt; build_cgi_env(const Request &amp;request, const LocationConfig &amp;location, const ServerConfig &amp;server, const Connection &amp;connection, const ConfigParser &amp;config, const string &amp;script_path)</div><div class="ttdoc">Construit les meta-variables CGI/1.1 de la requete.</div><div class="ttdef"><b>Definition</b> <a href="cgi_8cpp_source.html#l00129">cgi.cpp:129</a></div></div>
+<div class="ttc" id="acgi_8cpp_html_ad1751c5b2a6326543fe1b53ae171d0a0"><div class="ttname"><a href="cgi_8cpp.html#ad1751c5b2a6326543fe1b53ae171d0a0">header_to_meta</a></div><div class="ttdeci">std::string header_to_meta(const std::string &amp;name)</div><div class="ttdoc">Transforme les headers dans le bon format de l'env.</div><div class="ttdef"><b>Definition</b> <a href="cgi_8cpp_source.html#l00100">cgi.cpp:100</a></div></div>
+<div class="ttc" id="acgi_8cpp_html_afc302eae58fa92a9772e627052e58016"><div class="ttname"><a href="cgi_8cpp.html#afc302eae58fa92a9772e627052e58016">VectorToChar</a></div><div class="ttdeci">char ** VectorToChar(vector&lt; string &gt; &amp;storage)</div><div class="ttdoc">Converti un vecteur de string en tableau de char*.</div><div class="ttdef"><b>Definition</b> <a href="cgi_8cpp_source.html#l00078">cgi.cpp:78</a></div></div>
+<div class="ttc" id="aclassConfigParser_html"><div class="ttname"><a href="classConfigParser.html">ConfigParser</a></div><div class="ttdoc">Represente toute la phase de parsing du .conf.</div><div class="ttdef"><b>Definition</b> <a href="Config_8hpp_source.html#l00031">Config.hpp:32</a></div></div>
+<div class="ttc" id="aclassConfigParser_html_ad7e54a715496137af9e7b4ab7a7900ee"><div class="ttname"><a href="classConfigParser.html#ad7e54a715496137af9e7b4ab7a7900ee">ConfigParser::getAddrPorts</a></div><div class="ttdeci">const vector&lt; TAddrPortGroup &gt; &amp; getAddrPorts(void) const</div><div class="ttdoc">La table des sockets d'ecoute.</div><div class="ttdef"><b>Definition</b> <a href="config_8cpp_source.html#l00067">config.cpp:67</a></div></div>
+<div class="ttc" id="aclassConnection_html"><div class="ttname"><a href="classConnection.html">Connection</a></div><div class="ttdef"><b>Definition</b> <a href="Connection_8hpp_source.html#l00029">Connection.hpp:30</a></div></div>
+<div class="ttc" id="aclassConnection_html_a7951b0ad16e3ad948b7ec67ed7d4aad6"><div class="ttname"><a href="classConnection.html#a7951b0ad16e3ad948b7ec67ed7d4aad6">Connection::getIpV4</a></div><div class="ttdeci">const string &amp; getIpV4() const</div><div class="ttdef"><b>Definition</b> <a href="Connection_8cpp_source.html#l00069">Connection.cpp:69</a></div></div>
+<div class="ttc" id="aclassConnection_html_ae8aa81a8b6f303d40ece379828cd9b2a"><div class="ttname"><a href="classConnection.html#ae8aa81a8b6f303d40ece379828cd9b2a">Connection::getGroupIndex</a></div><div class="ttdeci">size_t getGroupIndex() const</div><div class="ttdef"><b>Definition</b> <a href="Connection_8cpp_source.html#l00073">Connection.cpp:73</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html"><div class="ttname"><a href="classLocationConfig.html">LocationConfig</a></div><div class="ttdoc">Represente la configuration d'une location (bloc &quot;location&quot;) d'un serveur.</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8hpp_source.html#l00018">LocationConfig.hpp:19</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_ac8bacc5c7b7ae0faf408e67da88a2b6f"><div class="ttname"><a href="classLocationConfig.html#ac8bacc5c7b7ae0faf408e67da88a2b6f">LocationConfig::getRoot</a></div><div class="ttdeci">const string &amp; getRoot(void) const</div><div class="ttdoc">La racine disque associee a ce bloc.</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8cpp_source.html#l00082">LocationConfig.cpp:82</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_adad8b29d8fddbb6039ec19140fa03d21"><div class="ttname"><a href="classLocationConfig.html#adad8b29d8fddbb6039ec19140fa03d21">LocationConfig::getCgi</a></div><div class="ttdeci">const map&lt; string, string &gt; &amp; getCgi(void) const</div><div class="ttdoc">Table cgi_ext -&gt; cgi_pass.</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8cpp_source.html#l00109">LocationConfig.cpp:109</a></div></div>
+<div class="ttc" id="aclassRequest_html"><div class="ttname"><a href="classRequest.html">Request</a></div><div class="ttdoc">Represente une requete HTTP recue par le serveur.</div><div class="ttdef"><b>Definition</b> <a href="Request_8hpp_source.html#l00044">Request.hpp:45</a></div></div>
+<div class="ttc" id="aclassRequest_html_a57c0cbefe4446e2ecfe21634ae67d397"><div class="ttname"><a href="classRequest.html#a57c0cbefe4446e2ecfe21634ae67d397">Request::getMethod</a></div><div class="ttdeci">const string &amp; getMethod() const</div><div class="ttdef"><b>Definition</b> <a href="Request_8cpp_source.html#l00431">Request.cpp:431</a></div></div>
+<div class="ttc" id="aclassRequest_html_a72c8eeae6ccf7dd1c9f88064894106f8"><div class="ttname"><a href="classRequest.html#a72c8eeae6ccf7dd1c9f88064894106f8">Request::getHeader</a></div><div class="ttdeci">string getHeader(const string &amp;key) const</div><div class="ttdoc">Getters de header /!\ Il est retourner par valeur et non par reference.</div><div class="ttdef"><b>Definition</b> <a href="Request_8cpp_source.html#l00494">Request.cpp:494</a></div></div>
+<div class="ttc" id="aclassRequest_html_a8d6b4373329076f14dff249072276761"><div class="ttname"><a href="classRequest.html#a8d6b4373329076f14dff249072276761">Request::getHeaders</a></div><div class="ttdeci">map&lt; string, string &gt; getHeaders(void) const</div><div class="ttdef"><b>Definition</b> <a href="Request_8cpp_source.html#l00467">Request.cpp:467</a></div></div>
+<div class="ttc" id="aclassRequest_html_aed56fbd5b75b512f8edc5d92f04a8487"><div class="ttname"><a href="classRequest.html#aed56fbd5b75b512f8edc5d92f04a8487">Request::getPath</a></div><div class="ttdeci">const string &amp; getPath() const</div><div class="ttdoc">Getter de path, /!\ Ne jamais repasser la string en string_c car '\0' possible dans la string.</div><div class="ttdef"><b>Definition</b> <a href="Request_8cpp_source.html#l00441">Request.cpp:441</a></div></div>
+<div class="ttc" id="aclassRequest_html_af8181b31b7e519cb2de43f3d5615e207"><div class="ttname"><a href="classRequest.html#af8181b31b7e519cb2de43f3d5615e207">Request::getQuery</a></div><div class="ttdeci">const string &amp; getQuery() const</div><div class="ttdef"><b>Definition</b> <a href="Request_8cpp_source.html#l00454">Request.cpp:454</a></div></div>
+<div class="ttc" id="aclassResponse_html"><div class="ttname"><a href="classResponse.html">Response</a></div><div class="ttdoc">Represente une reponse HTTP a construire et a envoyer au client.</div><div class="ttdef"><b>Definition</b> <a href="Response_8hpp_source.html#l00021">Response.hpp:22</a></div></div>
+<div class="ttc" id="aclassResponse_html_a57e91a47a4522fa82bd99dd7464e1c87"><div class="ttname"><a href="classResponse.html#a57e91a47a4522fa82bd99dd7464e1c87">Response::SetHeader</a></div><div class="ttdeci">void SetHeader(const std::string &amp;key, const std::string &amp;value)</div><div class="ttdef"><b>Definition</b> <a href="Response_8cpp_source.html#l00107">Response.cpp:107</a></div></div>
+<div class="ttc" id="aclassResponse_html_a7f9b175d957559236e0b065e4d495963"><div class="ttname"><a href="classResponse.html#a7f9b175d957559236e0b065e4d495963">Response::SetStatus</a></div><div class="ttdeci">void SetStatus(int code)</div><div class="ttdoc">pose _StatusCode ET _StatusText</div><div class="ttdef"><b>Definition</b> <a href="Response_8cpp_source.html#l00101">Response.cpp:101</a></div></div>
+<div class="ttc" id="aclassResponse_html_acb0980f3803ca2d1f4351fcd26bc988d"><div class="ttname"><a href="classResponse.html#acb0980f3803ca2d1f4351fcd26bc988d">Response::AddSetCookie</a></div><div class="ttdeci">bool AddSetCookie(const string &amp;value)</div><div class="ttdoc">false si valeur invalide</div><div class="ttdef"><b>Definition</b> <a href="Response_8cpp_source.html#l00268">Response.cpp:268</a></div></div>
+<div class="ttc" id="aclassResponse_html_af3bd401f662e6da863f3e2a99bdbee6f"><div class="ttname"><a href="classResponse.html#af3bd401f662e6da863f3e2a99bdbee6f">Response::SwapBody</a></div><div class="ttdeci">void SwapBody(std::string &amp;body)</div><div class="ttdoc">idem, mais vole le buffer : pas de copie du corps CGI</div><div class="ttdef"><b>Definition</b> <a href="Response_8cpp_source.html#l00120">Response.cpp:120</a></div></div>
+<div class="ttc" id="aclassServerConfig_html"><div class="ttname"><a href="classServerConfig.html">ServerConfig</a></div><div class="ttdoc">Represente la configuration d'un serveur virtuel (bloc &quot;server&quot;).</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8hpp_source.html#l00021">ServerConfig.hpp:22</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_aba7a44995f4461d6a655277eeab4fd63"><div class="ttname"><a href="classServerConfig.html#aba7a44995f4461d6a655277eeab4fd63">ServerConfig::getServerNames</a></div><div class="ttdeci">const vector&lt; string &gt; &amp; getServerNames() const</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8cpp_source.html#l00073">ServerConfig.cpp:73</a></div></div>
+<div class="ttc" id="ahttpUtils_8cpp_html_a6c24f17c6b20cf20061f666f2a3ff8de"><div class="ttname"><a href="httpUtils_8cpp.html#a6c24f17c6b20cf20061f666f2a3ff8de">MyToLower</a></div><div class="ttdeci">void MyToLower(string &amp;key)</div><div class="ttdoc">Permet de mettre une string en lowercase.</div><div class="ttdef"><b>Definition</b> <a href="httpUtils_8cpp_source.html#l00025">httpUtils.cpp:25</a></div></div>
+<div class="ttc" id="ahttpUtils_8cpp_html_a8bddc3dcbfa8ff455abebaf144a1f5cf"><div class="ttname"><a href="httpUtils_8cpp.html#a8bddc3dcbfa8ff455abebaf144a1f5cf">trim</a></div><div class="ttdeci">void trim(string &amp;s)</div><div class="ttdoc">Fonction permettant de trim les espaes de debut det de fin.</div><div class="ttdef"><b>Definition</b> <a href="httpUtils_8cpp_source.html#l00009">httpUtils.cpp:9</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_b73b02d482d1c4a3db20c3d9ad52d395.html">srcs</a></li><li class="navelem"><a class="el" href="dir_3c4d8b85056da8f9a652e90583895168.html">cgi</a></li><li class="navelem"><a class="el" href="cgi_8cpp.html">cgi.cpp</a></li>
+    <li class="footer">Généré par <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<map id="Request::findHeaders" name="Request::findHeaders">
+<area shape="rect" id="Node000001" title="Fonction permetant de parser le header." alt="" coords="5,303,167,328"/>
+<area shape="rect" id="Node000002" href="$classRequest.html#a72c8eeae6ccf7dd1c9f88064894106f8" title="Getters de header /!\ Il est retourner par valeur et non par reference." alt="" coords="515,252,665,277"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="147,300,214,289,366,274,501,265,501,271,366,279,215,294,148,305"/>
+<area shape="rect" id="Node000003" href="$httpUtils_8cpp.html#a6c24f17c6b20cf20061f666f2a3ff8de" title="Permet de mettre une string en lowercase." alt="" coords="275,201,370,227"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="107,300,155,272,214,244,261,227,263,232,216,248,157,277,109,305"/>
+<area shape="rect" id="Node000004" href="$resolve__server_8cpp.html#a544ca41e4759d0ff376ac09cd6c333cb" title="renvoie le serveur demande dans la requete HTTP ou le default serveur." alt="" coords="271,128,375,153"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="96,301,143,248,177,216,213,188,272,156,275,161,216,192,180,221,147,252,100,304"/>
+<area shape="rect" id="Node000011" href="$classRequest.html#ab33a1aa3daf7af809823a58191f204b9" title="Pose le ServerConfig de la connexion, utilise par setUpContentLength() pour resoudre la location et d..." alt="" coords="229,303,416,328"/>
+<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="167,313,215,313,215,318,167,318"/>
+<area shape="rect" id="Node000012" href="$classRequest.html#a8101ba97004887cf378e8f36a070b744" title="Determine s&#39;il faut lire un corps, et si sa taille annoncee est acceptable." alt="" coords="215,352,431,377"/>
+<area shape="poly" id="edge11_Node000001_Node000012" title=" " alt="" coords="148,325,248,346,247,352,147,331"/>
+<area shape="rect" id="Node000016" href="$classLogger.html#abf1a44e82213ce8094057b5fa926cf72" title="Ligne horodatee &quot;date [level] msg&quot;." alt="" coords="537,416,643,441"/>
+<area shape="poly" id="edge18_Node000001_Node000016" title=" " alt="" coords="105,326,153,358,184,374,216,387,296,408,379,420,457,426,523,428,523,433,457,431,379,425,295,413,214,393,181,379,150,363,102,330"/>
+<area shape="rect" id="Node000017" href="$httpUtils_8cpp.html#a8bddc3dcbfa8ff455abebaf144a1f5cf" title="Fonction permettant de trim les espaes de debut det de fin." alt="" coords="298,453,347,479"/>
+<area shape="poly" id="edge17_Node000001_Node000017" title=" " alt="" coords="99,326,146,377,179,407,216,432,251,447,285,457,284,462,249,452,213,436,176,411,143,381,96,330"/>
+<area shape="rect" id="Node000005" href="$classConfigParser.html#ad7e54a715496137af9e7b4ab7a7900ee" title="La table des sockets d&#39;ecoute." alt="" coords="493,153,687,179"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="375,143,479,153,478,158,375,148"/>
+<area shape="rect" id="Node000006" href="$classServerConfig.html#aba7a44995f4461d6a655277eeab4fd63" title=" " alt="" coords="479,203,701,228"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="360,151,479,189,513,197,511,202,478,194,359,156"/>
+<area shape="rect" id="Node000007" href="$classConfigParser.html#accbf7ac90776e8726cd92202ea46b0c7" title="Les blocs server construits par fill_servers_config()" alt="" coords="499,5,681,31"/>
+<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="339,126,398,84,437,61,478,41,503,32,505,37,480,46,439,66,401,89,342,130"/>
+<area shape="rect" id="Node000008" href="$resolve__server_8cpp.html#a2a896e7e3b9798bee6af41fc2b56b93f" title=" " alt="" coords="531,55,649,80"/>
+<area shape="poly" id="edge7_Node000004_Node000008" title=" " alt="" coords="362,125,478,90,516,80,518,86,479,95,363,130"/>
+<area shape="rect" id="Node000010" href="$resolve__server_8cpp.html#aa2474247a61bb00061b614f3287419bf" title=" " alt="" coords="551,104,629,129"/>
+<area shape="poly" id="edge9_Node000004_Node000010" title=" " alt="" coords="375,133,537,119,537,124,375,139"/>
+<area shape="rect" id="Node000009" href="$utils_8cpp.html#a33a62d02493d54e927b73969ec71f85d" title="Check si une chaine est composee uniquement de chiffres." alt="" coords="783,55,881,80"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="650,65,769,65,769,70,650,70"/>
+<area shape="poly" id="edge13_Node000012_Node000002" title=" " alt="" coords="404,350,429,338,444,327,452,314,462,300,477,288,500,277,502,282,480,292,466,304,457,317,448,330,432,343,406,354"/>
+<area shape="rect" id="Node000013" href="$classLocationConfig.html#a9a8fd540099f2536c62f9a4a4df99a70" title="Accesseur sur le Client max body size declarer dans le .conf ou set up par la valeur par default de N..." alt="" coords="497,351,683,391"/>
+<area shape="poly" id="edge12_Node000012_Node000013" title=" " alt="" coords="431,365,483,366,483,371,431,370"/>
+<area shape="rect" id="Node000014" href="$classServerConfig.html#aa65c203b34f8636d4f9f1dbcd8e157be" title="La location matchant l&#39;URI, prefixe le plus long." alt="" coords="507,301,673,327"/>
+<area shape="poly" id="edge14_Node000012_Node000014" title=" " alt="" coords="390,349,508,327,509,332,391,355"/>
+<area shape="poly" id="edge16_Node000012_Node000016" title=" " alt="" coords="374,375,479,401,524,411,523,416,478,406,373,380"/>
+<area shape="rect" id="Node000015" href="$utils_8cpp.html#a6c5106f7f4691c9fcce1d810962fbe8f" title="check si le prefixe path s&#39;arrete sur une frontiere de segment de l&#39;URI" alt="" coords="749,301,915,327"/>
+<area shape="poly" id="edge15_Node000014_Node000015" title=" " alt="" coords="673,311,736,311,736,317,673,317"/>
+</map>

@@ -1,0 +1,76 @@
+<map id="Request::Feed" name="Request::Feed">
+<area shape="rect" id="Node000001" title="Alimente le parseur de requete avec un nouveau bloc de donnees." alt="" coords="5,435,120,460"/>
+<area shape="rect" id="Node000002" href="$classRequest.html#a5f5d42883f8da3a7522d70ccd39cf4fd" title="Accumule le corps sans jamais depasser Content&#45;Length." alt="" coords="192,157,332,183"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="68,433,107,361,166,268,201,226,235,191,239,194,205,230,170,272,111,364,73,436"/>
+<area shape="rect" id="Node000004" href="$classRequest.html#a5a74653e7b09ba5a6c4ebd854228b6cd" title="Consomme le \r &#160;qui suit les donnees du chunk (hors taille)." alt="" coords="177,384,347,409"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="113,432,198,410,199,415,114,437"/>
+<area shape="rect" id="Node000005" href="$classRequest.html#abf4b99e5c406cb5bac40d40a1bc4fecc" title="Accumule les octets de payload du chunk, comme findBody()." alt="" coords="173,435,351,460"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="120,445,159,445,159,450,120,450"/>
+<area shape="rect" id="Node000006" href="$classRequest.html#aaa2757212f016cde701db5399be3b9d6" title="Lit la ligne de taille du chunk courant (hex), extensions ignorees." alt="" coords="404,536,579,561"/>
+<area shape="poly" id="edge7_Node000001_Node000006" title=" " alt="" coords="78,458,117,490,142,507,169,520,224,535,282,545,391,551,390,557,281,551,223,541,167,524,139,511,114,495,75,462"/>
+<area shape="rect" id="Node000008" href="$classRequest.html#ae7fbfc58211231f90e700466c93bdfad" title="Lit et jette les trailers apres un chunk de taille 0, jusqu&#39;a la ligne vide." alt="" coords="168,484,356,509"/>
+<area shape="poly" id="edge10_Node000001_Node000008" title=" " alt="" coords="115,457,197,478,196,483,114,463"/>
+<area shape="rect" id="Node000009" href="$classRequest.html#a964e35c6ade010d312e718b591d6351e" title="Fonction permetant de parser le header." alt="" coords="411,712,572,737"/>
+<area shape="poly" id="edge12_Node000001_Node000009" title=" " alt="" coords="76,459,114,504,170,556,241,604,317,645,445,704,443,709,314,650,238,608,166,560,111,508,72,462"/>
+<area shape="rect" id="Node000024" href="$classRequest.html#a761e0bb758f36cca07e31346050e3e6c" title="Fonction pour split la requestline &lt;METHOD SP URI SP HTTP/1.1 CRLF&gt;" alt="" coords="169,283,355,308"/>
+<area shape="poly" id="edge31_Node000001_Node000024" title=" " alt="" coords="79,433,232,314,235,319,82,437"/>
+<area shape="rect" id="Node000003" href="$classLogger.html#abf1a44e82213ce8094057b5fa926cf72" title="Ligne horodatee &quot;date [level] msg&quot;." alt="" coords="949,359,1055,384"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="294,155,393,123,459,106,533,93,612,87,692,89,770,104,808,116,844,133,874,153,901,178,945,236,976,296,995,344,990,346,971,298,940,239,897,182,871,157,841,138,806,121,769,109,691,95,612,92,534,99,460,111,394,128,296,160"/>
+<area shape="poly" id="edge4_Node000004_Node000003" title=" " alt="" coords="347,391,935,371,935,376,348,396"/>
+<area shape="poly" id="edge6_Node000005_Node000003" title=" " alt="" coords="351,436,842,387,935,377,935,382,843,393,352,442"/>
+<area shape="poly" id="edge9_Node000006_Node000003" title=" " alt="" coords="579,553,639,553,706,549,776,536,842,514,885,489,924,456,957,423,981,393,985,397,961,426,928,460,888,493,844,519,777,541,707,554,639,559,579,558"/>
+<area shape="rect" id="Node000007" href="$httpUtils_8cpp.html#a8bddc3dcbfa8ff455abebaf144a1f5cf" title="Fonction permettant de trim les espaes de debut det de fin." alt="" coords="710,587,759,612"/>
+<area shape="poly" id="edge8_Node000006_Node000007" title=" " alt="" coords="554,559,697,589,696,594,553,564"/>
+<area shape="poly" id="edge11_Node000008_Node000003" title=" " alt="" coords="356,485,579,459,711,439,842,414,948,386,950,391,843,419,712,444,579,464,357,491"/>
+<area shape="poly" id="edge30_Node000009_Node000003" title=" " alt="" coords="525,709,626,674,689,662,740,659,788,651,813,640,841,623,870,598,896,570,939,507,970,445,990,396,995,398,975,447,944,509,900,573,874,602,844,627,815,645,789,656,740,664,689,667,627,679,526,714"/>
+<area shape="poly" id="edge29_Node000009_Node000007" title=" " alt="" coords="506,710,557,670,625,629,661,615,695,605,697,610,663,620,628,634,560,675,509,714"/>
+<area shape="rect" id="Node000010" href="$classRequest.html#a72c8eeae6ccf7dd1c9f88064894106f8" title="Getters de header /!\ Il est retourner par valeur et non par reference." alt="" coords="927,885,1077,911"/>
+<area shape="poly" id="edge13_Node000009_Node000010" title=" " alt="" coords="507,735,557,779,591,802,628,822,680,839,754,855,913,883,912,888,753,861,679,844,626,827,588,807,554,783,504,739"/>
+<area shape="rect" id="Node000011" href="$httpUtils_8cpp.html#a6c24f17c6b20cf20061f666f2a3ff8de" title="Permet de mettre une string en lowercase." alt="" coords="687,688,782,713"/>
+<area shape="poly" id="edge14_Node000009_Node000011" title=" " alt="" coords="572,714,673,704,674,709,572,719"/>
+<area shape="rect" id="Node000012" href="$resolve__server_8cpp.html#a544ca41e4759d0ff376ac09cd6c333cb" title="renvoie le serveur demande dans la requete HTTP ou le default serveur." alt="" coords="683,787,787,812"/>
+<area shape="poly" id="edge15_Node000009_Node000012" title=" " alt="" coords="524,735,627,773,670,784,669,789,626,778,522,740"/>
+<area shape="rect" id="Node000019" href="$classRequest.html#ab33a1aa3daf7af809823a58191f204b9" title="Pose le ServerConfig de la connexion, utilise par setUpContentLength() pour resoudre la location et d..." alt="" coords="641,737,828,763"/>
+<area shape="poly" id="edge22_Node000009_Node000019" title=" " alt="" coords="572,730,628,736,627,742,572,736"/>
+<area shape="rect" id="Node000020" href="$classRequest.html#a8101ba97004887cf378e8f36a070b744" title="Determine s&#39;il faut lire un corps, et si sa taille annoncee est acceptable." alt="" coords="627,888,843,913"/>
+<area shape="poly" id="edge23_Node000009_Node000020" title=" " alt="" coords="503,736,551,798,587,835,628,866,659,881,657,886,625,871,584,839,547,802,499,739"/>
+<area shape="rect" id="Node000013" href="$classConfigParser.html#ad7e54a715496137af9e7b4ab7a7900ee" title="La table des sockets d&#39;ecoute." alt="" coords="905,787,1099,812"/>
+<area shape="poly" id="edge16_Node000012_Node000013" title=" " alt="" coords="787,797,891,797,891,802,787,802"/>
+<area shape="rect" id="Node000014" href="$classServerConfig.html#aba7a44995f4461d6a655277eeab4fd63" title=" " alt="" coords="891,836,1113,861"/>
+<area shape="poly" id="edge17_Node000012_Node000014" title=" " alt="" coords="788,806,919,831,918,836,787,811"/>
+<area shape="rect" id="Node000015" href="$classConfigParser.html#accbf7ac90776e8726cd92202ea46b0c7" title="Les blocs server construits par fill_servers_config()" alt="" coords="911,639,1093,664"/>
+<area shape="poly" id="edge18_Node000012_Node000015" title=" " alt="" coords="786,795,815,787,841,773,852,762,858,750,864,725,870,700,877,687,889,675,898,668,901,672,892,679,881,690,875,702,869,727,863,752,856,765,844,777,817,792,787,800"/>
+<area shape="rect" id="Node000016" href="$resolve__server_8cpp.html#a2a896e7e3b9798bee6af41fc2b56b93f" title=" " alt="" coords="943,688,1061,713"/>
+<area shape="poly" id="edge19_Node000012_Node000016" title=" " alt="" coords="786,791,815,784,841,773,856,762,865,749,874,736,889,724,928,708,930,713,892,728,878,740,869,752,860,765,844,778,816,789,788,797"/>
+<area shape="rect" id="Node000018" href="$resolve__server_8cpp.html#aa2474247a61bb00061b614f3287419bf" title=" " alt="" coords="963,737,1041,763"/>
+<area shape="poly" id="edge21_Node000012_Node000018" title=" " alt="" coords="787,787,949,757,950,762,788,792"/>
+<area shape="rect" id="Node000017" href="$utils_8cpp.html#a33a62d02493d54e927b73969ec71f85d" title="Check si une chaine est composee uniquement de chiffres." alt="" coords="1195,688,1293,713"/>
+<area shape="poly" id="edge20_Node000016_Node000017" title=" " alt="" coords="1062,698,1181,698,1181,703,1062,703"/>
+<area shape="poly" id="edge28_Node000020_Node000003" title=" " alt="" coords="763,886,804,860,824,843,840,823,856,797,865,774,872,730,876,683,888,627,940,495,986,396,991,398,944,497,893,628,881,684,878,730,870,775,860,799,845,826,827,847,807,865,765,890"/>
+<area shape="poly" id="edge25_Node000020_Node000010" title=" " alt="" coords="843,897,913,896,913,902,843,902"/>
+<area shape="rect" id="Node000021" href="$classLocationConfig.html#a9a8fd540099f2536c62f9a4a4df99a70" title="Accesseur sur le Client max body size declarer dans le .conf ou set up par la valeur par default de N..." alt="" coords="909,935,1095,975"/>
+<area shape="poly" id="edge24_Node000020_Node000021" title=" " alt="" coords="798,911,896,931,895,936,797,916"/>
+<area shape="rect" id="Node000022" href="$classServerConfig.html#aa65c203b34f8636d4f9f1dbcd8e157be" title="La location matchant l&#39;URI, prefixe le plus long." alt="" coords="919,1000,1085,1025"/>
+<area shape="poly" id="edge26_Node000020_Node000022" title=" " alt="" coords="756,911,815,948,892,985,920,994,918,999,890,990,812,952,753,916"/>
+<area shape="rect" id="Node000023" href="$utils_8cpp.html#a6c5106f7f4691c9fcce1d810962fbe8f" title="check si le prefixe path s&#39;arrete sur une frontiere de segment de l&#39;URI" alt="" coords="1161,1000,1327,1025"/>
+<area shape="poly" id="edge27_Node000022_Node000023" title=" " alt="" coords="1085,1010,1148,1010,1148,1015,1085,1015"/>
+<area shape="poly" id="edge43_Node000024_Node000003" title=" " alt="" coords="356,296,578,309,711,321,843,337,936,354,935,359,842,342,710,326,578,315,355,301"/>
+<area shape="rect" id="Node000025" href="$classRequest.html#a9733b9910de3e7990bfef416a01b98df" title=" " alt="" coords="406,333,577,359"/>
+<area shape="poly" id="edge32_Node000024_Node000025" title=" " alt="" coords="321,306,420,328,419,333,320,311"/>
+<area shape="rect" id="Node000026" href="$classRequest.html#a968331bfaff41d8621b2875d5a7d0b0b" title="Permet de soustraire le path et le query s&#39;il y en a un, parsing et expansion du path." alt="" coords="417,156,566,181"/>
+<area shape="poly" id="edge34_Node000024_Node000026" title=" " alt="" coords="285,280,454,186,456,191,288,285"/>
+<area shape="rect" id="Node000031" href="$classRequest.html#abc255ee0327b9ddb617c63fc827df495" title="Permet d&#39;extraire la version de la requette Les formats http/1.0 et 1.1 seulement sont pris en compte..." alt="" coords="407,232,576,257"/>
+<area shape="poly" id="edge41_Node000024_Node000031" title=" " alt="" coords="320,280,419,258,420,263,321,285"/>
+<area shape="poly" id="edge33_Node000025_Node000003" title=" " alt="" coords="577,348,935,365,935,371,577,353"/>
+<area shape="poly" id="edge40_Node000026_Node000003" title=" " alt="" coords="540,153,604,142,681,136,723,137,764,142,805,151,844,166,872,183,897,204,940,253,972,303,993,345,988,347,967,306,935,256,893,208,869,187,841,171,804,156,763,147,722,142,681,141,604,147,541,159"/>
+<area shape="rect" id="Node000027" href="$classRequest.html#a35fad059397fc8f8c8f81236f29960fb" title="Permet de decoder les url encoding." alt="" coords="630,29,839,55"/>
+<area shape="poly" id="edge35_Node000026_Node000027" title=" " alt="" coords="516,153,696,59,698,64,518,158"/>
+<area shape="rect" id="Node000030" href="$classRequest.html#a4e42e561ca4cbdeae1031a5455c1f052" title="Fonction for trim the multiple slash in the path of the http request." alt="" coords="662,181,807,207"/>
+<area shape="poly" id="edge39_Node000026_Node000030" title=" " alt="" coords="566,174,649,182,648,188,566,179"/>
+<area shape="poly" id="edge38_Node000027_Node000003" title=" " alt="" coords="808,52,844,72,876,103,904,138,949,214,979,288,997,344,992,346,974,290,944,217,900,141,872,106,841,76,806,57"/>
+<area shape="rect" id="Node000028" href="$httpUtils_8cpp.html#a7cc1fa883a1abf866c58786dbe866a7c" title="Permet de convertir la valeur hexadecimal de l&#39;url encoding." alt="" coords="943,55,1061,80"/>
+<area shape="poly" id="edge36_Node000027_Node000028" title=" " alt="" coords="840,49,929,58,929,63,839,55"/>
+<area shape="rect" id="Node000029" href="$httpUtils_8cpp.html#a71fff30a707072a834af22d7b01c8dbe" title="check si les 2 char sont en hexadecimal" alt="" coords="969,5,1035,31"/>
+<area shape="poly" id="edge37_Node000027_Node000029" title=" " alt="" coords="839,30,955,19,956,25,840,35"/>
+<area shape="poly" id="edge42_Node000031_Node000003" title=" " alt="" coords="576,239,704,246,775,257,844,274,881,289,917,309,976,348,973,352,915,313,879,294,842,279,774,262,703,251,576,245"/>
+</map>

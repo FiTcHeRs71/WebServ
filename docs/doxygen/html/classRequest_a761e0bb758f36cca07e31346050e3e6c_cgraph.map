@@ -1,0 +1,23 @@
+<map id="Request::findRequestLine" name="Request::findRequestLine">
+<area shape="rect" id="Node000001" title="Fonction pour split la requestline &lt;METHOD SP URI SP HTTP/1.1 CRLF&gt;" alt="" coords="5,81,192,107"/>
+<area shape="rect" id="Node000002" href="$classRequest.html#a9733b9910de3e7990bfef416a01b98df" title=" " alt="" coords="477,56,647,81"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="192,86,463,71,463,77,192,92"/>
+<area shape="rect" id="Node000003" href="$classLogger.html#abf1a44e82213ce8094057b5fa926cf72" title="Ligne horodatee &quot;date [level] msg&quot;." alt="" coords="721,107,827,132"/>
+<area shape="poly" id="edge12_Node000001_Node000003" title=" " alt="" coords="192,95,707,114,707,120,192,100"/>
+<area shape="rect" id="Node000004" href="$classRequest.html#a968331bfaff41d8621b2875d5a7d0b0b" title="Permet de soustraire le path et le query s&#39;il y en a un, parsing et expansion du path." alt="" coords="250,183,399,208"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="129,104,284,175,282,179,127,109"/>
+<area shape="rect" id="Node000009" href="$classRequest.html#abc255ee0327b9ddb617c63fc827df495" title="Permet d&#39;extraire la version de la requette Les formats http/1.0 et 1.1 seulement sont pris en compte..." alt="" coords="240,5,409,31"/>
+<area shape="poly" id="edge10_Node000001_Node000009" title=" " alt="" coords="137,79,272,33,274,38,138,84"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="617,79,708,101,707,106,616,84"/>
+<area shape="poly" id="edge9_Node000004_Node000003" title=" " alt="" coords="399,181,666,135,707,128,708,134,667,141,400,186"/>
+<area shape="rect" id="Node000005" href="$classRequest.html#a35fad059397fc8f8c8f81236f29960fb" title="Permet de decoder les url encoding." alt="" coords="457,257,667,283"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="356,206,458,243,487,251,486,257,457,249,354,211"/>
+<area shape="rect" id="Node000008" href="$classRequest.html#a4e42e561ca4cbdeae1031a5455c1f052" title="Fonction for trim the multiple slash in the path of the http request." alt="" coords="489,208,635,233"/>
+<area shape="poly" id="edge8_Node000004_Node000008" title=" " alt="" coords="400,201,476,209,475,214,399,206"/>
+<area shape="poly" id="edge7_Node000005_Node000003" title=" " alt="" coords="642,255,665,244,694,221,720,195,757,142,761,146,724,198,698,225,668,248,644,260"/>
+<area shape="rect" id="Node000006" href="$httpUtils_8cpp.html#a7cc1fa883a1abf866c58786dbe866a7c" title="Permet de convertir la valeur hexadecimal de l&#39;url encoding." alt="" coords="715,281,833,307"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="667,279,701,283,700,288,666,285"/>
+<area shape="rect" id="Node000007" href="$httpUtils_8cpp.html#a71fff30a707072a834af22d7b01c8dbe" title="check si les 2 char sont en hexadecimal" alt="" coords="741,232,807,257"/>
+<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="666,255,727,248,727,253,667,260"/>
+<area shape="poly" id="edge11_Node000009_Node000003" title=" " alt="" coords="409,9,468,9,533,13,602,23,668,41,714,66,751,95,748,99,711,70,666,46,601,28,533,18,468,14,410,15"/>
+</map>

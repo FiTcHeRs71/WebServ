@@ -1,0 +1,139 @@
+<map id="Connection::OnReadable" name="Connection::OnReadable">
+<area shape="rect" id="Node000001" title="un seul recv(), renvoie ce que recv() a rendu" alt="" coords="5,1783,188,1808"/>
+<area shape="rect" id="Node000002" href="$classRequest.html#a0ddd9b71341a7cb7cb7928b4d128d399" title="Alimente le parseur de requete avec un nouveau bloc de donnees." alt="" coords="291,633,405,659"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="96,1782,110,1612,139,1324,158,1168,181,1020,206,893,234,800,253,761,276,724,323,667,327,670,281,727,257,763,238,802,211,894,186,1021,164,1168,144,1325,116,1612,102,1782"/>
+<area shape="rect" id="Node000033" href="$classConnection.html#a5bae0ee760848fb55fca20db49e4154d" title=" " alt="" coords="782,861,927,887"/>
+<area shape="poly" id="edge32_Node000001_Node000033" title=" " alt="" coords="101,1781,165,1640,222,1527,296,1399,386,1263,492,1128,550,1064,611,1003,677,947,745,897,767,886,770,891,748,902,680,951,615,1007,554,1067,496,1131,391,1266,301,1401,227,1530,169,1642,106,1783"/>
+<area shape="rect" id="Node000034" href="$classRequest.html#acdbe9099bbbf2049214f6856221a77fd" title=" " alt="" coords="264,1684,432,1709"/>
+<area shape="poly" id="edge33_Node000001_Node000034" title=" " alt="" coords="116,1780,169,1750,235,1720,264,1710,265,1715,237,1724,171,1755,119,1785"/>
+<area shape="rect" id="Node000035" href="$classRequest.html#a77c68b828229478cad061649775c7147" title=" " alt="" coords="761,1884,948,1909"/>
+<area shape="poly" id="edge34_Node000001_Node000035" title=" " alt="" coords="117,1806,169,1838,202,1855,237,1867,303,1883,372,1894,510,1907,639,1908,747,1904,747,1909,639,1914,510,1912,371,1900,302,1888,235,1873,200,1860,166,1843,114,1810"/>
+<area shape="rect" id="Node000036" href="$classConnection.html#af091b30fb9be3c281eb8fdd354d8fd89" title="vole le buffer : evite une copie de la reponse (100 Mo en CGI)" alt="" coords="236,1783,460,1808"/>
+<area shape="poly" id="edge35_Node000001_Node000036" title=" " alt="" coords="188,1793,222,1793,222,1798,188,1798"/>
+<area shape="rect" id="Node000037" href="$classRequest.html#af763f43b4cb8de21d37e6bc8157518ec" title=" " alt="" coords="290,1832,406,1857"/>
+<area shape="poly" id="edge36_Node000001_Node000037" title=" " alt="" coords="163,1805,277,1828,276,1833,162,1811"/>
+<area shape="rect" id="Node000038" href="$Router_8cpp.html#a63d2d775c2b201a779b3f70314635a0b" title="Point d&#39;entree du routage : dispatch() puis une ligne d&#39;access log." alt="" coords="315,1733,381,1759"/>
+<area shape="poly" id="edge37_Node000001_Node000038" title=" " alt="" coords="162,1780,301,1752,302,1758,163,1785"/>
+<area shape="rect" id="Node000113" href="$classConnection.html#a14cc87b94364530edc814f2669dd3d48" title="Envoie une reponse d&#39;erreur puis programme la fermeture." alt="" coords="508,2003,699,2043"/>
+<area shape="poly" id="edge76_Node000001_Node000113" title=" " alt="" coords="111,1806,162,1858,198,1887,237,1913,301,1943,368,1968,495,2002,494,2007,367,1973,299,1948,235,1918,195,1892,159,1862,107,1810"/>
+<area shape="rect" id="Node000115" href="$classResponse.html#a8851d9a332f43f66d2964b7c6f4bf0f7" title="Serialise la reponse HTTP en une chaine prete a etre envoyee sur le socket." alt="" coords="780,2187,929,2212"/>
+<area shape="poly" id="edge87_Node000001_Node000115" title=" " alt="" coords="105,1807,122,1844,151,1896,189,1951,212,1976,238,1999,301,2041,370,2078,442,2108,515,2133,653,2168,767,2187,766,2193,652,2173,513,2138,440,2113,368,2082,299,2046,234,2003,209,1980,185,1954,146,1899,118,1847,101,1809"/>
+<area shape="rect" id="Node000003" href="$classRequest.html#a5f5d42883f8da3a7522d70ccd39cf4fd" title="Accumule le corps sans jamais depasser Content&#45;Length." alt="" coords="533,608,673,633"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="405,638,519,626,520,632,406,643"/>
+<area shape="rect" id="Node000005" href="$classRequest.html#a5a74653e7b09ba5a6c4ebd854228b6cd" title="Consomme le \r &#160;qui suit les donnees du chunk (hors taille)." alt="" coords="518,657,689,683"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="406,649,504,658,504,663,405,654"/>
+<area shape="rect" id="Node000006" href="$classRequest.html#abf4b99e5c406cb5bac40d40a1bc4fecc" title="Accumule les octets de payload du chunk, comme findBody()." alt="" coords="514,707,693,732"/>
+<area shape="poly" id="edge6_Node000002_Node000006" title=" " alt="" coords="389,656,509,693,538,701,536,706,507,698,388,661"/>
+<area shape="rect" id="Node000007" href="$classRequest.html#aaa2757212f016cde701db5399be3b9d6" title="Lit la ligne de taille du chunk courant (hex), extensions ignorees." alt="" coords="516,357,691,383"/>
+<area shape="poly" id="edge8_Node000002_Node000007" title=" " alt="" coords="359,631,579,391,583,395,363,635"/>
+<area shape="rect" id="Node000009" href="$classRequest.html#ae7fbfc58211231f90e700466c93bdfad" title="Lit et jette les trailers apres un chunk de taille 0, jusqu&#39;a la ligne vide." alt="" coords="509,756,697,781"/>
+<area shape="poly" id="edge11_Node000002_Node000009" title=" " alt="" coords="368,657,428,698,468,722,509,742,529,750,527,755,507,747,465,727,425,703,364,661"/>
+<area shape="rect" id="Node000010" href="$classRequest.html#a964e35c6ade010d312e718b591d6351e" title="Fonction permetant de parser le header." alt="" coords="523,183,684,208"/>
+<area shape="poly" id="edge13_Node000002_Node000010" title=" " alt="" coords="353,632,414,513,506,343,584,218,588,221,510,346,418,516,358,634"/>
+<area shape="rect" id="Node000025" href="$classRequest.html#a761e0bb758f36cca07e31346050e3e6c" title="Fonction pour split la requestline &lt;METHOD SP URI SP HTTP/1.1 CRLF&gt;" alt="" coords="510,507,697,532"/>
+<area shape="poly" id="edge24_Node000002_Node000025" title=" " alt="" coords="374,631,563,536,566,541,376,636"/>
+<area shape="rect" id="Node000004" href="$classLogger.html#abf1a44e82213ce8094057b5fa926cf72" title="Ligne horodatee &quot;date [level] msg&quot;." alt="" coords="1059,532,1165,557"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="673,608,1045,552,1045,557,674,613"/>
+<area shape="poly" id="edge5_Node000005_Node000004" title=" " alt="" coords="688,656,818,635,962,601,1019,581,1070,561,1072,565,1021,586,963,606,819,640,689,662"/>
+<area shape="poly" id="edge7_Node000006_Node000004" title=" " alt="" coords="693,712,754,705,822,693,893,676,962,652,998,633,1032,610,1086,565,1090,569,1035,614,1001,637,964,656,895,681,824,698,755,710,693,717"/>
+<area shape="poly" id="edge10_Node000007_Node000004" title=" " alt="" coords="691,357,753,355,823,358,895,370,964,393,1007,419,1044,453,1075,488,1097,519,1093,522,1071,492,1040,457,1004,424,962,398,894,375,822,363,753,360,691,362"/>
+<area shape="rect" id="Node000008" href="$httpUtils_8cpp.html#a8bddc3dcbfa8ff455abebaf144a1f5cf" title="Fonction permettant de trim les espaes de debut det de fin." alt="" coords="830,307,879,332"/>
+<area shape="poly" id="edge9_Node000007_Node000008" title=" " alt="" coords="667,355,816,324,817,330,668,360"/>
+<area shape="poly" id="edge12_Node000009_Node000004" title=" " alt="" coords="698,768,759,765,827,755,897,738,961,710,1005,679,1043,641,1073,601,1095,568,1099,571,1077,604,1047,644,1009,683,964,715,898,743,828,761,760,770,698,774"/>
+<area shape="poly" id="edge23_Node000010_Node000004" title=" " alt="" coords="642,180,708,164,792,154,837,154,881,160,924,173,964,193,1003,226,1035,266,1059,311,1078,359,1102,449,1112,518,1106,519,1097,450,1073,360,1055,314,1030,269,999,230,961,198,922,178,880,165,836,160,792,159,709,169,644,185"/>
+<area shape="poly" id="edge22_Node000010_Node000008" title=" " alt="" coords="621,206,675,248,710,272,748,292,782,304,817,311,815,317,781,309,746,296,707,276,672,253,618,210"/>
+<area shape="rect" id="Node000011" href="$classRequest.html#a72c8eeae6ccf7dd1c9f88064894106f8" title="Getters de header /!\ Il est retourner par valeur et non par reference." alt="" coords="1037,157,1187,183"/>
+<area shape="poly" id="edge14_Node000010_Node000011" title=" " alt="" coords="615,180,668,134,705,110,746,91,805,76,854,72,903,78,963,91,997,102,1029,116,1083,147,1080,152,1027,121,995,107,962,97,902,83,854,77,806,81,748,97,708,114,671,138,619,184"/>
+<area shape="rect" id="Node000012" href="$httpUtils_8cpp.html#a6c24f17c6b20cf20061f666f2a3ff8de" title="Permet de mettre une string en lowercase." alt="" coords="807,208,902,233"/>
+<area shape="poly" id="edge15_Node000010_Node000012" title=" " alt="" coords="684,201,794,212,793,217,684,206"/>
+<area shape="rect" id="Node000013" href="$resolve__server_8cpp.html#a544ca41e4759d0ff376ac09cd6c333cb" title="renvoie le serveur demande dans la requete HTTP ou le default serveur." alt="" coords="803,257,907,283"/>
+<area shape="poly" id="edge16_Node000010_Node000013" title=" " alt="" coords="639,206,747,242,790,253,789,258,746,247,637,211"/>
+<area shape="rect" id="Node000020" href="$classRequest.html#ab33a1aa3daf7af809823a58191f204b9" title="Pose le ServerConfig de la connexion, utilise par setUpContentLength() pour resoudre la location et d..." alt="" coords="761,5,948,31"/>
+<area shape="poly" id="edge17_Node000010_Node000020" title=" " alt="" coords="612,181,663,117,702,80,745,48,778,33,780,37,748,52,705,84,667,121,616,184"/>
+<area shape="rect" id="Node000021" href="$classRequest.html#a8101ba97004887cf378e8f36a070b744" title="Determine s&#39;il faut lire un corps, et si sa taille annoncee est acceptable." alt="" coords="747,107,963,132"/>
+<area shape="poly" id="edge18_Node000010_Node000021" title=" " alt="" coords="645,180,746,149,797,133,799,138,747,154,646,185"/>
+<area shape="poly" id="edge21_Node000021_Node000004" title=" " alt="" coords="932,130,964,149,1003,192,1033,241,1058,293,1077,347,1101,446,1111,518,1106,519,1096,447,1072,348,1053,295,1029,244,998,195,961,153,929,134"/>
+<area shape="poly" id="edge19_Node000021_Node000011" title=" " alt="" coords="921,130,1034,152,1033,157,920,135"/>
+<area shape="rect" id="Node000023" href="$classServerConfig.html#aa65c203b34f8636d4f9f1dbcd8e157be" title="La location matchant l&#39;URI, prefixe le plus long." alt="" coords="1275,961,1441,987"/>
+<area shape="poly" id="edge20_Node000021_Node000023" title=" " alt="" coords="902,104,970,91,1054,87,1098,91,1140,101,1180,118,1215,143,1237,169,1257,205,1274,248,1290,298,1314,413,1333,539,1345,666,1353,783,1359,947,1354,948,1347,783,1340,666,1327,540,1309,414,1284,299,1269,250,1252,207,1233,172,1212,147,1177,122,1138,106,1097,96,1054,93,971,97,903,109"/>
+<area shape="poly" id="edge31_Node000025_Node000004" title=" " alt="" coords="667,529,747,541,907,547,1045,545,1045,550,907,552,746,546,666,535"/>
+<area shape="rect" id="Node000026" href="$classRequest.html#a9733b9910de3e7990bfef416a01b98df" title=" " alt="" coords="769,408,940,433"/>
+<area shape="poly" id="edge25_Node000025_Node000026" title=" " alt="" coords="624,504,678,473,746,442,770,434,772,439,748,447,680,478,626,509"/>
+<area shape="rect" id="Node000027" href="$classRequest.html#a968331bfaff41d8621b2875d5a7d0b0b" title="Permet de soustraire le path et le query s&#39;il y en a un, parsing et expansion du path." alt="" coords="780,457,929,483"/>
+<area shape="poly" id="edge27_Node000025_Node000027" title=" " alt="" coords="668,504,775,483,776,488,669,509"/>
+<area shape="rect" id="Node000032" href="$classRequest.html#abc255ee0327b9ddb617c63fc827df495" title="Permet d&#39;extraire la version de la requette Les formats http/1.0 et 1.1 seulement sont pris en compte..." alt="" coords="770,507,939,532"/>
+<area shape="poly" id="edge29_Node000025_Node000032" title=" " alt="" coords="697,517,756,517,756,522,697,522"/>
+<area shape="poly" id="edge26_Node000026_Node000004" title=" " alt="" coords="930,431,964,442,1032,481,1087,521,1084,525,1030,485,962,447,929,436"/>
+<area shape="poly" id="edge28_Node000027_Node000004" title=" " alt="" coords="918,480,963,491,1065,525,1063,530,962,497,917,485"/>
+<area shape="poly" id="edge30_Node000032_Node000004" title=" " alt="" coords="940,525,1045,535,1045,541,939,530"/>
+<area shape="poly" id="edge75_Node000038_Node000004" title=" " alt="" coords="380,1746,422,1741,442,1733,458,1720,475,1690,486,1647,491,1595,494,1539,496,1427,499,1379,505,1341,546,1189,564,1126,583,1069,608,1014,641,961,685,906,745,848,773,827,800,816,853,807,905,799,932,789,961,771,1009,722,1049,667,1078,613,1098,569,1103,571,1083,615,1053,669,1013,726,964,775,935,794,907,804,854,812,802,821,776,832,748,852,689,910,645,964,612,1017,588,1070,569,1128,552,1190,511,1343,504,1379,501,1427,499,1539,497,1596,491,1648,480,1692,462,1724,444,1738,423,1746,381,1751"/>
+<area shape="rect" id="Node000039" href="$Router_8cpp.html#a47c6c8fc82b09ddf561abf6bedb04e6f" title="Point d&#39;entree du GET statique (C&#45;06)." alt="" coords="565,1353,642,1379"/>
+<area shape="poly" id="edge38_Node000038_Node000039" title=" " alt="" coords="381,1744,421,1738,441,1731,458,1720,494,1684,522,1641,546,1595,564,1548,587,1459,597,1392,602,1393,592,1460,569,1550,551,1597,527,1644,498,1687,462,1724,443,1736,422,1744,381,1749"/>
+<area shape="rect" id="Node000051" href="$classRequest.html#a57c0cbefe4446e2ecfe21634ae67d397" title=" " alt="" coords="778,1783,931,1808"/>
+<area shape="poly" id="edge72_Node000038_Node000051" title=" " alt="" coords="381,1749,508,1767,643,1780,764,1788,764,1793,642,1785,508,1773,380,1754"/>
+<area shape="rect" id="Node000052" href="$classRequest.html#aed56fbd5b75b512f8edc5d92f04a8487" title="Getter de path, /!\ Ne jamais repasser la string en string_c car &#39;\0&#39; possible dans la string." alt="" coords="1046,1681,1178,1707"/>
+<area shape="poly" id="edge73_Node000038_Node000052" title=" " alt="" coords="381,1749,461,1769,485,1779,509,1789,636,1825,688,1839,738,1849,787,1853,839,1850,896,1839,962,1818,1001,1798,1037,1771,1091,1716,1094,1719,1041,1775,1004,1802,964,1823,897,1844,839,1856,787,1859,737,1854,687,1844,634,1830,507,1794,483,1784,459,1774,380,1754"/>
+<area shape="rect" id="Node000112" href="$classResponse.html#a792a88c4ec844dbf3937d51ba88e0835" title=" " alt="" coords="526,1732,681,1757"/>
+<area shape="poly" id="edge74_Node000038_Node000112" title=" " alt="" coords="381,1743,512,1742,512,1748,381,1749"/>
+<area shape="poly" id="edge69_Node000039_Node000023" title=" " alt="" coords="602,1353,608,1287,616,1240,628,1189,646,1136,671,1084,703,1037,745,998,785,980,839,967,905,959,977,955,1129,956,1262,963,1261,969,1129,961,978,960,905,964,840,972,786,985,748,1003,707,1041,675,1087,651,1138,633,1190,621,1241,613,1288,608,1353"/>
+<area shape="poly" id="edge48_Node000039_Node000033" title=" " alt="" coords="602,1353,604,1275,610,1217,620,1152,638,1084,663,1016,698,952,720,924,745,897,767,883,770,887,748,901,724,927,703,955,668,1018,643,1085,626,1153,615,1218,609,1275,607,1353"/>
+<area shape="rect" id="Node000040" href="$classServerConfig.html#abc10b3c8133bbe2715745435befd5c76" title="Traduit une URI en chemin disque via le root de la location." alt="" coords="1267,1479,1449,1504"/>
+<area shape="poly" id="edge39_Node000039_Node000040" title=" " alt="" coords="612,1378,627,1418,655,1471,695,1524,720,1547,748,1565,812,1594,869,1610,922,1616,973,1613,1025,1603,1080,1588,1213,1553,1271,1533,1322,1508,1324,1513,1273,1538,1214,1558,1082,1594,1026,1608,974,1618,922,1621,868,1615,810,1599,745,1570,717,1551,691,1528,651,1473,623,1420,607,1380"/>
+<area shape="rect" id="Node000041" href="$Router_8cpp.html#aa0af24daf342b59a72c9ca40d0c0e504" title="Construit la valeur du header Allow a partir des methodes de la location." alt="" coords="786,1529,923,1555"/>
+<area shape="poly" id="edge40_Node000039_Node000041" title=" " alt="" coords="615,1377,665,1444,704,1483,748,1516,773,1527,771,1532,745,1520,700,1487,661,1448,611,1381"/>
+<area shape="rect" id="Node000042" href="$classLocationConfig.html#a6e9e3d072421dc98dc73805b4117e18c" title=" " alt="" coords="1011,1517,1213,1543"/>
+<area shape="poly" id="edge51_Node000039_Node000042" title=" " alt="" coords="638,1376,747,1414,808,1430,855,1439,903,1449,964,1466,1072,1509,1070,1514,962,1471,902,1454,854,1444,807,1435,746,1419,636,1381"/>
+<area shape="rect" id="Node000043" href="$classResponse.html#aeaa3673db99a8c45772c3a5a5b949c4a" title="Lit le fichier d&#39;erreur s&#39;il existe, sinon cree un built in, renvoie le tout comme reponse." alt="" coords="1033,1328,1191,1353"/>
+<area shape="poly" id="edge42_Node000039_Node000043" title=" " alt="" coords="642,1361,1020,1343,1020,1348,642,1367"/>
+<area shape="rect" id="Node000046" href="$classResponse.html#a57e91a47a4522fa82bd99dd7464e1c87" title=" " alt="" coords="1277,2011,1439,2036"/>
+<area shape="poly" id="edge70_Node000039_Node000046" title=" " alt="" coords="608,1379,617,1440,639,1532,657,1582,681,1632,711,1678,748,1717,775,1736,800,1747,824,1751,849,1752,901,1753,931,1758,964,1769,1076,1825,1181,1890,1270,1952,1332,2000,1329,2004,1267,1957,1178,1895,1073,1830,962,1774,930,1763,901,1759,849,1758,824,1757,798,1752,772,1741,745,1721,707,1681,676,1635,652,1584,634,1534,612,1441,603,1379"/>
+<area shape="rect" id="Node000048" href="$classResponse.html#a7f9b175d957559236e0b065e4d495963" title="pose _StatusCode ET _StatusText" alt="" coords="1281,1328,1435,1353"/>
+<area shape="poly" id="edge71_Node000039_Node000048" title=" " alt="" coords="604,1352,616,1302,641,1231,660,1194,683,1158,711,1126,745,1100,787,1080,829,1069,873,1065,917,1068,962,1077,1006,1091,1091,1130,1170,1179,1240,1231,1296,1279,1336,1316,1333,1320,1293,1283,1237,1235,1167,1183,1089,1135,1004,1096,960,1082,917,1073,873,1070,830,1074,788,1085,748,1104,715,1129,687,1161,665,1196,646,1233,621,1304,610,1354"/>
+<area shape="rect" id="Node000050" href="$classRequest.html#aec17673b86cc545e7f8ea81597ec70e7" title=" " alt="" coords="762,1480,947,1505"/>
+<area shape="poly" id="edge49_Node000039_Node000050" title=" " alt="" coords="622,1377,676,1416,748,1458,788,1474,786,1479,746,1463,673,1421,619,1381"/>
+<area shape="poly" id="edge50_Node000039_Node000051" title=" " alt="" coords="608,1379,615,1446,635,1549,653,1606,678,1662,709,1715,748,1761,767,1774,764,1779,745,1765,705,1718,673,1665,648,1608,630,1550,609,1447,603,1379"/>
+<area shape="poly" id="edge52_Node000039_Node000052" title=" " alt="" coords="611,1378,625,1423,653,1486,693,1553,719,1583,748,1609,788,1624,861,1642,1033,1677,1032,1682,860,1647,786,1629,745,1614,715,1587,689,1556,648,1489,620,1425,606,1380"/>
+<area shape="rect" id="Node000053" href="$classLocationConfig.html#ac8bacc5c7b7ae0faf408e67da88a2b6f" title="La racine disque associee a ce bloc." alt="" coords="766,911,943,936"/>
+<area shape="poly" id="edge53_Node000039_Node000053" title=" " alt="" coords="602,1353,609,1283,629,1176,647,1117,671,1058,704,1002,745,953,764,940,767,944,748,957,708,1005,676,1060,652,1118,634,1177,614,1284,608,1353"/>
+<area shape="rect" id="Node000054" href="$Router_8cpp.html#ae272fc448950793171c851534ffdddb9" title="Supprime le fichier vise par un DELETE." alt="" coords="800,1228,909,1253"/>
+<area shape="poly" id="edge54_Node000039_Node000054" title=" " alt="" coords="617,1351,671,1308,707,1284,746,1264,786,1250,787,1255,748,1268,710,1289,674,1312,621,1355"/>
+<area shape="rect" id="Node000055" href="$RouterUtils_8cpp.html#abef310071763a47ce966e14df3a19c54" title=" " alt="" coords="797,1379,913,1404"/>
+<area shape="poly" id="edge57_Node000039_Node000055" title=" " alt="" coords="643,1367,783,1381,782,1387,642,1373"/>
+<area shape="rect" id="Node000060" href="$Router_8cpp.html#a6e3f5fd06b7bbeba935690b8ca64a9fe" title="Aiguillage C&#45;10 : multipart/form&#45;data ou corps brut." alt="" coords="799,1012,911,1037"/>
+<area shape="poly" id="edge61_Node000039_Node000060" title=" " alt="" coords="604,1353,616,1298,641,1218,659,1174,683,1131,711,1090,745,1055,764,1042,785,1033,787,1038,766,1047,748,1059,715,1093,687,1133,664,1176,646,1220,621,1300,609,1354"/>
+<area shape="rect" id="Node000073" href="$classLocationConfig.html#ad1ca496370bcad242338589f6890403a" title=" " alt="" coords="759,1113,951,1139"/>
+<area shape="poly" id="edge64_Node000039_Node000073" title=" " alt="" coords="607,1352,624,1312,652,1257,693,1199,717,1172,745,1149,757,1142,760,1147,748,1154,721,1176,697,1202,657,1259,628,1314,612,1354"/>
+<area shape="rect" id="Node000074" href="$classLocationConfig.html#a6b5e3dc55541cd3ef710fa68cc25bce3" title=" " alt="" coords="757,1163,952,1203"/>
+<area shape="poly" id="edge65_Node000039_Node000074" title=" " alt="" coords="611,1351,663,1287,701,1248,745,1214,760,1207,762,1211,748,1219,705,1252,667,1290,615,1355"/>
+<area shape="rect" id="Node000075" href="$Router_8cpp.html#acb4aba8ab039515dca1017d60077d2bb" title="true si l&#39;URI correspond a une extension CGI de la location (E&#45;03)." alt="" coords="827,1681,882,1707"/>
+<area shape="poly" id="edge66_Node000039_Node000075" title=" " alt="" coords="610,1378,622,1430,647,1507,666,1548,689,1589,716,1627,748,1660,780,1678,814,1687,813,1693,778,1683,745,1664,712,1630,684,1592,661,1550,642,1508,617,1432,604,1380"/>
+<area shape="rect" id="Node000078" href="$Router_8cpp.html#aca1e65e6e4019ffbe3b156c48792449e" title="true si path, une fois normalise, reste sous root (frontiere &#39;/&#39;)." alt="" coords="803,1277,906,1303"/>
+<area shape="poly" id="edge68_Node000039_Node000078" title=" " alt="" coords="641,1352,746,1319,797,1304,799,1309,747,1325,643,1357"/>
+<area shape="poly" id="edge41_Node000041_Node000042" title=" " alt="" coords="923,1536,997,1533,997,1538,924,1541"/>
+<area shape="poly" id="edge45_Node000043_Node000023" title=" " alt="" coords="1120,1326,1338,997,1343,1000,1124,1329"/>
+<area shape="poly" id="edge43_Node000043_Node000040" title=" " alt="" coords="1135,1351,1326,1469,1323,1473,1133,1356"/>
+<area shape="rect" id="Node000044" href="$classResponse.html#a2b91a2e06e39090e0ec2dfde64820dbb" title="Cree un body de reponse http en fonction de l&#39;erreur." alt="" coords="1261,1649,1455,1689"/>
+<area shape="poly" id="edge44_Node000043_Node000044" title=" " alt="" coords="1129,1352,1169,1393,1215,1446,1275,1534,1339,1635,1335,1638,1271,1536,1211,1449,1165,1396,1125,1356"/>
+<area shape="poly" id="edge46_Node000043_Node000046" title=" " alt="" coords="1132,1351,1175,1390,1197,1417,1216,1446,1232,1482,1242,1514,1249,1570,1252,1628,1264,1700,1311,1870,1351,1997,1346,1998,1306,1871,1259,1701,1247,1629,1244,1571,1236,1515,1227,1484,1211,1449,1193,1420,1171,1394,1128,1355"/>
+<area shape="poly" id="edge47_Node000043_Node000048" title=" " alt="" coords="1191,1338,1267,1338,1267,1343,1191,1343"/>
+<area shape="poly" id="edge55_Node000054_Node000043" title=" " alt="" coords="910,1248,964,1263,1026,1291,1079,1319,1076,1324,1023,1295,962,1269,909,1253"/>
+<area shape="poly" id="edge56_Node000054_Node000048" title=" " alt="" coords="910,1249,1280,1323,1279,1328,909,1254"/>
+<area shape="poly" id="edge58_Node000055_Node000043" title=" " alt="" coords="913,1377,1033,1353,1034,1359,914,1383"/>
+<area shape="poly" id="edge59_Node000055_Node000046" title=" " alt="" coords="913,1390,982,1398,1064,1417,1105,1432,1145,1451,1183,1475,1215,1504,1234,1528,1246,1551,1252,1573,1254,1595,1255,1643,1264,1700,1351,1997,1346,1998,1259,1701,1250,1643,1249,1596,1246,1574,1241,1553,1230,1531,1211,1508,1179,1479,1143,1455,1103,1437,1062,1422,981,1404,912,1396"/>
+<area shape="poly" id="edge60_Node000055_Node000048" title=" " alt="" coords="913,1386,1050,1379,1213,1363,1279,1353,1280,1358,1214,1369,1050,1384,913,1392"/>
+<area shape="poly" id="edge63_Node000060_Node000011" title=" " alt="" coords="884,1010,925,985,945,968,960,947,975,910,985,860,995,738,999,614,1008,519,1030,424,1055,332,1099,195,1104,197,1060,334,1035,426,1013,520,1005,615,1001,738,991,860,980,911,965,950,949,971,929,989,887,1014"/>
+<area shape="poly" id="edge62_Node000060_Node000043" title=" " alt="" coords="880,1035,922,1063,965,1100,1010,1156,1049,1215,1101,1314,1097,1316,1044,1218,1005,1159,961,1104,918,1067,877,1040"/>
+<area shape="poly" id="edge67_Node000075_Node000052" title=" " alt="" coords="882,1691,1032,1691,1032,1697,882,1697"/>
+<area shape="poly" id="edge79_Node000113_Node000035" title=" " alt="" coords="628,2001,681,1963,746,1926,786,1911,788,1916,748,1931,684,1968,632,2005"/>
+<area shape="poly" id="edge77_Node000113_Node000043" title=" " alt="" coords="667,2001,746,1977,780,1969,811,1967,866,1966,890,1963,914,1956,937,1943,961,1920,978,1887,989,1839,994,1783,996,1721,996,1598,1000,1546,1008,1505,1026,1464,1047,1425,1090,1363,1094,1366,1052,1427,1030,1466,1013,1507,1005,1547,1002,1598,1001,1721,999,1783,994,1840,983,1888,965,1924,940,1947,916,1961,891,1969,866,1971,812,1972,781,1975,747,1982,668,2006"/>
+<area shape="poly" id="edge78_Node000113_Node000044" title=" " alt="" coords="699,2034,759,2037,826,2037,895,2030,962,2014,1026,1987,1086,1951,1142,1909,1193,1863,1278,1771,1333,1699,1338,1702,1282,1775,1197,1867,1146,1913,1089,1956,1028,1992,963,2019,896,2035,826,2042,759,2043,699,2039"/>
+<area shape="poly" id="edge85_Node000113_Node000046" title=" " alt="" coords="657,2041,701,2055,747,2065,878,2082,980,2088,1082,2082,1213,2065,1264,2053,1312,2038,1313,2043,1266,2058,1214,2070,1083,2087,980,2093,877,2087,746,2070,699,2060,656,2046"/>
+<area shape="poly" id="edge86_Node000113_Node000048" title=" " alt="" coords="699,2013,859,1997,926,1987,961,1977,979,1961,987,1943,995,1923,1009,1900,1037,1870,1065,1847,1117,1813,1166,1777,1189,1752,1211,1718,1227,1683,1235,1652,1238,1595,1240,1536,1246,1503,1259,1466,1275,1436,1294,1407,1333,1361,1337,1365,1299,1411,1280,1439,1264,1468,1251,1505,1245,1537,1244,1595,1241,1653,1232,1685,1216,1721,1193,1755,1169,1781,1120,1818,1068,1851,1041,1874,1013,1904,999,1925,992,1945,983,1964,964,1982,927,1992,860,2002,699,2019"/>
+<area shape="rect" id="Node000114" href="$classConnection.html#a3173c0d4dda7d8d6d0b5e20c8fa4ca35" title="append in the string _OutBuf when the request in done then change the State for Writing connection" alt="" coords="760,2137,949,2163"/>
+<area shape="poly" id="edge80_Node000113_Node000114" title=" " alt="" coords="632,2041,684,2079,748,2116,788,2131,786,2136,746,2120,681,2083,628,2046"/>
+<area shape="poly" id="edge81_Node000113_Node000115" title=" " alt="" coords="623,2042,686,2115,720,2151,748,2173,768,2182,766,2187,745,2178,717,2155,682,2119,619,2046"/>
+<area shape="poly" id="edge84_Node000115_Node000046" title=" " alt="" coords="930,2207,993,2210,1065,2208,1141,2197,1177,2187,1212,2173,1254,2146,1290,2112,1319,2077,1340,2046,1344,2049,1323,2080,1294,2116,1257,2151,1215,2178,1179,2192,1142,2202,1066,2214,993,2216,929,2212"/>
+<area shape="rect" id="Node000116" href="$classResponse.html#acbc922c139261ea3a71a7880d78c317f" title="Calcule et ajoute aux headers la date en anglais a l&#39;instant T." alt="" coords="1040,2137,1184,2163"/>
+<area shape="poly" id="edge82_Node000115_Node000116" title=" " alt="" coords="921,2184,1031,2163,1032,2168,922,2189"/>
+<area shape="poly" id="edge83_Node000116_Node000046" title=" " alt="" coords="1161,2135,1212,2116,1276,2079,1328,2042,1331,2047,1279,2084,1214,2120,1163,2140"/>
+</map>

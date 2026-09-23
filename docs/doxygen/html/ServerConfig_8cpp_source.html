@@ -1,0 +1,282 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>webserv:  Fichier source de srcs/config/ServerConfig.cpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">webserv
+   </div>
+   <div id="projectbrief">Serveur HTTP/1.1 non bloquant -- 42</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Généré par Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','Recherche');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function() { init_codefold(0); });
+/* @license-end */
+</script>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('ServerConfig_8cpp_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Chargement...</div>
+<div class="SRStatus" id="Searching">Recherche...</div>
+<div class="SRStatus" id="NoMatches">Aucune correspondance</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">ServerConfig.cpp</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="ServerConfig_8cpp.html">Aller à la documentation de ce fichier.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#include &quot;../../includes/ServerConfig.hpp&quot;</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#include &lt;cstddef&gt;</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &lt;ostream&gt;</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span>    <span class="comment">/*===Canonical Form===*/</span></div>
+<div class="foldopen" id="foldopen00007" data-start="{" data-end="}">
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno"><a class="line" href="classServerConfig.html#a985bb27caa7672f66894aa2e9fa7bbb2">    7</a></span><a class="code hl_function" href="classServerConfig.html#a985bb27caa7672f66894aa2e9fa7bbb2">ServerConfig::ServerConfig</a>(<span class="keywordtype">void</span>)</div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span>    :_ClientMaxBodySize(0)</div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span>    ,_HasClientMaxBodySize(false)</div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span>{</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>    <span class="comment">//std::cout &lt;&lt; &quot;ServerConfig default constructor called&quot; &lt;&lt; std::endl;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>}</div>
+</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
+<div class="foldopen" id="foldopen00014" data-start="{" data-end="}">
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno"><a class="line" href="classServerConfig.html#a69651daee9d2135d6ee55cc91eff1b8f">   14</a></span><a class="code hl_function" href="classServerConfig.html#a69651daee9d2135d6ee55cc91eff1b8f">ServerConfig::~ServerConfig</a>(<span class="keywordtype">void</span>)</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>{</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    <span class="comment">//std::cout &lt;&lt; &quot;ServerConfig default destructor called&quot; &lt;&lt; std::endl;</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>}</div>
+</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span> </div>
+<div class="foldopen" id="foldopen00019" data-start="{" data-end="}">
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno"><a class="line" href="classServerConfig.html#a4dc8432f9ef1148391c4be679d9f5132">   19</a></span><a class="code hl_function" href="classServerConfig.html#a985bb27caa7672f66894aa2e9fa7bbb2">ServerConfig::ServerConfig</a>(<span class="keyword">const</span> <a class="code hl_class" href="classServerConfig.html">ServerConfig</a>&amp; to_copy)</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    :_Listens(to_copy._Listens)</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    ,_ServerNames(to_copy._ServerNames)</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    ,_ErrorPages(to_copy ._ErrorPages)</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    ,_Locations(to_copy._Locations)</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    ,_ClientMaxBodySize(to_copy._ClientMaxBodySize)</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    ,_HasClientMaxBodySize(to_copy._HasClientMaxBodySize)</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>{</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    <span class="comment">//std::cout &lt;&lt; &quot;ServerConfig copy constructor called&quot; &lt;&lt; std::endl;</span></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>}</div>
+</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
+<div class="foldopen" id="foldopen00030" data-start="{" data-end="}">
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="classServerConfig.html#a5ec35942d82af332c7cfa0f5b709c215">   30</a></span><a class="code hl_class" href="classServerConfig.html">ServerConfig</a>    &amp;<a class="code hl_function" href="classServerConfig.html#a5ec35942d82af332c7cfa0f5b709c215">ServerConfig::operator=</a>(<span class="keyword">const</span> <a class="code hl_class" href="classServerConfig.html">ServerConfig</a>&amp; src)</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>{</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    <span class="comment">//std::cout &lt;&lt; &quot;ServerConfig operator assignement(=) constructor called&quot; &lt;&lt; std::endl;</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    <span class="keywordflow">if</span> (<span class="keyword">this</span> != &amp;src)</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    {</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>        this-&gt;<a class="code hl_variable" href="classServerConfig.html#a7f4be12bdd38c235fedd03b3e7872a97">_Listens</a> = src.<a class="code hl_variable" href="classServerConfig.html#a7f4be12bdd38c235fedd03b3e7872a97">_Listens</a>;</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>        this-&gt;<a class="code hl_variable" href="classServerConfig.html#aad66da4b7738cca71bb0160dc3c6ffcb">_ServerNames</a> = src.<a class="code hl_variable" href="classServerConfig.html#aad66da4b7738cca71bb0160dc3c6ffcb">_ServerNames</a>;</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>        this-&gt;<a class="code hl_variable" href="classServerConfig.html#a2a1aa44a5f4c4bc92fd23e99d1681f60">_ErrorPages</a> = src.<a class="code hl_variable" href="classServerConfig.html#a2a1aa44a5f4c4bc92fd23e99d1681f60">_ErrorPages</a>;</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>        this-&gt;<a class="code hl_variable" href="classServerConfig.html#a864adbbf6be9dcaed57e38dd76e439b0">_Locations</a> = src.<a class="code hl_variable" href="classServerConfig.html#a864adbbf6be9dcaed57e38dd76e439b0">_Locations</a>;</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>        this-&gt;<a class="code hl_variable" href="classServerConfig.html#a0d74fc0ebc3e912970905c4cf0b204d0">_ClientMaxBodySize</a> = src.<a class="code hl_variable" href="classServerConfig.html#a0d74fc0ebc3e912970905c4cf0b204d0">_ClientMaxBodySize</a>;</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>        this-&gt;<a class="code hl_variable" href="classServerConfig.html#a46bcf430ff039a558359231bf6dd7bbf">_HasClientMaxBodySize</a> = src.<a class="code hl_variable" href="classServerConfig.html#a46bcf430ff039a558359231bf6dd7bbf">_HasClientMaxBodySize</a>;</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    }</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    <span class="keywordflow">return</span> (*<span class="keyword">this</span>);</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>}</div>
+</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
+<div class="foldopen" id="foldopen00053" data-start="{" data-end="};">
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno"><a class="line" href="classServerConfig.html#a7319d1480146ada1415069e075ec1a95">   53</a></span>ostream     &amp;<a class="code hl_function" href="ServerConfig_8cpp.html#a7319d1480146ada1415069e075ec1a95">operator&lt;&lt;</a>(ostream &amp;flux, <span class="keyword">const</span> <a class="code hl_class" href="classServerConfig.html">ServerConfig</a> &amp;src)</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>{</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    flux &lt;&lt; <span class="stringliteral">&quot;CONFIG SERVER :&quot;</span> &lt;&lt; endl;</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; src.<a class="code hl_variable" href="classServerConfig.html#a7f4be12bdd38c235fedd03b3e7872a97">_Listens</a>.size(); i++)</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>        flux &lt;&lt; <span class="stringliteral">&quot;Listens = &quot;</span> &lt;&lt; src.<a class="code hl_variable" href="classServerConfig.html#a7f4be12bdd38c235fedd03b3e7872a97">_Listens</a>[i].Host &lt;&lt; <span class="stringliteral">&quot;:&quot;</span> &lt;&lt; src.<a class="code hl_variable" href="classServerConfig.html#a7f4be12bdd38c235fedd03b3e7872a97">_Listens</a>[i].Port &lt;&lt; (src.<a class="code hl_variable" href="classServerConfig.html#a7f4be12bdd38c235fedd03b3e7872a97">_Listens</a>[i].IsDefaultServer ? <span class="stringliteral">&quot; default_server&quot;</span> : <span class="stringliteral">&quot;&quot;</span>) &lt;&lt; endl;</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; src.<a class="code hl_variable" href="classServerConfig.html#aad66da4b7738cca71bb0160dc3c6ffcb">_ServerNames</a>.size(); i++)</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>        flux &lt;&lt; <span class="stringliteral">&quot;Server Name : &quot;</span> &lt;&lt; src.<a class="code hl_variable" href="classServerConfig.html#aad66da4b7738cca71bb0160dc3c6ffcb">_ServerNames</a>[i] &lt;&lt; endl;</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    <span class="keywordflow">for</span> (map&lt;int, string&gt;::const_iterator it = src.<a class="code hl_variable" href="classServerConfig.html#a2a1aa44a5f4c4bc92fd23e99d1681f60">_ErrorPages</a>.begin(); it != src.<a class="code hl_variable" href="classServerConfig.html#a2a1aa44a5f4c4bc92fd23e99d1681f60">_ErrorPages</a>.end(); ++it)</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>        flux &lt;&lt; <span class="stringliteral">&quot;Error Pages : &quot;</span> &lt;&lt; it-&gt;first &lt;&lt; <span class="stringliteral">&quot;, &quot;</span> &lt;&lt; it-&gt;second &lt;&lt; endl;</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; src.<a class="code hl_variable" href="classServerConfig.html#a864adbbf6be9dcaed57e38dd76e439b0">_Locations</a>.size(); i++)</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>        flux &lt;&lt; src.<a class="code hl_variable" href="classServerConfig.html#a864adbbf6be9dcaed57e38dd76e439b0">_Locations</a>[i] &lt;&lt; endl;</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    flux &lt;&lt; <span class="stringliteral">&quot;Client max body size = &quot;</span> &lt;&lt; src.<a class="code hl_variable" href="classServerConfig.html#a0d74fc0ebc3e912970905c4cf0b204d0">_ClientMaxBodySize</a> &lt;&lt; endl;</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    <span class="keywordflow">return</span> (flux);</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>}</div>
+</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
+<div class="foldopen" id="foldopen00068" data-start="{" data-end="}">
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno"><a class="line" href="classServerConfig.html#a52c236e3363cba2ab7045d980e8c8ebe">   68</a></span><span class="keyword">const</span> vector&lt;TListenConfig&gt; &amp;<a class="code hl_function" href="classServerConfig.html#a52c236e3363cba2ab7045d980e8c8ebe">ServerConfig::getListens</a>()<span class="keyword"> const</span></div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    <span class="keywordflow">return</span>(<a class="code hl_variable" href="classServerConfig.html#a7f4be12bdd38c235fedd03b3e7872a97">_Listens</a>);</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>}</div>
+</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span> </div>
+<div class="foldopen" id="foldopen00073" data-start="{" data-end="}">
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno"><a class="line" href="classServerConfig.html#aba7a44995f4461d6a655277eeab4fd63">   73</a></span><span class="keyword">const</span> vector&lt;string&gt;    &amp;<a class="code hl_function" href="classServerConfig.html#aba7a44995f4461d6a655277eeab4fd63">ServerConfig::getServerNames</a>()<span class="keyword"> const</span></div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    <span class="keywordflow">return</span>(<a class="code hl_variable" href="classServerConfig.html#aad66da4b7738cca71bb0160dc3c6ffcb">_ServerNames</a>);</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>}</div>
+</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span> </div>
+<div class="foldopen" id="foldopen00078" data-start="{" data-end="}">
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno"><a class="line" href="classServerConfig.html#a81447d6457e725384798527b8587ccaa">   78</a></span><span class="keyword">const</span> map&lt;int, string&gt;  &amp;<a class="code hl_function" href="classServerConfig.html#a81447d6457e725384798527b8587ccaa">ServerConfig::getErrorPages</a>()<span class="keyword"> const</span></div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    <span class="keywordflow">return</span>(<a class="code hl_variable" href="classServerConfig.html#a2a1aa44a5f4c4bc92fd23e99d1681f60">_ErrorPages</a>);</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>}</div>
+</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span> </div>
+<div class="foldopen" id="foldopen00083" data-start="{" data-end="}">
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno"><a class="line" href="classServerConfig.html#a1f2f9043a2c19b58518889908dcf8279">   83</a></span><span class="keyword">const</span> vector&lt;LocationConfig&gt;    &amp;<a class="code hl_function" href="classServerConfig.html#a1f2f9043a2c19b58518889908dcf8279">ServerConfig::getLocations</a>(<span class="keywordtype">void</span>)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    <span class="keywordflow">return</span>(<a class="code hl_variable" href="classServerConfig.html#a864adbbf6be9dcaed57e38dd76e439b0">_Locations</a>);</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>}</div>
+</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span> </div>
+<div class="foldopen" id="foldopen00088" data-start="{" data-end="}">
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno"><a class="line" href="classServerConfig.html#aca81ee6b4d081c5596798d0f0e6b9a34">   88</a></span><span class="keywordtype">size_t</span>  <a class="code hl_function" href="classServerConfig.html#aca81ee6b4d081c5596798d0f0e6b9a34">ServerConfig::getClientMaxBodySize</a>(<span class="keywordtype">void</span>)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    <span class="keywordflow">return</span>(<a class="code hl_variable" href="classServerConfig.html#a0d74fc0ebc3e912970905c4cf0b204d0">_ClientMaxBodySize</a>);</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>}</div>
+</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span> </div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>    <span class="comment">/*===Member Function===*/</span></div>
+<div class="foldopen" id="foldopen00108" data-start="{" data-end="}">
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno"><a class="line" href="classServerConfig.html#aa65c203b34f8636d4f9f1dbcd8e157be">  108</a></span><span class="keyword">const</span> <a class="code hl_class" href="classLocationConfig.html">LocationConfig</a>    *<a class="code hl_function" href="classServerConfig.html#aa65c203b34f8636d4f9f1dbcd8e157be">ServerConfig::Resolve</a>(<span class="keyword">const</span> std::string &amp;uri)<span class="keyword">const</span></div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>    <span class="keyword">const</span> <a class="code hl_class" href="classLocationConfig.html">LocationConfig</a>    *best = NULL;</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>    <span class="keywordtype">size_t</span>                  flag = uri.find_first_of(<span class="stringliteral">&quot;?#&quot;</span>);</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>    <span class="keywordtype">string</span>                  uri_parsed;</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span> </div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>    <span class="keywordflow">if</span> (flag != string::npos)</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>        uri_parsed = uri.substr(0, flag);</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>    <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>        uri_parsed = uri;</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span> </div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; this-&gt;<a class="code hl_variable" href="classServerConfig.html#a864adbbf6be9dcaed57e38dd76e439b0">_Locations</a>.size(); i++)</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>    {</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>        <span class="keyword">const</span> <span class="keywordtype">string</span> &amp;key = this-&gt;<a class="code hl_variable" href="classServerConfig.html#a864adbbf6be9dcaed57e38dd76e439b0">_Locations</a>[i].<a class="code hl_variable" href="classLocationConfig.html#af72670b654bd085e2953c5c7c86fa44d">_Path</a>;</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span> </div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>        <span class="keywordflow">if</span> (uri_parsed.compare(0, key.size(), key) != 0)</div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>            <span class="keywordflow">continue</span>;</div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>        <span class="keywordflow">if</span> (!<a class="code hl_function" href="ServerConfig_8hpp.html#a6c5106f7f4691c9fcce1d810962fbe8f">is_segment_boundary</a>(uri_parsed, this-&gt;<a class="code hl_variable" href="classServerConfig.html#a864adbbf6be9dcaed57e38dd76e439b0">_Locations</a>[i]._Path))</div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>            <span class="keywordflow">continue</span>;</div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>        <span class="keywordflow">if</span>(best == NULL || key.size() &gt; best-&gt;<a class="code hl_variable" href="classLocationConfig.html#af72670b654bd085e2953c5c7c86fa44d">_Path</a>.size())</div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>            best = &amp;this-&gt;<a class="code hl_variable" href="classServerConfig.html#a864adbbf6be9dcaed57e38dd76e439b0">_Locations</a>[i];</div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>    }</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>    <span class="keywordflow">return</span> (best);</div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>}</div>
+</div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span> </div>
+<div class="foldopen" id="foldopen00144" data-start="{" data-end="}">
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno"><a class="line" href="classServerConfig.html#abc10b3c8133bbe2715745435befd5c76">  144</a></span><span class="keywordtype">string</span>  <a class="code hl_function" href="classServerConfig.html#abc10b3c8133bbe2715745435befd5c76">ServerConfig::build_path</a>(<span class="keyword">const</span> <a class="code hl_class" href="classLocationConfig.html">LocationConfig</a> &amp;location, <span class="keyword">const</span> <span class="keywordtype">string</span> &amp;uri)<span class="keyword">const</span></div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>    <span class="keywordtype">size_t</span>  flag = uri.find_first_of(<span class="stringliteral">&quot;?#&quot;</span>);</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>    <span class="keywordtype">string</span>  clean = (flag != string::npos) ? uri.substr(0, flag) : uri;</div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>    <span class="keywordtype">string</span>  root = location.<a class="code hl_variable" href="classLocationConfig.html#ad30db5c0afd970e7d760949ddde72d41">_Root</a>;</div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>    <span class="keywordtype">string</span>  reste = clean.substr(location.<a class="code hl_variable" href="classLocationConfig.html#af72670b654bd085e2953c5c7c86fa44d">_Path</a>.size());</div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span> </div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>    <span class="keywordflow">if</span> (root.empty())</div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>        <span class="keywordflow">return</span> (reste);</div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>    <span class="keywordflow">if</span> (root[root.size() - 1] == <span class="charliteral">&#39;/&#39;</span> &amp;&amp; !reste.empty() &amp;&amp; reste[0] == <span class="charliteral">&#39;/&#39;</span>)</div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>        root = root.substr(0, root.size() - 1);</div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (root[root.size() - 1] != <span class="charliteral">&#39;/&#39;</span> &amp;&amp; !reste.empty() &amp;&amp; reste[0] != <span class="charliteral">&#39;/&#39;</span>)</div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>        root += <span class="charliteral">&#39;/&#39;</span>;</div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>    <span class="keywordflow">return</span> (root + reste);</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>}</div>
+</div>
+<div class="ttc" id="aServerConfig_8cpp_html_a7319d1480146ada1415069e075ec1a95"><div class="ttname"><a href="ServerConfig_8cpp.html#a7319d1480146ada1415069e075ec1a95">operator&lt;&lt;</a></div><div class="ttdeci">ostream &amp; operator&lt;&lt;(ostream &amp;flux, const ServerConfig &amp;src)</div><div class="ttdoc">Surcharge d'operateur pour l'impression des attributs de la classe ServerConfig.</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8cpp_source.html#l00053">ServerConfig.cpp:53</a></div></div>
+<div class="ttc" id="aServerConfig_8hpp_html_a6c5106f7f4691c9fcce1d810962fbe8f"><div class="ttname"><a href="ServerConfig_8hpp.html#a6c5106f7f4691c9fcce1d810962fbe8f">is_segment_boundary</a></div><div class="ttdeci">bool is_segment_boundary(const string &amp;uri, const string &amp;path)</div><div class="ttdoc">check si le prefixe path s'arrete sur une frontiere de segment de l'URI</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00364">utils.cpp:364</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html"><div class="ttname"><a href="classLocationConfig.html">LocationConfig</a></div><div class="ttdoc">Represente la configuration d'une location (bloc &quot;location&quot;) d'un serveur.</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8hpp_source.html#l00018">LocationConfig.hpp:19</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_ad30db5c0afd970e7d760949ddde72d41"><div class="ttname"><a href="classLocationConfig.html#ad30db5c0afd970e7d760949ddde72d41">LocationConfig::_Root</a></div><div class="ttdeci">string _Root</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8hpp_source.html#l00027">LocationConfig.hpp:27</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html_af72670b654bd085e2953c5c7c86fa44d"><div class="ttname"><a href="classLocationConfig.html#af72670b654bd085e2953c5c7c86fa44d">LocationConfig::_Path</a></div><div class="ttdeci">string _Path</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8hpp_source.html#l00025">LocationConfig.hpp:25</a></div></div>
+<div class="ttc" id="aclassServerConfig_html"><div class="ttname"><a href="classServerConfig.html">ServerConfig</a></div><div class="ttdoc">Represente la configuration d'un serveur virtuel (bloc &quot;server&quot;).</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8hpp_source.html#l00021">ServerConfig.hpp:22</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_a0d74fc0ebc3e912970905c4cf0b204d0"><div class="ttname"><a href="classServerConfig.html#a0d74fc0ebc3e912970905c4cf0b204d0">ServerConfig::_ClientMaxBodySize</a></div><div class="ttdeci">size_t _ClientMaxBodySize</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8hpp_source.html#l00031">ServerConfig.hpp:31</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_a1f2f9043a2c19b58518889908dcf8279"><div class="ttname"><a href="classServerConfig.html#a1f2f9043a2c19b58518889908dcf8279">ServerConfig::getLocations</a></div><div class="ttdeci">const vector&lt; LocationConfig &gt; &amp; getLocations(void) const</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8cpp_source.html#l00083">ServerConfig.cpp:83</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_a2a1aa44a5f4c4bc92fd23e99d1681f60"><div class="ttname"><a href="classServerConfig.html#a2a1aa44a5f4c4bc92fd23e99d1681f60">ServerConfig::_ErrorPages</a></div><div class="ttdeci">map&lt; int, string &gt; _ErrorPages</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8hpp_source.html#l00029">ServerConfig.hpp:29</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_a46bcf430ff039a558359231bf6dd7bbf"><div class="ttname"><a href="classServerConfig.html#a46bcf430ff039a558359231bf6dd7bbf">ServerConfig::_HasClientMaxBodySize</a></div><div class="ttdeci">bool _HasClientMaxBodySize</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8hpp_source.html#l00032">ServerConfig.hpp:32</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_a52c236e3363cba2ab7045d980e8c8ebe"><div class="ttname"><a href="classServerConfig.html#a52c236e3363cba2ab7045d980e8c8ebe">ServerConfig::getListens</a></div><div class="ttdeci">const vector&lt; TListenConfig &gt; &amp; getListens() const</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8cpp_source.html#l00068">ServerConfig.cpp:68</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_a5ec35942d82af332c7cfa0f5b709c215"><div class="ttname"><a href="classServerConfig.html#a5ec35942d82af332c7cfa0f5b709c215">ServerConfig::operator=</a></div><div class="ttdeci">ServerConfig &amp; operator=(const ServerConfig &amp;src)</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8cpp_source.html#l00030">ServerConfig.cpp:30</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_a69651daee9d2135d6ee55cc91eff1b8f"><div class="ttname"><a href="classServerConfig.html#a69651daee9d2135d6ee55cc91eff1b8f">ServerConfig::~ServerConfig</a></div><div class="ttdeci">~ServerConfig(void)</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8cpp_source.html#l00014">ServerConfig.cpp:14</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_a7f4be12bdd38c235fedd03b3e7872a97"><div class="ttname"><a href="classServerConfig.html#a7f4be12bdd38c235fedd03b3e7872a97">ServerConfig::_Listens</a></div><div class="ttdeci">vector&lt; TListenConfig &gt; _Listens</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8hpp_source.html#l00027">ServerConfig.hpp:27</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_a81447d6457e725384798527b8587ccaa"><div class="ttname"><a href="classServerConfig.html#a81447d6457e725384798527b8587ccaa">ServerConfig::getErrorPages</a></div><div class="ttdeci">const map&lt; int, string &gt; &amp; getErrorPages() const</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8cpp_source.html#l00078">ServerConfig.cpp:78</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_a864adbbf6be9dcaed57e38dd76e439b0"><div class="ttname"><a href="classServerConfig.html#a864adbbf6be9dcaed57e38dd76e439b0">ServerConfig::_Locations</a></div><div class="ttdeci">vector&lt; LocationConfig &gt; _Locations</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8hpp_source.html#l00030">ServerConfig.hpp:30</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_a985bb27caa7672f66894aa2e9fa7bbb2"><div class="ttname"><a href="classServerConfig.html#a985bb27caa7672f66894aa2e9fa7bbb2">ServerConfig::ServerConfig</a></div><div class="ttdeci">ServerConfig(void)</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8cpp_source.html#l00007">ServerConfig.cpp:7</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_aa65c203b34f8636d4f9f1dbcd8e157be"><div class="ttname"><a href="classServerConfig.html#aa65c203b34f8636d4f9f1dbcd8e157be">ServerConfig::Resolve</a></div><div class="ttdeci">const LocationConfig * Resolve(const std::string &amp;uri) const</div><div class="ttdoc">La location matchant l'URI, prefixe le plus long.</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8cpp_source.html#l00108">ServerConfig.cpp:108</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_aad66da4b7738cca71bb0160dc3c6ffcb"><div class="ttname"><a href="classServerConfig.html#aad66da4b7738cca71bb0160dc3c6ffcb">ServerConfig::_ServerNames</a></div><div class="ttdeci">vector&lt; string &gt; _ServerNames</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8hpp_source.html#l00028">ServerConfig.hpp:28</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_aba7a44995f4461d6a655277eeab4fd63"><div class="ttname"><a href="classServerConfig.html#aba7a44995f4461d6a655277eeab4fd63">ServerConfig::getServerNames</a></div><div class="ttdeci">const vector&lt; string &gt; &amp; getServerNames() const</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8cpp_source.html#l00073">ServerConfig.cpp:73</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_abc10b3c8133bbe2715745435befd5c76"><div class="ttname"><a href="classServerConfig.html#abc10b3c8133bbe2715745435befd5c76">ServerConfig::build_path</a></div><div class="ttdeci">string build_path(const LocationConfig &amp;location, const string &amp;uri) const</div><div class="ttdoc">Traduit une URI en chemin disque via le root de la location.</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8cpp_source.html#l00144">ServerConfig.cpp:144</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_aca81ee6b4d081c5596798d0f0e6b9a34"><div class="ttname"><a href="classServerConfig.html#aca81ee6b4d081c5596798d0f0e6b9a34">ServerConfig::getClientMaxBodySize</a></div><div class="ttdeci">size_t getClientMaxBodySize(void) const</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8cpp_source.html#l00088">ServerConfig.cpp:88</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_b73b02d482d1c4a3db20c3d9ad52d395.html">srcs</a></li><li class="navelem"><a class="el" href="dir_75f89b9acdab752b2bbef02cc947a412.html">config</a></li><li class="navelem"><a class="el" href="ServerConfig_8cpp.html">ServerConfig.cpp</a></li>
+    <li class="footer">Généré par <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

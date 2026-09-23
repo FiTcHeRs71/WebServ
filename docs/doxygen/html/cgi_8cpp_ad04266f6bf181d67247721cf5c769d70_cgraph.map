@@ -1,0 +1,37 @@
+<map id="build_cgi_env" name="build_cgi_env">
+<area shape="rect" id="Node000001" title="Construit les meta&#45;variables CGI/1.1 de la requete." alt="" coords="5,301,116,327"/>
+<area shape="rect" id="Node000002" href="$cgi_8cpp.html#a3e4daad6f7419311c24c1cc68b63f3bc" title="Ajouter une nouvelle valeur a l&#39;environnement cgi." alt="" coords="240,5,311,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="60,300,66,251,81,181,94,142,112,105,134,70,162,40,193,23,226,16,227,21,195,28,166,44,138,73,116,107,99,144,86,182,71,252,65,301"/>
+<area shape="rect" id="Node000003" href="$cgi_8cpp.html#acc5cf01c2075278c8d2ee8f16e107630" title="PATH_INFO : suffixe apres l&#39;extension CGI, ou &quot;&quot;." alt="" coords="226,104,325,129"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="63,300,75,268,95,224,124,178,142,158,162,140,186,127,211,119,213,124,188,132,166,144,146,161,128,182,99,227,80,270,68,302"/>
+<area shape="rect" id="Node000007" href="$cgi_8cpp.html#a6826f4fde32cf27a1856b154ed017d94" title="SCRIPT_NAME : URI jusqu&#39;a l&#39;extension CGI comprise (RFC 3875)." alt="" coords="214,55,337,80"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="61,301,70,260,88,203,118,142,138,114,162,91,180,79,200,72,201,77,182,84,166,95,142,118,122,145,93,205,75,261,67,302"/>
+<area shape="rect" id="Node000008" href="$classConfigParser.html#ad7e54a715496137af9e7b4ab7a7900ee" title="La table des sockets d&#39;ecoute." alt="" coords="178,153,373,179"/>
+<area shape="poly" id="edge9_Node000001_Node000008" title=" " alt="" coords="67,300,102,246,130,215,163,189,177,181,180,186,165,194,134,219,107,249,71,303"/>
+<area shape="rect" id="Node000009" href="$classConnection.html#ae8aa81a8b6f303d40ece379828cd9b2a" title=" " alt="" coords="176,203,375,228"/>
+<area shape="poly" id="edge10_Node000001_Node000009" title=" " alt="" coords="74,299,113,268,163,238,186,230,188,235,165,243,116,273,78,303"/>
+<area shape="rect" id="Node000010" href="$classRequest.html#a72c8eeae6ccf7dd1c9f88064894106f8" title="Getters de header /!\ Il est retourner par valeur et non par reference." alt="" coords="200,252,351,277"/>
+<area shape="poly" id="edge11_Node000001_Node000010" title=" " alt="" coords="115,299,163,287,205,278,206,283,165,293,117,304"/>
+<area shape="rect" id="Node000011" href="$classRequest.html#a8d6b4373329076f14dff249072276761" title=" " alt="" coords="196,301,355,327"/>
+<area shape="poly" id="edge12_Node000001_Node000011" title=" " alt="" coords="116,311,182,311,182,317,116,317"/>
+<area shape="rect" id="Node000012" href="$classConnection.html#a7951b0ad16e3ad948b7ec67ed7d4aad6" title=" " alt="" coords="199,351,352,376"/>
+<area shape="poly" id="edge13_Node000001_Node000012" title=" " alt="" coords="113,324,165,337,201,345,200,350,163,342,112,329"/>
+<area shape="rect" id="Node000013" href="$classRequest.html#a57c0cbefe4446e2ecfe21634ae67d397" title=" " alt="" coords="199,400,352,425"/>
+<area shape="poly" id="edge14_Node000001_Node000013" title=" " alt="" coords="77,325,115,356,165,386,186,394,184,399,163,391,112,360,74,329"/>
+<area shape="rect" id="Node000014" href="$classRequest.html#af8181b31b7e519cb2de43f3d5615e207" title=" " alt="" coords="204,449,347,475"/>
+<area shape="poly" id="edge15_Node000001_Node000014" title=" " alt="" coords="71,325,106,380,133,410,165,436,192,448,190,453,163,440,130,414,102,383,66,328"/>
+<area shape="rect" id="Node000015" href="$classLocationConfig.html#ac8bacc5c7b7ae0faf408e67da88a2b6f" title="La racine disque associee a ce bloc." alt="" coords="187,499,364,524"/>
+<area shape="poly" id="edge16_Node000001_Node000015" title=" " alt="" coords="68,326,79,359,99,402,128,448,145,468,166,485,175,491,173,496,162,489,142,472,123,451,94,405,75,361,63,328"/>
+<area shape="rect" id="Node000016" href="$classServerConfig.html#aba7a44995f4461d6a655277eeab4fd63" title=" " alt="" coords="164,548,387,573"/>
+<area shape="poly" id="edge17_Node000001_Node000016" title=" " alt="" coords="66,326,75,367,93,424,122,484,142,511,166,535,172,539,169,544,162,539,138,515,117,487,88,426,70,369,61,328"/>
+<area shape="rect" id="Node000017" href="$cgi_8cpp.html#ad1751c5b2a6326543fe1b53ae171d0a0" title="Transforme les headers dans le bon format de l&#39;env." alt="" coords="211,597,339,623"/>
+<area shape="poly" id="edge18_Node000001_Node000017" title=" " alt="" coords="65,327,71,376,86,446,99,484,116,521,138,555,166,584,181,594,199,601,197,606,179,599,162,588,134,558,112,523,94,486,81,447,66,377,60,328"/>
+<area shape="rect" id="Node000004" href="$cgi_8cpp.html#a676c4b56d4e3c9734be563a0707de682" title="Premiere extension CGI de loc._Cgi trouvee dans path (E&#45;03)." alt="" coords="457,55,545,80"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="324,104,386,90,443,77,444,83,387,95,325,109"/>
+<area shape="rect" id="Node000006" href="$classRequest.html#aed56fbd5b75b512f8edc5d92f04a8487" title="Getter de path, /!\ Ne jamais repasser la string en string_c car &#39;\0&#39; possible dans la string." alt="" coords="435,104,567,129"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="325,114,421,114,421,119,325,119"/>
+<area shape="rect" id="Node000005" href="$classLocationConfig.html#adad8b29d8fddbb6039ec19140fa03d21" title="Table cgi_ext &#45;&gt; cgi_pass." alt="" coords="615,55,783,80"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="545,65,601,65,601,70,545,70"/>
+<area shape="poly" id="edge7_Node000007_Node000004" title=" " alt="" coords="337,65,443,65,443,70,337,70"/>
+<area shape="poly" id="edge8_Node000007_Node000006" title=" " alt="" coords="335,77,429,98,428,104,333,83"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="Request::setUpVersion" name="Request::setUpVersion">
+<area shape="rect" id="Node000001" title="Permet d&#39;extraire la version de la requette Les formats http/1.0 et 1.1 seulement sont pris en compte..." alt="" coords="5,5,175,31"/>
+<area shape="rect" id="Node000002" href="$classLogger.html#abf1a44e82213ce8094057b5fa926cf72" title="Ligne horodatee &quot;date [level] msg&quot;." alt="" coords="223,5,329,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="175,15,209,15,209,21,175,21"/>
+</map>

@@ -1,0 +1,812 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>webserv: Référence du fichier srcs/config/utils.cpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">webserv
+   </div>
+   <div id="projectbrief">Serveur HTTP/1.1 non bloquant -- 42</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Généré par Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','Recherche');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('utils_8cpp.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Chargement...</div>
+<div class="SRStatus" id="Searching">Recherche...</div>
+<div class="SRStatus" id="NoMatches">Aucune correspondance</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#func-members">Fonctions</a>  </div>
+  <div class="headertitle"><div class="title">Référence du fichier utils.cpp</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="Config_8hpp_source.html">../../includes/Config.hpp</a>&quot;</code><br />
+<code>#include &lt;algorithm&gt;</code><br />
+<code>#include &lt;cctype&gt;</code><br />
+<code>#include &lt;cerrno&gt;</code><br />
+<code>#include &lt;climits&gt;</code><br />
+<code>#include &lt;cstddef&gt;</code><br />
+<code>#include &lt;cstdlib&gt;</code><br />
+<code>#include &lt;fstream&gt;</code><br />
+<code>#include &lt;map&gt;</code><br />
+<code>#include &lt;set&gt;</code><br />
+<code>#include &lt;stdexcept&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
+<code>#include &lt;sstream&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Graphe des dépendances par inclusion de utils.cpp:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="utils_8cpp__incl.svg" width="100%" height="547"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+</div>
+<p><a href="utils_8cpp_source.html">Aller au code source de ce fichier.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Fonctions</h2></td></tr>
+<tr class="memitem:aefa5a3506e35469bdc1dda6481699859" id="r_aefa5a3506e35469bdc1dda6481699859"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8cpp.html#aefa5a3506e35469bdc1dda6481699859">is_valid_file</a> (ifstream &amp;file)</td></tr>
+<tr class="memdesc:aefa5a3506e35469bdc1dda6481699859"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check si le fichier de configuration est ouvrable / lisible et non vide.  <br /></td></tr>
+<tr class="separator:aefa5a3506e35469bdc1dda6481699859"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a24b9db616facc9dc6745c15ed0679f6b" id="r_a24b9db616facc9dc6745c15ed0679f6b"><td class="memItemLeft" align="right" valign="top">const set&lt; string &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8cpp.html#a24b9db616facc9dc6745c15ed0679f6b">known_directives</a> (void)</td></tr>
+<tr class="memdesc:a24b9db616facc9dc6745c15ed0679f6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contient toutes les directives (key) valides acceptees dans le .conf ex : -&gt;listen&lt;- 0.0.0.0:8080;.  <br /></td></tr>
+<tr class="separator:a24b9db616facc9dc6745c15ed0679f6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87d84f83873a929055dda3fdd55aa1e5" id="r_a87d84f83873a929055dda3fdd55aa1e5"><td class="memItemLeft" align="right" valign="top">const set&lt; string &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8cpp.html#a87d84f83873a929055dda3fdd55aa1e5">known_methods</a> (void)</td></tr>
+<tr class="memdesc:a87d84f83873a929055dda3fdd55aa1e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contient toutes les methodes HTTP acceptees par notre webserv.  <br /></td></tr>
+<tr class="separator:a87d84f83873a929055dda3fdd55aa1e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef002d3eb1502801a5e459db083a4115" id="r_aef002d3eb1502801a5e459db083a4115"><td class="memItemLeft" align="right" valign="top">const set&lt; string &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8cpp.html#aef002d3eb1502801a5e459db083a4115">known_listen_parameters</a> (void)</td></tr>
+<tr class="memdesc:aef002d3eb1502801a5e459db083a4115"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contient toutes les parametres de listen existant dans NGINX.  <br /></td></tr>
+<tr class="separator:aef002d3eb1502801a5e459db083a4115"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33a62d02493d54e927b73969ec71f85d" id="r_a33a62d02493d54e927b73969ec71f85d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8cpp.html#a33a62d02493d54e927b73969ec71f85d">is_all_digits</a> (const string &amp;s)</td></tr>
+<tr class="memdesc:a33a62d02493d54e927b73969ec71f85d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check si une chaine est composee uniquement de chiffres.  <br /></td></tr>
+<tr class="separator:a33a62d02493d54e927b73969ec71f85d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aea9cfbf41fbfe1bae093d72538eb3ac0" id="r_aea9cfbf41fbfe1bae093d72538eb3ac0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8cpp.html#aea9cfbf41fbfe1bae093d72538eb3ac0">is_valid_ipv4</a> (const string &amp;host)</td></tr>
+<tr class="memdesc:aea9cfbf41fbfe1bae093d72538eb3ac0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Verifie qu'une chaine est une adresse IPv4 bien formee.  <br /></td></tr>
+<tr class="separator:aea9cfbf41fbfe1bae093d72538eb3ac0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac3d997aa0c902e9a392a2fefa13dcaf3" id="r_ac3d997aa0c902e9a392a2fefa13dcaf3"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8cpp.html#ac3d997aa0c902e9a392a2fefa13dcaf3">parse_body_size</a> (const string &amp;value)</td></tr>
+<tr class="memdesc:ac3d997aa0c902e9a392a2fefa13dcaf3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fait la conversion de la value donnee par client_max_body_size en size_t Check si un suffixe de taille est present en fin de value (KkMm).  <br /></td></tr>
+<tr class="separator:ac3d997aa0c902e9a392a2fefa13dcaf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9316ac37e6cdff2f42ebfe1272e0976" id="r_aa9316ac37e6cdff2f42ebfe1272e0976"><td class="memItemLeft" align="right" valign="top">map&lt; int, string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8cpp.html#aa9316ac37e6cdff2f42ebfe1272e0976">parse_error_pages</a> (const vector&lt; string &gt; &amp;value, size_t &amp;j)</td></tr>
+<tr class="memdesc:aa9316ac37e6cdff2f42ebfe1272e0976"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cree une map STL contenant le code d'erreur associe au PATH de la page dediee Check si le code d'erreur depasse 505 ou si la value est negative ou contient des caracteres non numeriques.  <br /></td></tr>
+<tr class="separator:aa9316ac37e6cdff2f42ebfe1272e0976"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4bd4204c0a89d7173d4e1c400770b74f" id="r_a4bd4204c0a89d7173d4e1c400770b74f"><td class="memItemLeft" align="right" valign="top">vector&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8cpp.html#a4bd4204c0a89d7173d4e1c400770b74f">collect_values</a> (vector&lt; string &gt; &amp;token, size_t &amp;i)</td></tr>
+<tr class="memdesc:a4bd4204c0a89d7173d4e1c400770b74f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remplit un vecteur de toutes les valeurs associees a une key.  <br /></td></tr>
+<tr class="separator:a4bd4204c0a89d7173d4e1c400770b74f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac27743f1e2355a52bc397fd323718c11" id="r_ac27743f1e2355a52bc397fd323718c11"><td class="memItemLeft" align="right" valign="top">set&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8cpp.html#ac27743f1e2355a52bc397fd323718c11">parse_allow_methods</a> (const vector&lt; string &gt; &amp;value)</td></tr>
+<tr class="memdesc:ac27743f1e2355a52bc397fd323718c11"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prend tous les arguments de &lt;allow_methods&gt; et verifie leurs valeurs.  <br /></td></tr>
+<tr class="separator:ac27743f1e2355a52bc397fd323718c11"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43b26f4f2943f506a02a431384e5853a" id="r_a43b26f4f2943f506a02a431384e5853a"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8cpp.html#a43b26f4f2943f506a02a431384e5853a">parse_root</a> (const vector&lt; string &gt; &amp;value)</td></tr>
+<tr class="memdesc:a43b26f4f2943f506a02a431384e5853a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prend tous les arguments de &lt;root&gt; et verifie leurs valeurs.  <br /></td></tr>
+<tr class="separator:a43b26f4f2943f506a02a431384e5853a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:affdc8f9ddaaa0d740201412979146e4d" id="r_affdc8f9ddaaa0d740201412979146e4d"><td class="memItemLeft" align="right" valign="top">vector&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8cpp.html#affdc8f9ddaaa0d740201412979146e4d">parse_index</a> (const vector&lt; string &gt; &amp;value)</td></tr>
+<tr class="memdesc:affdc8f9ddaaa0d740201412979146e4d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prend tous les arguments de &lt;index&gt; et verifie leurs valeurs.  <br /></td></tr>
+<tr class="separator:affdc8f9ddaaa0d740201412979146e4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa00761e511b31cc62839e04645b6f0df" id="r_aa00761e511b31cc62839e04645b6f0df"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8cpp.html#aa00761e511b31cc62839e04645b6f0df">parse_auto_index</a> (const vector&lt; string &gt; &amp;value)</td></tr>
+<tr class="memdesc:aa00761e511b31cc62839e04645b6f0df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prend tous les arguments de &lt;auto_index&gt; et verifie leurs valeurs.  <br /></td></tr>
+<tr class="separator:aa00761e511b31cc62839e04645b6f0df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc812568aa7f2d9693bea69ff6cebabb" id="r_afc812568aa7f2d9693bea69ff6cebabb"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8cpp.html#afc812568aa7f2d9693bea69ff6cebabb">parse_cgi_ext</a> (const vector&lt; string &gt; &amp;value)</td></tr>
+<tr class="memdesc:afc812568aa7f2d9693bea69ff6cebabb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prend tous les arguments de &lt;cgi_ext&gt; et verifie leurs valeurs.  <br /></td></tr>
+<tr class="separator:afc812568aa7f2d9693bea69ff6cebabb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63cff8877b806e6eedc5100e65f348b3" id="r_a63cff8877b806e6eedc5100e65f348b3"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8cpp.html#a63cff8877b806e6eedc5100e65f348b3">parse_cgi_pass</a> (const vector&lt; string &gt; &amp;value)</td></tr>
+<tr class="memdesc:a63cff8877b806e6eedc5100e65f348b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prend tous les arguments de &lt;cgi_pass&gt; et verifie leurs valeurs.  <br /></td></tr>
+<tr class="separator:a63cff8877b806e6eedc5100e65f348b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8308dcbd234856efeffc00316801af7" id="r_ad8308dcbd234856efeffc00316801af7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8cpp.html#ad8308dcbd234856efeffc00316801af7">parser_return_code</a> (const string &amp;value, const size_t nb_args)</td></tr>
+<tr class="memdesc:ad8308dcbd234856efeffc00316801af7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Verifie le code HTTP de la directive &lt;return&gt;.  <br /></td></tr>
+<tr class="separator:ad8308dcbd234856efeffc00316801af7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a008459d98b1be4d08ff79981af874736" id="r_a008459d98b1be4d08ff79981af874736"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8cpp.html#a008459d98b1be4d08ff79981af874736">parse_upload_store</a> (const vector&lt; string &gt; &amp;value)</td></tr>
+<tr class="memdesc:a008459d98b1be4d08ff79981af874736"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prend tous les arguments de &lt;upload_store&gt; et verifie leurs valeurs.  <br /></td></tr>
+<tr class="separator:a008459d98b1be4d08ff79981af874736"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c5106f7f4691c9fcce1d810962fbe8f" id="r_a6c5106f7f4691c9fcce1d810962fbe8f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8cpp.html#a6c5106f7f4691c9fcce1d810962fbe8f">is_segment_boundary</a> (const string &amp;uri, const string &amp;path)</td></tr>
+<tr class="memdesc:a6c5106f7f4691c9fcce1d810962fbe8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">check si le prefixe path s'arrete sur une frontiere de segment de l'URI  <br /></td></tr>
+<tr class="separator:a6c5106f7f4691c9fcce1d810962fbe8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b5a7a9af18908a3839a66bfaa7b0884" id="r_a1b5a7a9af18908a3839a66bfaa7b0884"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8cpp.html#a1b5a7a9af18908a3839a66bfaa7b0884">check_valid_path</a> (const string &amp;path)</td></tr>
+<tr class="separator:a1b5a7a9af18908a3839a66bfaa7b0884"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0c3d29c48967d73339d55d6f268dd65" id="r_af0c3d29c48967d73339d55d6f268dd65"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8cpp.html#af0c3d29c48967d73339d55d6f268dd65">to_absolute</a> (const string &amp;path, const string &amp;cwd)</td></tr>
+<tr class="memdesc:af0c3d29c48967d73339d55d6f268dd65"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rend absolu un chemin de configuration, comme le fait nginx au chargement.  <br /></td></tr>
+<tr class="separator:af0c3d29c48967d73339d55d6f268dd65"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Documentation des fonctions</h2>
+<a id="a1b5a7a9af18908a3839a66bfaa7b0884" name="a1b5a7a9af18908a3839a66bfaa7b0884"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1b5a7a9af18908a3839a66bfaa7b0884">&#9670;&#160;</a></span>check_valid_path()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void check_valid_path </td>
+          <td>(</td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Définition à la ligne <a class="el" href="utils_8cpp_source.html#l00373">373</a> du fichier <a class="el" href="utils_8cpp_source.html">utils.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a4bd4204c0a89d7173d4e1c400770b74f" name="a4bd4204c0a89d7173d4e1c400770b74f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4bd4204c0a89d7173d4e1c400770b74f">&#9670;&#160;</a></span>collect_values()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt; string &gt; collect_values </td>
+          <td>(</td>
+          <td class="paramtype">vector&lt; string &gt; &amp;&#160;</td>
+          <td class="paramname"><em>token</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t &amp;&#160;</td>
+          <td class="paramname"><em>i</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Remplit un vecteur de toutes les valeurs associees a une key. </p>
+<p>Remplit un vecteur de tous les elements contenus entre la key et ";"</p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">token</td><td>La liste complete des tokens issue de tokenize(). </td></tr>
+    <tr><td class="paramname">i</td><td>Index positionne sur la premiere valeur, avance apres le ";" consomme. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>vecteur rempli des valeurs </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="utils_8cpp_source.html#l00207">207</a> du fichier <a class="el" href="utils_8cpp_source.html">utils.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a33a62d02493d54e927b73969ec71f85d" name="a33a62d02493d54e927b73969ec71f85d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a33a62d02493d54e927b73969ec71f85d">&#9670;&#160;</a></span>is_all_digits()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool is_all_digits </td>
+          <td>(</td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Check si une chaine est composee uniquement de chiffres. </p>
+<p>Sert a <a class="el" href="listen_8cpp.html#ab4966be20042c4d73106caa00fce9eba" title="Separe la partie adresse de la partie port d&#39;un token listen.">split_addr_port()</a> pour appliquer la regle NGINX : dans une directive listen, un token entierement numerique est un port, sinon une adresse. </p><dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">s</td><td>Le token a tester. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>true si s est non vide et ne contient que des chiffres, false sinon. </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="utils_8cpp_source.html#l00089">89</a> du fichier <a class="el" href="utils_8cpp_source.html">utils.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a6c5106f7f4691c9fcce1d810962fbe8f" name="a6c5106f7f4691c9fcce1d810962fbe8f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c5106f7f4691c9fcce1d810962fbe8f">&#9670;&#160;</a></span>is_segment_boundary()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool is_segment_boundary </td>
+          <td>(</td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>uri</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>path</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>check si le prefixe path s'arrete sur une frontiere de segment de l'URI </p>
+<p>Evite qu'une location "/img" matche l'URI "/images/logo.png". </p><dl class="section pre"><dt>Précondition</dt><dd>uri doit avoir path en prefixe (verifie par <a class="el" href="classServerConfig.html#aa65c203b34f8636d4f9f1dbcd8e157be" title="La location matchant l&#39;URI, prefixe le plus long.">ServerConfig::Resolve</a>) </dd>
+<dd>
+path est non vide (garanti par parse_location) </dd></dl>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">uri</td><td>chemin indique dans la requette HTTP 1.1, query/fragment deja retires </td></tr>
+    <tr><td class="paramname">path</td><td>chemin indique par le bloc location entrain detre verifier </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>true si match exact, si path finit par '/', ou si le caractere suivant dans l'uri est un '/' </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="utils_8cpp_source.html#l00364">364</a> du fichier <a class="el" href="utils_8cpp_source.html">utils.cpp</a>.</p>
+
+</div>
+</div>
+<a id="aefa5a3506e35469bdc1dda6481699859" name="aefa5a3506e35469bdc1dda6481699859"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aefa5a3506e35469bdc1dda6481699859">&#9670;&#160;</a></span>is_valid_file()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void is_valid_file </td>
+          <td>(</td>
+          <td class="paramtype">ifstream &amp;&#160;</td>
+          <td class="paramname"><em>file</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Check si le fichier de configuration est ouvrable / lisible et non vide. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">file</td><td>Flux ouvert sur le fichier passe en argument du programme. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>void, throw si le fichier est inaccessible ou vide. </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="utils_8cpp_source.html#l00024">24</a> du fichier <a class="el" href="utils_8cpp_source.html">utils.cpp</a>.</p>
+
+</div>
+</div>
+<a id="aea9cfbf41fbfe1bae093d72538eb3ac0" name="aea9cfbf41fbfe1bae093d72538eb3ac0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aea9cfbf41fbfe1bae093d72538eb3ac0">&#9670;&#160;</a></span>is_valid_ipv4()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool is_valid_ipv4 </td>
+          <td>(</td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>host</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Verifie qu'une chaine est une adresse IPv4 bien formee. </p>
+<p>Attend 4 segments numeriques separes par 3 points, chacun &lt;= 255, sans zero non significatif en tete (010 est refuse). </p><dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">host</td><td>La partie host du token listen (avant le ":"). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>true si l'IPv4 est valide, false sinon. </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="utils_8cpp_source.html#l00109">109</a> du fichier <a class="el" href="utils_8cpp_source.html">utils.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a24b9db616facc9dc6745c15ed0679f6b" name="a24b9db616facc9dc6745c15ed0679f6b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a24b9db616facc9dc6745c15ed0679f6b">&#9670;&#160;</a></span>known_directives()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const set&lt; string &gt; &amp; known_directives </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Contient toutes les directives (key) valides acceptees dans le .conf ex : -&gt;listen&lt;- 0.0.0.0:8080;. </p>
+<dl class="section return"><dt>Renvoie</dt><dd>le set des directives connues. </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="utils_8cpp_source.html#l00038">38</a> du fichier <a class="el" href="utils_8cpp_source.html">utils.cpp</a>.</p>
+
+</div>
+</div>
+<a id="aef002d3eb1502801a5e459db083a4115" name="aef002d3eb1502801a5e459db083a4115"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aef002d3eb1502801a5e459db083a4115">&#9670;&#160;</a></span>known_listen_parameters()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const set&lt; string &gt; &amp; known_listen_parameters </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Contient toutes les parametres de listen existant dans NGINX. </p>
+<dl class="section return"><dt>Renvoie</dt><dd>le set des parametres de listen connues </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="utils_8cpp_source.html#l00070">70</a> du fichier <a class="el" href="utils_8cpp_source.html">utils.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a87d84f83873a929055dda3fdd55aa1e5" name="a87d84f83873a929055dda3fdd55aa1e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87d84f83873a929055dda3fdd55aa1e5">&#9670;&#160;</a></span>known_methods()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const set&lt; string &gt; &amp; known_methods </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Contient toutes les methodes HTTP acceptees par notre webserv. </p>
+<p>Actuel GET/POST/DELETE </p><dl class="section return"><dt>Renvoie</dt><dd>le set des methodes connues. </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="utils_8cpp_source.html#l00056">56</a> du fichier <a class="el" href="utils_8cpp_source.html">utils.cpp</a>.</p>
+
+</div>
+</div>
+<a id="ac27743f1e2355a52bc397fd323718c11" name="ac27743f1e2355a52bc397fd323718c11"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac27743f1e2355a52bc397fd323718c11">&#9670;&#160;</a></span>parse_allow_methods()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">set&lt; string &gt; parse_allow_methods </td>
+          <td>(</td>
+          <td class="paramtype">const vector&lt; string &gt; &amp;&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Prend tous les arguments de &lt;allow_methods&gt; et verifie leurs valeurs. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">value</td><td>contient tous les arguments contenue entre le key &lt;allow_methods&gt; et le prochain ";" </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>le set des methodes autorisees pour cette location </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="utils_8cpp_source.html#l00226">226</a> du fichier <a class="el" href="utils_8cpp_source.html">utils.cpp</a>.</p>
+<div class="dynheader">
+Voici le graphe d'appel pour cette fonction :</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="utils_8cpp_ac27743f1e2355a52bc397fd323718c11_cgraph.svg" width="352" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="aa00761e511b31cc62839e04645b6f0df" name="aa00761e511b31cc62839e04645b6f0df"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa00761e511b31cc62839e04645b6f0df">&#9670;&#160;</a></span>parse_auto_index()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool parse_auto_index </td>
+          <td>(</td>
+          <td class="paramtype">const vector&lt; string &gt; &amp;&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Prend tous les arguments de &lt;auto_index&gt; et verifie leurs valeurs. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">value</td><td>contient tous les arguments contenue entre le key &lt;auto_index&gt; et le prochain ";" </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>true si "on", false si "off" </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="utils_8cpp_source.html#l00276">276</a> du fichier <a class="el" href="utils_8cpp_source.html">utils.cpp</a>.</p>
+
+</div>
+</div>
+<a id="ac3d997aa0c902e9a392a2fefa13dcaf3" name="ac3d997aa0c902e9a392a2fefa13dcaf3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac3d997aa0c902e9a392a2fefa13dcaf3">&#9670;&#160;</a></span>parse_body_size()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t parse_body_size </td>
+          <td>(</td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Fait la conversion de la value donnee par client_max_body_size en size_t Check si un suffixe de taille est present en fin de value (KkMm). </p>
+<p>Check si la value n'est pas empty, negative ou trop grande (&gt; INT_MAX).</p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">value</td><td>La valeur associee a la key &lt;client_max_body_size&gt; (ex : "10M"). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>la taille en octets convertie </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="utils_8cpp_source.html#l00144">144</a> du fichier <a class="el" href="utils_8cpp_source.html">utils.cpp</a>.</p>
+
+</div>
+</div>
+<a id="afc812568aa7f2d9693bea69ff6cebabb" name="afc812568aa7f2d9693bea69ff6cebabb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc812568aa7f2d9693bea69ff6cebabb">&#9670;&#160;</a></span>parse_cgi_ext()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">string parse_cgi_ext </td>
+          <td>(</td>
+          <td class="paramtype">const vector&lt; string &gt; &amp;&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Prend tous les arguments de &lt;cgi_ext&gt; et verifie leurs valeurs. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">value</td><td>contient tous les arguments contenue entre le key &lt;cgi_ext&gt; et le prochain ";" </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>l'extension CGI validee, elle doit commencer par un "." (ex : ".py") </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="utils_8cpp_source.html#l00293">293</a> du fichier <a class="el" href="utils_8cpp_source.html">utils.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a63cff8877b806e6eedc5100e65f348b3" name="a63cff8877b806e6eedc5100e65f348b3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a63cff8877b806e6eedc5100e65f348b3">&#9670;&#160;</a></span>parse_cgi_pass()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">string parse_cgi_pass </td>
+          <td>(</td>
+          <td class="paramtype">const vector&lt; string &gt; &amp;&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Prend tous les arguments de &lt;cgi_pass&gt; et verifie leurs valeurs. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">value</td><td>contient tous les arguments contenue entre le key &lt;cgi_pass&gt; et le prochain ";" </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>le chemin de l'interpreteur CGI, un seul argument est accepte </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="utils_8cpp_source.html#l00308">308</a> du fichier <a class="el" href="utils_8cpp_source.html">utils.cpp</a>.</p>
+
+</div>
+</div>
+<a id="aa9316ac37e6cdff2f42ebfe1272e0976" name="aa9316ac37e6cdff2f42ebfe1272e0976"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa9316ac37e6cdff2f42ebfe1272e0976">&#9670;&#160;</a></span>parse_error_pages()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">map&lt; int, string &gt; parse_error_pages </td>
+          <td>(</td>
+          <td class="paramtype">const vector&lt; string &gt; &amp;&#160;</td>
+          <td class="paramname"><em>value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t &amp;&#160;</td>
+          <td class="paramname"><em>j</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Cree une map STL contenant le code d'erreur associe au PATH de la page dediee Check si le code d'erreur depasse 505 ou si la value est negative ou contient des caracteres non numeriques. </p>
+<p>Le dernier element de value est le PATH, tous les precedents sont des codes.</p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">value</td><td>Tous les arguments contenus entre la key &lt;error_page&gt; et le prochain ";" </td></tr>
+    <tr><td class="paramname">j</td><td>Index de lecture dans value, avance jusqu'au dernier code traite. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>une map[&lt;Error_code&gt;] = "PATH" </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="utils_8cpp_source.html#l00178">178</a> du fichier <a class="el" href="utils_8cpp_source.html">utils.cpp</a>.</p>
+
+</div>
+</div>
+<a id="affdc8f9ddaaa0d740201412979146e4d" name="affdc8f9ddaaa0d740201412979146e4d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#affdc8f9ddaaa0d740201412979146e4d">&#9670;&#160;</a></span>parse_index()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt; string &gt; parse_index </td>
+          <td>(</td>
+          <td class="paramtype">const vector&lt; string &gt; &amp;&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Prend tous les arguments de &lt;index&gt; et verifie leurs valeurs. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">value</td><td>contient tous les arguments contenue entre le key &lt;index&gt; et le prochain ";" </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>le vecteur des fichiers index, dans l'ordre de priorite </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="utils_8cpp_source.html#l00258">258</a> du fichier <a class="el" href="utils_8cpp_source.html">utils.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a43b26f4f2943f506a02a431384e5853a" name="a43b26f4f2943f506a02a431384e5853a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a43b26f4f2943f506a02a431384e5853a">&#9670;&#160;</a></span>parse_root()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">string parse_root </td>
+          <td>(</td>
+          <td class="paramtype">const vector&lt; string &gt; &amp;&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Prend tous les arguments de &lt;root&gt; et verifie leurs valeurs. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">value</td><td>contient tous les arguments contenue entre le key &lt;root&gt; et le prochain ";" </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>le chemin racine, un seul argument est accepte </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="utils_8cpp_source.html#l00245">245</a> du fichier <a class="el" href="utils_8cpp_source.html">utils.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a008459d98b1be4d08ff79981af874736" name="a008459d98b1be4d08ff79981af874736"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a008459d98b1be4d08ff79981af874736">&#9670;&#160;</a></span>parse_upload_store()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">string parse_upload_store </td>
+          <td>(</td>
+          <td class="paramtype">const vector&lt; string &gt; &amp;&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Prend tous les arguments de &lt;upload_store&gt; et verifie leurs valeurs. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">value</td><td>contient tous les arguments contenue entre le key &lt;upload_store&gt; et le prochain ";" </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>le chemin de stockage des uploads, un seul argument est accepte </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="utils_8cpp_source.html#l00347">347</a> du fichier <a class="el" href="utils_8cpp_source.html">utils.cpp</a>.</p>
+
+</div>
+</div>
+<a id="ad8308dcbd234856efeffc00316801af7" name="ad8308dcbd234856efeffc00316801af7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad8308dcbd234856efeffc00316801af7">&#9670;&#160;</a></span>parser_return_code()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int parser_return_code </td>
+          <td>(</td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const size_t&#160;</td>
+          <td class="paramname"><em>nb_args</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Verifie le code HTTP de la directive &lt;return&gt;. </p>
+<p>Un code de redirection (3xx) exige une &lt;URL&gt; cible, donc deux arguments. </p><dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">value</td><td>Le premier argument de &lt;return&gt;, cense etre le code HTTP. </td></tr>
+    <tr><td class="paramname">nb_args</td><td>Le nombre total d'arguments passes a &lt;return&gt;. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>le code HTTP converti, compris entre 100 et 599 </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="utils_8cpp_source.html#l00324">324</a> du fichier <a class="el" href="utils_8cpp_source.html">utils.cpp</a>.</p>
+
+</div>
+</div>
+<a id="af0c3d29c48967d73339d55d6f268dd65" name="af0c3d29c48967d73339d55d6f268dd65"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0c3d29c48967d73339d55d6f268dd65">&#9670;&#160;</a></span>to_absolute()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">string to_absolute </td>
+          <td>(</td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>cwd</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Rend absolu un chemin de configuration, comme le fait nginx au chargement. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>Le chemin lu dans le .conf, relatif ou absolu. </td></tr>
+    <tr><td class="paramname">cwd</td><td>Le repertoire de lancement du serveur (notre equivalent du prefix nginx). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>Le chemin absolu, ou la chaine vide si path etait vide. </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="utils_8cpp_source.html#l00398">398</a> du fichier <a class="el" href="utils_8cpp_source.html">utils.cpp</a>.</p>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_b73b02d482d1c4a3db20c3d9ad52d395.html">srcs</a></li><li class="navelem"><a class="el" href="dir_75f89b9acdab752b2bbef02cc947a412.html">config</a></li><li class="navelem"><a class="el" href="utils_8cpp.html">utils.cpp</a></li>
+    <li class="footer">Généré par <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

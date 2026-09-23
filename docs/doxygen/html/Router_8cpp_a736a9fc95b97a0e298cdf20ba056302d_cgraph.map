@@ -1,0 +1,58 @@
+<map id="serveDir" name="serveDir">
+<area shape="rect" id="Node000001" title="Traite un dossier : 301 sans slash final, sinon index puis serveFile." alt="" coords="5,771,83,796"/>
+<area shape="rect" id="Node000002" href="$Autoindex_8cpp.html#a7986baaa776b1b3a32f5de20d1d9d897" title="Genere le listing HTML d&#39;un dossier (autoindex on)." alt="" coords="174,129,301,155"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="44,770,52,671,70,517,95,359,111,294,128,246,144,221,164,198,204,161,208,165,168,201,149,224,133,249,116,295,100,360,75,518,58,672,49,771"/>
+<area shape="rect" id="Node000008" href="$classResponse.html#aeaa3673db99a8c45772c3a5a5b949c4a" title="Lit le fichier d&#39;erreur s&#39;il existe, sinon cree un built in, renvoie le tout comme reponse." alt="" coords="392,569,549,595"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="47,770,74,709,98,673,129,644,189,612,254,593,319,582,378,577,378,583,319,587,255,598,191,617,132,648,102,677,79,711,52,772"/>
+<area shape="rect" id="Node000011" href="$classResponse.html#a38d47b3fe3909d0a6851c8f672fa4c8b" title="pose aussi Content&#45;Length" alt="" coords="857,355,1004,380"/>
+<area shape="poly" id="edge30_Node000001_Node000011" title=" " alt="" coords="46,770,73,691,97,641,129,594,191,528,247,487,391,410,497,355,543,336,588,322,633,315,682,312,737,315,800,323,845,334,887,347,885,352,844,339,800,329,736,321,682,318,633,320,589,328,545,341,500,360,393,415,250,491,194,532,133,597,102,643,78,693,51,772"/>
+<area shape="rect" id="Node000012" href="$classResponse.html#a57e91a47a4522fa82bd99dd7464e1c87" title=" " alt="" coords="1061,645,1223,671"/>
+<area shape="poly" id="edge31_Node000001_Node000012" title=" " alt="" coords="84,788,251,815,359,827,469,831,700,831,791,836,863,843,896,842,931,837,969,826,1012,806,1050,780,1082,747,1107,712,1126,682,1130,684,1112,715,1086,750,1053,784,1015,811,971,831,932,842,897,847,862,848,790,842,700,837,469,837,359,832,250,820,83,794"/>
+<area shape="rect" id="Node000016" href="$classResponse.html#a7f9b175d957559236e0b065e4d495963" title="pose _StatusCode ET _StatusText" alt="" coords="621,771,776,796"/>
+<area shape="poly" id="edge32_Node000001_Node000016" title=" " alt="" coords="83,781,608,781,608,786,83,786"/>
+<area shape="rect" id="Node000018" href="$classLocationConfig.html#ab49bec38d910c5db0fb2cf93f81d2095" title=" " alt="" coords="131,872,344,897"/>
+<area shape="poly" id="edge19_Node000001_Node000018" title=" " alt="" coords="60,794,91,823,132,850,168,865,166,870,129,855,88,827,56,798"/>
+<area shape="rect" id="Node000019" href="$classLocationConfig.html#a001ff50e818dc40ac5baaeff47d604bb" title=" " alt="" coords="146,921,329,947"/>
+<area shape="poly" id="edge20_Node000001_Node000019" title=" " alt="" coords="53,795,81,850,103,882,132,908,141,913,139,918,129,912,99,885,76,853,48,797"/>
+<area shape="rect" id="Node000020" href="$classRequest.html#aed56fbd5b75b512f8edc5d92f04a8487" title="Getter de path, /!\ Ne jamais repasser la string en string_c car &#39;\0&#39; possible dans la string." alt="" coords="171,971,303,996"/>
+<area shape="poly" id="edge21_Node000001_Node000020" title=" " alt="" coords="50,796,58,829,74,873,98,919,114,939,132,957,160,972,157,977,129,961,110,943,93,922,69,875,53,830,45,797"/>
+<area shape="rect" id="Node000021" href="$Router_8cpp.html#a208f24899fabbb957e90b7daef8a051b" title="Sert un fichier regulier : open/read binaire, MIME, Content&#45;Length." alt="" coords="197,657,278,683"/>
+<area shape="poly" id="edge22_Node000001_Node000021" title=" " alt="" coords="65,768,201,688,204,692,68,773"/>
+<area shape="rect" id="Node000003" href="$Autoindex_8cpp.html#a1bf126b1fd7553197aaf979af8cb630c" title="Rend la taille affichable d&#39;une entree." alt="" coords="421,203,520,228"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="280,152,417,196,415,201,278,157"/>
+<area shape="rect" id="Node000004" href="$Autoindex_8cpp.html#a45cf1c0ce8813ad25f63423b07632dad" title="Formate une date de modification en UTC, style NGINX." alt="" coords="419,5,522,31"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="253,127,312,85,391,40,407,33,409,38,393,44,315,90,256,131"/>
+<area shape="rect" id="Node000005" href="$Autoindex_8cpp.html#a10f4b6f7e66606b753817e427564bd93" title=" " alt="" coords="418,55,523,80"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="276,127,391,89,414,81,416,87,393,94,277,132"/>
+<area shape="rect" id="Node000006" href="$Autoindex_8cpp.html#ac3588a395e7bbcdb3bbdb7488fddd904" title=" " alt="" coords="437,104,504,129"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="301,132,423,119,423,124,301,138"/>
+<area shape="rect" id="Node000007" href="$Autoindex_8cpp.html#a750e3742737086f86d7cb54e06105fe7" title=" " alt="" coords="424,153,517,179"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="301,146,411,157,410,163,301,151"/>
+<area shape="rect" id="Node000009" href="$classServerConfig.html#abc10b3c8133bbe2715745435befd5c76" title="Traduit une URI en chemin disque via le root de la location." alt="" coords="608,519,789,544"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="528,567,627,544,628,550,529,572"/>
+<area shape="rect" id="Node000010" href="$classResponse.html#a2b91a2e06e39090e0ec2dfde64820dbb" title="Cree un body de reponse http en fonction de l&#39;erreur." alt="" coords="602,405,795,445"/>
+<area shape="poly" id="edge9_Node000008_Node000010" title=" " alt="" coords="479,567,526,513,559,482,596,454,608,448,610,453,599,459,562,486,529,517,484,571"/>
+<area shape="poly" id="edge15_Node000008_Node000011" title=" " alt="" coords="474,568,488,531,512,482,548,431,571,409,596,390,625,376,657,365,722,352,786,349,844,351,844,357,786,354,722,357,658,370,628,381,599,395,574,413,552,434,517,484,493,533,479,570"/>
+<area shape="poly" id="edge16_Node000008_Node000012" title=" " alt="" coords="550,575,644,574,761,576,888,586,1014,606,1061,620,1104,637,1102,642,1060,625,1013,611,887,591,760,582,644,579,550,581"/>
+<area shape="rect" id="Node000013" href="$classServerConfig.html#a81447d6457e725384798527b8587ccaa" title=" " alt="" coords="597,469,800,495"/>
+<area shape="poly" id="edge12_Node000008_Node000013" title=" " alt="" coords="488,567,535,535,596,504,617,496,619,501,598,508,538,540,491,571"/>
+<area shape="rect" id="Node000014" href="$classServerConfig.html#aa65c203b34f8636d4f9f1dbcd8e157be" title="La location matchant l&#39;URI, prefixe le plus long." alt="" coords="616,620,781,645"/>
+<area shape="poly" id="edge13_Node000008_Node000014" title=" " alt="" coords="529,592,628,614,627,620,528,597"/>
+<area shape="poly" id="edge17_Node000008_Node000016" title=" " alt="" coords="528,592,551,607,570,631,578,655,584,680,599,706,631,736,665,761,661,765,627,741,595,709,579,682,573,657,566,634,548,611,525,597"/>
+<area shape="poly" id="edge10_Node000010_Node000011" title=" " alt="" coords="780,402,865,381,866,386,781,407"/>
+<area shape="poly" id="edge11_Node000011_Node000012" title=" " alt="" coords="943,379,1126,633,1121,636,939,382"/>
+<area shape="rect" id="Node000015" href="$utils_8cpp.html#a6c5106f7f4691c9fcce1d810962fbe8f" title="check si le prefixe path s&#39;arrete sur une frontiere de segment de l&#39;URI" alt="" coords="848,620,1013,645"/>
+<area shape="poly" id="edge14_Node000014_Node000015" title=" " alt="" coords="782,630,834,630,834,635,782,635"/>
+<area shape="rect" id="Node000017" href="$Response_8cpp.html#a3c5697cdaf5346a857f580182a004a6a" title=" " alt="" coords="885,771,976,796"/>
+<area shape="poly" id="edge18_Node000016_Node000017" title=" " alt="" coords="776,781,871,781,871,786,776,786"/>
+<area shape="poly" id="edge23_Node000021_Node000008" title=" " alt="" coords="269,655,391,606,417,597,419,602,393,611,271,660"/>
+<area shape="poly" id="edge28_Node000021_Node000011" title=" " alt="" coords="245,656,291,596,370,509,419,463,474,419,533,381,596,352,632,341,668,334,742,332,812,338,871,349,870,354,811,343,742,337,669,340,633,346,598,356,536,386,477,424,423,467,374,513,295,599,250,659"/>
+<area shape="poly" id="edge29_Node000021_Node000016" title=" " alt="" coords="279,677,634,765,632,770,278,682"/>
+<area shape="rect" id="Node000022" href="$Router_8cpp.html#a91c58b823f978a3b87f987b2c1d9cdd3" title="Pose Content&#45;Type sur res d&#39;apres l&#39;extension de path." alt="" coords="431,620,511,645"/>
+<area shape="poly" id="edge24_Node000021_Node000022" title=" " alt="" coords="278,661,417,639,417,644,279,666"/>
+<area shape="rect" id="Node000024" href="$Router_8cpp.html#a2213df368d729a28ca811c52b84847ae" title="Table MIME extension &#45;&gt; Content&#45;Type, construite une seule fois." alt="" coords="421,669,521,695"/>
+<area shape="poly" id="edge27_Node000021_Node000024" title=" " alt="" coords="278,669,407,676,407,681,278,675"/>
+<area shape="poly" id="edge26_Node000022_Node000012" title=" " alt="" coords="512,639,551,656,566,669,575,683,583,695,598,705,665,726,735,735,806,736,876,729,942,718,1002,703,1096,673,1097,678,1003,708,943,723,876,735,806,741,735,741,664,731,596,710,580,699,570,686,562,673,548,660,510,644"/>
+<area shape="rect" id="Node000023" href="$Router_8cpp.html#aa683fc1aad0e97aa8f520951afb94bd4" title="Extraie l&#39;extension du nom de fichier (dernier &#39;." alt="" coords="665,669,732,695"/>
+<area shape="poly" id="edge25_Node000022_Node000023" title=" " alt="" coords="511,639,653,669,651,675,510,644"/>
+</map>

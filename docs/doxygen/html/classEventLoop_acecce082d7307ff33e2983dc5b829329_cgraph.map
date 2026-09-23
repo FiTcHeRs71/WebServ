@@ -1,0 +1,23 @@
+<map id="EventLoop::CloseConnection" name="EventLoop::CloseConnection">
+<area shape="rect" id="Node000001" title="Point de sortie unique d&#39;une connexion client (B&#45;04 / B&#45;05)." alt="" coords="5,153,212,179"/>
+<area shape="rect" id="Node000002" href="$classCgiProcess.html#a2c9cf855bc8bd2230898e456861bf54a" title="Retourne le PID du processus CGI." alt="" coords="281,5,425,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="120,151,176,97,216,66,259,40,275,33,277,38,261,44,219,71,180,101,124,155"/>
+<area shape="rect" id="Node000003" href="$classCgiProcess.html#ad718f5bbc4da3d1fb5fe1e6687218319" title="Retourne le descripteur de lecture du pipe vers le CGI." alt="" coords="267,55,440,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="131,151,188,120,259,89,282,81,283,86,261,94,190,125,133,155"/>
+<area shape="rect" id="Node000004" href="$classCgiProcess.html#aa85023e28d1083c853f33238c12e1bbe" title="Retourne le descripteur d&#39;ecriture du pipe vers le CGI." alt="" coords="266,104,441,129"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="172,151,275,130,277,135,173,156"/>
+<area shape="rect" id="Node000005" href="$classCgiProcess.html#ad4f0610d3561243c8dd37a84cbc2a935" title="SIGKILL puis Reap()" alt="" coords="292,153,415,179"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="212,163,278,163,278,169,212,169"/>
+<area shape="rect" id="Node000007" href="$classEventLoop.html#ac1016fd5091503c43ce315771ed2b7a4" title="Retire fd de _Pollfds, n&#39;invalide pas _Clients." alt="" coords="495,255,663,280"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="169,176,506,249,505,254,168,181"/>
+<area shape="rect" id="Node000009" href="$classLogger.html#abf1a44e82213ce8094057b5fa926cf72" title="Ligne horodatee &quot;date [level] msg&quot;." alt="" coords="728,304,835,329"/>
+<area shape="poly" id="edge11_Node000001_Node000009" title=" " alt="" coords="122,177,177,234,216,265,261,289,320,308,382,321,445,329,507,333,622,332,714,324,715,329,622,337,507,339,444,335,381,327,319,313,259,294,214,270,173,238,118,181"/>
+<area shape="rect" id="Node000010" href="$classEventLoop.html#a4b6f21c88ca05ec82cc60ad81b986d60" title="Ferme et oublie les pipes d&#39;un CGI fini (B&#45;07)" alt="" coords="260,255,447,280"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="137,176,261,233,301,248,299,253,259,238,135,181"/>
+<area shape="rect" id="Node000006" href="$classCgiProcess.html#a1913ec306dc108516d78d32798714887" title="Ferme les 2 pipes. Idempotente." alt="" coords="499,153,659,179"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="415,163,485,163,485,169,415,169"/>
+<area shape="rect" id="Node000008" href="$classEventLoop.html#a4064611cef5aca07311693bc8937fec6" title="Index de fd dans _Pollfds, &#45;1 si absent." alt="" coords="711,255,852,280"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="663,265,697,265,697,270,663,270"/>
+<area shape="poly" id="edge8_Node000007_Node000009" title=" " alt="" coords="632,277,716,298,715,303,631,283"/>
+<area shape="poly" id="edge10_Node000010_Node000007" title=" " alt="" coords="447,265,481,265,481,270,447,270"/>
+</map>

@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>webserv:  Fichier source de includes/ListenSockets.hpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">webserv
+   </div>
+   <div id="projectbrief">Serveur HTTP/1.1 non bloquant -- 42</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Généré par Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','Recherche');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function() { init_codefold(0); });
+/* @license-end */
+</script>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('ListenSockets_8hpp_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Chargement...</div>
+<div class="SRStatus" id="Searching">Recherche...</div>
+<div class="SRStatus" id="NoMatches">Aucune correspondance</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">ListenSockets.hpp</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="ListenSockets_8hpp.html">Aller à la documentation de ce fichier.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef LISTEN_SOCKETS_HPP</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor"># define LISTEN_SOCKETS_HPP</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor"># include &quot;<a class="code" href="Config_8hpp.html">Config.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor"># include &lt;iostream&gt;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor"># include &lt;string&gt;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor"># include &lt;unistd.h&gt;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor"># include &lt;vector&gt;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor"># include &lt;sys/types.h&gt;</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor"># include &lt;sys/socket.h&gt;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor"># include &lt;netdb.h&gt;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor"># include &lt;string.h&gt;</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor"># include &lt;sstream&gt;</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor"># include &lt;fcntl.h&gt;</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="keyword">using namespace </span>std;</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
+<div class="foldopen" id="foldopen00024" data-start="{" data-end="};">
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="classListenSockets.html">   24</a></span><span class="keyword">class </span><a class="code hl_class" href="classListenSockets.html">ListenSockets</a></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>{</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="classListenSockets.html#a54c1d492f4dc4d0da2f636abfe79e31d">   27</a></span>    vector&lt;int&gt; <a class="code hl_variable" href="classListenSockets.html#a54c1d492f4dc4d0da2f636abfe79e31d">_ServFd</a>;</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    <span class="keyword">public</span>:</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> </div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    <span class="comment">/*===Canonical Form===*/</span></div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    <a class="code hl_class" href="classListenSockets.html">ListenSockets</a>(<span class="keyword">const</span> vector&lt;TAddrPortGroup&gt;&amp; AddrPorts);</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    <a class="code hl_function" href="classListenSockets.html#aad24c0fca97d21cc248499b7d019dbef">~ListenSockets</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    <a class="code hl_class" href="classListenSockets.html">ListenSockets</a>(<span class="keyword">const</span> <a class="code hl_class" href="classListenSockets.html">ListenSockets</a>&amp; to_copy);</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    <a class="code hl_class" href="classListenSockets.html">ListenSockets</a> &amp;<a class="code hl_function" href="classListenSockets.html#acb7c9101741cce03162460ef9a4b8ba9">operator=</a>(<span class="keyword">const</span> <a class="code hl_class" href="classListenSockets.html">ListenSockets</a>&amp; src);</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    <span class="comment">/*===Getters &amp; Setters===*/</span></div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    <span class="keyword">const</span> vector&lt;int&gt;&amp; <a class="code hl_function" href="classListenSockets.html#ac46b5664d909ad3563c5c78152e5ff28">getServFd</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    <span class="comment">/*===Member Function===*/</span></div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    <span class="keywordtype">bool</span>    <a class="code hl_function" href="classListenSockets.html#a10cd3d0970a1d5ba790145c54ad83418">creatSocket</a>(<span class="keyword">const</span> <span class="keywordtype">string</span>&amp; Host, <span class="keyword">const</span> <span class="keywordtype">int</span>&amp; Port);</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    <span class="keywordtype">void</span>    <a class="code hl_function" href="classListenSockets.html#abf100ccba13b375cb230ac0d1636f1d6">closeFd</a>();</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    <span class="keyword">friend</span> ostream&amp; <a class="code hl_friend" href="classListenSockets.html#acf9ecd34d12ba8b5673a3183d960ddcf">operator&lt;&lt;</a>(ostream&amp; flux, <span class="keyword">const</span> <a class="code hl_class" href="classListenSockets.html">ListenSockets</a>&amp; listen);</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>};</div>
+</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span> </div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="aConfig_8hpp_html"><div class="ttname"><a href="Config_8hpp.html">Config.hpp</a></div></div>
+<div class="ttc" id="aclassListenSockets_html"><div class="ttname"><a href="classListenSockets.html">ListenSockets</a></div><div class="ttdoc">Gere l'ensemble des sockets d'ecoute du serveur.</div><div class="ttdef"><b>Definition</b> <a href="ListenSockets_8hpp_source.html#l00024">ListenSockets.hpp:25</a></div></div>
+<div class="ttc" id="aclassListenSockets_html_a10cd3d0970a1d5ba790145c54ad83418"><div class="ttname"><a href="classListenSockets.html#a10cd3d0970a1d5ba790145c54ad83418">ListenSockets::creatSocket</a></div><div class="ttdeci">bool creatSocket(const string &amp;Host, const int &amp;Port)</div><div class="ttdoc">Fonctions pour ouvrir les fd des sockets, 1 fd par port ouvert stock des fds dans l'attribut&gt;_ServFd.</div><div class="ttdef"><b>Definition</b> <a href="ListenSockets_8cpp_source.html#l00064">ListenSockets.cpp:64</a></div></div>
+<div class="ttc" id="aclassListenSockets_html_a54c1d492f4dc4d0da2f636abfe79e31d"><div class="ttname"><a href="classListenSockets.html#a54c1d492f4dc4d0da2f636abfe79e31d">ListenSockets::_ServFd</a></div><div class="ttdeci">vector&lt; int &gt; _ServFd</div><div class="ttdef"><b>Definition</b> <a href="ListenSockets_8hpp_source.html#l00027">ListenSockets.hpp:27</a></div></div>
+<div class="ttc" id="aclassListenSockets_html_aad24c0fca97d21cc248499b7d019dbef"><div class="ttname"><a href="classListenSockets.html#aad24c0fca97d21cc248499b7d019dbef">ListenSockets::~ListenSockets</a></div><div class="ttdeci">~ListenSockets(void)</div><div class="ttdef"><b>Definition</b> <a href="ListenSockets_8cpp_source.html#l00019">ListenSockets.cpp:19</a></div></div>
+<div class="ttc" id="aclassListenSockets_html_abf100ccba13b375cb230ac0d1636f1d6"><div class="ttname"><a href="classListenSockets.html#abf100ccba13b375cb230ac0d1636f1d6">ListenSockets::closeFd</a></div><div class="ttdeci">void closeFd()</div><div class="ttdoc">Permet d'iterer sur le container contenant les fds et de les close()</div><div class="ttdef"><b>Definition</b> <a href="ListenSockets_8cpp_source.html#l00114">ListenSockets.cpp:114</a></div></div>
+<div class="ttc" id="aclassListenSockets_html_ac46b5664d909ad3563c5c78152e5ff28"><div class="ttname"><a href="classListenSockets.html#ac46b5664d909ad3563c5c78152e5ff28">ListenSockets::getServFd</a></div><div class="ttdeci">const vector&lt; int &gt; &amp; getServFd() const</div><div class="ttdef"><b>Definition</b> <a href="ListenSockets_8cpp_source.html#l00124">ListenSockets.cpp:124</a></div></div>
+<div class="ttc" id="aclassListenSockets_html_acb7c9101741cce03162460ef9a4b8ba9"><div class="ttname"><a href="classListenSockets.html#acb7c9101741cce03162460ef9a4b8ba9">ListenSockets::operator=</a></div><div class="ttdeci">ListenSockets &amp; operator=(const ListenSockets &amp;src)</div><div class="ttdef"><b>Definition</b> <a href="ListenSockets_8cpp_source.html#l00038">ListenSockets.cpp:38</a></div></div>
+<div class="ttc" id="aclassListenSockets_html_acf9ecd34d12ba8b5673a3183d960ddcf"><div class="ttname"><a href="classListenSockets.html#acf9ecd34d12ba8b5673a3183d960ddcf">ListenSockets::operator&lt;&lt;</a></div><div class="ttdeci">friend ostream &amp; operator&lt;&lt;(ostream &amp;flux, const ListenSockets &amp;listen)</div><div class="ttdef"><b>Definition</b> <a href="ListenSockets_8cpp_source.html#l00130">ListenSockets.cpp:130</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_09e761304027c904456130627fd4dcf5.html">includes</a></li><li class="navelem"><a class="el" href="ListenSockets_8hpp.html">ListenSockets.hpp</a></li>
+    <li class="footer">Généré par <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

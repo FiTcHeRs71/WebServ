@@ -1,0 +1,5 @@
+<map id="CgiProcess::CloseWriteFd" name="CgiProcess::CloseWriteFd">
+<area shape="rect" id="Node000001" title="Ferme le stdin du CGI : D&#45;03, quand le body est entierement ecrit." alt="" coords="5,5,193,31"/>
+<area shape="rect" id="Node000002" href="$classLogger.html#abf1a44e82213ce8094057b5fa926cf72" title="Ligne horodatee &quot;date [level] msg&quot;." alt="" coords="241,5,348,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="194,15,228,15,228,21,194,21"/>
+</map>

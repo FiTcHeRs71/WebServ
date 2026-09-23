@@ -1,0 +1,636 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>webserv: Référence du fichier includes/Router.hpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">webserv
+   </div>
+   <div id="projectbrief">Serveur HTTP/1.1 non bloquant -- 42</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Généré par Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','Recherche');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('Router_8hpp.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Chargement...</div>
+<div class="SRStatus" id="Searching">Recherche...</div>
+<div class="SRStatus" id="NoMatches">Aucune correspondance</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#func-members">Fonctions</a>  </div>
+  <div class="headertitle"><div class="title">Référence du fichier Router.hpp</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="Response_8hpp_source.html">Response.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Connection_8hpp_source.html">Connection.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ServerConfig_8hpp_source.html">ServerConfig.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Config_8hpp_source.html">Config.hpp</a>&quot;</code><br />
+<code>#include &lt;sys/types.h&gt;</code><br />
+<code>#include &lt;sys/stat.h&gt;</code><br />
+<code>#include &lt;unistd.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Graphe des dépendances par inclusion de Router.hpp:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="Router_8hpp__incl.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+</div><div class="textblock"><div class="dynheader">
+Ce graphe montre quels fichiers incluent directement ou indirectement ce fichier :</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="Router_8hpp__dep__incl.svg" width="100%" height="382"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+</div>
+<p><a href="Router_8hpp_source.html">Aller au code source de ce fichier.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTMultipartPart.html">TMultipartPart</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Fonctions</h2></td></tr>
+<tr class="memitem:afe01a4e381cfcb56350bbfd79579d240" id="r_afe01a4e381cfcb56350bbfd79579d240"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Router_8hpp.html#afe01a4e381cfcb56350bbfd79579d240">parse_multipart</a> (const std::string &amp;body, const std::string &amp;boundary, std::vector&lt; <a class="el" href="structTMultipartPart.html">TMultipartPart</a> &gt; &amp;out)</td></tr>
+<tr class="memdesc:afe01a4e381cfcb56350bbfd79579d240"><td class="mdescLeft">&#160;</td><td class="mdescRight">false si body/boundary/delimiteur invalides  <br /></td></tr>
+<tr class="separator:afe01a4e381cfcb56350bbfd79579d240"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8ea4af10483b0b846f32e4502919671" id="r_ad8ea4af10483b0b846f32e4502919671"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Router_8hpp.html#ad8ea4af10483b0b846f32e4502919671">findBoundary</a> (const string &amp;value, string &amp;boundary, size_t idx)</td></tr>
+<tr class="memdesc:ad8ea4af10483b0b846f32e4502919671"><td class="mdescLeft">&#160;</td><td class="mdescRight">lit boundary= ; false si quotes mal formees  <br /></td></tr>
+<tr class="separator:ad8ea4af10483b0b846f32e4502919671"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1560c4313bf2a479e9c458f79364cb1e" id="r_a1560c4313bf2a479e9c458f79364cb1e"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Router_8hpp.html#a1560c4313bf2a479e9c458f79364cb1e">findParam</a> (const string &amp;headers, const string &amp;key)</td></tr>
+<tr class="memdesc:a1560c4313bf2a479e9c458f79364cb1e"><td class="mdescLeft">&#160;</td><td class="mdescRight">valeur de name= / filename= / Content-Type:  <br /></td></tr>
+<tr class="separator:a1560c4313bf2a479e9c458f79364cb1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6fb5765cbd4f4e9e38dfd861f2b0ccb0" id="r_a6fb5765cbd4f4e9e38dfd861f2b0ccb0"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Router_8hpp.html#a6fb5765cbd4f4e9e38dfd861f2b0ccb0">sanitize_filename</a> (const std::string &amp;raw)</td></tr>
+<tr class="memdesc:a6fb5765cbd4f4e9e38dfd861f2b0ccb0"><td class="mdescLeft">&#160;</td><td class="mdescRight">basename seul, refuse vide, .., leading '.'  <br /></td></tr>
+<tr class="separator:a6fb5765cbd4f4e9e38dfd861f2b0ccb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63d2d775c2b201a779b3f70314635a0b" id="r_a63d2d775c2b201a779b3f70314635a0b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classResponse.html">Response</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Router_8hpp.html#a63d2d775c2b201a779b3f70314635a0b">Router</a> (const <a class="el" href="classRequest.html">Request</a> &amp;request, const <a class="el" href="classServerConfig.html">ServerConfig</a> &amp;server, <a class="el" href="classConnection.html">Connection</a> &amp;connection)</td></tr>
+<tr class="memdesc:a63d2d775c2b201a779b3f70314635a0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Point d'entree du routage : <a class="el" href="Router_8cpp.html#a47c6c8fc82b09ddf561abf6bedb04e6f" title="Point d&#39;entree du GET statique (C-06).">dispatch()</a> puis une ligne d'access log.  <br /></td></tr>
+<tr class="separator:a63d2d775c2b201a779b3f70314635a0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8dfe8dee2bb7b4b8a032cfa76ae121ee" id="r_a8dfe8dee2bb7b4b8a032cfa76ae121ee"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classResponse.html">Response</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Router_8hpp.html#a8dfe8dee2bb7b4b8a032cfa76ae121ee">uploadMultipart</a> (const <a class="el" href="classServerConfig.html">ServerConfig</a> &amp;server, const <a class="el" href="classLocationConfig.html">LocationConfig</a> &amp;location, vector&lt; <a class="el" href="structTMultipartPart.html">TMultipartPart</a> &gt; parts)</td></tr>
+<tr class="memdesc:a8dfe8dee2bb7b4b8a032cfa76ae121ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">201 Location du 1er fichier, ou 400/500  <br /></td></tr>
+<tr class="separator:a8dfe8dee2bb7b4b8a032cfa76ae121ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a782f4c35884054400fe9632af2f33a6b" id="r_a782f4c35884054400fe9632af2f33a6b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classResponse.html">Response</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Router_8hpp.html#a782f4c35884054400fe9632af2f33a6b">upload</a> (const <a class="el" href="classRequest.html">Request</a> &amp;request, const <a class="el" href="classServerConfig.html">ServerConfig</a> &amp;server, const <a class="el" href="classLocationConfig.html">LocationConfig</a> &amp;location)</td></tr>
+<tr class="memdesc:a782f4c35884054400fe9632af2f33a6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">POST raw : body entier = fichier.  <br /></td></tr>
+<tr class="separator:a782f4c35884054400fe9632af2f33a6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba270e8da75aa2651be44d81a41685e2" id="r_aba270e8da75aa2651be44d81a41685e2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Router_8hpp.html#aba270e8da75aa2651be44d81a41685e2">writeInFile</a> (const string &amp;filename, const string &amp;body, string &amp;written)</td></tr>
+<tr class="memdesc:aba270e8da75aa2651be44d81a41685e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">0 ok, 400, 500 ; written = path reel  <br /></td></tr>
+<tr class="separator:aba270e8da75aa2651be44d81a41685e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d1e47470ab9f27bf48fa68ab14d356b" id="r_a9d1e47470ab9f27bf48fa68ab14d356b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Router_8hpp.html#a9d1e47470ab9f27bf48fa68ab14d356b">sanitizeAndWrite</a> (const <a class="el" href="classLocationConfig.html">LocationConfig</a> &amp;location, string &amp;written, const string &amp;name, const string &amp;data)</td></tr>
+<tr class="memdesc:a9d1e47470ab9f27bf48fa68ab14d356b"><td class="mdescLeft">&#160;</td><td class="mdescRight">-1 nom refuse, 0 ok, &gt;0 HTTP  <br /></td></tr>
+<tr class="separator:a9d1e47470ab9f27bf48fa68ab14d356b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abef310071763a47ce966e14df3a19c54" id="r_abef310071763a47ce966e14df3a19c54"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classResponse.html">Response</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Router_8hpp.html#abef310071763a47ce966e14df3a19c54">handleSession</a> (const <a class="el" href="classRequest.html">Request</a> &amp;request, const <a class="el" href="classServerConfig.html">ServerConfig</a> &amp;server)</td></tr>
+<tr class="separator:abef310071763a47ce966e14df3a19c54"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Documentation des fonctions</h2>
+<a id="ad8ea4af10483b0b846f32e4502919671" name="ad8ea4af10483b0b846f32e4502919671"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad8ea4af10483b0b846f32e4502919671">&#9670;&#160;</a></span>findBoundary()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool findBoundary </td>
+          <td>(</td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string &amp;&#160;</td>
+          <td class="paramname"><em>boundary</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>idx</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>lit boundary= ; false si quotes mal formees </p>
+<p>lit boundary= ; false si quotes mal formees</p>
+<p>Guillemets optionnels. Espace, tab ou ';' hors quotes terminent la valeur. Quote ouvrante sans fermante -&gt; false. Le '"' d'ouverture n'est pas copie dans boundary.</p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">value</td><td>Header Content-Type complet. </td></tr>
+    <tr><td class="paramname">boundary</td><td>Out : token sans quotes. </td></tr>
+    <tr><td class="paramname">idx</td><td>Index du premier caractere de la valeur (idx += 9 apres "boundary="). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>false si quotes mal formees. </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="RouterUtils_8cpp_source.html#l00209">209</a> du fichier <a class="el" href="RouterUtils_8cpp_source.html">RouterUtils.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a1560c4313bf2a479e9c458f79364cb1e" name="a1560c4313bf2a479e9c458f79364cb1e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1560c4313bf2a479e9c458f79364cb1e">&#9670;&#160;</a></span>findParam()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">string findParam </td>
+          <td>(</td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>headers</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>key</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>valeur de name= / filename= / Content-Type: </p>
+<p>valeur de name= / filename= / Content-Type:</p>
+<p>Guillemets optionnels. Un match interne a un autre token est ignore (filename= vs name=) via isStartParam. Quote ouvrante sans fermante -&gt; "".</p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">headers</td><td>En-tetes de la part (ou le Content-Type de la requete). </td></tr>
+    <tr><td class="paramname">key</td><td>Cle avec son separateur : "name=", "filename=", "Content-Type: ". </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>Valeur sans guillemets, ou "" si absent / mal forme. </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="RouterUtils_8cpp_source.html#l00038">38</a> du fichier <a class="el" href="RouterUtils_8cpp_source.html">RouterUtils.cpp</a>.</p>
+<div class="dynheader">
+Voici le graphe d'appel pour cette fonction :</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="Router_8hpp_a1560c4313bf2a479e9c458f79364cb1e_cgraph.svg" width="251" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="abef310071763a47ce966e14df3a19c54" name="abef310071763a47ce966e14df3a19c54"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abef310071763a47ce966e14df3a19c54">&#9670;&#160;</a></span>handleSession()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classResponse.html">Response</a> handleSession </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classRequest.html">Request</a> &amp;&#160;</td>
+          <td class="paramname"><em>request</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classServerConfig.html">ServerConfig</a> &amp;&#160;</td>
+          <td class="paramname"><em>server</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Définition à la ligne <a class="el" href="RouterUtils_8cpp_source.html#l00261">261</a> du fichier <a class="el" href="RouterUtils_8cpp_source.html">RouterUtils.cpp</a>.</p>
+<div class="dynheader">
+Voici le graphe d'appel pour cette fonction :</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="Router_8hpp_abef310071763a47ce966e14df3a19c54_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="afe01a4e381cfcb56350bbfd79579d240" name="afe01a4e381cfcb56350bbfd79579d240"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afe01a4e381cfcb56350bbfd79579d240">&#9670;&#160;</a></span>parse_multipart()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool parse_multipart </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>body</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>boundary</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="structTMultipartPart.html">TMultipartPart</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>out</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>false si body/boundary/delimiteur invalides </p>
+
+</div>
+</div>
+<a id="a63d2d775c2b201a779b3f70314635a0b" name="a63d2d775c2b201a779b3f70314635a0b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a63d2d775c2b201a779b3f70314635a0b">&#9670;&#160;</a></span>Router()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classResponse.html">Response</a> Router </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classRequest.html">Request</a> &amp;&#160;</td>
+          <td class="paramname"><em>request</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classServerConfig.html">ServerConfig</a> &amp;&#160;</td>
+          <td class="paramname"><em>server</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classConnection.html">Connection</a> &amp;&#160;</td>
+          <td class="paramname"><em>connection</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Point d'entree du routage : <a class="el" href="Router_8cpp.html#a47c6c8fc82b09ddf561abf6bedb04e6f" title="Point d&#39;entree du GET statique (C-06).">dispatch()</a> puis une ligne d'access log. </p>
+<p>Une ligne "METHODE URI -&gt; statut" par requete. Statut 0 = CGI demarre, la reponse est differee : on trace "cgi started".</p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">request</td><td>La requete deja parse, path decode. </td></tr>
+    <tr><td class="paramname">server</td><td>Le <a class="el" href="classServerConfig.html" title="Represente la configuration d&#39;un serveur virtuel (bloc &quot;server&quot;).">ServerConfig</a> choisi par SelectServer. </td></tr>
+    <tr><td class="paramname">connection</td><td>Reserve au CGI. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>La <a class="el" href="classResponse.html" title="Represente une reponse HTTP a construire et a envoyer au client.">Response</a> produite par <a class="el" href="Router_8cpp.html#a47c6c8fc82b09ddf561abf6bedb04e6f" title="Point d&#39;entree du GET statique (C-06).">dispatch()</a>, inchangee. </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="Router_8cpp_source.html#l00568">568</a> du fichier <a class="el" href="Router_8cpp_source.html">Router.cpp</a>.</p>
+<div class="dynheader">
+Voici le graphe d'appel pour cette fonction :</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="Router_8hpp_a63d2d775c2b201a779b3f70314635a0b_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="a6fb5765cbd4f4e9e38dfd861f2b0ccb0" name="a6fb5765cbd4f4e9e38dfd861f2b0ccb0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6fb5765cbd4f4e9e38dfd861f2b0ccb0">&#9670;&#160;</a></span>sanitize_filename()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">string sanitize_filename </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>raw</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>basename seul, refuse vide, .., leading '.' </p>
+<p>basename seul, refuse vide, .., leading '.'</p>
+<p>Refuse vide et leading '.'.</p>
+<p>Neutralise filename="../../etc/passwd" -&gt; "passwd". ".." et ".hidden" -&gt; "". Le caller ignore "" (part texte, ou 400 en POST raw).</p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">raw</td><td>Filename client (multipart) ou URI (POST raw). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>Basename ecrivable dans upload_store, ou "". </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="Router_8cpp_source.html#l00349">349</a> du fichier <a class="el" href="Router_8cpp_source.html">Router.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a9d1e47470ab9f27bf48fa68ab14d356b" name="a9d1e47470ab9f27bf48fa68ab14d356b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9d1e47470ab9f27bf48fa68ab14d356b">&#9670;&#160;</a></span>sanitizeAndWrite()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int sanitizeAndWrite </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classLocationConfig.html">LocationConfig</a> &amp;&#160;</td>
+          <td class="paramname"><em>location</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string &amp;&#160;</td>
+          <td class="paramname"><em>written</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>data</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>-1 nom refuse, 0 ok, &gt;0 HTTP </p>
+<p>-1 nom refuse, 0 ok, &gt;0 HTTP</p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">location</td><td>Location qui porte upload_store. </td></tr>
+    <tr><td class="paramname">written</td><td>Out : path disque ecrit (si return 0). </td></tr>
+    <tr><td class="paramname">name</td><td>Filename client (part) ou URI (POST raw). </td></tr>
+    <tr><td class="paramname">data</td><td>Octets a ecrire. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>-1 nom refuse (caller skip / 400), 0 ok, &gt;0 code HTTP (400 ou 500). </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="RouterUtils_8cpp_source.html#l00119">119</a> du fichier <a class="el" href="RouterUtils_8cpp_source.html">RouterUtils.cpp</a>.</p>
+<div class="dynheader">
+Voici le graphe d'appel pour cette fonction :</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="Router_8hpp_a9d1e47470ab9f27bf48fa68ab14d356b_cgraph.svg" width="386" height="151"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a782f4c35884054400fe9632af2f33a6b" name="a782f4c35884054400fe9632af2f33a6b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a782f4c35884054400fe9632af2f33a6b">&#9670;&#160;</a></span>upload()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classResponse.html">Response</a> upload </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classRequest.html">Request</a> &amp;&#160;</td>
+          <td class="paramname"><em>request</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classServerConfig.html">ServerConfig</a> &amp;&#160;</td>
+          <td class="paramname"><em>server</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classLocationConfig.html">LocationConfig</a> &amp;&#160;</td>
+          <td class="paramname"><em>location</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>POST raw : body entier = fichier. </p>
+<p>POST raw : body entier = fichier.</p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">request</td><td>getBody() + getPath() (ex. /upload/photo.png -&gt; photo.png). </td></tr>
+    <tr><td class="paramname">server</td><td>Pour BuildError. </td></tr>
+    <tr><td class="paramname">location</td><td>upload_store. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>201 + Location, ou 400/500. </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="RouterUtils_8cpp_source.html#l00177">177</a> du fichier <a class="el" href="RouterUtils_8cpp_source.html">RouterUtils.cpp</a>.</p>
+<div class="dynheader">
+Voici le graphe d'appel pour cette fonction :</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="Router_8hpp_a782f4c35884054400fe9632af2f33a6b_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="a8dfe8dee2bb7b4b8a032cfa76ae121ee" name="a8dfe8dee2bb7b4b8a032cfa76ae121ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8dfe8dee2bb7b4b8a032cfa76ae121ee">&#9670;&#160;</a></span>uploadMultipart()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classResponse.html">Response</a> uploadMultipart </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classServerConfig.html">ServerConfig</a> &amp;&#160;</td>
+          <td class="paramname"><em>server</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classLocationConfig.html">LocationConfig</a> &amp;&#160;</td>
+          <td class="paramname"><em>location</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vector&lt; <a class="el" href="structTMultipartPart.html">TMultipartPart</a> &gt;&#160;</td>
+          <td class="paramname"><em>parts</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>201 Location du 1er fichier, ou 400/500 </p>
+<p>201 Location du 1er fichier, ou 400/500</p>
+<p>Parts sans filename (champs texte d'un formulaire) ignorees, pas de fichier vide. Aucun fichier ecrit -&gt; 400. Location est une URI (getPath() + basename reel, collision comprise), jamais un chemin disque.</p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">server</td><td>Pour BuildError. </td></tr>
+    <tr><td class="paramname">location</td><td>upload_store + getPath() pour le header Location. </td></tr>
+    <tr><td class="paramname">parts</td><td>Sortie de parse_multipart. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>201, 400 ou 500. </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="RouterUtils_8cpp_source.html#l00141">141</a> du fichier <a class="el" href="RouterUtils_8cpp_source.html">RouterUtils.cpp</a>.</p>
+<div class="dynheader">
+Voici le graphe d'appel pour cette fonction :</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="Router_8hpp_a8dfe8dee2bb7b4b8a032cfa76ae121ee_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="aba270e8da75aa2651be44d81a41685e2" name="aba270e8da75aa2651be44d81a41685e2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aba270e8da75aa2651be44d81a41685e2">&#9670;&#160;</a></span>writeInFile()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int writeInFile </td>
+          <td>(</td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>filename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>body</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string &amp;&#160;</td>
+          <td class="paramname"><em>written</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>0 ok, 400, 500 ; written = path reel </p>
+<p>0 ok, 400, 500 ; written = path reel</p>
+<p>Collision : suffixe _1, _2 avant l'extension.</p>
+<p>Ne cree pas le dossier parent : ofstream fail -&gt; 500. Une entree existante qui n'est pas un fichier regulier -&gt; 400. Le '.' d'extension est cherche apres le dernier '/' (pour ne pas matcher le '.' de ./www). Pas d'extension -&gt; suffixe en fin de nom (Makefile -&gt; Makefile_1).</p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filename</td><td>Chemin cible (upload_store + '/' + basename). </td></tr>
+    <tr><td class="paramname">body</td><td>Octets bruts, peut contenir des NUL. </td></tr>
+    <tr><td class="paramname">written</td><td>Out : chemin reellement ecrit (avec suffixe si collision). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>0 ok, 400 collision avec un non-fichier, 500 open/write fail. </dd></dl>
+
+<p class="definition">Définition à la ligne <a class="el" href="RouterUtils_8cpp_source.html#l00080">80</a> du fichier <a class="el" href="RouterUtils_8cpp_source.html">RouterUtils.cpp</a>.</p>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_09e761304027c904456130627fd4dcf5.html">includes</a></li><li class="navelem"><a class="el" href="Router_8hpp.html">Router.hpp</a></li>
+    <li class="footer">Généré par <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

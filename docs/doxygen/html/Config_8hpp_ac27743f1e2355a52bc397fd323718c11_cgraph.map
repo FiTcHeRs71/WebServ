@@ -1,0 +1,5 @@
+<map id="parse_allow_methods" name="parse_allow_methods">
+<area shape="rect" id="Node000001" title="Prend tous les arguments de &lt;allow_methods&gt; et verifie leurs valeurs." alt="" coords="5,5,169,31"/>
+<area shape="rect" id="Node000002" href="$utils_8cpp.html#a87d84f83873a929055dda3fdd55aa1e5" title="Contient toutes les methodes HTTP acceptees par notre webserv." alt="" coords="217,5,347,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="170,15,203,15,203,21,170,21"/>
+</map>

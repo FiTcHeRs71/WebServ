@@ -1,0 +1,7 @@
+<map id="getMime" name="getMime">
+<area shape="rect" id="Node000001" title="Pose Content&#45;Type sur res d&#39;apres l&#39;extension de path." alt="" coords="5,31,85,56"/>
+<area shape="rect" id="Node000002" href="$Router_8cpp.html#aa683fc1aad0e97aa8f520951afb94bd4" title="Extraie l&#39;extension du nom de fichier (dernier &#39;." alt="" coords="181,5,247,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="85,35,166,22,167,28,86,40"/>
+<area shape="rect" id="Node000003" href="$classResponse.html#a57e91a47a4522fa82bd99dd7464e1c87" title=" " alt="" coords="133,55,295,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="86,46,120,51,119,56,85,52"/>
+</map>

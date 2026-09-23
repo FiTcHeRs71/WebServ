@@ -1,0 +1,7 @@
+<map id="CgiProcess::OnReadableCgi" name="CgiProcess::OnReadableCgi">
+<area shape="rect" id="Node000001" title="Ferme le stdin du CGI : D&#45;03, quand le body est entierement ecrit." alt="" coords="5,5,207,31"/>
+<area shape="rect" id="Node000002" href="$classCgiProcess.html#a069cb5dc52300f7dcbe4e86179e97cb9" title=" " alt="" coords="255,5,441,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="207,15,241,15,241,21,207,21"/>
+<area shape="rect" id="Node000003" href="$classLogger.html#abf1a44e82213ce8094057b5fa926cf72" title="Ligne horodatee &quot;date [level] msg&quot;." alt="" coords="489,5,596,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="441,15,475,15,475,21,441,21"/>
+</map>

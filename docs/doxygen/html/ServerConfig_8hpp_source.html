@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>webserv:  Fichier source de includes/ServerConfig.hpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">webserv
+   </div>
+   <div id="projectbrief">Serveur HTTP/1.1 non bloquant -- 42</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Généré par Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','Recherche');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function() { init_codefold(0); });
+/* @license-end */
+</script>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('ServerConfig_8hpp_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Chargement...</div>
+<div class="SRStatus" id="Searching">Recherche...</div>
+<div class="SRStatus" id="NoMatches">Aucune correspondance</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">ServerConfig.hpp</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="ServerConfig_8hpp.html">Aller à la documentation de ce fichier.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef SERVER_CONFIG_HPP</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor"># define SERVER_CONFIG_HPP</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor"># include &quot;<a class="code" href="Struct__webserv_8hpp.html">Struct_webserv.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor"># include &quot;<a class="code" href="LocationConfig_8hpp.html">LocationConfig.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor"># include &lt;iostream&gt;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor"># include &lt;map&gt;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor"># include &lt;ostream&gt;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor"># include &lt;string&gt;</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor"># include &lt;vector&gt;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="keyword">using namespace </span>std;</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
+<div class="foldopen" id="foldopen00021" data-start="{" data-end="};">
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="classServerConfig.html">   21</a></span><span class="keyword">class </span><a class="code hl_class" href="classServerConfig.html">ServerConfig</a></div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>{</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="classServerConfig.html#a26bfbd623d9dac71aeaaa26ac67820b6">   23</a></span>    <span class="keyword">friend</span> <span class="keyword">class            </span><a class="code hl_class" href="classConfigParser.html">ConfigParser</a>;</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span> </div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="classServerConfig.html#a7f4be12bdd38c235fedd03b3e7872a97">   27</a></span>    vector&lt;TListenConfig&gt;   <a class="code hl_variable" href="classServerConfig.html#a7f4be12bdd38c235fedd03b3e7872a97">_Listens</a>;</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="classServerConfig.html#aad66da4b7738cca71bb0160dc3c6ffcb">   28</a></span>    vector&lt;string&gt;          <a class="code hl_variable" href="classServerConfig.html#aad66da4b7738cca71bb0160dc3c6ffcb">_ServerNames</a>;</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="classServerConfig.html#a2a1aa44a5f4c4bc92fd23e99d1681f60">   29</a></span>    map&lt;int, string&gt;        <a class="code hl_variable" href="classServerConfig.html#a2a1aa44a5f4c4bc92fd23e99d1681f60">_ErrorPages</a>;</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="classServerConfig.html#a864adbbf6be9dcaed57e38dd76e439b0">   30</a></span>    vector&lt;LocationConfig&gt;  <a class="code hl_variable" href="classServerConfig.html#a864adbbf6be9dcaed57e38dd76e439b0">_Locations</a>;</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno"><a class="line" href="classServerConfig.html#a0d74fc0ebc3e912970905c4cf0b204d0">   31</a></span>    <span class="keywordtype">size_t</span>                  <a class="code hl_variable" href="classServerConfig.html#a0d74fc0ebc3e912970905c4cf0b204d0">_ClientMaxBodySize</a>;</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="classServerConfig.html#a46bcf430ff039a558359231bf6dd7bbf">   32</a></span>    <span class="keywordtype">bool</span>                    <a class="code hl_variable" href="classServerConfig.html#a46bcf430ff039a558359231bf6dd7bbf">_HasClientMaxBodySize</a>;</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span> </div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    <span class="keyword">protected</span>:</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span> </div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span> </div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    <span class="keyword">public</span>:</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    <span class="comment">/*===Canonical Form===*/</span></div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    <a class="code hl_function" href="classServerConfig.html#a985bb27caa7672f66894aa2e9fa7bbb2">ServerConfig</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    <a class="code hl_function" href="classServerConfig.html#a69651daee9d2135d6ee55cc91eff1b8f">~ServerConfig</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    <a class="code hl_function" href="classServerConfig.html#a985bb27caa7672f66894aa2e9fa7bbb2">ServerConfig</a>(<span class="keyword">const</span> <a class="code hl_class" href="classServerConfig.html">ServerConfig</a>&amp; to_copy);</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    <a class="code hl_class" href="classServerConfig.html">ServerConfig</a> &amp;<a class="code hl_function" href="classServerConfig.html#a5ec35942d82af332c7cfa0f5b709c215">operator=</a>(<span class="keyword">const</span> <a class="code hl_class" href="classServerConfig.html">ServerConfig</a>&amp; src);</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span> </div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    <span class="comment">/*===Getters &amp; Setters===*/</span></div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    <span class="keyword">const</span> vector&lt;TListenConfig&gt;     &amp;<a class="code hl_function" href="classServerConfig.html#a52c236e3363cba2ab7045d980e8c8ebe">getListens</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    <span class="keyword">const</span> vector&lt;string&gt;            &amp;<a class="code hl_function" href="classServerConfig.html#aba7a44995f4461d6a655277eeab4fd63">getServerNames</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    <span class="keyword">const</span> map&lt;int, string&gt;  &amp;<a class="code hl_function" href="classServerConfig.html#a81447d6457e725384798527b8587ccaa">getErrorPages</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    <span class="keyword">const</span> vector&lt;LocationConfig&gt;    &amp;<a class="code hl_function" href="classServerConfig.html#a1f2f9043a2c19b58518889908dcf8279">getLocations</a>(<span class="keywordtype">void</span>) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    <span class="keywordtype">size_t</span>                          <a class="code hl_function" href="classServerConfig.html#aca81ee6b4d081c5596798d0f0e6b9a34">getClientMaxBodySize</a>(<span class="keywordtype">void</span>) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span> </div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <span class="comment">/*===Member Function===*/</span></div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    <span class="keyword">const</span> <a class="code hl_class" href="classLocationConfig.html">LocationConfig</a>    *<a class="code hl_function" href="classServerConfig.html#aa65c203b34f8636d4f9f1dbcd8e157be">Resolve</a>(<span class="keyword">const</span> std::string &amp;uri)<span class="keyword">const</span>;  </div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    <span class="keywordtype">string</span>                  <a class="code hl_function" href="classServerConfig.html#abc10b3c8133bbe2715745435befd5c76">build_path</a>(<span class="keyword">const</span> <a class="code hl_class" href="classLocationConfig.html">LocationConfig</a> &amp;location, <span class="keyword">const</span> <span class="keywordtype">string</span> &amp;uri)<span class="keyword">const</span>; </div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    <span class="comment">/*===Friends===*/</span></div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    <span class="keyword">friend</span> ostream          &amp;<a class="code hl_friend" href="classServerConfig.html#a7319d1480146ada1415069e075ec1a95">operator&lt;&lt;</a>(ostream &amp;flux, <span class="keyword">const</span> <a class="code hl_class" href="classServerConfig.html">ServerConfig</a> &amp;src);</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>};</div>
+</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span> </div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span><span class="comment">/*=== HELPERS ===*/</span></div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span><span class="keywordtype">bool</span>                        <a class="code hl_function" href="ServerConfig_8hpp.html#a6c5106f7f4691c9fcce1d810962fbe8f">is_segment_boundary</a>(<span class="keyword">const</span> <span class="keywordtype">string</span> &amp;uri, <span class="keyword">const</span> <span class="keywordtype">string</span> &amp;path);</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span><span class="keywordtype">bool</span>                        <a class="code hl_function" href="ServerConfig_8hpp.html#a33a62d02493d54e927b73969ec71f85d">is_all_digits</a>(<span class="keyword">const</span> <span class="keywordtype">string</span> &amp;s);</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span><span class="keywordtype">bool</span>                        <a class="code hl_function" href="ServerConfig_8hpp.html#aea9cfbf41fbfe1bae093d72538eb3ac0">is_valid_ipv4</a>(<span class="keyword">const</span> <span class="keywordtype">string</span> &amp;host);</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span><span class="keywordtype">bool</span>                        <a class="code hl_function" href="ServerConfig_8hpp.html#aa59f9514bef61cd9809ec9d3b81751c6">operator==</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structTListenConfig.html">TListenConfig</a> &amp;Listen_a, <span class="keyword">const</span> <a class="code hl_struct" href="structTListenConfig.html">TListenConfig</a> &amp;Listen_b);</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span> </div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span><span class="preprocessor">#endif </span><span class="comment">/*SERVER_CONFIG_HPP*/</span><span class="preprocessor"></span></div>
+<div class="ttc" id="aLocationConfig_8hpp_html"><div class="ttname"><a href="LocationConfig_8hpp.html">LocationConfig.hpp</a></div></div>
+<div class="ttc" id="aServerConfig_8hpp_html_a33a62d02493d54e927b73969ec71f85d"><div class="ttname"><a href="ServerConfig_8hpp.html#a33a62d02493d54e927b73969ec71f85d">is_all_digits</a></div><div class="ttdeci">bool is_all_digits(const string &amp;s)</div><div class="ttdoc">Check si une chaine est composee uniquement de chiffres.</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00089">utils.cpp:89</a></div></div>
+<div class="ttc" id="aServerConfig_8hpp_html_a6c5106f7f4691c9fcce1d810962fbe8f"><div class="ttname"><a href="ServerConfig_8hpp.html#a6c5106f7f4691c9fcce1d810962fbe8f">is_segment_boundary</a></div><div class="ttdeci">bool is_segment_boundary(const string &amp;uri, const string &amp;path)</div><div class="ttdoc">check si le prefixe path s'arrete sur une frontiere de segment de l'URI</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00364">utils.cpp:364</a></div></div>
+<div class="ttc" id="aServerConfig_8hpp_html_aa59f9514bef61cd9809ec9d3b81751c6"><div class="ttname"><a href="ServerConfig_8hpp.html#aa59f9514bef61cd9809ec9d3b81751c6">operator==</a></div><div class="ttdeci">bool operator==(const TListenConfig &amp;Listen_a, const TListenConfig &amp;Listen_b)</div><div class="ttdoc">Compare deux points d'ecoute sur leur seule identite de socket.</div><div class="ttdef"><b>Definition</b> <a href="listen_8cpp_source.html#l00080">listen.cpp:80</a></div></div>
+<div class="ttc" id="aServerConfig_8hpp_html_aea9cfbf41fbfe1bae093d72538eb3ac0"><div class="ttname"><a href="ServerConfig_8hpp.html#aea9cfbf41fbfe1bae093d72538eb3ac0">is_valid_ipv4</a></div><div class="ttdeci">bool is_valid_ipv4(const string &amp;host)</div><div class="ttdoc">Verifie qu'une chaine est une adresse IPv4 bien formee.</div><div class="ttdef"><b>Definition</b> <a href="utils_8cpp_source.html#l00109">utils.cpp:109</a></div></div>
+<div class="ttc" id="aStruct__webserv_8hpp_html"><div class="ttname"><a href="Struct__webserv_8hpp.html">Struct_webserv.hpp</a></div></div>
+<div class="ttc" id="aclassConfigParser_html"><div class="ttname"><a href="classConfigParser.html">ConfigParser</a></div><div class="ttdoc">Represente toute la phase de parsing du .conf.</div><div class="ttdef"><b>Definition</b> <a href="Config_8hpp_source.html#l00031">Config.hpp:32</a></div></div>
+<div class="ttc" id="aclassLocationConfig_html"><div class="ttname"><a href="classLocationConfig.html">LocationConfig</a></div><div class="ttdoc">Represente la configuration d'une location (bloc &quot;location&quot;) d'un serveur.</div><div class="ttdef"><b>Definition</b> <a href="LocationConfig_8hpp_source.html#l00018">LocationConfig.hpp:19</a></div></div>
+<div class="ttc" id="aclassServerConfig_html"><div class="ttname"><a href="classServerConfig.html">ServerConfig</a></div><div class="ttdoc">Represente la configuration d'un serveur virtuel (bloc &quot;server&quot;).</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8hpp_source.html#l00021">ServerConfig.hpp:22</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_a0d74fc0ebc3e912970905c4cf0b204d0"><div class="ttname"><a href="classServerConfig.html#a0d74fc0ebc3e912970905c4cf0b204d0">ServerConfig::_ClientMaxBodySize</a></div><div class="ttdeci">size_t _ClientMaxBodySize</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8hpp_source.html#l00031">ServerConfig.hpp:31</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_a1f2f9043a2c19b58518889908dcf8279"><div class="ttname"><a href="classServerConfig.html#a1f2f9043a2c19b58518889908dcf8279">ServerConfig::getLocations</a></div><div class="ttdeci">const vector&lt; LocationConfig &gt; &amp; getLocations(void) const</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8cpp_source.html#l00083">ServerConfig.cpp:83</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_a2a1aa44a5f4c4bc92fd23e99d1681f60"><div class="ttname"><a href="classServerConfig.html#a2a1aa44a5f4c4bc92fd23e99d1681f60">ServerConfig::_ErrorPages</a></div><div class="ttdeci">map&lt; int, string &gt; _ErrorPages</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8hpp_source.html#l00029">ServerConfig.hpp:29</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_a46bcf430ff039a558359231bf6dd7bbf"><div class="ttname"><a href="classServerConfig.html#a46bcf430ff039a558359231bf6dd7bbf">ServerConfig::_HasClientMaxBodySize</a></div><div class="ttdeci">bool _HasClientMaxBodySize</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8hpp_source.html#l00032">ServerConfig.hpp:32</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_a52c236e3363cba2ab7045d980e8c8ebe"><div class="ttname"><a href="classServerConfig.html#a52c236e3363cba2ab7045d980e8c8ebe">ServerConfig::getListens</a></div><div class="ttdeci">const vector&lt; TListenConfig &gt; &amp; getListens() const</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8cpp_source.html#l00068">ServerConfig.cpp:68</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_a5ec35942d82af332c7cfa0f5b709c215"><div class="ttname"><a href="classServerConfig.html#a5ec35942d82af332c7cfa0f5b709c215">ServerConfig::operator=</a></div><div class="ttdeci">ServerConfig &amp; operator=(const ServerConfig &amp;src)</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8cpp_source.html#l00030">ServerConfig.cpp:30</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_a69651daee9d2135d6ee55cc91eff1b8f"><div class="ttname"><a href="classServerConfig.html#a69651daee9d2135d6ee55cc91eff1b8f">ServerConfig::~ServerConfig</a></div><div class="ttdeci">~ServerConfig(void)</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8cpp_source.html#l00014">ServerConfig.cpp:14</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_a7319d1480146ada1415069e075ec1a95"><div class="ttname"><a href="classServerConfig.html#a7319d1480146ada1415069e075ec1a95">ServerConfig::operator&lt;&lt;</a></div><div class="ttdeci">friend ostream &amp; operator&lt;&lt;(ostream &amp;flux, const ServerConfig &amp;src)</div><div class="ttdoc">Surcharge d'operateur pour l'impression des attributs de la classe ServerConfig.</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8cpp_source.html#l00053">ServerConfig.cpp:53</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_a7f4be12bdd38c235fedd03b3e7872a97"><div class="ttname"><a href="classServerConfig.html#a7f4be12bdd38c235fedd03b3e7872a97">ServerConfig::_Listens</a></div><div class="ttdeci">vector&lt; TListenConfig &gt; _Listens</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8hpp_source.html#l00027">ServerConfig.hpp:27</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_a81447d6457e725384798527b8587ccaa"><div class="ttname"><a href="classServerConfig.html#a81447d6457e725384798527b8587ccaa">ServerConfig::getErrorPages</a></div><div class="ttdeci">const map&lt; int, string &gt; &amp; getErrorPages() const</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8cpp_source.html#l00078">ServerConfig.cpp:78</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_a864adbbf6be9dcaed57e38dd76e439b0"><div class="ttname"><a href="classServerConfig.html#a864adbbf6be9dcaed57e38dd76e439b0">ServerConfig::_Locations</a></div><div class="ttdeci">vector&lt; LocationConfig &gt; _Locations</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8hpp_source.html#l00030">ServerConfig.hpp:30</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_a985bb27caa7672f66894aa2e9fa7bbb2"><div class="ttname"><a href="classServerConfig.html#a985bb27caa7672f66894aa2e9fa7bbb2">ServerConfig::ServerConfig</a></div><div class="ttdeci">ServerConfig(void)</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8cpp_source.html#l00007">ServerConfig.cpp:7</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_aa65c203b34f8636d4f9f1dbcd8e157be"><div class="ttname"><a href="classServerConfig.html#aa65c203b34f8636d4f9f1dbcd8e157be">ServerConfig::Resolve</a></div><div class="ttdeci">const LocationConfig * Resolve(const std::string &amp;uri) const</div><div class="ttdoc">La location matchant l'URI, prefixe le plus long.</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8cpp_source.html#l00108">ServerConfig.cpp:108</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_aad66da4b7738cca71bb0160dc3c6ffcb"><div class="ttname"><a href="classServerConfig.html#aad66da4b7738cca71bb0160dc3c6ffcb">ServerConfig::_ServerNames</a></div><div class="ttdeci">vector&lt; string &gt; _ServerNames</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8hpp_source.html#l00028">ServerConfig.hpp:28</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_aba7a44995f4461d6a655277eeab4fd63"><div class="ttname"><a href="classServerConfig.html#aba7a44995f4461d6a655277eeab4fd63">ServerConfig::getServerNames</a></div><div class="ttdeci">const vector&lt; string &gt; &amp; getServerNames() const</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8cpp_source.html#l00073">ServerConfig.cpp:73</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_abc10b3c8133bbe2715745435befd5c76"><div class="ttname"><a href="classServerConfig.html#abc10b3c8133bbe2715745435befd5c76">ServerConfig::build_path</a></div><div class="ttdeci">string build_path(const LocationConfig &amp;location, const string &amp;uri) const</div><div class="ttdoc">Traduit une URI en chemin disque via le root de la location.</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8cpp_source.html#l00144">ServerConfig.cpp:144</a></div></div>
+<div class="ttc" id="aclassServerConfig_html_aca81ee6b4d081c5596798d0f0e6b9a34"><div class="ttname"><a href="classServerConfig.html#aca81ee6b4d081c5596798d0f0e6b9a34">ServerConfig::getClientMaxBodySize</a></div><div class="ttdeci">size_t getClientMaxBodySize(void) const</div><div class="ttdef"><b>Definition</b> <a href="ServerConfig_8cpp_source.html#l00088">ServerConfig.cpp:88</a></div></div>
+<div class="ttc" id="astructTListenConfig_html"><div class="ttname"><a href="structTListenConfig.html">TListenConfig</a></div><div class="ttdoc">Represente un point decoute issu d'une directive &lt;listen&gt;</div><div class="ttdef"><b>Definition</b> <a href="Struct__webserv_8hpp_source.html#l00055">Struct_webserv.hpp:56</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_09e761304027c904456130627fd4dcf5.html">includes</a></li><li class="navelem"><a class="el" href="ServerConfig_8hpp.html">ServerConfig.hpp</a></li>
+    <li class="footer">Généré par <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>
